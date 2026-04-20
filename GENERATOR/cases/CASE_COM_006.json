@@ -1,0 +1,296 @@
+{
+  "case_id": "CASE_COM_006",
+  "domain": "Communication",
+  "template": "Communication_Action_Consequence",
+  "fir": {
+    "crime_type": "criminal conspiracy via phone",
+    "location": "12th Cross Rd, Near ATM, Koramangala 5th Block, Bengaluru, Karnataka 560034",
+    "time_window": [
+      0,
+      10190
+    ],
+    "description": "A complainant has alleged that an accused individual planned and confirmed an illegal act via digital communication channels. The deponent has provided evidence of encrypted exchanges, which two witnesses inadvertently intercepted. Further investigation is required to corroborate the allegations and identify the accused.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    },
+    "enriched": true
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Person_42",
+      "role": "suspect",
+      "modality": "video",
+      "source": "Secondary surveillance camera near suspect's known address",
+      "location": "Street-facing CCTV mount near suspect's residence",
+      "content": "Person seen holding a phone, appearing to type, near a residential area.",
+      "timestamp": "2024-01-15T10:04:13",
+      "time_offset": 253,
+      "confidence": 0.884,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E1",
+      "entity": "report_58",
+      "role": "suspect",
+      "modality": "text",
+      "source": "Personal email account flagged by cyber forensics",
+      "location": "Remote email server, accessed via cyber forensics",
+      "content": "Subject: Urgent. Body: Call me when you see this.",
+      "timestamp": "2024-01-15T10:04:01",
+      "time_offset": 241,
+      "confidence": 0.891,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E2",
+      "entity": "Person_42",
+      "role": "suspect",
+      "modality": "video",
+      "source": "ATM area CCTV unit",
+      "location": "Exterior CCTV above ATM booth, facing the street",
+      "content": "Individual stands near ATM, holding a phone at eye level for several minutes.",
+      "timestamp": "2024-01-15T10:14:27",
+      "time_offset": 867,
+      "confidence": 0.936,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E2",
+      "entity": "Speaker_L",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "Network surveillance interception",
+      "location": "Secure surveillance node, network interception point",
+      "content": "Yes, location is the same. Stick to the plan. No changes.",
+      "timestamp": "2024-01-15T10:14:32",
+      "time_offset": 872,
+      "confidence": 0.619,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E2",
+      "entity": "report_58",
+      "role": "suspect",
+      "modality": "text",
+      "source": "Corporate email log flagged by cyber forensics",
+      "location": "Remote email server, cyber forensics extraction",
+      "content": "Subject: Package. Body: Package at the usual drop. Pick up by 10.",
+      "timestamp": "2024-01-15T10:14:31",
+      "time_offset": 871,
+      "confidence": 0.863,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E3",
+      "entity": "Person_42",
+      "role": "suspect",
+      "modality": "video",
+      "source": "ATM area CCTV unit",
+      "location": "Exterior CCTV above ATM booth, facing the street",
+      "content": "Individual lowers phone after a brief interaction, then walks away from the ATM.",
+      "timestamp": "2024-01-15T10:33:02",
+      "time_offset": 1982,
+      "confidence": 0.819,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E3",
+      "entity": "Speaker_L",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "Verbal account from a third-party witness",
+      "location": "Witness's residence, as per statement",
+      "content": "Everything is set. No issues here.",
+      "timestamp": "2024-01-15T10:33:16",
+      "time_offset": 1996,
+      "confidence": 0.726,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E3",
+      "entity": "report_58",
+      "role": "suspect",
+      "modality": "text",
+      "source": "Personal email account flagged by cyber forensics",
+      "location": "Remote email server, accessed via cyber forensics",
+      "content": "Subject: Final. Body: Plan locked. No changes.",
+      "timestamp": "2024-01-15T10:33:07",
+      "time_offset": 1987,
+      "confidence": 0.856,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E4",
+      "entity": "Person_42",
+      "role": "suspect",
+      "modality": "video",
+      "source": "Entrance CCTV at premises linked to communication",
+      "location": "CCTV mount above entrance door, facing outward",
+      "content": "Subject stands at entrance, dials a number, speaks briefly, then ends the call.",
+      "timestamp": "2024-01-15T12:32:44",
+      "time_offset": 9164,
+      "confidence": 0.877,
+      "noise_tags": [
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E4",
+      "entity": "Speaker_L",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "Intercepted call from unregistered SIM",
+      "location": "Mobile network, unregistered SIM card",
+      "content": "We move together. No one breaks early. Understand?",
+      "timestamp": "2024-01-15T12:32:35",
+      "time_offset": 9155,
+      "confidence": 0.644,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E4",
+      "entity": "report_58",
+      "role": "suspect",
+      "modality": "text",
+      "source": "Cyber cell incident report",
+      "location": "Cyber cell office, incident registry",
+      "content": "[CORRUPTED] — File hash mismatch; content integrity unverified. Cannot confirm details.",
+      "timestamp": "2024-01-15T12:32:43",
+      "time_offset": 9163,
+      "confidence": 0.58,
+      "noise_tags": [
+        "contradiction"
+      ]
+    },
+    {
+      "obs_id": "O13",
+      "event_ref": "E5",
+      "entity": "log_20",
+      "role": "witness",
+      "modality": "text",
+      "source": "Police complaint register",
+      "location": "Local police station, complaint registry",
+      "content": "Received a message with coordinates and a time. Believed to be misdirected.",
+      "timestamp": "2024-01-15T12:49:33",
+      "time_offset": 10173,
+      "confidence": 0.816,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_42",
+          "audio": "Speaker_L",
+          "text": "report_58"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "text": "log_20"
+        }
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "video": "Person_70",
+          "audio": "Speaker_M",
+          "text": "email_18"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "initiate_communication",
+        "timestamp": "2024-01-15T10:04:05",
+        "time_offset": 245
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exchange_information",
+        "timestamp": "2024-01-15T10:14:31",
+        "time_offset": 871
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "confirm_plan",
+        "timestamp": "2024-01-15T10:33:07",
+        "time_offset": 1987
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "coordinate_activity",
+        "timestamp": "2024-01-15T12:32:41",
+        "time_offset": 9161
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "flag_suspicious_comm",
+        "timestamp": "2024-01-15T12:49:26",
+        "time_offset": 10166
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T12:49:38",
+        "time_offset": 10178
+      }
+    ],
+    "entity_mapping": {
+      "Person_42": "suspect_1",
+      "Speaker_L": "suspect_1",
+      "report_58": "suspect_1",
+      "log_20": "witness_1",
+      "Person_70": "witness_2",
+      "Speaker_M": "witness_2",
+      "email_18": "witness_2"
+    }
+  }
+}

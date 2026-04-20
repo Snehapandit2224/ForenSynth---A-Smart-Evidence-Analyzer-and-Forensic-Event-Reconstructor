@@ -1,0 +1,204 @@
+{
+  "case_id": "CASE_ATM_008",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "12th Main Road, Indiranagar, Bengaluru, near HDFC Bank ATM",
+    "time_window": [
+      0,
+      341
+    ],
+    "description": "The complainant states that three unidentified accused were observed tampering with the ATM card slot, consistent with a skimming attempt. The deponent corroborates that the accused fled the scene after being confronted by a bystander. One witness has provided an account of the incident.",
+    "roles": {
+      "suspect": 3,
+      "witness": 1
+    },
+    "enriched": true
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "ATM enclosure audio capture unit",
+      "location": "inside ATM booth",
+      "content": "Almost at the spot, stay on the line.",
+      "timestamp": "2024-01-15T10:00:51",
+      "time_offset": 51,
+      "confidence": 0.816,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted mobile call recording",
+      "location": "vicinity of ATM, intercepted signal",
+      "content": "I'm inside, give me a moment.",
+      "timestamp": "2024-01-15T10:03:41",
+      "time_offset": 221,
+      "confidence": 0.79,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "bystander verbal statement recording",
+      "location": "outside ATM booth, witness position",
+      "content": "I categorically deny touching or modifying that ATM.",
+      "timestamp": "2024-01-15T10:05:10",
+      "time_offset": 310,
+      "confidence": 0.57,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted mobile call recording",
+      "location": "vicinity of ATM, intercepted signal",
+      "content": "Let's move, quick.",
+      "timestamp": "2024-01-15T10:05:12",
+      "time_offset": 312,
+      "confidence": 0.607,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "Speaker_F",
+      "role": "witness",
+      "modality": "audio",
+      "source": "recovered mobile phone call log",
+      "location": "near ATM, mobile network coverage",
+      "content": "Someone just ran out of the booth.",
+      "timestamp": "2024-01-15T10:05:29",
+      "time_offset": 329,
+      "confidence": 0.81,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E6",
+      "entity": "log_98",
+      "role": "witness",
+      "modality": "text",
+      "source": "flagged email server log entry",
+      "location": "remote email server",
+      "content": "Saw someone leave in a hurry. Looked back twice.",
+      "timestamp": "2024-01-15T10:05:34",
+      "time_offset": 334,
+      "confidence": 0.848,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "audio": "Speaker_S"
+        }
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "audio": "Speaker_U"
+        }
+      },
+      {
+        "entity_id": "suspect_3",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_53"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_F",
+          "text": "log_98"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:45",
+        "time_offset": 45
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "loiter_near_atm",
+        "timestamp": "2024-01-15T10:03:35",
+        "time_offset": 215
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:03:46",
+        "time_offset": 226
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "tamper_atm",
+        "timestamp": "2024-01-15T10:05:04",
+        "time_offset": 304
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:05:11",
+        "time_offset": 311
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:05:26",
+        "time_offset": 326
+      }
+    ],
+    "entity_mapping": {
+      "Speaker_S": "suspect_1",
+      "Speaker_U": "suspect_2",
+      "Person_53": "suspect_3",
+      "Speaker_F": "witness_1",
+      "log_98": "witness_1"
+    }
+  }
+}

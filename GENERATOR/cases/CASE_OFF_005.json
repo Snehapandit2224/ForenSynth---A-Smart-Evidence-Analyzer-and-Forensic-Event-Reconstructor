@@ -1,0 +1,196 @@
+{
+  "case_id": "CASE_OFF_005",
+  "domain": "Office_Theft",
+  "template": "Entry_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "office theft",
+    "location": "Manyata Embassy Business Park, Nagawara, Bengaluru, Karnataka 560045",
+    "time_window": [
+      0,
+      60429
+    ],
+    "description": "Complainant security personnel reported an unauthorised entry into the restricted section of the office. One unknown individual was observed on premises outside working hours. Two staff members corroborate suspicious activity, leading to the filing of this FIR.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    },
+    "enriched": true
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Person_60",
+      "role": "suspect",
+      "modality": "video",
+      "source": "Internal CCTV unit covering the cash handling area",
+      "location": "Cash handling area, internal office",
+      "content": "Person seen walking towards the cash handling area, carrying a bag.",
+      "timestamp": "2024-01-15T10:01:19",
+      "time_offset": 79,
+      "confidence": 0.875,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "Person_60",
+      "role": "suspect",
+      "modality": "video",
+      "source": "Lobby-mounted CCTV camera at the office building main entrance",
+      "location": "Office building main lobby, entry point",
+      "content": "Individual in dark clothing seen swiping access card at the main entrance.",
+      "timestamp": "2024-01-15T10:01:58",
+      "time_offset": 118,
+      "confidence": 0.893,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "Person_60",
+      "role": "suspect",
+      "modality": "video",
+      "source": "Secondary CCTV camera positioned near the server room entrance",
+      "location": "Server room entrance, restricted zone",
+      "content": "Footage unclear due to camera obstruction; individual's actions near server room entrance not visible.",
+      "timestamp": "2024-01-15T10:06:02",
+      "time_offset": 362,
+      "confidence": 0.509,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "Person_60",
+      "role": "suspect",
+      "modality": "video",
+      "source": "Secondary CCTV camera positioned near the server room entrance",
+      "location": "Server room entrance, restricted zone",
+      "content": "Individual in dark clothing seen rushing through emergency exit.",
+      "timestamp": "2024-01-15T10:06:56",
+      "time_offset": 416,
+      "confidence": 0.833,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "Speaker_V",
+      "role": "witness",
+      "modality": "audio",
+      "source": "Internal call intercepted via the office PBX system",
+      "location": "Office internal network, PBX system",
+      "content": "Witness 1: 'They left the building and went their separate ways immediately.'",
+      "timestamp": "2024-01-15T10:08:20",
+      "time_offset": 500,
+      "confidence": 0.712,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E7",
+      "entity": "Speaker_V",
+      "role": "witness",
+      "modality": "audio",
+      "source": "Internal call intercepted via the office PBX system",
+      "location": "Office internal network, PBX system",
+      "content": "Witness 2: 'I saw something suspicious and need to report it officially.'",
+      "timestamp": "2024-01-15T10:32:15",
+      "time_offset": 1935,
+      "confidence": 0.871,
+      "noise_tags": []
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_60"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_V"
+        }
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "text": "log_80"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_office",
+        "timestamp": "2024-01-15T10:01:17",
+        "time_offset": 77
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_office",
+        "timestamp": "2024-01-15T10:01:57",
+        "time_offset": 117
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "navigate_to_target",
+        "timestamp": "2024-01-15T10:03:14",
+        "time_offset": 194
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "steal_items",
+        "timestamp": "2024-01-15T10:05:56",
+        "time_offset": 356
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_office",
+        "timestamp": "2024-01-15T10:06:54",
+        "time_offset": 414
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:08:17",
+        "time_offset": 497
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:32:12",
+        "time_offset": 1932
+      }
+    ],
+    "entity_mapping": {
+      "Person_60": "suspect_1",
+      "Speaker_V": "witness_1",
+      "log_80": "witness_2"
+    }
+  }
+}

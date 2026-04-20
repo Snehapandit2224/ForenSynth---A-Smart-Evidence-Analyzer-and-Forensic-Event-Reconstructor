@@ -1,0 +1,104 @@
+{
+  "case_id": "CASE_ATM_007",
+  "domain": "ATM_Robbery",
+  "template": "MultiActor_Entry_Action_Exit",
+  "fir": {
+    "crime_type": "ATM robbery",
+    "location": "Indiranagar HDFC ATM",
+    "time_window": [
+      0,
+      846
+    ],
+    "description": "Two individuals were seen entering an ATM booth in a coordinated manner. One appeared to conduct a transaction while the other stood watch near the entrance. 2 bystander(s) reported the suspicious activity to local authorities.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O2",
+      "entity": "Person_06",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "ATM booth interior, card reader and keypad area",
+      "content": "Second actor arrives near the ATM booth shortly after the first.",
+      "timestamp": "2024-01-15T10:00:49",
+      "time_offset": 49,
+      "confidence": 0.905
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Person_06",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "Lead actor enters the ATM enclosure and closes the door (observed from distance).",
+      "timestamp": "2024-01-15T10:01:09",
+      "time_offset": 69,
+      "confidence": 0.809
+    },
+    {
+      "obs_id": "O4",
+      "entity": "Person_06",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Second person loiters near ATM entrance.",
+      "timestamp": "2024-01-15T10:01:23",
+      "time_offset": 83,
+      "confidence": 0.872
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Person_06",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "Camera obstructed at the relevant timestamp; sequence unclear.",
+      "timestamp": "2024-01-15T10:03:00",
+      "time_offset": 180,
+      "confidence": 0.515
+    },
+    {
+      "obs_id": "O6",
+      "entity": "Person_06",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "First actor exits through the ATM door (partially obscured).",
+      "timestamp": "2024-01-15T10:03:13",
+      "time_offset": 193,
+      "confidence": 0.785
+    },
+    {
+      "obs_id": "O7",
+      "entity": "Person_06",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "Both individuals leave the ATM area together.",
+      "timestamp": "2024-01-15T10:03:16",
+      "time_offset": 196,
+      "confidence": 0.832
+    },
+    {
+      "obs_id": "O8",
+      "entity": "Speaker_F",
+      "role": "witness",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I need to report something suspicious.",
+      "timestamp": "2024-01-15T10:06:20",
+      "time_offset": 380,
+      "confidence": 0.746
+    }
+  ]
+}

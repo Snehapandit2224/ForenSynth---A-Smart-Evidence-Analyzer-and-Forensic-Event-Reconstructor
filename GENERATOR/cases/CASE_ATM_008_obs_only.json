@@ -1,0 +1,93 @@
+{
+  "case_id": "CASE_ATM_008",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "12th Main Road, Indiranagar, Bengaluru, near HDFC Bank ATM",
+    "time_window": [
+      0,
+      341
+    ],
+    "description": "The complainant states that three unidentified accused were observed tampering with the ATM card slot, consistent with a skimming attempt. The deponent corroborates that the accused fled the scene after being confronted by a bystander. One witness has provided an account of the incident.",
+    "roles": {
+      "suspect": 3,
+      "witness": 1
+    },
+    "enriched": true
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "ATM enclosure audio capture unit",
+      "location": "inside ATM booth",
+      "content": "Almost at the spot, stay on the line.",
+      "timestamp": "2024-01-15T10:00:51",
+      "time_offset": 51,
+      "confidence": 0.816
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted mobile call recording",
+      "location": "vicinity of ATM, intercepted signal",
+      "content": "I'm inside, give me a moment.",
+      "timestamp": "2024-01-15T10:03:41",
+      "time_offset": 221,
+      "confidence": 0.79
+    },
+    {
+      "obs_id": "O4",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "bystander verbal statement recording",
+      "location": "outside ATM booth, witness position",
+      "content": "I categorically deny touching or modifying that ATM.",
+      "timestamp": "2024-01-15T10:05:10",
+      "time_offset": 310,
+      "confidence": 0.57
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Speaker_S",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted mobile call recording",
+      "location": "vicinity of ATM, intercepted signal",
+      "content": "Let's move, quick.",
+      "timestamp": "2024-01-15T10:05:12",
+      "time_offset": 312,
+      "confidence": 0.607
+    },
+    {
+      "obs_id": "O6",
+      "entity": "Speaker_F",
+      "role": "witness",
+      "modality": "audio",
+      "source": "recovered mobile phone call log",
+      "location": "near ATM, mobile network coverage",
+      "content": "Someone just ran out of the booth.",
+      "timestamp": "2024-01-15T10:05:29",
+      "time_offset": 329,
+      "confidence": 0.81
+    },
+    {
+      "obs_id": "O7",
+      "entity": "log_98",
+      "role": "witness",
+      "modality": "text",
+      "source": "flagged email server log entry",
+      "location": "remote email server",
+      "content": "Saw someone leave in a hurry. Looked back twice.",
+      "timestamp": "2024-01-15T10:05:34",
+      "time_offset": 334,
+      "confidence": 0.848
+    }
+  ]
+}
