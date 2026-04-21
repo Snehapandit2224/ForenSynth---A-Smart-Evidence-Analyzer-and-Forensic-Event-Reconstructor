@@ -1,0 +1,374 @@
+{
+  "case_id": "CASE_ATM_007",
+  "status": "success",
+  "error_message": "",
+  "entity_count": 7,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Person_06"
+      ],
+      "primary_alias": "Person_06",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.905,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM booth interior, card reader and keypad area"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "cctv_atm"
+      ],
+      "earliest_timestamp": "2024-01-15T10:00:49",
+      "latest_timestamp": "2024-01-15T10:00:49",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "Person_06"
+      ],
+      "primary_alias": "Person_06",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.809,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM lobby doorway, entry/exit point"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "cctv_entrance"
+      ],
+      "earliest_timestamp": "2024-01-15T10:01:09",
+      "latest_timestamp": "2024-01-15T10:01:09",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_3",
+      "aliases": [
+        "Person_06"
+      ],
+      "primary_alias": "Person_06",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.872,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM street frontage, wide-angle coverage"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_3"
+      ],
+      "earliest_timestamp": "2024-01-15T10:01:23",
+      "latest_timestamp": "2024-01-15T10:01:23",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_4",
+      "aliases": [
+        "Person_06"
+      ],
+      "primary_alias": "Person_06",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.515,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM kiosk exterior, street-side view"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_2"
+      ],
+      "earliest_timestamp": "2024-01-15T10:03:00",
+      "latest_timestamp": "2024-01-15T10:03:00",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_5",
+      "aliases": [
+        "Person_06"
+      ],
+      "primary_alias": "Person_06",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.785,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM kiosk exterior, street-side view"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_2"
+      ],
+      "earliest_timestamp": "2024-01-15T10:03:13",
+      "latest_timestamp": "2024-01-15T10:03:13",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_6",
+      "aliases": [
+        "Person_06"
+      ],
+      "primary_alias": "Person_06",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.832,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM kiosk exterior, street-side view"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_2"
+      ],
+      "earliest_timestamp": "2024-01-15T10:03:16",
+      "latest_timestamp": "2024-01-15T10:03:16",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_7",
+      "aliases": [
+        "Speaker_F"
+      ],
+      "primary_alias": "Speaker_F",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.746,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "ATM vicinity, bystander position"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "witness_statement"
+      ],
+      "earliest_timestamp": "2024-01-15T10:06:20",
+      "latest_timestamp": "2024-01-15T10:06:20",
+      "time_span_seconds": 0
+    }
+  ],
+  "reports": {
+    "intake": {
+      "total_observations": 7,
+      "valid_observations": 7,
+      "invalid_observations": 0,
+      "duplicate_observations": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "blocking": {
+      "total_candidate_pairs": 21,
+      "pairs_after_hard_reject": 18,
+      "high_priority": 0,
+      "medium_priority": 16,
+      "low_priority": 2,
+      "avg_priority": 0.551,
+      "cardinality_reduction": 0.143
+    },
+    "features": {
+      "total_pairs": 18,
+      "avg_combined_score": 0.364,
+      "high_confidence": 0,
+      "medium_confidence": 4,
+      "low_confidence": 14,
+      "feature_averages": {
+        "temporal": 0.465,
+        "location": 0.0,
+        "context": 0.294,
+        "interaction": 0.7,
+        "lexical": 0.437,
+        "modality": 0.633
+      },
+      "processing_time_sec": 0.0
+    },
+    "scoring": {
+      "total_pairs": 18,
+      "avg_similarity_score": 0.364,
+      "high_score": 0,
+      "medium_score": 4,
+      "low_score": 14,
+      "score_distribution": {
+        "5/10": 3,
+        "4/10": 1,
+        "3/10": 10,
+        "2/10": 4
+      },
+      "processing_time_sec": 0.0
+    },
+    "classification": {
+      "total_edges": 18,
+      "confirmed": 0,
+      "candidate": 0,
+      "rejected": 18,
+      "avg_confirmed_score": 0.0,
+      "avg_candidate_score": 0.0,
+      "avg_rejected_score": 0.364,
+      "confirmed_threshold": 0.8,
+      "candidate_threshold": "0.6-0.8",
+      "high_confidence": 0,
+      "medium_confidence": 0,
+      "low_confidence": 18,
+      "processing_time_sec": 0.0
+    },
+    "graph": {
+      "total_observations": 7,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "rejected_edges": 18,
+      "nodes": 7,
+      "edges": 0,
+      "avg_node_degree": 0.0,
+      "max_node_degree": 0,
+      "min_node_degree": 0,
+      "isolated_nodes": 7,
+      "avg_edge_similarity": 0.0,
+      "min_edge_similarity": 1.0,
+      "max_edge_similarity": 0.0,
+      "processing_time_sec": 0.0
+    },
+    "clustering": {
+      "total_observations": 7,
+      "total_clusters": 7,
+      "avg_cluster_size": 1.0,
+      "max_cluster_size": 1,
+      "min_cluster_size": 1,
+      "singleton_clusters": 7,
+      "pair_clusters": 0,
+      "triplet_clusters": 0,
+      "large_clusters": 0,
+      "coverage_ratio": 1.0,
+      "processing_time_sec": 0.0
+    },
+    "attachment": {
+      "total_candidate_edges": 0,
+      "total_attachments": 0,
+      "high_confidence": 0,
+      "medium_confidence": 0,
+      "low_confidence": 0,
+      "attachments_with_conflicts": 0,
+      "total_conflicts": 0,
+      "high_severity": 0,
+      "medium_severity": 0,
+      "low_severity": 0,
+      "processing_time_sec": 0.0
+    },
+    "conflict": {
+      "total_clusters": 7,
+      "total_observations": 7,
+      "total_conflicts": 0,
+      "high_severity": 0,
+      "medium_severity": 0,
+      "low_severity": 0,
+      "role_contradictions": 0,
+      "temporal_conflicts": 0,
+      "low_confidence": 0,
+      "suspicious_sizes": 0,
+      "clusters_affected": 0,
+      "observations_affected": 0,
+      "processing_time_sec": 0.0
+    },
+    "labeling": {
+      "total_clusters": 7,
+      "total_entities": 7,
+      "singletons": 7,
+      "pairs": 0,
+      "triplets": 0,
+      "large_clusters": 0,
+      "high_confidence": 4,
+      "medium_confidence": 2,
+      "low_confidence": 1,
+      "total_confirmed_edges": 0,
+      "total_candidate_edges": 0,
+      "video_entities": 6,
+      "audio_entities": 1,
+      "text_entities": 0,
+      "multimodal_entities": 0,
+      "total_mentions": 7,
+      "avg_mentions_per_entity": 1.0,
+      "processing_time_sec": 0.001
+    }
+  },
+  "conflicts_detected": 0,
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.8,
+    "candidate_threshold_low": 0.6,
+    "candidate_threshold_high": 0.8
+  },
+  "total_processing_time_sec": 0.009,
+  "stage_timings": {
+    "stage_1_intake": 0.0,
+    "stage_2_normalization": 0.001,
+    "stage_3_blocking": 0.006,
+    "stage_4_features": 0.001,
+    "stage_5_scoring": 0.0,
+    "stage_6_classification": 0.0,
+    "stage_7_graph_building": 0.0,
+    "stage_8_clustering": 0.0,
+    "stage_9_attachment": 0.0,
+    "stage_10_conflict_detection": 0.0,
+    "stage_11_labeling": 0.001,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-04-21T16:52:06.515154"
+}

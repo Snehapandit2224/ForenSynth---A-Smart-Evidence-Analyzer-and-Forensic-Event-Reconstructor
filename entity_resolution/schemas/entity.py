@@ -3,6 +3,7 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Optional
 from datetime import datetime
+from pydantic import ConfigDict
 
 
 class NormalizedAlias(BaseModel):
@@ -64,8 +65,7 @@ class CanonicalEntitySchema(BaseModel):
         default=None, description="Time span from first to last mention"
     )
 
-    class Config:
-        extra = "forbid"
+    model_config = ConfigDict(extra="forbid")
 
     @field_validator(
         "entity_id", "dominant_label", mode="before"

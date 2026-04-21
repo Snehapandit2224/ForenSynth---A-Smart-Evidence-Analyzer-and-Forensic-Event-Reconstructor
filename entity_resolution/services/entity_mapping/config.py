@@ -26,9 +26,9 @@ class PipelineConfiguration:
     scoring_weights: Optional[ScoringWeights] = None
 
     # Edge classification
-    confirmed_threshold: float = 0.80
-    candidate_threshold_low: float = 0.60
-    candidate_threshold_high: float = 0.80
+    confirmed_threshold: float = 0.70
+    candidate_threshold_low: float = 0.50
+    candidate_threshold_high: float = 0.70
 
     def to_dict(self) -> dict:
         """Convert to dict."""

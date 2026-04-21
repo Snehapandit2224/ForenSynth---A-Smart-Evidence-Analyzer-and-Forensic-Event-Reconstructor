@@ -151,6 +151,27 @@ class Labeler:
         """Initialize labeler."""
         pass
 
+    @staticmethod
+    def _dedupe_clusters(clusters: List[EntityCluster]) -> List[EntityCluster]:
+        """Remove repeated obs_ids across clusters while preserving the first, larger cluster."""
+        deduped_clusters: List[EntityCluster] = []
+        seen_obs_ids = set()
+
+        for cluster in clusters:
+            unique_obs_ids = []
+            for obs_id in cluster.obs_ids:
+                if obs_id in seen_obs_ids:
+                    continue
+                unique_obs_ids.append(obs_id)
+                seen_obs_ids.add(obs_id)
+
+            if unique_obs_ids:
+                deduped_clusters.append(
+                    EntityCluster(cluster_id=cluster.cluster_id, obs_ids=unique_obs_ids)
+                )
+
+        return deduped_clusters
+
     def _compute_confidence_score(
         self,
         cluster_size: int,
@@ -217,6 +238,9 @@ class Labeler:
 
         # Build obs_id -> observation map
         obs_dict = {obs.obs_id: obs for obs in observations}
+
+        # Ensure each observation appears in only one cluster before labeling.
+        clusters = self._dedupe_clusters(clusters)
 
         # Create entities from clusters
         canonical_entities = []

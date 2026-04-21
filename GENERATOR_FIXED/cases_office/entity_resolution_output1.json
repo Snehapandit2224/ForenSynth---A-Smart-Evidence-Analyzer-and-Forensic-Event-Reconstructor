@@ -1,0 +1,328 @@
+{
+  "case_id": "CASE_OFF_001",
+  "status": "success",
+  "error_message": "",
+  "entity_count": 4,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Person_70",
+        "sms_21"
+      ],
+      "primary_alias": "Person_70",
+      "total_mentions": 8,
+      "confirmed_mentions": [
+        "O1",
+        "O10",
+        "O13",
+        "O15",
+        "O3",
+        "O6",
+        "O7",
+        "O9"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.918,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "text",
+        "video"
+      ],
+      "locations": [
+        "HR department, complaint registry",
+        "accounts department area, third floor",
+        "cash handling area, internal office",
+        "corporate email server, IT infrastructure",
+        "facilities security office, incident log",
+        "off-premises \u2014 accused personal device",
+        "office building main lobby, entry point",
+        "server room entrance, restricted zone"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_2",
+        "camera_3",
+        "cctv_atm",
+        "cctv_entrance",
+        "complaint_register",
+        "email_log",
+        "incident_report",
+        "sms_record"
+      ],
+      "earliest_timestamp": "2024-01-15T09:55:47",
+      "latest_timestamp": "2024-01-15T10:14:17",
+      "time_span_seconds": 1110
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "Speaker_P"
+      ],
+      "primary_alias": "Speaker_P",
+      "total_mentions": 4,
+      "confirmed_mentions": [
+        "O11",
+        "O14",
+        "O5",
+        "O8"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.758,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "office floor, colleague position",
+        "office internal network, PBX system",
+        "office premises, seized device"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "intercepted_call",
+        "phone_record",
+        "witness_statement"
+      ],
+      "earliest_timestamp": "2024-01-15T09:58:38",
+      "latest_timestamp": "2024-01-15T10:07:55",
+      "time_span_seconds": 557
+    },
+    {
+      "entity_id": "entity_3",
+      "aliases": [
+        "Speaker_G"
+      ],
+      "primary_alias": "Speaker_G",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.851,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "office internal network, PBX system"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "intercepted_call"
+      ],
+      "earliest_timestamp": "2024-01-15T10:07:14",
+      "latest_timestamp": "2024-01-15T10:07:14",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_4",
+      "aliases": [
+        "Person_78"
+      ],
+      "primary_alias": "Person_78",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.509,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "cash handling area, internal office"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "cctv_atm"
+      ],
+      "earliest_timestamp": "2024-01-15T10:16:19",
+      "latest_timestamp": "2024-01-15T10:16:19",
+      "time_span_seconds": 0
+    }
+  ],
+  "reports": {
+    "intake": {
+      "total_observations": 14,
+      "valid_observations": 14,
+      "invalid_observations": 0,
+      "duplicate_observations": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "blocking": {
+      "total_candidate_pairs": 91,
+      "pairs_after_hard_reject": 91,
+      "high_priority": 1,
+      "medium_priority": 65,
+      "low_priority": 25,
+      "avg_priority": 0.463,
+      "cardinality_reduction": 0.0
+    },
+    "features": {
+      "total_pairs": 91,
+      "avg_combined_score": 0.341,
+      "high_confidence": 3,
+      "medium_confidence": 21,
+      "low_confidence": 67,
+      "feature_averages": {
+        "temporal": 0.473,
+        "location": 0.054,
+        "context": 0.286,
+        "interaction": 0.704,
+        "lexical": 0.332,
+        "modality": 0.53
+      },
+      "processing_time_sec": 0.006
+    },
+    "scoring": {
+      "total_pairs": 91,
+      "avg_similarity_score": 0.393,
+      "high_score": 19,
+      "medium_score": 5,
+      "low_score": 67,
+      "score_distribution": {
+        "9/10": 18,
+        "6/10": 3,
+        "8/10": 1,
+        "5/10": 1,
+        "4/10": 1,
+        "3/10": 6,
+        "2/10": 48,
+        "1/10": 13
+      },
+      "processing_time_sec": 0.0
+    },
+    "classification": {
+      "total_edges": 91,
+      "confirmed": 19,
+      "candidate": 4,
+      "rejected": 68,
+      "avg_confirmed_score": 0.896,
+      "avg_candidate_score": 0.653,
+      "avg_rejected_score": 0.237,
+      "confirmed_threshold": 0.7,
+      "candidate_threshold": "0.5-0.7",
+      "high_confidence": 19,
+      "medium_confidence": 4,
+      "low_confidence": 68,
+      "processing_time_sec": 0.0
+    },
+    "graph": {
+      "total_observations": 14,
+      "confirmed_edges": 19,
+      "candidate_edges": 4,
+      "rejected_edges": 68,
+      "nodes": 14,
+      "edges": 19,
+      "avg_node_degree": 2.71,
+      "max_node_degree": 4,
+      "min_node_degree": 0,
+      "isolated_nodes": 2,
+      "avg_edge_similarity": 0.896,
+      "min_edge_similarity": 0.82,
+      "max_edge_similarity": 0.9,
+      "processing_time_sec": 0.001
+    },
+    "clustering": {
+      "total_observations": 14,
+      "total_clusters": 4,
+      "avg_cluster_size": 3.5,
+      "max_cluster_size": 8,
+      "min_cluster_size": 1,
+      "singleton_clusters": 2,
+      "pair_clusters": 0,
+      "triplet_clusters": 0,
+      "large_clusters": 2,
+      "coverage_ratio": 1.0,
+      "processing_time_sec": 0.0
+    },
+    "attachment": {
+      "total_candidate_edges": 4,
+      "total_attachments": 1,
+      "high_confidence": 0,
+      "medium_confidence": 0,
+      "low_confidence": 1,
+      "attachments_with_conflicts": 1,
+      "total_conflicts": 3,
+      "high_severity": 0,
+      "medium_severity": 1,
+      "low_severity": 2,
+      "processing_time_sec": 0.0
+    },
+    "conflict": {
+      "total_clusters": 4,
+      "total_observations": 14,
+      "total_conflicts": 0,
+      "high_severity": 0,
+      "medium_severity": 0,
+      "low_severity": 0,
+      "role_contradictions": 0,
+      "temporal_conflicts": 0,
+      "low_confidence": 0,
+      "suspicious_sizes": 0,
+      "clusters_affected": 0,
+      "observations_affected": 0,
+      "processing_time_sec": 0.0
+    },
+    "labeling": {
+      "total_clusters": 4,
+      "total_entities": 4,
+      "singletons": 2,
+      "pairs": 0,
+      "triplets": 0,
+      "large_clusters": 2,
+      "high_confidence": 2,
+      "medium_confidence": 1,
+      "low_confidence": 1,
+      "total_confirmed_edges": 19,
+      "total_candidate_edges": 4,
+      "video_entities": 2,
+      "audio_entities": 2,
+      "text_entities": 1,
+      "multimodal_entities": 1,
+      "total_mentions": 14,
+      "avg_mentions_per_entity": 3.5,
+      "processing_time_sec": 0.0
+    }
+  },
+  "conflicts_detected": 0,
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.7,
+    "candidate_threshold_low": 0.5,
+    "candidate_threshold_high": 0.7
+  },
+  "total_processing_time_sec": 0.028,
+  "stage_timings": {
+    "stage_1_intake": 0.0,
+    "stage_2_normalization": 0.001,
+    "stage_3_blocking": 0.018,
+    "stage_4_features": 0.006,
+    "stage_5_scoring": 0.001,
+    "stage_6_classification": 0.0,
+    "stage_7_graph_building": 0.001,
+    "stage_8_clustering": 0.0,
+    "stage_9_attachment": 0.0,
+    "stage_10_conflict_detection": 0.0,
+    "stage_11_labeling": 0.0,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-04-21T21:19:10.846108"
+}

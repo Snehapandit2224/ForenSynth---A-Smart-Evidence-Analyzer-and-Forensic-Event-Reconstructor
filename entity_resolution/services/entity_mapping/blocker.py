@@ -352,8 +352,9 @@ class AliasPatternBlocker:
         """
         Hard rejection: observations with identical aliases.
 
-        Same alias from same source = likely duplicate or independent mention.
-        Cannot resolve same alias to different entities.
+        Same alias from same source with identical timestamp = likely duplicate or independent mention.
+        Same alias + same source but different timestamps = different sequential mentions of same entity
+        (e.g., same person in two consecutive video frames).
 
         Args:
             obs_1: First observation
@@ -362,8 +363,11 @@ class AliasPatternBlocker:
         Returns:
             True if should hard-reject
         """
-        # Same alias AND same source: already same mention
-        if (obs_1.entity == obs_2.entity) and (obs_1.source == obs_2.source):
+        # Only hard-reject if BOTH same alias AND same source AND same timestamp
+        # (truly identical observations that should have been deduped by intake)
+        if (obs_1.entity == obs_2.entity and 
+            obs_1.source == obs_2.source and 
+            obs_1.timestamp_dt == obs_2.timestamp_dt):
             # Should already be deduped by intake, but check anyway
             return True
 
@@ -597,6 +601,12 @@ class Blocker:
         self, obs_1: NormalizedObservation, obs_2: NormalizedObservation
     ) -> bool:
         """Check hard rejection rules."""
+        if (
+            obs_1.role.strip().lower() == obs_2.role.strip().lower()
+            and obs_1.timestamp_dt == obs_2.timestamp_dt
+        ):
+            return False
+
         # Check each signal's hard rejection
         if TemporalBlocker.should_reject_temporal(obs_1, obs_2, self.max_temporal_gap_sec):
             return True
@@ -688,6 +698,12 @@ class Blocker:
         )
         total_weight = sum(self.signal_weights.values())
         priority = weighted_sum / total_weight if total_weight > 0 else 0.5
+
+        if (
+            obs_1.role.strip().lower() == obs_2.role.strip().lower()
+            and obs_1.timestamp_dt == obs_2.timestamp_dt
+        ):
+            priority = max(priority, 0.65)
 
         return CandidatePair(
             obs_id_1=obs_1.obs_id,

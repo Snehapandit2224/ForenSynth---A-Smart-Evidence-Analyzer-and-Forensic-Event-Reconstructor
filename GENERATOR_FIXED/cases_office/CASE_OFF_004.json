@@ -1,0 +1,249 @@
+{
+  "case_id": "CASE_OFF_004",
+  "domain": "Office_Theft",
+  "template": "Entry_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "corporate document theft",
+    "location": "Accounts Department – Brigade Gateway",
+    "time_window": [
+      0,
+      43879
+    ],
+    "description": "Security personnel flagged unauthorised entry into a restricted section of the office. 3 unknown individual(s) were seen on premises outside working hours. 1 staff member(s) reported observing suspicious activity.",
+    "roles": {
+      "suspect": 3,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "Person_85",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "office building main lobby, entry point",
+      "content": "Individual leaves through emergency exit (captured on footage).",
+      "timestamp": "2024-01-15T10:00:58",
+      "time_offset": 58,
+      "confidence": 0.841,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "Person_85",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "server room entrance, restricted zone",
+      "content": "Suspect observed interacting with computer system (reported by bystander).",
+      "timestamp": "2024-01-15T10:06:43",
+      "time_offset": 403,
+      "confidence": 0.755,
+      "noise_tags": [
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "Speaker_K",
+      "role": "witness",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "office internal network, PBX system",
+      "content": "Both of them left at once through the side door.",
+      "timestamp": "2024-01-15T10:09:35",
+      "time_offset": 575,
+      "confidence": 0.78,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Person_85",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "Person seen heading toward the office building entrance.",
+      "timestamp": "2024-01-15T10:12:57",
+      "time_offset": 777,
+      "confidence": 0.909,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "Person_85",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "main office corridor, ground floor",
+      "content": "Individual gains entry to the building using a badge.",
+      "timestamp": "2024-01-15T10:13:18",
+      "time_offset": 798,
+      "confidence": 0.853,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E6",
+      "entity": "report_10",
+      "role": "witness",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Two men just ran out of the ATM. Looked suspicious.",
+      "timestamp": "2024-01-15T10:27:08",
+      "time_offset": 1628,
+      "confidence": 0.806,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E7",
+      "entity": "report_10",
+      "role": "witness",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "[DELETED] — Message removed by sender.",
+      "timestamp": "2024-01-15T10:29:12",
+      "time_offset": 1752,
+      "confidence": 0.398,
+      "noise_tags": [
+        "contradiction"
+      ]
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E7",
+      "entity": "Speaker_K",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "I'm calling to report a suspicious person near the ATM.",
+      "timestamp": "2024-01-15T10:39:52",
+      "time_offset": 2392,
+      "confidence": 0.71,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_85"
+        }
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_40",
+          "text": "report_99"
+        }
+      },
+      {
+        "entity_id": "suspect_3",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_25",
+          "audio": "Speaker_N"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_K",
+          "text": "report_10"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_office",
+        "timestamp": "2024-01-15T10:00:51",
+        "time_offset": 51
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_office",
+        "timestamp": "2024-01-15T10:01:28",
+        "time_offset": 88
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "navigate_to_target",
+        "timestamp": "2024-01-15T10:03:28",
+        "time_offset": 208
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "steal_items",
+        "timestamp": "2024-01-15T10:06:42",
+        "time_offset": 402
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_office",
+        "timestamp": "2024-01-15T10:07:21",
+        "time_offset": 441
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:09:34",
+        "time_offset": 574
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:29:09",
+        "time_offset": 1749
+      }
+    ],
+    "entity_mapping": {
+      "Person_85": "suspect_1",
+      "Person_40": "suspect_2",
+      "report_99": "suspect_2",
+      "Person_25": "suspect_3",
+      "Speaker_N": "suspect_3",
+      "Speaker_K": "witness_1",
+      "report_10": "witness_1"
+    }
+  }
+}

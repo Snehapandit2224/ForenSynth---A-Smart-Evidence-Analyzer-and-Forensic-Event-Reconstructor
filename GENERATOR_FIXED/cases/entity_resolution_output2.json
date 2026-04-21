@@ -1,0 +1,339 @@
+{
+  "case_id": "CASE_ATM_002",
+  "status": "success",
+  "error_message": "",
+  "entity_count": 4,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Person_97",
+        "Speaker_D",
+        "log_30"
+      ],
+      "primary_alias": "Person_97",
+      "total_mentions": 8,
+      "confirmed_mentions": [
+        "O12",
+        "O15",
+        "O16",
+        "O2",
+        "O3",
+        "O6",
+        "O7",
+        "O8"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.863,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio",
+        "text",
+        "video"
+      ],
+      "locations": [
+        "ATM street frontage, wide-angle coverage",
+        "ATM vicinity, bystander position",
+        "ATM vicinity, intercepted channel",
+        "near ATM location, mobile network",
+        "remote \u2014 email server log"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_3",
+        "email_log",
+        "intercepted_call",
+        "phone_record",
+        "witness_statement"
+      ],
+      "earliest_timestamp": "2024-01-15T10:00:30",
+      "latest_timestamp": "2024-01-15T10:03:06",
+      "time_span_seconds": 156
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "Person_50",
+        "Speaker_Q"
+      ],
+      "primary_alias": "Person_50",
+      "total_mentions": 6,
+      "confirmed_mentions": [
+        "O10",
+        "O17",
+        "O18",
+        "O4",
+        "O5",
+        "O9"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.949,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio",
+        "video"
+      ],
+      "locations": [
+        "ATM booth entrance, exterior facing",
+        "ATM booth interior, card reader and keypad area",
+        "ATM kiosk exterior, street-side view",
+        "ATM vicinity, bystander position",
+        "near ATM location, mobile network"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_1",
+        "camera_2",
+        "cctv_atm",
+        "phone_record",
+        "witness_statement"
+      ],
+      "earliest_timestamp": "2024-01-15T10:01:00",
+      "latest_timestamp": "2024-01-15T10:03:08",
+      "time_span_seconds": 128
+    },
+    {
+      "entity_id": "entity_3",
+      "aliases": [
+        "Speaker_K",
+        "email_68"
+      ],
+      "primary_alias": "Speaker_K",
+      "total_mentions": 2,
+      "confirmed_mentions": [
+        "O19",
+        "O20"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.748,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio",
+        "text"
+      ],
+      "locations": [
+        "near ATM location, mobile network",
+        "remote \u2014 email server log"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "email_log",
+        "phone_record"
+      ],
+      "earliest_timestamp": "2024-01-15T10:03:19",
+      "latest_timestamp": "2024-01-15T10:03:26",
+      "time_span_seconds": 7
+    },
+    {
+      "entity_id": "entity_4",
+      "aliases": [
+        "sms_74"
+      ],
+      "primary_alias": "sms_74",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.731,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "remote \u2014 mobile network SMS"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "sms_record"
+      ],
+      "earliest_timestamp": "2024-01-15T10:06:31",
+      "latest_timestamp": "2024-01-15T10:06:31",
+      "time_span_seconds": 0
+    }
+  ],
+  "reports": {
+    "intake": {
+      "total_observations": 17,
+      "valid_observations": 17,
+      "invalid_observations": 0,
+      "duplicate_observations": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "blocking": {
+      "total_candidate_pairs": 136,
+      "pairs_after_hard_reject": 136,
+      "high_priority": 3,
+      "medium_priority": 126,
+      "low_priority": 7,
+      "avg_priority": 0.547,
+      "cardinality_reduction": 0.0
+    },
+    "features": {
+      "total_pairs": 136,
+      "avg_combined_score": 0.397,
+      "high_confidence": 10,
+      "medium_confidence": 43,
+      "low_confidence": 83,
+      "feature_averages": {
+        "temporal": 0.636,
+        "location": 0.148,
+        "context": 0.321,
+        "interaction": 0.685,
+        "lexical": 0.332,
+        "modality": 0.512
+      },
+      "processing_time_sec": 0.006
+    },
+    "scoring": {
+      "total_pairs": 136,
+      "avg_similarity_score": 0.421,
+      "high_score": 20,
+      "medium_score": 27,
+      "low_score": 89,
+      "score_distribution": {
+        "9/10": 16,
+        "6/10": 19,
+        "8/10": 4,
+        "5/10": 4,
+        "4/10": 4,
+        "3/10": 25,
+        "2/10": 42,
+        "1/10": 22
+      },
+      "processing_time_sec": 0.001
+    },
+    "classification": {
+      "total_edges": 136,
+      "confirmed": 20,
+      "candidate": 23,
+      "rejected": 93,
+      "avg_confirmed_score": 0.884,
+      "avg_candidate_score": 0.662,
+      "avg_rejected_score": 0.262,
+      "confirmed_threshold": 0.7,
+      "candidate_threshold": "0.5-0.7",
+      "high_confidence": 20,
+      "medium_confidence": 23,
+      "low_confidence": 93,
+      "processing_time_sec": 0.001
+    },
+    "graph": {
+      "total_observations": 17,
+      "confirmed_edges": 20,
+      "candidate_edges": 23,
+      "rejected_edges": 93,
+      "nodes": 17,
+      "edges": 20,
+      "avg_node_degree": 2.35,
+      "max_node_degree": 4,
+      "min_node_degree": 0,
+      "isolated_nodes": 1,
+      "avg_edge_similarity": 0.884,
+      "min_edge_similarity": 0.82,
+      "max_edge_similarity": 0.9,
+      "processing_time_sec": 0.0
+    },
+    "clustering": {
+      "total_observations": 17,
+      "total_clusters": 4,
+      "avg_cluster_size": 4.25,
+      "max_cluster_size": 8,
+      "min_cluster_size": 1,
+      "singleton_clusters": 1,
+      "pair_clusters": 1,
+      "triplet_clusters": 0,
+      "large_clusters": 2,
+      "coverage_ratio": 1.0,
+      "processing_time_sec": 0.001
+    },
+    "attachment": {
+      "total_candidate_edges": 23,
+      "total_attachments": 0,
+      "high_confidence": 0,
+      "medium_confidence": 0,
+      "low_confidence": 0,
+      "attachments_with_conflicts": 0,
+      "total_conflicts": 0,
+      "high_severity": 0,
+      "medium_severity": 0,
+      "low_severity": 0,
+      "processing_time_sec": 0.0
+    },
+    "conflict": {
+      "total_clusters": 4,
+      "total_observations": 17,
+      "total_conflicts": 1,
+      "high_severity": 0,
+      "medium_severity": 1,
+      "low_severity": 0,
+      "role_contradictions": 0,
+      "temporal_conflicts": 1,
+      "low_confidence": 0,
+      "suspicious_sizes": 0,
+      "clusters_affected": 1,
+      "observations_affected": 2,
+      "processing_time_sec": 0.0
+    },
+    "labeling": {
+      "total_clusters": 4,
+      "total_entities": 4,
+      "singletons": 1,
+      "pairs": 1,
+      "triplets": 0,
+      "large_clusters": 2,
+      "high_confidence": 2,
+      "medium_confidence": 2,
+      "low_confidence": 0,
+      "total_confirmed_edges": 20,
+      "total_candidate_edges": 23,
+      "video_entities": 2,
+      "audio_entities": 3,
+      "text_entities": 3,
+      "multimodal_entities": 3,
+      "total_mentions": 17,
+      "avg_mentions_per_entity": 4.25,
+      "processing_time_sec": 0.0
+    }
+  },
+  "conflicts_detected": 1,
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.7,
+    "candidate_threshold_low": 0.5,
+    "candidate_threshold_high": 0.7
+  },
+  "total_processing_time_sec": 0.048,
+  "stage_timings": {
+    "stage_1_intake": 0.0,
+    "stage_2_normalization": 0.0,
+    "stage_3_blocking": 0.039,
+    "stage_4_features": 0.006,
+    "stage_5_scoring": 0.001,
+    "stage_6_classification": 0.001,
+    "stage_7_graph_building": 0.0,
+    "stage_8_clustering": 0.001,
+    "stage_9_attachment": 0.0,
+    "stage_10_conflict_detection": 0.0,
+    "stage_11_labeling": 0.0,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-04-21T21:10:15.145819"
+}

@@ -1,0 +1,188 @@
+{
+  "case_id": "CASE_OFF_001",
+  "domain": "Office_Theft",
+  "template": "Entry_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "office theft",
+    "location": "Admin Wing – Manyata Embassy Business Park",
+    "time_window": [
+      0,
+      14034
+    ],
+    "description": "Physical documents and equipment reported missing from secure office area. Access logs indicate entry by 1 unregistered individual(s) after hours. 2 witness(es) noted unusual presence on the floor.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O6",
+      "entity": "sms_21",
+      "role": "suspect",
+      "modality": "text",
+      "source": "complaint_register",
+      "location": "HR department, complaint registry",
+      "content": "Badge worked. I'm in.",
+      "timestamp": "2024-01-15T09:55:47",
+      "time_offset": 0,
+      "confidence": 0.864
+    },
+    {
+      "obs_id": "O1",
+      "entity": "Person_70",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "accounts department area, third floor",
+      "content": "Person arrives at building entrance.",
+      "timestamp": "2024-01-15T09:56:06",
+      "time_offset": 0,
+      "confidence": 0.769
+    },
+    {
+      "obs_id": "O9",
+      "entity": "sms_21",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Server room in sight.",
+      "timestamp": "2024-01-15T09:57:18",
+      "time_offset": 0,
+      "confidence": 0.809
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Speaker_P",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "Access card worked fine.",
+      "timestamp": "2024-01-15T09:58:38",
+      "time_offset": 0,
+      "confidence": 0.611
+    },
+    {
+      "obs_id": "O8",
+      "entity": "Speaker_P",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "Walking through the corridor now.",
+      "timestamp": "2024-01-15T10:03:19",
+      "time_offset": 199,
+      "confidence": 0.689
+    },
+    {
+      "obs_id": "O7",
+      "entity": "Person_70",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "office building main lobby, entry point",
+      "content": "Individual makes their way to the restricted floor.",
+      "timestamp": "2024-01-15T10:05:26",
+      "time_offset": 326,
+      "confidence": 0.841
+    },
+    {
+      "obs_id": "O10",
+      "entity": "Person_70",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "server room entrance, restricted zone",
+      "content": "Individual removes items from the office and conceals them (captured on footage).",
+      "timestamp": "2024-01-15T10:05:39",
+      "time_offset": 339,
+      "confidence": 0.826
+    },
+    {
+      "obs_id": "O17",
+      "entity": "Speaker_G",
+      "role": "witness",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "office internal network, PBX system",
+      "content": "I saw them leave the office.",
+      "timestamp": "2024-01-15T10:07:14",
+      "time_offset": 434,
+      "confidence": 0.851
+    },
+    {
+      "obs_id": "O11",
+      "entity": "Speaker_P",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "office floor, colleague position",
+      "content": "Got the files.",
+      "timestamp": "2024-01-15T10:07:23",
+      "time_offset": 443,
+      "confidence": 0.657
+    },
+    {
+      "obs_id": "O3",
+      "entity": "sms_21",
+      "role": "suspect",
+      "modality": "text",
+      "source": "incident_report",
+      "location": "facilities security office, incident log",
+      "content": "[CORRUPTED] — File hash mismatch; content integrity unverified.",
+      "timestamp": "2024-01-15T10:07:41",
+      "time_offset": 461,
+      "confidence": 0.455
+    },
+    {
+      "obs_id": "O14",
+      "entity": "Speaker_P",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "office internal network, PBX system",
+      "content": "Leaving the premises, no alarms.",
+      "timestamp": "2024-01-15T10:07:55",
+      "time_offset": 475,
+      "confidence": 0.636
+    },
+    {
+      "obs_id": "O15",
+      "entity": "sms_21",
+      "role": "suspect",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "Left the premises. No one saw me.",
+      "timestamp": "2024-01-15T10:07:57",
+      "time_offset": 477,
+      "confidence": 0.785
+    },
+    {
+      "obs_id": "O13",
+      "entity": "Person_70",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "Person departs the office building carrying a bag.",
+      "timestamp": "2024-01-15T10:14:17",
+      "time_offset": 857,
+      "confidence": 0.793
+    },
+    {
+      "obs_id": "O16",
+      "entity": "Person_78",
+      "role": "witness",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "Colleague observed watching a person enter an area marked restricted.",
+      "timestamp": "2024-01-15T10:16:19",
+      "time_offset": 979,
+      "confidence": 0.509
+    }
+  ]
+}

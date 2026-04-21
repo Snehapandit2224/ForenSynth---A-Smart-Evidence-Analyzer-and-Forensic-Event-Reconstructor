@@ -122,15 +122,15 @@ class ClassificationThresholds:
     """Configurable classification thresholds."""
 
     # Default thresholds
-    _CONFIRMED_THRESHOLD = 0.80  # >= this = confirmed
-    _CANDIDATE_LOW_THRESHOLD = 0.60  # >= this and < confirmed = candidate
-    _CANDIDATE_HIGH_THRESHOLD = 0.80  # < this and >= low = candidate
-    _REJECTED_THRESHOLD = 0.60  # < this = rejected
+    _CONFIRMED_THRESHOLD = 0.70  # >= this = confirmed
+    _CANDIDATE_LOW_THRESHOLD = 0.50  # >= this and < confirmed = candidate
+    _CANDIDATE_HIGH_THRESHOLD = 0.70  # < this and >= low = candidate
+    _REJECTED_THRESHOLD = 0.50  # < this = rejected
 
     def __init__(
         self,
-        confirmed: float = 0.80,
-        candidate_low: float = 0.60,
+        confirmed: float = 0.70,
+        candidate_low: float = 0.50,
     ):
         """
         Initialize classification thresholds.

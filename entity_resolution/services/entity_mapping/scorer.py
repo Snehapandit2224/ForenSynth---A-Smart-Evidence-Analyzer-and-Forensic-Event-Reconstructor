@@ -2,12 +2,13 @@
 
 Stage 5: Computes weighted similarity score from feature vectors.
 
-Scoring Weights:
-- temporal: 0.25 (time proximity)
-- location: 0.20 (geographic match)
-- context: 0.20 (semantic context)
-- interaction: 0.10 (role/modality compatibility)
-- lexical: 0.20 (text similarity)
+Scoring Weights (aligned with Features.py):
+- alias_identity: 0.30 (CRITICAL - same alias is strongest signal for forensic entity matching)
+- temporal: 0.20 (time proximity)
+- location: 0.10 (geographic match)
+- context: 0.15 (semantic context)
+- interaction: 0.08 (role/modality compatibility)
+- lexical: 0.12 (text similarity)
 - modality: 0.05 (modality type compatibility)
 
 Total: 1.00
@@ -15,12 +16,14 @@ Total: 1.00
 Output: Single similarity_score [0.0, 1.0] for downstream classification.
 """
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from datetime import datetime
 import time
 
 from .features import FeatureVector
+from ...schemas.observation import NormalizedObservation
 
 
 # ============================================================================
@@ -84,13 +87,15 @@ class ScoringWeights:
     """Configurable scoring weights for similarity computation."""
 
     # Default weights (must sum to 1.0)
+    # Aligned with Features.py weights for consistency
     DEFAULT_WEIGHTS = {
-        "temporal": 0.25,
-        "location": 0.20,
-        "context": 0.20,
-        "interaction": 0.10,
-        "lexical": 0.20,
-        "modality": 0.05,
+        "alias_identity": 0.30,  # CRITICAL: identity match (same alias) is strongest signal
+        "temporal": 0.175,  # Time proximity
+        "location": 0.14,  # Geographic match
+        "context": 0.14,  # Semantic context
+        "interaction": 0.07,  # Role/modality compatibility
+        "lexical": 0.14,  # Text content similarity
+        "modality": 0.035,  # Modality type compatibility
     }
 
     def __init__(self, weights: Dict[str, float] = None):
@@ -99,7 +104,7 @@ class ScoringWeights:
 
         Args:
             weights: Optional custom weights dict. If not provided, uses defaults.
-                    Must have keys: temporal, location, context, interaction, lexical, modality
+                    Must have keys: alias_identity, temporal, location, context, interaction, lexical, modality
                     Must sum to approximately 1.0
 
         Raises:
@@ -108,8 +113,8 @@ class ScoringWeights:
         if weights is None:
             self.weights = self.DEFAULT_WEIGHTS.copy()
         else:
-            # Validate required keys
-            required_keys = {"temporal", "location", "context", "interaction", "lexical", "modality"}
+            # Validate required keys (now includes alias_identity)
+            required_keys = {"alias_identity", "temporal", "location", "context", "interaction", "lexical", "modality"}
             provided_keys = set(weights.keys())
             if provided_keys != required_keys:
                 missing = required_keys - provided_keys
@@ -162,7 +167,7 @@ class Scorer:
         Compute weighted similarity score from feature vector.
 
         Strategy:
-        - Apply configured weights to each feature
+        - Apply configured weights to each feature (INCLUDING alias_identity)
         - Produce single composite score [0.0, 1.0]
         - Track individual contributions for explainability
 
@@ -175,7 +180,8 @@ class Scorer:
             - score_components: Dict[feature_name, weighted_value]
             - rationale: List of explanation strings
         """
-        # Extract features
+        # Extract features from feature vector
+        alias_identity = feature_vector.alias_identity_score
         temporal = feature_vector.temporal_score
         location = feature_vector.location_score
         context = feature_vector.context_score
@@ -183,7 +189,8 @@ class Scorer:
         lexical = feature_vector.lexical_score
         modality = feature_vector.modality_compatibility_score
 
-        # Get weights
+        # Get weights (now includes alias_identity)
+        w_alias_identity = self.weights.get("alias_identity")
         w_temporal = self.weights.get("temporal")
         w_location = self.weights.get("location")
         w_context = self.weights.get("context")
@@ -191,8 +198,9 @@ class Scorer:
         w_lexical = self.weights.get("lexical")
         w_modality = self.weights.get("modality")
 
-        # Compute weighted contributions
+        # Compute weighted contributions (now includes alias_identity)
         components = {
+            "alias_identity": alias_identity * w_alias_identity,
             "temporal": temporal * w_temporal,
             "location": location * w_location,
             "context": context * w_context,
@@ -204,8 +212,29 @@ class Scorer:
         # Compute total similarity score
         similarity_score = sum(components.values())
 
+        if alias_identity == 1.0:
+            similarity_score = max(similarity_score, 0.90)
+            rationale_boost = "Exact alias match: forced confirm score"
+        elif alias_identity >= 0.85:
+            similarity_score = max(similarity_score, 0.82)
+            rationale_boost = "Alias boost: co-event signal triggered"
+        else:
+            rationale_boost = ""
+
         # Build rationale
         rationale = []
+
+        if rationale_boost:
+            rationale.append(rationale_boost)
+        
+        # Alias identity is the strongest signal
+        if alias_identity >= 0.99:
+            rationale.append(f"Perfect alias match ({alias_identity:.2f})")
+        elif alias_identity >= 0.9:
+            rationale.append(f"Very strong alias match ({alias_identity:.2f})")
+        elif alias_identity >= 0.5:
+            rationale.append(f"Partial alias match ({alias_identity:.2f})")
+        
         if temporal >= 0.8:
             rationale.append(f"Excellent temporal alignment ({temporal:.2f})")
         elif temporal >= 0.5:
@@ -241,7 +270,9 @@ class Scorer:
         return similarity_score, components, rationale
 
     def score_pairs(
-        self, feature_vectors: List[FeatureVector]
+        self,
+        feature_vectors: List[FeatureVector],
+        observations: Optional[List[NormalizedObservation]] = None,
     ) -> Tuple[List[ScoredPair], ScoringReport]:
         """
         Score all candidate pairs.
@@ -260,8 +291,63 @@ class Scorer:
         scored_pairs: List[ScoredPair] = []
         scores: List[float] = []
 
-        for fv in feature_vectors:
+        obs_lookup: Dict[str, NormalizedObservation] = {}
+        earliest_obs_by_alias: Dict[str, str] = {}
+        if observations:
+            obs_lookup = {obs.obs_id: obs for obs in observations}
+
+            def observation_sort_key(obs: NormalizedObservation) -> Tuple[datetime, int, str]:
+                timestamp = obs.timestamp_dt if getattr(obs, "timestamp_dt", None) else datetime.max
+                time_offset = getattr(obs, "time_offset", 0) or 0
+                return timestamp, time_offset, obs.obs_id
+
+            alias_groups: Dict[str, List[NormalizedObservation]] = {}
+            for obs in observations:
+                alias = obs.entity.strip().lower()
+                alias_groups.setdefault(alias, []).append(obs)
+
+            for alias, alias_observations in alias_groups.items():
+                alias_observations.sort(key=observation_sort_key)
+                earliest_obs_by_alias[alias] = alias_observations[0].obs_id
+
+        preferred_boost_pairs: Dict[str, Tuple[int, int, str]] = {}
+        preferred_pair_index: Dict[str, int] = {}
+        candidate_boost_flags: List[bool] = []
+
+        for index, fv in enumerate(feature_vectors):
             similarity_score, components, rationale = self.compute_similarity_score(fv)
+
+            is_cross_alias_boost = fv.alias_identity_score >= 0.85 and fv.alias_identity_score < 0.99
+            candidate_boost_flags.append(is_cross_alias_boost)
+
+            if observations and is_cross_alias_boost:
+                obs_1 = obs_lookup.get(fv.obs_id_1)
+                obs_2 = obs_lookup.get(fv.obs_id_2)
+                if obs_1 and obs_2:
+                    alias_1 = obs_1.entity.strip().lower()
+                    alias_2 = obs_2.entity.strip().lower()
+                    earliest_1 = earliest_obs_by_alias.get(alias_1)
+                    earliest_2 = earliest_obs_by_alias.get(alias_2)
+
+                    temporal_gap = fv.temporal_gap_sec if fv.temporal_gap_sec is not None else 10**9
+                    rank = (
+                        int(temporal_gap),
+                        -int(round(similarity_score * 1000)),
+                        min(obs_1.time_offset if hasattr(obs_1, "time_offset") else 0, obs_2.time_offset if hasattr(obs_2, "time_offset") else 0),
+                        fv.obs_id_1 + "|" + fv.obs_id_2,
+                    )
+
+                    if fv.obs_id_1 == earliest_1:
+                        current_rank = preferred_boost_pairs.get(fv.obs_id_1)
+                        if current_rank is None or rank < current_rank:
+                            preferred_boost_pairs[fv.obs_id_1] = rank
+                            preferred_pair_index[fv.obs_id_1] = index
+
+                    if fv.obs_id_2 == earliest_2:
+                        current_rank = preferred_boost_pairs.get(fv.obs_id_2)
+                        if current_rank is None or rank < current_rank:
+                            preferred_boost_pairs[fv.obs_id_2] = rank
+                            preferred_pair_index[fv.obs_id_2] = index
 
             scored_pair = ScoredPair(
                 obs_id_1=fv.obs_id_1,
@@ -274,6 +360,20 @@ class Scorer:
 
             scored_pairs.append(scored_pair)
             scores.append(similarity_score)
+
+        if observations:
+            for index, scored_pair in enumerate(scored_pairs):
+                if not candidate_boost_flags[index]:
+                    continue
+
+                fv = scored_pair.feature_vector
+                keep_index_1 = preferred_pair_index.get(fv.obs_id_1)
+                keep_index_2 = preferred_pair_index.get(fv.obs_id_2)
+                if index != keep_index_1 and index != keep_index_2:
+                    scored_pair.similarity_score = min(scored_pair.similarity_score, 0.69)
+                    scored_pair.rationale.append("Co-event throttle: later alias occurrence suppressed")
+
+            scores = [sp.similarity_score for sp in scored_pairs]
 
         # Sort by similarity score (descending)
         scored_pairs.sort(key=lambda sp: sp.similarity_score, reverse=True)

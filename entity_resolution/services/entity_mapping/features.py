@@ -53,6 +53,7 @@ class FeatureVector:
     interaction_score: float  # [0.0, 1.0]
     lexical_score: float  # [0.0, 1.0]
     modality_compatibility_score: float  # [0.0, 1.0]
+    alias_identity_score: float = 0.0  # New field — exact alias match
     
     # Composite scores
     combined_score: float = field(init=False)  # Weighted average
@@ -68,12 +69,13 @@ class FeatureVector:
         """Compute combined score after initialization."""
         # Default weighting (can be tuned)
         weights = {
-            FeatureType.TEMPORAL: 0.25,
-            FeatureType.LOCATION: 0.20,
-            FeatureType.CONTEXT: 0.20,
-            FeatureType.INTERACTION: 0.10,
-            FeatureType.LEXICAL: 0.20,
-            FeatureType.MODALITY: 0.05,
+            FeatureType.TEMPORAL:     0.20,  # was 0.25
+            FeatureType.LOCATION:     0.10,  # was 0.20 — entity moves around
+            FeatureType.CONTEXT:      0.15,  # was 0.20
+            FeatureType.INTERACTION:  0.08,  # was 0.10
+            FeatureType.LEXICAL:      0.12,  # was 0.20
+            FeatureType.MODALITY:     0.05,  # unchanged
+            "alias_identity":         0.30,  # NEW — dominant forensic signal
         }
         
         scores = [
@@ -83,6 +85,7 @@ class FeatureVector:
             self.interaction_score * weights[FeatureType.INTERACTION],
             self.lexical_score * weights[FeatureType.LEXICAL],
             self.modality_compatibility_score * weights[FeatureType.MODALITY],
+            self.alias_identity_score * weights["alias_identity"],
         ]
         self.combined_score = sum(scores)
 
@@ -543,6 +546,41 @@ class Features:
                 rationale.append(f"Strong content similarity ({raw_content_sim:.1%})")
             if interaction_score >= 0.7:
                 rationale.append("Strong role/modality interaction")
+            # Alias identity — same alias string = same real-world entity
+            alias1 = obs_1.entity.strip().lower()
+            alias2 = obs_2.entity.strip().lower()
+            if alias1 == alias2:
+                alias_identity_score = 1.0
+            else:
+                # Same type prefix (e.g. both Speaker_*) but different ID
+                type1 = alias1.split("_")[0]
+                type2 = alias2.split("_")[0]
+                alias_identity_score = 0.2 if type1 == type2 else 0.0
+
+            role_1 = obs_1.role.strip().lower() if hasattr(obs_1, "role") and obs_1.role else ""
+            role_2 = obs_2.role.strip().lower() if hasattr(obs_2, "role") and obs_2.role else ""
+
+            if role_1 and role_1 == role_2:
+                if temporal_gap <= 30:
+                    alias_identity_score = max(alias_identity_score, 0.85)
+                    rationale.append("Co-event: same role + near-simultaneous observations")
+                elif temporal_gap <= 120:
+                    rationale.append("Co-event: same role within tight temporal window")
+
+            if (
+                role_1 == role_2
+                and temporal_gap == 0
+            ):
+                alias_identity_score = max(alias_identity_score, 1.0)
+                context_score = max(context_score, 1.0)
+                rationale.append("Perfect co-occurrence (same role, identical timestamp)")
+            elif (
+                role_1 == role_2
+                and alias1 == alias2
+                and temporal_gap <= 60
+            ):
+                context_score = max(context_score, 1.0)
+                rationale.append("Near-simultaneous same-alias continuity")
 
             # Create feature vector
             fv = FeatureVector(
@@ -555,6 +593,7 @@ class Features:
                 interaction_score=interaction_score,
                 lexical_score=lexical_score,
                 modality_compatibility_score=modality_score,
+                alias_identity_score=alias_identity_score,
                 temporal_gap_sec=temporal_gap,
                 location_distance=location_dist,
                 content_similarity=raw_content_sim,

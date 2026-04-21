@@ -5,9 +5,10 @@ from datetime import datetime
 from pydantic import ValidationError
 
 from .schemas.observation import Observation, CaseInput, Modality, NormalizedObservation
-from .schemas.entity import NormalizedAlias, CanonicalEntity
+from .schemas.entity import NormalizedAlias
 from .services.entity_mapping.intake import IntakeValidator, IntakeReport
 from .services.entity_mapping.normalizer import Normalizer, AliasNormalizer
+from .schemas.entity import CanonicalEntitySchema
 
 
 class TestObservationSchema:
@@ -173,7 +174,7 @@ class TestCanonicalEntitySchema:
 
     def test_valid_canonical_entity(self):
         """Test creating valid canonical entity."""
-        entity = CanonicalEntity(
+        entity = CanonicalEntitySchema(
             entity_id="PERSON_0001",
             merged_aliases=["Person_05", "Speaker_A"],
             dominant_label="Person_05",
@@ -186,7 +187,7 @@ class TestCanonicalEntitySchema:
     def test_empty_merged_aliases(self):
         """Test entity with empty merged aliases."""
         with pytest.raises(ValidationError):
-            CanonicalEntity(
+            CanonicalEntitySchema(
                 entity_id="PERSON_0001",
                 merged_aliases=[],  # Invalid: empty
                 dominant_label="Person_05",

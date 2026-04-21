@@ -35,6 +35,7 @@ class AliasNormalizer:
 
     # Regex patterns for common alias formats
     _PERSON_PATTERN = re.compile(r"^[Pp]erson[_-]?(\d+)$")
+    _GENERIC_PERSON_PATTERN = re.compile(r"^[Pp]erson[_-]?(.+)$")  # Handles Person_X, Person_A, etc.
     _SPEAKER_PATTERN = re.compile(r"^[Ss]peaker[_-]?([A-Za-z])$")
     _SMS_PATTERN = re.compile(r"^[Ss]ms[_-]?(\d+)$")
     _EMAIL_PATTERN = re.compile(r"^[Ee]mail[_-]?(\d+)$")
@@ -93,13 +94,27 @@ class AliasNormalizer:
                     confidence=1.0,
                 )
 
-        # If no pattern matches, return best-effort parse
+        # Try generic Person pattern (e.g., Person_X, Person_A) before falling back
+        generic_match = cls._GENERIC_PERSON_PATTERN.match(alias)
+        if generic_match:
+            alias_id = generic_match.group(1).lower()  # Normalize suffix to lowercase
+            modality_hint = cls._MODALITY_HINTS.get("Person", Modality.VIDEO)
+            return NormalizedAlias(
+                original=alias,
+                alias_type="Person",
+                alias_id=alias_id,
+                modality_hint=modality_hint.value,
+                confidence=0.9,  # High confidence for recognized pattern, non-standard suffix
+            )
+
+        # If no pattern matches, return best-effort parse with graceful fallback
         return NormalizedAlias(
             original=alias,
             alias_type="unknown",
-            alias_id=alias,
+            alias_id=alias.lower(),
             modality_hint=Modality.TEXT.value,
             confidence=0.5,  # Lower confidence for unknown patterns
+            canonical=alias.strip(),
         )
 
 

@@ -10,15 +10,18 @@ Strategy:
 
 Principle:
 - Only CONFIRMED edges merge clusters (from Stage 7)
-- Candidate edges already filtered out - no borderline merges
+- Candidate edges are ignored unless they reinforce same-alias chaining
 - Clear, deterministic clustering based on high-confidence decisions
 
 Output: List of clusters + statistics
 """
 
-from typing import List, Dict, Set, Tuple
+from typing import List, Dict, Set, Tuple, Optional
 from dataclasses import dataclass, field
 import networkx as nx
+
+from ...schemas.observation import NormalizedObservation
+from .edge_classifier import ClassifiedEdge, EdgeClassification
 
 
 # ============================================================================
@@ -99,8 +102,30 @@ class Clusterer:
         """Initialize clusterer."""
         pass
 
+    @staticmethod
+    def _normalize_alias(alias: str) -> str:
+        return alias.strip().lower() if alias else ""
+
+    @staticmethod
+    def _merge_clusters_by_index(clusters: List[EntityCluster], merge_map: Dict[int, int]) -> List[EntityCluster]:
+        merged: Dict[int, List[str]] = {}
+        for index, cluster in enumerate(clusters):
+            root = merge_map.get(index, index)
+            merged.setdefault(root, []).extend(cluster.obs_ids)
+
+        merged_clusters = [
+            EntityCluster(cluster_id=f"C{position + 1}", obs_ids=sorted(set(obs_ids)))
+            for position, obs_ids in enumerate(merged.values())
+        ]
+        merged_clusters.sort(key=lambda c: c.size, reverse=True)
+        return merged_clusters
+
     def cluster_observations(
-        self, graph: nx.Graph, all_obs_ids: List[str]
+        self,
+        graph: nx.Graph,
+        all_obs_ids: List[str],
+        observations: Optional[List[NormalizedObservation]] = None,
+        candidate_edges: Optional[List[ClassifiedEdge]] = None,
     ) -> Tuple[List[EntityCluster], ClusteringReport]:
         """
         Cluster observations using connected components.
@@ -136,6 +161,52 @@ class Clusterer:
                 obs_ids=obs_ids,
             )
             clusters.append(cluster)
+
+        # Optionally merge same-alias candidate chains after confirmed-edge clustering.
+        if observations and candidate_edges:
+            obs_alias_map = {
+                obs.obs_id: self._normalize_alias(obs.entity)
+                for obs in observations
+            }
+            cluster_index_by_obs = {
+                obs_id: index
+                for index, cluster in enumerate(clusters)
+                for obs_id in cluster.obs_ids
+            }
+
+            parent = list(range(len(clusters)))
+
+            def find(index: int) -> int:
+                while parent[index] != index:
+                    parent[index] = parent[parent[index]]
+                    index = parent[index]
+                return index
+
+            def union(left: int, right: int) -> None:
+                root_left = find(left)
+                root_right = find(right)
+                if root_left != root_right:
+                    parent[root_right] = root_left
+
+            for edge in candidate_edges:
+                if edge.classification != EdgeClassification.CANDIDATE:
+                    continue
+
+                alias_1 = obs_alias_map.get(edge.obs_id_1, "")
+                alias_2 = obs_alias_map.get(edge.obs_id_2, "")
+                if not alias_1 or alias_1 != alias_2:
+                    continue
+
+                cluster_1 = cluster_index_by_obs.get(edge.obs_id_1)
+                cluster_2 = cluster_index_by_obs.get(edge.obs_id_2)
+                if cluster_1 is None or cluster_2 is None:
+                    continue
+
+                union(cluster_1, cluster_2)
+
+            merge_map = {index: find(index) for index in range(len(clusters))}
+            if any(index != root for index, root in merge_map.items()):
+                clusters = self._merge_clusters_by_index(clusters, merge_map)
 
         # Sort clusters by size (descending) for presentation
         clusters.sort(key=lambda c: c.size, reverse=True)

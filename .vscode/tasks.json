@@ -1,0 +1,36 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "generate-office-cases",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"GENERATOR_FIXED/main.py",
+				"--domain",
+				"Office_Theft",
+				"--batch",
+				"4",
+				"--output",
+				"./GENERATOR_FIXED/cases_office"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "train-office-thresholds",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"GENERATOR_FIXED/threshold_trainer.py",
+				"--cases_dir",
+				"./GENERATOR_FIXED/cases_office",
+				"--quiet"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}
