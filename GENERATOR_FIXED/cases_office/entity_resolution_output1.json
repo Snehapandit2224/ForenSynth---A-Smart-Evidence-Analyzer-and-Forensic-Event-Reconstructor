@@ -1,0 +1,222 @@
+{
+  "case_id": "CASE_OFF_001",
+  "status": "success",
+  "error_message": "",
+  "entity_count": 2,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Person_70",
+        "Speaker_P",
+        "sms_21"
+      ],
+      "primary_alias": "Person_70",
+      "total_mentions": 12,
+      "confirmed_mentions": [
+        "O1",
+        "O10",
+        "O11",
+        "O13",
+        "O14",
+        "O15",
+        "O3",
+        "O5",
+        "O6",
+        "O7",
+        "O8",
+        "O9"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.878,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio",
+        "text",
+        "video"
+      ],
+      "locations": [
+        "HR department, complaint registry",
+        "accounts department area, third floor",
+        "cash handling area, internal office",
+        "corporate email server, IT infrastructure",
+        "facilities security office, incident log",
+        "off-premises \u2014 accused personal device",
+        "office building main lobby, entry point",
+        "office floor, colleague position",
+        "office internal network, PBX system",
+        "office premises, seized device",
+        "server room entrance, restricted zone"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_2",
+        "camera_3",
+        "cctv_atm",
+        "cctv_entrance",
+        "complaint_register",
+        "email_log",
+        "incident_report",
+        "intercepted_call",
+        "phone_record",
+        "sms_record",
+        "witness_statement"
+      ],
+      "earliest_timestamp": "2024-01-15T09:55:47",
+      "latest_timestamp": "2024-01-15T10:14:17",
+      "time_span_seconds": 1110
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "Person_78",
+        "Speaker_G"
+      ],
+      "primary_alias": "Person_78",
+      "total_mentions": 2,
+      "confirmed_mentions": [
+        "O16",
+        "O17"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.75,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio",
+        "video"
+      ],
+      "locations": [
+        "cash handling area, internal office",
+        "office internal network, PBX system"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "cctv_atm",
+        "intercepted_call"
+      ],
+      "earliest_timestamp": "2024-01-15T10:07:14",
+      "latest_timestamp": "2024-01-15T10:16:19",
+      "time_span_seconds": 545
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "size": 12,
+      "aliases": [
+        "Person_70",
+        "Speaker_P",
+        "sms_21"
+      ],
+      "obs_ids": [
+        "O1",
+        "O10",
+        "O11",
+        "O13",
+        "O14",
+        "O15",
+        "O3",
+        "O5",
+        "O6",
+        "O7",
+        "O8",
+        "O9"
+      ],
+      "edges": [
+        {
+          "alias_1": "Speaker_P",
+          "alias_2": "sms_21",
+          "weight": 0.733,
+          "support": 16,
+          "classifications": {
+            "confirmed": 13,
+            "candidate": 3,
+            "rejected": 0
+          }
+        },
+        {
+          "alias_1": "Person_70",
+          "alias_2": "Speaker_P",
+          "weight": 0.717,
+          "support": 16,
+          "classifications": {
+            "confirmed": 15,
+            "candidate": 0,
+            "rejected": 1
+          }
+        },
+        {
+          "alias_1": "Person_70",
+          "alias_2": "sms_21",
+          "weight": 0.68,
+          "support": 16,
+          "classifications": {
+            "confirmed": 14,
+            "candidate": 0,
+            "rejected": 2
+          }
+        }
+      ]
+    },
+    {
+      "cluster_id": "C2",
+      "size": 2,
+      "aliases": [
+        "Person_78",
+        "Speaker_G"
+      ],
+      "obs_ids": [
+        "O16",
+        "O17"
+      ],
+      "edges": [
+        {
+          "alias_1": "Person_78",
+          "alias_2": "Speaker_G",
+          "weight": 0.72,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          }
+        }
+      ]
+    }
+  ],
+  "conflicts_detected": 1,
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.7,
+    "candidate_threshold_low": 0.5,
+    "candidate_threshold_high": 0.7,
+    "llm_enabled": false,
+    "groq_model": null
+  },
+  "total_processing_time_sec": 0.02,
+  "stage_timings": {
+    "stage_1_intake": 0.001,
+    "stage_2_normalization": 0.0,
+    "stage_3_blocking": 0.013,
+    "stage_4_features": 0.003,
+    "stage_5_scoring": 0.001,
+    "stage_6_classification": 0.001,
+    "stage_7_graph_building": 0.0,
+    "stage_8_clustering": 0.0,
+    "stage_9_attachment": 0.0,
+    "stage_10_conflict_detection": 0.001,
+    "stage_11_labeling": 0.0,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-04-23T09:38:12.744441"
+}

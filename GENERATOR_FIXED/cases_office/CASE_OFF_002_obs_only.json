@@ -1,0 +1,116 @@
+{
+  "case_id": "CASE_OFF_002",
+  "domain": "Office_Theft",
+  "template": "Entry_LegitAction_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "internal data breach",
+    "location": "Admin Wing – Manyata Embassy Business Park",
+    "time_window": [
+      0,
+      9905
+    ],
+    "description": "An insider threat is suspected. A registered employee conducted normal work activities during the day before accessing restricted files unusually late in their shift. 1 colleague(s) noted the individual staying back after others had left.",
+    "roles": {
+      "suspect": 1,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "security monitoring room, office premises",
+      "content": "Regarding the approach office.",
+      "timestamp": "2024-01-15T09:56:08",
+      "time_offset": 0,
+      "confidence": 0.765
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "security monitoring room, office premises",
+      "content": "Just finishing up the report.",
+      "timestamp": "2024-01-15T11:53:57",
+      "time_offset": 6837,
+      "confidence": 0.701
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "Out now, everything went clean.",
+      "timestamp": "2024-01-15T11:55:01",
+      "time_offset": 6901,
+      "confidence": 0.646
+    },
+    {
+      "obs_id": "O4",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "security monitoring room, office premises",
+      "content": "Almost done copying, stay on the line.",
+      "timestamp": "2024-01-15T11:56:05",
+      "time_offset": 6965,
+      "confidence": 0.648
+    },
+    {
+      "obs_id": "O6",
+      "entity": "Speaker_H",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "I saw them leave the office.",
+      "timestamp": "2024-01-15T11:56:40",
+      "time_offset": 7000,
+      "confidence": 0.789
+    },
+    {
+      "obs_id": "O7",
+      "entity": "sms_72",
+      "role": "witness",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Saw a man rush out and walk away fast. Seemed nervous.",
+      "timestamp": "2024-01-15T12:01:09",
+      "time_offset": 7269,
+      "confidence": 0.817
+    },
+    {
+      "obs_id": "O8",
+      "entity": "Speaker_H",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "I witnessed something that didn't look right.",
+      "timestamp": "2024-01-15T12:17:37",
+      "time_offset": 8257,
+      "confidence": 0.781
+    },
+    {
+      "obs_id": "O9",
+      "entity": "sms_72",
+      "role": "witness",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "I deny having reported any incident to any official.",
+      "timestamp": "2024-01-15T12:22:14",
+      "time_offset": 8534,
+      "confidence": 0.633
+    }
+  ]
+}

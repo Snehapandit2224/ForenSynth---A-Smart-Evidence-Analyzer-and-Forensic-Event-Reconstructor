@@ -1,0 +1,263 @@
+{
+  "case_id": "CASE_OFF_003",
+  "status": "success",
+  "error_message": "",
+  "entity_count": 2,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Person_73",
+        "report_37"
+      ],
+      "primary_alias": "Person_73",
+      "total_mentions": 8,
+      "confirmed_mentions": [
+        "O1",
+        "O10",
+        "O2",
+        "O4",
+        "O5",
+        "O6",
+        "O7",
+        "O8"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.963,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "text",
+        "video"
+      ],
+      "locations": [
+        "accounts department area, third floor",
+        "cash handling area, internal office",
+        "corporate email server, IT infrastructure",
+        "main office corridor, ground floor",
+        "off-premises \u2014 accused personal device"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "camera_1",
+        "camera_3",
+        "cctv_atm",
+        "email_log",
+        "sms_record"
+      ],
+      "earliest_timestamp": "2024-01-15T10:01:42",
+      "latest_timestamp": "2024-01-15T10:31:07",
+      "time_span_seconds": 1765
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "Person_45"
+      ],
+      "primary_alias": "Person_45",
+      "total_mentions": 2,
+      "confirmed_mentions": [
+        "O11",
+        "O12"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.553,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "cash handling area, internal office",
+        "main office corridor, ground floor"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "camera_1",
+        "cctv_atm"
+      ],
+      "earliest_timestamp": "2024-01-15T10:29:36",
+      "latest_timestamp": "2024-01-15T10:29:56",
+      "time_span_seconds": 20
+    }
+  ],
+  "reports": {
+    "intake": {
+      "total_observations": 10,
+      "valid_observations": 10,
+      "invalid_observations": 0,
+      "duplicate_observations": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "blocking": {
+      "total_candidate_pairs": 45,
+      "pairs_after_hard_reject": 45,
+      "high_priority": 0,
+      "medium_priority": 35,
+      "low_priority": 10,
+      "avg_priority": 0.489,
+      "cardinality_reduction": 0.0
+    },
+    "features": {
+      "total_pairs": 45,
+      "avg_combined_score": 0.44,
+      "high_confidence": 5,
+      "medium_confidence": 19,
+      "low_confidence": 21,
+      "feature_averages": {
+        "temporal": 0.593,
+        "location": 0.133,
+        "context": 0.326,
+        "interaction": 0.638,
+        "lexical": 0.348,
+        "modality": 0.433
+      },
+      "processing_time_sec": 0.002
+    },
+    "scoring": {
+      "total_pairs": 45,
+      "avg_similarity_score": 0.535,
+      "high_score": 18,
+      "medium_score": 6,
+      "low_score": 21,
+      "score_distribution": {
+        "9/10": 14,
+        "6/10": 4,
+        "7/10": 4,
+        "5/10": 2,
+        "3/10": 2,
+        "2/10": 7,
+        "1/10": 12
+      },
+      "processing_time_sec": 0.0
+    },
+    "classification": {
+      "total_edges": 45,
+      "confirmed": 18,
+      "candidate": 6,
+      "rejected": 21,
+      "avg_confirmed_score": 0.873,
+      "avg_candidate_score": 0.647,
+      "avg_rejected_score": 0.213,
+      "confirmed_threshold": 0.7,
+      "candidate_threshold": "0.5-0.7",
+      "high_confidence": 18,
+      "medium_confidence": 6,
+      "low_confidence": 21,
+      "processing_time_sec": 0.001
+    },
+    "graph": {
+      "total_observations": 10,
+      "confirmed_edges": 18,
+      "candidate_edges": 6,
+      "rejected_edges": 21,
+      "nodes": 10,
+      "edges": 18,
+      "avg_node_degree": 3.6,
+      "max_node_degree": 6,
+      "min_node_degree": 1,
+      "isolated_nodes": 0,
+      "avg_edge_similarity": 0.873,
+      "min_edge_similarity": 0.78,
+      "max_edge_similarity": 0.9,
+      "processing_time_sec": 0.0
+    },
+    "clustering": {
+      "total_observations": 10,
+      "total_clusters": 2,
+      "avg_cluster_size": 5.0,
+      "max_cluster_size": 8,
+      "min_cluster_size": 2,
+      "singleton_clusters": 0,
+      "pair_clusters": 1,
+      "triplet_clusters": 0,
+      "large_clusters": 1,
+      "coverage_ratio": 1.0,
+      "processing_time_sec": 0.0
+    },
+    "attachment": {
+      "total_candidate_edges": 6,
+      "total_attachments": 0,
+      "high_confidence": 0,
+      "medium_confidence": 0,
+      "low_confidence": 0,
+      "attachments_with_conflicts": 0,
+      "total_conflicts": 0,
+      "high_severity": 0,
+      "medium_severity": 0,
+      "low_severity": 0,
+      "processing_time_sec": 0.0
+    },
+    "conflict": {
+      "total_clusters": 2,
+      "total_observations": 10,
+      "total_conflicts": 2,
+      "high_severity": 0,
+      "medium_severity": 2,
+      "low_severity": 0,
+      "role_contradictions": 0,
+      "temporal_conflicts": 2,
+      "low_confidence": 0,
+      "suspicious_sizes": 0,
+      "clusters_affected": 1,
+      "observations_affected": 4,
+      "processing_time_sec": 0.0
+    },
+    "labeling": {
+      "total_clusters": 2,
+      "total_entities": 2,
+      "singletons": 0,
+      "pairs": 1,
+      "triplets": 0,
+      "large_clusters": 1,
+      "high_confidence": 1,
+      "medium_confidence": 0,
+      "low_confidence": 1,
+      "total_confirmed_edges": 18,
+      "total_candidate_edges": 6,
+      "video_entities": 2,
+      "audio_entities": 0,
+      "text_entities": 1,
+      "multimodal_entities": 1,
+      "total_mentions": 10,
+      "avg_mentions_per_entity": 5.0,
+      "processing_time_sec": 0.0
+    }
+  },
+  "conflicts_detected": 2,
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.7,
+    "candidate_threshold_low": 0.5,
+    "candidate_threshold_high": 0.7,
+    "llm_enabled": false,
+    "groq_model": null
+  },
+  "total_processing_time_sec": 0.01,
+  "stage_timings": {
+    "stage_1_intake": 0.0,
+    "stage_2_normalization": 0.001,
+    "stage_3_blocking": 0.006,
+    "stage_4_features": 0.002,
+    "stage_5_scoring": 0.0,
+    "stage_6_classification": 0.001,
+    "stage_7_graph_building": 0.0,
+    "stage_8_clustering": 0.0,
+    "stage_9_attachment": 0.0,
+    "stage_10_conflict_detection": 0.0,
+    "stage_11_labeling": 0.0,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-04-22T17:07:44.456652"
+}

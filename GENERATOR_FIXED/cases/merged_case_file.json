@@ -1,0 +1,29 @@
+{
+  "case_id":"MERGE_TEST_001",
+  "observations":[
+    {
+      "obs_id":"O1",
+      "entity":"Person_X",
+      "role":"suspect",
+      "modality":"video",
+      "source":"camera_1",
+      "location":"ATM entrance",
+      "content":"Person enters ATM.",
+      "timestamp":"2024-01-15T10:00:00",
+      "time_offset":0,
+      "confidence":0.95
+    },
+    {
+      "obs_id":"O2",
+      "entity":"Person_X",
+      "role":"suspect",
+      "modality":"video",
+      "source":"camera_1",
+      "location":"ATM entrance",
+      "content":"Person enters ATM.",
+      "timestamp":"2024-01-15T10:00:03",
+      "time_offset":3,
+      "confidence":0.95
+    }
+  ]
+}
