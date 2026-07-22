@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_004",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-07-22T07:24:29Z",
+  "generated_at": "2026-07-22T08:23:05Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1_o2_o3",
@@ -46,7 +46,7 @@
       ],
       "timestamp": "2024-01-15T10:03:34Z",
       "location": "bank security office, incident registry",
-      "location_key": "atm vicinity",
+      "location_key": "bank security office",
       "entity_id": "entity_1",
       "primary_alias": "sms_35",
       "aliases": [
@@ -264,7 +264,7 @@
       "source": "EVT_entity_1_o1_o2_o3",
       "target": "EVT_entity_1_o7_o8_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.8367,
+      "confidence": 0.8003,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->ENTER"
     },
@@ -275,22 +275,6 @@
       "confidence": 0.7481,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->TAMPER"
-    },
-    {
-      "source": "EVT_entity_1_o1_o2_o3",
-      "target": "EVT_entity_1_o14_o15",
-      "edge_type": "CAUSAL",
-      "confidence": 0.7002,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.62), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o1_o2_o3",
-      "target": "EVT_entity_1_o13",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6389,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_1_o5_o6",
@@ -325,28 +309,20 @@
       "label": "action dependency: TAMPER->EXIT"
     },
     {
-      "source": "EVT_entity_2_o16",
-      "target": "EVT_entity_2_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.3655,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.73), sequential"
-    },
-    {
       "source": "EVT_entity_1_o7_o8_o9",
       "target": "EVT_entity_1_o14_o15",
       "edge_type": "CAUSAL",
       "confidence": 0.8,
       "relation": "BEFORE",
-      "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's decision to exit the ATM booth."
+      "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's departure from the ATM."
     },
     {
       "source": "EVT_entity_1_o1_o2_o3",
-      "target": "EVT_entity_1_o5_o6",
+      "target": "EVT_entity_1_o14_o15",
       "edge_type": "CAUSAL",
-      "confidence": 0.7,
+      "confidence": 0.9,
       "relation": "BEFORE",
-      "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect's preparation to enter the ATM booth."
+      "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect's departure from the ATM."
     }
   ],
   "timeline_graph": {
@@ -482,16 +458,16 @@
       {
         "source": "EVT_entity_1_o1_o2_o3",
         "target": "EVT_entity_1_o5_o6",
-        "edge_type": "CAUSAL",
-        "confidence": 0.7,
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
         "relation": "BEFORE",
-        "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect's preparation to enter the ATM booth."
+        "label": "BEFORE (0.95)"
       },
       {
         "source": "EVT_entity_1_o1_o2_o3",
         "target": "EVT_entity_1_o7_o8_o9",
         "edge_type": "CAUSAL",
-        "confidence": 0.8367,
+        "confidence": 0.8003,
         "relation": "BEFORE",
         "label": "action dependency: APPROACH->ENTER"
       },
@@ -507,17 +483,9 @@
         "source": "EVT_entity_1_o1_o2_o3",
         "target": "EVT_entity_1_o14_o15",
         "edge_type": "CAUSAL",
-        "confidence": 0.7002,
+        "confidence": 0.9,
         "relation": "BEFORE",
-        "label": "same entity, semantically same location (sim=0.62), sequential"
-      },
-      {
-        "source": "EVT_entity_1_o1_o2_o3",
-        "target": "EVT_entity_1_o13",
-        "edge_type": "CAUSAL",
-        "confidence": 0.6389,
-        "relation": "BEFORE",
-        "label": "same entity, semantically same location (sim=0.73), sequential"
+        "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect's departure from the ATM."
       },
       {
         "source": "EVT_entity_1_o5_o6",
@@ -557,7 +525,7 @@
         "edge_type": "CAUSAL",
         "confidence": 0.8,
         "relation": "BEFORE",
-        "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's decision to exit the ATM booth."
+        "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's departure from the ATM."
       },
       {
         "source": "EVT_entity_1_o12",
@@ -586,26 +554,18 @@
       {
         "source": "EVT_entity_2_o16",
         "target": "EVT_entity_2_o17",
-        "edge_type": "CAUSAL",
-        "confidence": 0.3655,
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
         "relation": "BEFORE",
-        "label": "same entity, semantically same location (sim=0.73), sequential"
+        "label": "BEFORE (0.95)"
       }
     ],
     "causal_links": [
       {
         "source": "EVT_entity_1_o1_o2_o3",
-        "target": "EVT_entity_1_o5_o6",
-        "edge_type": "CAUSAL",
-        "confidence": 0.7,
-        "relation": "BEFORE",
-        "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect's preparation to enter the ATM booth."
-      },
-      {
-        "source": "EVT_entity_1_o1_o2_o3",
         "target": "EVT_entity_1_o7_o8_o9",
         "edge_type": "CAUSAL",
-        "confidence": 0.8367,
+        "confidence": 0.8003,
         "relation": "BEFORE",
         "label": "action dependency: APPROACH->ENTER"
       },
@@ -621,17 +581,9 @@
         "source": "EVT_entity_1_o1_o2_o3",
         "target": "EVT_entity_1_o14_o15",
         "edge_type": "CAUSAL",
-        "confidence": 0.7002,
+        "confidence": 0.9,
         "relation": "BEFORE",
-        "label": "same entity, semantically same location (sim=0.62), sequential"
-      },
-      {
-        "source": "EVT_entity_1_o1_o2_o3",
-        "target": "EVT_entity_1_o13",
-        "edge_type": "CAUSAL",
-        "confidence": 0.6389,
-        "relation": "BEFORE",
-        "label": "same entity, semantically same location (sim=0.73), sequential"
+        "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect's departure from the ATM."
       },
       {
         "source": "EVT_entity_1_o5_o6",
@@ -663,7 +615,7 @@
         "edge_type": "CAUSAL",
         "confidence": 0.8,
         "relation": "BEFORE",
-        "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's decision to exit the ATM booth."
+        "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's departure from the ATM."
       },
       {
         "source": "EVT_entity_1_o12",
@@ -672,18 +624,10 @@
         "confidence": 0.7485,
         "relation": "BEFORE",
         "label": "action dependency: TAMPER->EXIT"
-      },
-      {
-        "source": "EVT_entity_2_o16",
-        "target": "EVT_entity_2_o17",
-        "edge_type": "CAUSAL",
-        "confidence": 0.3655,
-        "relation": "BEFORE",
-        "label": "same entity, semantically same location (sim=0.73), sequential"
       }
     ],
     "node_count": 8,
-    "edge_count": 14
+    "edge_count": 13
   },
   "uncertainties": [
     {
@@ -747,7 +691,7 @@
       "event_id": "EVT_entity_1_o5_o6",
       "timestamp": "2024-01-15T10:03:34Z",
       "actor": "sms_35",
-      "action": "Few more minutes. Stay ready.  [-> local LLM: The individual walking towards the ATM kiosk likely led to the suspect's preparation to enter the ATM booth.]",
+      "action": "Few more minutes. Stay ready.",
       "location": "bank security office, incident registry",
       "evidence": [
         "O5",
@@ -783,7 +727,7 @@
       "event_id": "EVT_entity_1_o14_o15",
       "timestamp": "2024-01-15T10:04:57Z",
       "actor": "sms_35",
-      "action": "Done, I'm coming out.  [-> local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect's decision to exit the ATM booth.]",
+      "action": "Done, I'm coming out.  [-> local LLM: The individual walking towards the ATM kiosk likely led to the suspect's departure from the ATM.]",
       "location": "ATM vicinity, intercepted channel",
       "evidence": [
         "O14",
@@ -795,7 +739,7 @@
       "event_id": "EVT_entity_1_o13",
       "timestamp": "2024-01-15T10:05:02Z",
       "actor": "sms_35",
-      "action": "Visual feed interrupted; action not fully captured.  [-> same entity, semantically same location (sim=0.73), sequential]",
+      "action": "Visual feed interrupted; action not fully captured.",
       "location": "ATM lobby doorway, entry/exit point",
       "evidence": [
         "O13"
@@ -817,7 +761,7 @@
       "event_id": "EVT_entity_2_o17",
       "timestamp": "2024-01-15T10:08:44Z",
       "actor": "Person_32",
-      "action": "Bystander seen speaking with bank security personnel outside (captured on footage).  [-> same entity, semantically same location (sim=0.73), sequential]",
+      "action": "Bystander seen speaking with bank security personnel outside (captured on footage).",
       "location": "ATM booth entrance, exterior facing",
       "evidence": [
         "O17"
@@ -963,6 +907,16 @@
       "reason": "local LLM determined no causal link"
     },
     {
+      "event_a": "EVT_entity_1_o1_o2_o3",
+      "event_b": "EVT_entity_1_o5_o6",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_entity_2_o16",
+      "event_b": "EVT_entity_2_o17",
+      "reason": "local LLM determined no causal link"
+    },
+    {
       "event_a": "EVT_entity_1_o14_o15",
       "event_b": "EVT_entity_1_o13",
       "reason": "local LLM determined no causal link"
@@ -981,26 +935,31 @@
       "event_a": "EVT_entity_1_o5_o6",
       "event_b": "EVT_entity_1_o13",
       "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_entity_1_o1_o2_o3",
+      "event_b": "EVT_entity_1_o13",
+      "reason": "local LLM determined no causal link"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
     "stage_1_validation": 0.0001,
-    "stage_2_enrichment": 0.0074,
+    "stage_2_enrichment": 0.0036,
     "stage_3_ordering": 0.0,
     "stage_4_5_temporal": 0.0001,
-    "stage_6_causal": 3.9285,
+    "stage_6_causal": 0.8683,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
     "stage_10_explainability": 0.0001,
-    "stage_11_narrative": 0.0001,
-    "stage_12_versioning": 0.0005,
-    "stage_13_export": 0.0102
+    "stage_11_narrative": 0.0,
+    "stage_12_versioning": 0.0003,
+    "stage_13_export": 0.0023
   },
-  "total_time_sec": 3.9517,
+  "total_time_sec": 0.8771,
   "validation_warnings": [],
   "llm_backend_used": "CloudLLMFallback",
   "llm_calls_made": 1,
   "output_classification": "AMBIGUOUS",
-  "output_classification_reason": "avg_confidence=0.76, conflict_fraction=0.25, unresolved_ratio=0.62 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+  "output_classification_reason": "avg_confidence=0.76, conflict_fraction=0.25, unresolved_ratio=1.00 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

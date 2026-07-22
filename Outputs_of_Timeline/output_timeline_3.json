@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_003",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-07-22T07:23:22Z",
+  "generated_at": "2026-07-22T08:22:06Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1_o2",
@@ -794,11 +794,6 @@
       "reason": "local LLM determined no causal link"
     },
     {
-      "event_a": "EVT_entity_1_o6",
-      "event_b": "EVT_entity_1_o10",
-      "reason": "local LLM determined no causal link"
-    },
-    {
       "event_a": "EVT_entity_1_o3_o4",
       "event_b": "EVT_entity_1_o8",
       "reason": "local LLM determined no causal link"
@@ -810,6 +805,11 @@
     },
     {
       "event_a": "EVT_entity_1_o1_o2",
+      "event_b": "EVT_entity_1_o10",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_entity_1_o6",
       "event_b": "EVT_entity_1_o10",
       "reason": "local LLM determined no causal link"
     },
@@ -836,19 +836,19 @@
   ],
   "unresolved_entities": [],
   "stage_timings": {
-    "stage_1_validation": 0.0029,
-    "stage_2_enrichment": 0.0082,
-    "stage_3_ordering": 0.0,
+    "stage_1_validation": 0.003,
+    "stage_2_enrichment": 0.0034,
+    "stage_3_ordering": 0.0004,
     "stage_4_5_temporal": 0.0001,
-    "stage_6_causal": 1.2386,
+    "stage_6_causal": 0.849,
     "stage_7_uncertainty": 0.0,
-    "stage_8_conflicts": 0.0001,
+    "stage_8_conflicts": 0.0,
     "stage_10_explainability": 0.0001,
     "stage_11_narrative": 0.0001,
-    "stage_12_versioning": 0.0004,
-    "stage_13_export": 0.0118
+    "stage_12_versioning": 0.0007,
+    "stage_13_export": 0.0022
   },
-  "total_time_sec": 5.659,
+  "total_time_sec": 0.8802,
   "validation_warnings": [
     "[entity_resolved.conflicts[1]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event",
     "[entity_resolved.conflicts[2]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
