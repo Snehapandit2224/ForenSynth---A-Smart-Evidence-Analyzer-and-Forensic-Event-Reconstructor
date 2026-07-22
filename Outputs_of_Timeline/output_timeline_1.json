@@ -1,0 +1,577 @@
+{
+  "case_id": "CASE_ATM_001",
+  "timeline_version": "V1",
+  "schema_version": "1.1.0",
+  "generated_at": "2026-07-22T07:19:32Z",
+  "events": [
+    {
+      "event_id": "EVT_entity_1_o1",
+      "obs_ids": [
+        "O1"
+      ],
+      "timestamp": "2024-01-15T10:00:45Z",
+      "location": "ATM booth entrance, exterior facing",
+      "location_key": "atm booth entrance",
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "aliases": [
+        "Person_14"
+      ],
+      "modality": "video",
+      "content": "Subject is seen nearing the ATM from the main road.",
+      "confidence": 0.8997,
+      "role": "suspect",
+      "action_tags": [
+        "APPROACH"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_entity_1_o3",
+      "obs_ids": [
+        "O3"
+      ],
+      "timestamp": "2024-01-15T10:04:03Z",
+      "location": "ATM booth entrance, exterior facing",
+      "location_key": "atm booth entrance",
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "aliases": [
+        "Person_14"
+      ],
+      "modality": "video",
+      "content": "I did not go inside that booth at any point.",
+      "confidence": 0.7589,
+      "role": "suspect",
+      "action_tags": [],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_entity_1_o4",
+      "obs_ids": [
+        "O4"
+      ],
+      "timestamp": "2024-01-15T10:04:59Z",
+      "location": "ATM street frontage, wide-angle coverage",
+      "location_key": "atm street frontage",
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "aliases": [
+        "Person_14"
+      ],
+      "modality": "video",
+      "content": "Individual seen fiddling with the ATM card insertion area.",
+      "confidence": 0.9092,
+      "role": "suspect",
+      "action_tags": [
+        "WITHDRAW"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_entity_1_o5",
+      "obs_ids": [
+        "O5"
+      ],
+      "timestamp": "2024-01-15T10:05:21Z",
+      "location": "ATM booth interior, card reader and keypad area",
+      "location_key": "atm booth interior",
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "aliases": [
+        "Person_14"
+      ],
+      "modality": "video",
+      "content": "Individual leaves ATM booth.",
+      "confidence": 0.9245,
+      "role": "suspect",
+      "action_tags": [
+        "EXIT"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_entity_2_o6_o7_o8",
+      "obs_ids": [
+        "O6",
+        "O7",
+        "O8"
+      ],
+      "timestamp": "2024-01-15T10:05:52Z",
+      "location": "local police station, complaint desk",
+      "location_key": "atm booth entrance",
+      "entity_id": "entity_2",
+      "primary_alias": "Person_55",
+      "aliases": [
+        "Person_55",
+        "Speaker_C",
+        "email_74"
+      ],
+      "modality": "multimodal",
+      "content": "Two men just ran out of the ATM. Looked suspicious.",
+      "confidence": 0.7063,
+      "role": "witness",
+      "action_tags": [
+        "EXIT",
+        "FLEE",
+        "OBSERVE"
+      ],
+      "conflict_flag": true,
+      "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "reconstructed from 3 supporting observations across modalities: audio, text, video",
+        "conflict flagged by entity resolution",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    }
+  ],
+  "causal_links": [
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6468,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7114,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.67), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6565,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.67), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8068,
+      "relation": "BEFORE",
+      "label": "action dependency: WITHDRAW->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_14's approach to the ATM likely led to them fiddling with the card insertion area."
+    }
+  ],
+  "timeline_graph": {
+    "nodes": [
+      {
+        "id": "EVT_entity_1_o1",
+        "timestamp": "2024-01-15T10:00:45Z",
+        "ts_epoch": 1705312845.0,
+        "entity_id": "entity_1",
+        "primary_alias": "Person_14",
+        "confidence": 0.8997,
+        "location": "ATM booth entrance, exterior facing",
+        "modality": "video",
+        "content": "Subject is seen nearing the ATM from the main road.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O1"
+        ]
+      },
+      {
+        "id": "EVT_entity_1_o3",
+        "timestamp": "2024-01-15T10:04:03Z",
+        "ts_epoch": 1705313043.0000002,
+        "entity_id": "entity_1",
+        "primary_alias": "Person_14",
+        "confidence": 0.7589,
+        "location": "ATM booth entrance, exterior facing",
+        "modality": "video",
+        "content": "I did not go inside that booth at any point.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O3"
+        ]
+      },
+      {
+        "id": "EVT_entity_1_o4",
+        "timestamp": "2024-01-15T10:04:59Z",
+        "ts_epoch": 1705313099.0,
+        "entity_id": "entity_1",
+        "primary_alias": "Person_14",
+        "confidence": 0.9092,
+        "location": "ATM street frontage, wide-angle coverage",
+        "modality": "video",
+        "content": "Individual seen fiddling with the ATM card insertion area.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O4"
+        ]
+      },
+      {
+        "id": "EVT_entity_1_o5",
+        "timestamp": "2024-01-15T10:05:21Z",
+        "ts_epoch": 1705313121.0,
+        "entity_id": "entity_1",
+        "primary_alias": "Person_14",
+        "confidence": 0.9245,
+        "location": "ATM booth interior, card reader and keypad area",
+        "modality": "video",
+        "content": "Individual leaves ATM booth.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O5"
+        ]
+      },
+      {
+        "id": "EVT_entity_2_o6_o7_o8",
+        "timestamp": "2024-01-15T10:05:52Z",
+        "ts_epoch": 1705313152.0,
+        "entity_id": "entity_2",
+        "primary_alias": "Person_55",
+        "confidence": 0.7063,
+        "location": "local police station, complaint desk",
+        "modality": "multimodal",
+        "content": "Two men just ran out of the ATM. Looked suspicious.",
+        "conflict_flag": true,
+        "obs_ids": [
+          "O6",
+          "O7",
+          "O8"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o3",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6468,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.7114,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.67), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o4",
+        "edge_type": "CAUSAL",
+        "confidence": 0.8,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_14's approach to the ATM likely led to them fiddling with the card insertion area."
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o4",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
+        "relation": "BEFORE",
+        "label": "BEFORE (0.95)"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6565,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.67), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o4",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.8068,
+        "relation": "BEFORE",
+        "label": "action dependency: WITHDRAW->EXIT"
+      },
+      {
+        "source": "EVT_entity_1_o5",
+        "target": "EVT_entity_2_o6_o7_o8",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
+        "relation": "BEFORE",
+        "label": "BEFORE (0.95)"
+      }
+    ],
+    "causal_links": [
+      {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o3",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6468,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.7114,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.67), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o4",
+        "edge_type": "CAUSAL",
+        "confidence": 0.8,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_14's approach to the ATM likely led to them fiddling with the card insertion area."
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6565,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.67), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o4",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.8068,
+        "relation": "BEFORE",
+        "label": "action dependency: WITHDRAW->EXIT"
+      }
+    ],
+    "node_count": 5,
+    "edge_count": 7
+  },
+  "uncertainties": [
+    {
+      "event_id": "EVT_entity_1_o3",
+      "uncertainty_score": 0.2411,
+      "sources": [
+        "O3"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_entity_2_o6_o7_o8",
+      "uncertainty_score": 0.2937,
+      "sources": [
+        "O6",
+        "O7",
+        "O8"
+      ],
+      "reasons": [
+        "entity resolution conflict present"
+      ]
+    }
+  ],
+  "narrative": [
+    {
+      "event_id": "EVT_entity_1_o1",
+      "timestamp": "2024-01-15T10:00:45Z",
+      "actor": "Person_14",
+      "action": "Subject is seen nearing the ATM from the main road.",
+      "location": "ATM booth entrance, exterior facing",
+      "evidence": [
+        "O1"
+      ],
+      "confidence": 0.8997
+    },
+    {
+      "event_id": "EVT_entity_1_o3",
+      "timestamp": "2024-01-15T10:04:03Z",
+      "actor": "Person_14",
+      "action": "I did not go inside that booth at any point.  [-> same entity, semantically same location (sim=1.00), sequential]",
+      "location": "ATM booth entrance, exterior facing",
+      "evidence": [
+        "O3"
+      ],
+      "confidence": 0.7589
+    },
+    {
+      "event_id": "EVT_entity_1_o4",
+      "timestamp": "2024-01-15T10:04:59Z",
+      "actor": "Person_14",
+      "action": "Individual seen fiddling with the ATM card insertion area.  [-> local LLM: Person_14's approach to the ATM likely led to them fiddling with the card insertion area.]",
+      "location": "ATM street frontage, wide-angle coverage",
+      "evidence": [
+        "O4"
+      ],
+      "confidence": 0.9092
+    },
+    {
+      "event_id": "EVT_entity_1_o5",
+      "timestamp": "2024-01-15T10:05:21Z",
+      "actor": "Person_14",
+      "action": "Individual leaves ATM booth.  [-> action dependency: WITHDRAW->EXIT]",
+      "location": "ATM booth interior, card reader and keypad area",
+      "evidence": [
+        "O5"
+      ],
+      "confidence": 0.9245
+    },
+    {
+      "event_id": "EVT_entity_2_o6_o7_o8",
+      "timestamp": "2024-01-15T10:05:52Z",
+      "actor": "Person_55",
+      "action": "Two men just ran out of the ATM. Looked suspicious.",
+      "location": "local police station, complaint desk",
+      "evidence": [
+        "O6",
+        "O7",
+        "O8"
+      ],
+      "confidence": 0.7063
+    }
+  ],
+  "explainability": [
+    {
+      "event_id": "EVT_entity_1_o1",
+      "derived_from": [
+        "O1"
+      ],
+      "entity_used": "entity_1",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "confidence": 0.8997
+    },
+    {
+      "event_id": "EVT_entity_1_o3",
+      "derived_from": [
+        "O3"
+      ],
+      "entity_used": "entity_1",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "confidence": 0.7589
+    },
+    {
+      "event_id": "EVT_entity_1_o4",
+      "derived_from": [
+        "O4"
+      ],
+      "entity_used": "entity_1",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "confidence": 0.9092
+    },
+    {
+      "event_id": "EVT_entity_1_o5",
+      "derived_from": [
+        "O5"
+      ],
+      "entity_used": "entity_1",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "confidence": 0.9245
+    },
+    {
+      "event_id": "EVT_entity_2_o6_o7_o8",
+      "derived_from": [
+        "O6",
+        "O7",
+        "O8"
+      ],
+      "entity_used": "entity_2",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "reconstructed from 3 supporting observations across modalities: audio, text, video",
+        "conflict flagged by entity resolution",
+        "valid timestamp"
+      ],
+      "confidence": 0.7063
+    }
+  ],
+  "conflicts_summary": [
+    {
+      "conflict_type": "physical_impossibility",
+      "cluster_id": "C2",
+      "detail": "Concurrent different locations at t=307s in C2.",
+      "affected_events": [
+        "EVT_entity_2_o6_o7_o8"
+      ]
+    }
+  ],
+  "conflicts_unlocalized_count": 0,
+  "unresolved_temporal_pairs": [],
+  "unresolved_causal_pairs": [
+    {
+      "event_a": "EVT_entity_1_o3",
+      "event_b": "EVT_entity_1_o4",
+      "reason": "local LLM determined no causal link"
+    }
+  ],
+  "unresolved_entities": [],
+  "stage_timings": {
+    "stage_1_validation": 0.0001,
+    "stage_2_enrichment": 0.0014,
+    "stage_3_ordering": 0.0,
+    "stage_4_5_temporal": 0.0,
+    "stage_6_causal": 35.1196,
+    "stage_7_uncertainty": 0.0,
+    "stage_8_conflicts": 0.0,
+    "stage_10_explainability": 0.0,
+    "stage_11_narrative": 0.0,
+    "stage_12_versioning": 0.0006,
+    "stage_13_export": 0.0017
+  },
+  "total_time_sec": 35.1269,
+  "validation_warnings": [],
+  "llm_backend_used": "CloudLLMFallback",
+  "llm_calls_made": 1,
+  "output_classification": "PARTIAL",
+  "output_classification_reason": "avg_confidence=0.84, conflict_fraction=0.20, unresolved_ratio=0.20 - reconstruction is usable but has some flagged or unresolved items worth investigator attention."
+}
