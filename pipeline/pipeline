@@ -1,0 +1,442 @@
+#!/usr/bin/env python3
+"""
+ForenSynth – pipeline.py
+Agentic workflow orchestrator.
+
+Runs the full ForenSynth pipeline for one or many cases:
+  Generator (external) → ER → Timeline → Critique → Showrunner → (ER v2 → Timeline v2)?
+
+Usage:
+    python pipeline.py --case CASE_ATM_001
+    python pipeline.py --input CASE_ATM_001_obs_only.json
+    python pipeline.py --batch cases/          # run all obs_only.json in a folder
+    python pipeline.py --case CASE_ATM_001 --status   # just print status
+    python pipeline.py --case CASE_ATM_001 --from er  # resume from a specific stage
+
+Stages:
+    er        → Entity Resolution
+    timeline  → Timeline Agent
+    critique  → Critique Agent (stub — runs after you build it)
+    showrunner→ Showrunner Agent (stub — runs after you build it)
+
+Environment (.env):
+    GROQ_API_KEY    Groq API key
+    Timeline_Key    same key for timeline agent
+    DATABASE_URL    postgresql://user:pass@host/forensynth
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import os
+import sys
+import time
+from pathlib import Path
+
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+
+import sys as _sys
+from pathlib import Path as _Path
+# Add agents/ and memory/ to path so imports work from any subfolder
+_root = _Path(__file__).parent.parent
+for _p in [str(_root / "agents"), str(_root / "memory"), str(_root)]:
+    if _p not in _sys.path:
+        _sys.path.insert(0, _p)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s – %(message)s",
+)
+log = logging.getLogger("forensynth.pipeline")
+
+
+
+# ── Agent imports ─────────────────────────────────────────────────────────────
+
+def _import_er():
+    from entity_resolution import resolve_entities
+    return resolve_entities
+
+def _import_tl():
+    from timeline_agent import run_timeline_agent
+    return run_timeline_agent
+
+def _import_mem():
+    from memory_store import ForenSynthMemory
+    return ForenSynthMemory
+
+def _import_critique():
+    try:
+        from critique_agent import run_critique_agent
+        return run_critique_agent
+    except ImportError:
+        return None
+
+def _import_showrunner():
+    try:
+        from showrunner_agent import run_showrunner
+        return run_showrunner
+    except ImportError:
+        return None
+
+
+# ── Stage runners ─────────────────────────────────────────────────────────────
+
+def run_er_stage(
+    mem, case_id: str, llm_enabled: bool, run_version: int = 1,
+    human_constraints=None, out_dir: str = "./output"
+) -> dict:
+    """Run Entity Resolution and save to memory store."""
+    resolve_entities = _import_er()
+
+    obs_data = mem.load_observations(case_id)
+    if not obs_data:
+        raise ValueError(f"No observations found for {case_id}")
+
+    t0 = time.perf_counter()
+    log.info("[Pipeline] Running ER v%d for %s (llm=%s)", run_version, case_id, llm_enabled)
+
+    result = resolve_entities(
+        obs_data,
+        llm_enabled=llm_enabled,
+        human_constraints=human_constraints,
+    )
+    duration = time.perf_counter() - t0
+
+    mem.save_er_result(result, run_version=run_version)
+
+    # Also save JSON file
+    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    out_path = Path(out_dir) / f"{case_id}_er_v{run_version}.json"
+    with open(out_path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    log.info("[Pipeline] ER done in %.2fs — %d entities, %s",
+             duration, result["entity_count"], result["output_classification"])
+    return result
+
+
+def run_timeline_stage(
+    mem, case_id: str, er_version: int = 1,
+    tl_version: str = "V1", out_dir: str = "./output"
+) -> dict:
+    """Run Timeline Agent and save to memory store."""
+    run_timeline_agent = _import_tl()
+
+    payload = mem.load_for_timeline(case_id, er_version=er_version)
+    if not payload:
+        raise ValueError(f"Cannot load timeline payload for {case_id} (ER v{er_version} missing?)")
+
+    t0 = time.perf_counter()
+    log.info("[Pipeline] Running Timeline %s for %s", tl_version, case_id)
+
+    result = run_timeline_agent(payload, output_dir=out_dir)
+    result["timeline_version"] = tl_version
+    duration = time.perf_counter() - t0
+
+    mem.save_timeline(result)
+
+    out_path = Path(out_dir) / f"{case_id}_timeline_{tl_version}.json"
+    with open(out_path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    log.info("[Pipeline] Timeline done in %.2fs — %d events, %d causal",
+             duration, len(result["events"]), len(result["causal_links"]))
+    return result
+
+
+def run_critique_stage(
+    mem, case_id: str, tl_version: str = "V1",
+    crit_version: str = "C1", out_dir: str = "./output"
+) -> dict:
+    """Run Critique Agent (if implemented) and save to memory store."""
+    run_critique_agent = _import_critique()
+
+    if not run_critique_agent:
+        log.info("[Pipeline] Critique Agent not implemented yet — skipping")
+        # Return a stub so pipeline can continue
+        return {
+            "case_id":           case_id,
+            "timeline_version":  tl_version,
+            "critique_version":  crit_version,
+            "status":            "stub",
+            "overall_score":     0.0,
+            "requires_revision": False,
+            "issues":            [],
+        }
+
+    payload = mem.load_for_critique(case_id, tl_version=tl_version)
+    if not payload:
+        raise ValueError(f"Cannot load critique payload for {case_id}")
+
+    t0 = time.perf_counter()
+    log.info("[Pipeline] Running Critique %s for %s", crit_version, case_id)
+
+    result = run_critique_agent(payload, crit_version=crit_version)
+    duration = time.perf_counter() - t0
+
+    mem.save_critique(result)
+
+    out_path = Path(out_dir) / f"{case_id}_critique_{crit_version}.json"
+    with open(out_path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    log.info("[Pipeline] Critique done in %.2fs — %d issues, requires_revision=%s",
+             duration, len(result.get("issues", [])), result.get("requires_revision"))
+    return result
+
+
+def run_showrunner_stage(
+    mem, case_id: str, tl_version: str = "V1",
+    crit_version: str = "C1", out_dir: str = "./output"
+) -> dict:
+    """Run Showrunner Agent (if implemented) and save to memory store."""
+    run_showrunner = _import_showrunner()
+
+    if not run_showrunner:
+        log.info("[Pipeline] Showrunner Agent not implemented yet — skipping")
+        return {
+            "case_id":          case_id,
+            "status":           "stub",
+            "action_taken":     "no_action",
+            "input_tl_version": tl_version,
+            "input_crit_version": crit_version,
+            "output_tl_version": tl_version,
+        }
+
+    payload = mem.load_for_showrunner(case_id, tl_version=tl_version, crit_version=crit_version)
+    if not payload:
+        raise ValueError(f"Cannot load showrunner payload for {case_id}")
+
+    t0 = time.perf_counter()
+    log.info("[Pipeline] Running Showrunner for %s", case_id)
+
+    result = run_showrunner(payload)
+    duration = time.perf_counter() - t0
+
+    mem.save_showrunner_run(result)
+
+    out_path = Path(out_dir) / f"{case_id}_showrunner.json"
+    with open(out_path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    log.info("[Pipeline] Showrunner done in %.2fs — action: %s",
+             duration, result.get("action_taken"))
+    return result
+
+
+# ── Full pipeline ─────────────────────────────────────────────────────────────
+
+MAX_REVISIONS = 2  # V1 → Critique → V2 → Critique → stop
+
+def run_pipeline(
+    case_id: str,
+    llm_enabled: bool = True,
+    start_from: str = "er",
+    out_dir: str = "./output",
+    no_db: bool = False,
+) -> Dict:
+    """
+    Run the full ForenSynth pipeline for a single case.
+
+    Pipeline:
+        ER (v1) → Timeline (V1) → Critique (C1)
+            → if requires_revision and revision_count < MAX_REVISIONS:
+                Showrunner → ER (v2) [or just Timeline (V2)] → Timeline (V2) → Critique (C2)
+            → done
+
+    Args:
+        case_id:     the case to process
+        llm_enabled: whether to use Groq LLM
+        start_from:  resume from 'er', 'timeline', 'critique', or 'showrunner'
+        out_dir:     directory for output JSON files
+        no_db:       if True, skip memory store (file-only mode)
+    """
+    from typing import Dict
+
+    ForenSynthMemory = _import_mem()
+    mem = ForenSynthMemory() if not no_db else None
+
+    results = {}
+    revision_count = 0
+
+    stages = ["er", "timeline", "critique", "showrunner"]
+    start_idx = stages.index(start_from) if start_from in stages else 0
+
+    print(f"\n{'='*60}")
+    print(f"  ForenSynth Pipeline — {case_id}")
+    print(f"  LLM: {'ENABLED' if llm_enabled else 'DISABLED'}")
+    print(f"  Starting from: {start_from}")
+    print(f"{'='*60}\n")
+
+    t_total = time.perf_counter()
+
+    # ── Stage 1: ER ────────────────────────────────────────────────────────────
+    if start_idx <= 0:
+        results["er"] = run_er_stage(
+            mem, case_id, llm_enabled, run_version=1, out_dir=out_dir
+        )
+    else:
+        log.info("[Pipeline] Skipping ER (resuming from %s)", start_from)
+
+    # ── Stage 2: Timeline ──────────────────────────────────────────────────────
+    if start_idx <= 1:
+        results["timeline"] = run_timeline_stage(
+            mem, case_id, er_version=1, tl_version="V1", out_dir=out_dir
+        )
+    else:
+        log.info("[Pipeline] Skipping Timeline V1")
+
+    # ── Stage 3: Critique ──────────────────────────────────────────────────────
+    if start_idx <= 2:
+        results["critique"] = run_critique_stage(
+            mem, case_id, tl_version="V1", crit_version="C1", out_dir=out_dir
+        )
+
+    # ── Revision loop ──────────────────────────────────────────────────────────
+    current_tl = "V1"
+    current_crit = "C1"
+
+    while (
+        results.get("critique", {}).get("requires_revision", False)
+        and revision_count < MAX_REVISIONS
+    ):
+        revision_count += 1
+        next_tl   = f"V{revision_count + 1}"
+        next_crit = f"C{revision_count + 1}"
+
+        log.info("[Pipeline] Revision %d/%d — Showrunner deciding action...",
+                 revision_count, MAX_REVISIONS)
+
+        # Showrunner decides what to fix
+        results["showrunner"] = run_showrunner_stage(
+            mem, case_id, tl_version=current_tl,
+            crit_version=current_crit, out_dir=out_dir
+        )
+
+        action = results["showrunner"].get("action_taken", "no_action")
+
+        if action == "re_run_er":
+            # Entity-level fix needed — re-run ER with constraints
+            er_ver = revision_count + 1
+            constraints = mem.load_er_constraints(case_id)
+            results["er"] = run_er_stage(
+                mem, case_id, llm_enabled,
+                run_version=er_ver,
+                human_constraints={
+                    "must_not_merge": constraints.get("must_not_merge", []),
+                    "must_merge":     constraints.get("must_merge", []),
+                    "soft_hints":     constraints.get("soft_hints", {}),
+                } if constraints else None,
+                out_dir=out_dir,
+            )
+            results["timeline"] = run_timeline_stage(
+                mem, case_id, er_version=er_ver,
+                tl_version=next_tl, out_dir=out_dir
+            )
+
+        elif action == "re_run_timeline":
+            # Timeline-level fix — just rebuild timeline
+            results["timeline"] = run_timeline_stage(
+                mem, case_id, er_version=1,
+                tl_version=next_tl, out_dir=out_dir
+            )
+
+        elif action in ("no_action", "human_review"):
+            log.info("[Pipeline] Showrunner: %s — stopping revision loop", action)
+            break
+
+        # Re-critique the new timeline
+        results["critique"] = run_critique_stage(
+            mem, case_id, tl_version=next_tl,
+            crit_version=next_crit, out_dir=out_dir
+        )
+        current_tl   = next_tl
+        current_crit = next_crit
+
+    total = time.perf_counter() - t_total
+
+    # ── Final summary ──────────────────────────────────────────────────────────
+    print(f"\n{'='*60}")
+    print(f"  Pipeline complete — {case_id}")
+    print(f"  Total time   : {total:.2f}s")
+    print(f"  Revisions    : {revision_count}")
+    print(f"  Final TL     : {current_tl}")
+    print(f"  Final Critique: {current_crit}")
+    if mem:
+        mem.print_status(case_id)
+    print(f"{'='*60}\n")
+
+    return results
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
+
+def parse_args():
+    p = argparse.ArgumentParser(description="ForenSynth Pipeline Orchestrator")
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--case",   help="Single case ID to run")
+    group.add_argument("--input",  help="obs_only JSON file (saves to DB and runs pipeline)")
+    group.add_argument("--batch",  help="Folder containing obs_only JSON files")
+    group.add_argument("--status", help="Print pipeline status for a case ID and exit")
+    p.add_argument("--from",   dest="start_from", default="er",
+                   choices=["er","timeline","critique","showrunner"],
+                   help="Resume pipeline from this stage")
+    p.add_argument("--no-llm", action="store_true", help="Heuristic-only ER")
+    p.add_argument("--no-db",  action="store_true", help="Skip memory store")
+    p.add_argument("--output", default="./output",  help="Output directory")
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    llm = not args.no_llm and bool(os.environ.get("GROQ_API_KEY", ""))
+
+    # Status-only mode
+    if args.status:
+        from memory_store import ForenSynthMemory
+        ForenSynthMemory().print_status(args.status)
+        return
+
+    # Single file input: save to memory store first
+    if args.input:
+        input_path = Path(args.input)
+        if not input_path.exists():
+            print(f"[ERROR] Not found: {input_path}"); sys.exit(1)
+        with open(input_path) as f:
+            obs_data = json.load(f)
+        if not args.no_db:
+            from memory_store import ForenSynthMemory
+            ForenSynthMemory().save_case(obs_data)
+        args.case = obs_data["case_id"]
+
+    # Batch mode
+    if args.batch:
+        folder = Path(args.batch)
+        files = sorted(folder.glob("*obs_only*.json"))
+        if not files:
+            print(f"[ERROR] No obs_only JSON files found in {folder}"); sys.exit(1)
+        print(f"Batch: {len(files)} cases found")
+        for f in files:
+            with open(f) as fh:
+                obs = json.load(fh)
+            if not args.no_db:
+                from memory_store import ForenSynthMemory
+                ForenSynthMemory().save_case(obs)
+            run_pipeline(
+                obs["case_id"], llm_enabled=llm,
+                start_from=args.start_from, out_dir=args.output, no_db=args.no_db
+            )
+        return
+
+    # Single case
+    run_pipeline(
+        args.case, llm_enabled=llm,
+        start_from=args.start_from, out_dir=args.output, no_db=args.no_db
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,425 @@
+{
+  "nodes": [
+    {
+      "id": "EVT_unresolved_person_55_o1",
+      "timestamp": "2024-01-15T10:01:07Z",
+      "ts_epoch": 1705312867.0,
+      "entity_id": "UNRESOLVED_person_55",
+      "primary_alias": "Person_55",
+      "confidence": 0.7953,
+      "location": "ATM booth interior, card reader and keypad area",
+      "modality": "video",
+      "content": "Subject approaches the ATM location with apparent purpose.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O1"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_sms_52_o2",
+      "timestamp": "2024-01-15T10:01:07Z",
+      "ts_epoch": 1705312867.0,
+      "entity_id": "UNRESOLVED_sms_52",
+      "primary_alias": "sms_52",
+      "confidence": 0.7723,
+      "location": "remote â€” mobile network SMS",
+      "modality": "text",
+      "content": "On my way to the spot now.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O2"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_sms_52_o4",
+      "timestamp": "2024-01-15T10:01:51Z",
+      "ts_epoch": 1705312910.9999998,
+      "entity_id": "UNRESOLVED_sms_52",
+      "primary_alias": "sms_52",
+      "confidence": 0.6926,
+      "location": "bank security office, incident registry",
+      "modality": "text",
+      "content": "In. Door shut. No one here.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O4"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_person_55_o3",
+      "timestamp": "2024-01-15T10:01:54Z",
+      "ts_epoch": 1705312914.0,
+      "entity_id": "UNRESOLVED_person_55",
+      "primary_alias": "Person_55",
+      "confidence": 0.7237,
+      "location": "ATM lobby doorway, entry/exit point",
+      "modality": "video",
+      "content": "Person enters ATM booth.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O3"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_person_55_o5",
+      "timestamp": "2024-01-15T10:02:43Z",
+      "ts_epoch": 1705312963.0,
+      "entity_id": "UNRESOLVED_person_55",
+      "primary_alias": "Person_55",
+      "confidence": 0.7849,
+      "location": "ATM lobby doorway, entry/exit point",
+      "modality": "video",
+      "content": "A person was seen conducting activity at the cash machine.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O5"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_sms_52_o6",
+      "timestamp": "2024-01-15T10:02:53Z",
+      "ts_epoch": 1705312973.0,
+      "entity_id": "UNRESOLVED_sms_52",
+      "primary_alias": "sms_52",
+      "confidence": 0.5927,
+      "location": "remote â€” mobile network SMS",
+      "modality": "text",
+      "content": "[CORRUPTED] â€” File hash mismatch; content integrity unverified.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O6"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_sms_52_o8",
+      "timestamp": "2024-01-15T10:03:15Z",
+      "ts_epoch": 1705312995.0,
+      "entity_id": "UNRESOLVED_sms_52",
+      "primary_alias": "sms_52",
+      "confidence": 0.7597,
+      "location": "local police station, complaint desk",
+      "modality": "text",
+      "content": "Standing by. You're good.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O8"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_sms_52_o10",
+      "timestamp": "2024-01-15T10:03:32Z",
+      "ts_epoch": 1705313012.0,
+      "entity_id": "UNRESOLVED_sms_52",
+      "primary_alias": "sms_52",
+      "confidence": 0.7611,
+      "location": "remote â€” email server log",
+      "modality": "text",
+      "content": "Out now. Walk.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O10"
+      ]
+    },
+    {
+      "id": "EVT_unresolved_speaker_e_o11",
+      "timestamp": "2024-01-15T10:03:59Z",
+      "ts_epoch": 1705313039.0,
+      "entity_id": "UNRESOLVED_speaker_e",
+      "primary_alias": "Speaker_E",
+      "confidence": 0.6886,
+      "location": "near ATM location, mobile network",
+      "modality": "audio",
+      "content": "Someone just ran out of the booth.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O11"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_sms_52_o2",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_sms_52_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.61,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_person_55_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6683,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6375,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->WATCH"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6446,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_person_55_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6134,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o6",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5324,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6741,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->WATCH"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.598,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.64), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o4",
+      "target": "EVT_unresolved_person_55_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's action of entering the ATM booth likely caused the witness to see the activity."
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o4",
+      "target": "EVT_unresolved_person_55_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6058,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o3",
+      "target": "EVT_unresolved_person_55_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.694,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o3",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's action of entering the ATM booth likely caused the witness to see the activity."
+    },
+    {
+      "source": "EVT_unresolved_person_55_o3",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's action of entering the ATM booth likely caused the witness to see the activity."
+    },
+    {
+      "source": "EVT_unresolved_person_55_o5",
+      "target": "EVT_unresolved_sms_52_o6",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o5",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6338,
+      "relation": "BEFORE",
+      "label": "action dependency: WITHDRAW->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o6",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o6",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.528,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.64), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o8",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o10",
+      "target": "EVT_unresolved_speaker_e_o11",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    }
+  ],
+  "causal_links": [
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_sms_52_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.61,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_person_55_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6683,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o1",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6375,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->WATCH"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6446,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_person_55_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6134,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o6",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5324,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6741,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->WATCH"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o2",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.598,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.64), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o4",
+      "target": "EVT_unresolved_person_55_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's action of entering the ATM booth likely caused the witness to see the activity."
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o4",
+      "target": "EVT_unresolved_person_55_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6058,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o3",
+      "target": "EVT_unresolved_person_55_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.694,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_unresolved_person_55_o3",
+      "target": "EVT_unresolved_sms_52_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's action of entering the ATM booth likely caused the witness to see the activity."
+    },
+    {
+      "source": "EVT_unresolved_person_55_o3",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's action of entering the ATM booth likely caused the witness to see the activity."
+    },
+    {
+      "source": "EVT_unresolved_person_55_o5",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6338,
+      "relation": "BEFORE",
+      "label": "action dependency: WITHDRAW->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_sms_52_o6",
+      "target": "EVT_unresolved_sms_52_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.528,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.64), sequential"
+    }
+  ],
+  "node_count": 9,
+  "edge_count": 20
+}

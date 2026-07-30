@@ -1,0 +1,304 @@
+{
+  "nodes": [
+    {
+      "id": "EVT_entity_1_o1_o2_o3",
+      "timestamp": "2024-01-15T10:01:09Z",
+      "ts_epoch": 1705312869.4169867,
+      "entity_id": "entity_1",
+      "primary_alias": "sms_35",
+      "confidence": 0.8708,
+      "location": "ATM booth entrance, exterior facing",
+      "modality": "multimodal",
+      "content": "Individual seen walking towards ATM kiosk (captured on footage).",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O1",
+        "O2",
+        "O3"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o5_o6",
+      "timestamp": "2024-01-15T10:03:34Z",
+      "ts_epoch": 1705313014.4981484,
+      "entity_id": "entity_1",
+      "primary_alias": "sms_35",
+      "confidence": 0.8805,
+      "location": "bank security office, incident registry",
+      "modality": "multimodal",
+      "content": "Few more minutes. Stay ready.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O5",
+        "O6"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o7_o8_o9",
+      "timestamp": "2024-01-15T10:03:58Z",
+      "ts_epoch": 1705313038.521944,
+      "entity_id": "entity_1",
+      "primary_alias": "sms_35",
+      "confidence": 0.8949,
+      "location": "ATM booth interior, card reader and keypad area",
+      "modality": "multimodal",
+      "content": "Suspect enters the ATM booth unaccompanied (captured on footage).",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O7",
+        "O8",
+        "O9"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o12",
+      "timestamp": "2024-01-15T10:04:42Z",
+      "ts_epoch": 1705313082.0,
+      "entity_id": "entity_1",
+      "primary_alias": "sms_35",
+      "confidence": 0.7763,
+      "location": "bank security office, incident registry",
+      "modality": "text",
+      "content": "Skimmer set. Walk away normal.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O12"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o14_o15",
+      "timestamp": "2024-01-15T10:04:57Z",
+      "ts_epoch": 1705313097.50682,
+      "entity_id": "entity_1",
+      "primary_alias": "sms_35",
+      "confidence": 0.8714,
+      "location": "ATM vicinity, intercepted channel",
+      "modality": "multimodal",
+      "content": "Done, I'm coming out.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O14",
+        "O15"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o13",
+      "timestamp": "2024-01-15T10:05:02Z",
+      "ts_epoch": 1705313102.0,
+      "entity_id": "entity_1",
+      "primary_alias": "sms_35",
+      "confidence": 0.7142,
+      "location": "ATM lobby doorway, entry/exit point",
+      "modality": "video",
+      "content": "Visual feed interrupted; action not fully captured.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O13"
+      ]
+    },
+    {
+      "id": "EVT_entity_2_o16",
+      "timestamp": "2024-01-15T10:05:09Z",
+      "ts_epoch": 1705313109.0,
+      "entity_id": "entity_2",
+      "primary_alias": "Person_32",
+      "confidence": 0.4643,
+      "location": "ATM lobby doorway, entry/exit point",
+      "modality": "video",
+      "content": "Eyewitness notices a person leaving the ATM enclosure in a rush.",
+      "conflict_flag": true,
+      "obs_ids": [
+        "O16"
+      ]
+    },
+    {
+      "id": "EVT_entity_2_o17",
+      "timestamp": "2024-01-15T10:08:44Z",
+      "ts_epoch": 1705313324.0,
+      "entity_id": "entity_2",
+      "primary_alias": "Person_32",
+      "confidence": 0.4729,
+      "location": "ATM booth entrance, exterior facing",
+      "modality": "video",
+      "content": "Bystander seen speaking with bank security personnel outside (captured on footage).",
+      "conflict_flag": true,
+      "obs_ids": [
+        "O17"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o5_o6",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o7_o8_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7769,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7247,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7,
+      "relation": "BEFORE",
+      "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect leaving the ATM area."
+    },
+    {
+      "source": "EVT_entity_1_o5_o6",
+      "target": "EVT_entity_1_o7_o8_o9",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_entity_1_o5_o6",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6461,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o5_o6",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7709,
+      "relation": "BEFORE",
+      "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o7_o8_o9",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7353,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o7_o8_o9",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect leaving the ATM area."
+    },
+    {
+      "source": "EVT_entity_1_o12",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.725,
+      "relation": "BEFORE",
+      "label": "action dependency: TAMPER->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o14_o15",
+      "target": "EVT_entity_1_o13",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_entity_1_o13",
+      "target": "EVT_entity_2_o16",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    },
+    {
+      "source": "EVT_entity_2_o16",
+      "target": "EVT_entity_2_o17",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    }
+  ],
+  "causal_links": [
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o7_o8_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7769,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7247,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7,
+      "relation": "BEFORE",
+      "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect leaving the ATM area."
+    },
+    {
+      "source": "EVT_entity_1_o5_o6",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6461,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o5_o6",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7709,
+      "relation": "BEFORE",
+      "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o7_o8_o9",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7353,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o7_o8_o9",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect leaving the ATM area."
+    },
+    {
+      "source": "EVT_entity_1_o12",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.725,
+      "relation": "BEFORE",
+      "label": "action dependency: TAMPER->EXIT"
+    }
+  ],
+  "node_count": 8,
+  "edge_count": 13
+}

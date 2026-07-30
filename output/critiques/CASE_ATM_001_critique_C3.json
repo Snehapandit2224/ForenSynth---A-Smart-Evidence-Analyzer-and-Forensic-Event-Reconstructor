@@ -1,0 +1,161 @@
+{
+  "case_id": "CASE_ATM_001",
+  "timeline_version": "V3",
+  "critique_version": "C3",
+  "overall_score": 0.63,
+  "requires_revision": true,
+  "revision_target": "er",
+  "narrative_summary": "Case CASE_ATM_001 iteration 1: 5 gap(s) detected (0 resolvable, 5 unresolvable). Highest severity: G1_missing_linking_event (severity 0.84) \u2014 UNRESOLVED_person_14 jumps from WITHDRAW to EXIT with no LOITER event in between (window: 22s). An observation may be missing or unclustered. Unresolvable gaps (G3_low_confidence_event, G1_missing_linking_event) will be surfaced to the investigator.",
+  "generated_at": "2026-07-24T12:18:20.773427+00:00",
+  "belief_updates": {},
+  "recommended_action": "SURFACE_TO_INVESTIGATOR",
+  "overall_severity": 0.3736,
+  "gaps": [
+    {
+      "gap_id": "GAP_001",
+      "gap_type": "G1_missing_linking_event",
+      "severity": 0.844,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_person_14_o4",
+        "EVT_unresolved_person_14_o5"
+      ],
+      "affected_entity": "UNRESOLVED_person_14",
+      "current_candidate": "",
+      "alternative_candidate": "",
+      "root_cause": "Rule chain 'WITHDRAW\u2192LOITER\u2192EXIT' broken for UNRESOLVED_person_14: 'LOITER' event missing between EVT_unresolved_person_14_o4 and EVT_unresolved_person_14_o5.",
+      "narrative_label": "UNRESOLVED_person_14 jumps from WITHDRAW to EXIT with no LOITER event in between (window: 22s). An observation may be missing or unclustered.",
+      "fix_hint": "RECHECK_OBSERVATIONS: re-examine unclustered observations for UNRESOLVED_person_14 with tag 'LOITER' between t=1705313099\u20131705313121."
+    },
+    {
+      "gap_id": "GAP_002",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2962,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_person_14_o3"
+      ],
+      "affected_entity": "UNRESOLVED_person_14",
+      "current_candidate": "Person_14",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_person_14_o3 has low confidence (0.63). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_person_14_o3 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_005",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2703,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_person_55_o6"
+      ],
+      "affected_entity": "UNRESOLVED_person_55",
+      "current_candidate": "Person_55",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_person_55_o6 has low confidence (0.66). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_person_55_o6 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_004",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2488,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_speaker_c_o7"
+      ],
+      "affected_entity": "UNRESOLVED_speaker_c",
+      "current_candidate": "Speaker_C",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_speaker_c_o7 has low confidence (0.69). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_speaker_c_o7 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_003",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2085,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_email_74_o8"
+      ],
+      "affected_entity": "UNRESOLVED_email_74",
+      "current_candidate": "email_74",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_email_74_o8 has low confidence (0.74). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_email_74_o8 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    }
+  ],
+  "unresolvable_gaps": [
+    "GAP_001",
+    "GAP_002",
+    "GAP_005",
+    "GAP_004",
+    "GAP_003"
+  ],
+  "issues": [
+    {
+      "event_id": "EVT_unresolved_person_14_o4",
+      "issue_type": "G1_missing_linking_event",
+      "severity": "critical",
+      "description": "Rule chain 'WITHDRAW\u2192LOITER\u2192EXIT' broken for UNRESOLVED_person_14: 'LOITER' event missing between EVT_unresolved_person_14_o4 and EVT_unresolved_person_14_o5.",
+      "recommendation": "UNRESOLVED_person_14 jumps from WITHDRAW to EXIT with no LOITER event in between (window: 22s). An observation may be missing or unclustered.",
+      "showrunner_action": "re_run_er",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_14_o3",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_person_14_o3 has low confidence (0.63). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_person_14_o3 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O3"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_55_o6",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_person_55_o6 has low confidence (0.66). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_person_55_o6 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O6"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_c_o7",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_speaker_c_o7 has low confidence (0.69). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_speaker_c_o7 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O7"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_email_74_o8",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_email_74_o8 has low confidence (0.74). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_email_74_o8 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O8"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "case_id": "CASE_ATM_001",
+  "action": "re_run_er",
+  "input_tl_version": "V2",
+  "input_crit_version": "C2",
+  "output_tl_version": "V3",
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {
+      "Person_55": -0.10874
+    },
+    "er_version": 2
+  },
+  "belief_updates": {},
+  "reasoning": "Detected 1 ER-level gap(s) (G1_missing_linking_event). Highest severity: G1_missing_linking_event (severity 0.84). Root cause: Rule chain 'WITHDRAW\u2192LOITER\u2192EXIT' broken for UNRESOLVED_person_14: 'LOITER' event missing between EVT_unresolved_person_. Injecting ER constraints and re-running entity resolution.",
+  "issues_addressed": [
+    "GAP_001"
+  ],
+  "issues_deferred": [
+    "GAP_002",
+    "GAP_005",
+    "GAP_004",
+    "GAP_003"
+  ],
+  "generated_at": "2026-07-24T12:18:18.943332+00:00",
+  "status": "complete"
+}

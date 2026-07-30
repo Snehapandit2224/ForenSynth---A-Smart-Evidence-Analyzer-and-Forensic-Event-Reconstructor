@@ -1,0 +1,96 @@
+{
+  "case_id": "CASE_ATM_001",
+  "timeline_version": "V1",
+  "critique_version": "C1",
+  "revision_number": 0,
+  "verdict": "ACCEPT",
+  "reason": "no blocking issues",
+  "checks_run": [
+    "causal_cycle",
+    "orphaned_high_confidence_event",
+    "llm_edge_dependency_ratio",
+    "classification_structural_sanity",
+    "missing_linking_event",
+    "narrative_break",
+    "role_count_mismatch",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "llm_used": true,
+  "overall_score": 0.96,
+  "requires_revision": false,
+  "revision_target": "",
+  "narrative_summary": "Case CASE_ATM_001 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 2 info. Top: llm_edge_dependency_ratio \u2014 2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+  "belief_updates": {},
+  "issues": [
+    {
+      "check": "llm_edge_dependency_ratio",
+      "severity": "info",
+      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_edge_dependency_ratio",
+      "description": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    },
+    {
+      "check": "llm_coherence",
+      "severity": "info",
+      "detail": "LLM coherence flagged: Person_14's statement that they did not go inside the ATM booth (EVT_entity_1_o3) contradicts the events that show them fiddling with the ATM card insertion area (EVT_entity_1_o4) and leaving the ATM booth (EVT_entity_1_o5). (no LLM-derived causal edge connects these events \u2014 informational only.)",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_coherence",
+      "description": "LLM coherence flagged: Person_14's statement that they did not go inside the ATM booth (EVT_entity_1_o3) contradicts the events that show them fiddling with the ATM card insertion area (EVT_entity_1_o4) and leaving the ATM booth (EVT_entity_1_o5). (no LLM-derived causal edge connects these events \u2014 informational only.)",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    }
+  ],
+  "gaps": [
+    {
+      "check": "llm_edge_dependency_ratio",
+      "severity": "info",
+      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_edge_dependency_ratio",
+      "description": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    },
+    {
+      "check": "llm_coherence",
+      "severity": "info",
+      "detail": "LLM coherence flagged: Person_14's statement that they did not go inside the ATM booth (EVT_entity_1_o3) contradicts the events that show them fiddling with the ATM card insertion area (EVT_entity_1_o4) and leaving the ATM booth (EVT_entity_1_o5). (no LLM-derived causal edge connects these events \u2014 informational only.)",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_coherence",
+      "description": "LLM coherence flagged: Person_14's statement that they did not go inside the ATM booth (EVT_entity_1_o3) contradicts the events that show them fiddling with the ATM card insertion area (EVT_entity_1_o4) and leaving the ATM booth (EVT_entity_1_o5). (no LLM-derived causal edge connects these events \u2014 informational only.)",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    }
+  ],
+  "edges_to_exclude": [],
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {}
+  },
+  "unresolvable_gaps": [
+    "llm_edge_dependency_ratio",
+    "llm_coherence"
+  ],
+  "recommended_action": "FINALIZE"
+}

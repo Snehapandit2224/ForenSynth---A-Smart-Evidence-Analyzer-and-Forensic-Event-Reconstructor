@@ -1,0 +1,385 @@
+{
+  "case_id": "CASE_ATM_004",
+  "timeline_version": "V2",
+  "critique_version": "C2",
+  "overall_score": 0.39,
+  "requires_revision": true,
+  "revision_target": "er",
+  "narrative_summary": "Case CASE_ATM_004 iteration 1: 13 gap(s) detected (0 resolvable, 13 unresolvable). Highest severity: G1_missing_linking_event (severity 0.86) \u2014 UNRESOLVED_speaker_k jumps from ENTER to EXIT with no STEAL event in between (window: 62s). An observation may be missing or unclustered. Unresolvable gaps (G3_low_confidence_event, G1_missing_linking_event) will be surfaced to the investigator.",
+  "generated_at": "2026-07-24T12:21:56.936586+00:00",
+  "belief_updates": {},
+  "recommended_action": "SURFACE_TO_INVESTIGATOR",
+  "overall_severity": 0.3022,
+  "gaps": [
+    {
+      "gap_id": "GAP_001",
+      "gap_type": "G1_missing_linking_event",
+      "severity": 0.856,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_speaker_k_o8",
+        "EVT_unresolved_speaker_k_o14"
+      ],
+      "affected_entity": "UNRESOLVED_speaker_k",
+      "current_candidate": "",
+      "alternative_candidate": "",
+      "root_cause": "Rule chain 'ENTER\u2192STEAL\u2192EXIT' broken for UNRESOLVED_speaker_k: 'STEAL' event missing between EVT_unresolved_speaker_k_o8 and EVT_unresolved_speaker_k_o14.",
+      "narrative_label": "UNRESOLVED_speaker_k jumps from ENTER to EXIT with no STEAL event in between (window: 62s). An observation may be missing or unclustered.",
+      "fix_hint": "RECHECK_OBSERVATIONS: re-examine unclustered observations for UNRESOLVED_speaker_k with tag 'STEAL' between t=1705313036\u20131705313098."
+    },
+    {
+      "gap_id": "GAP_012",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.3305,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_person_32_o16"
+      ],
+      "affected_entity": "UNRESOLVED_person_32",
+      "current_candidate": "Person_32",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_person_32_o16 has low confidence (0.59). Reasons: low observation confidence.",
+      "narrative_label": "Event EVT_unresolved_person_32_o16 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_013",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.3236,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_person_32_o17"
+      ],
+      "affected_entity": "UNRESOLVED_person_32",
+      "current_candidate": "Person_32",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_person_32_o17 has low confidence (0.60). Reasons: low observation confidence.",
+      "narrative_label": "Event EVT_unresolved_person_32_o17 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_011",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.3139,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_person_97_o13"
+      ],
+      "affected_entity": "UNRESOLVED_person_97",
+      "current_candidate": "Person_97",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_person_97_o13 has low confidence (0.61). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_person_97_o13 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_003",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2833,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_speaker_k_o2"
+      ],
+      "affected_entity": "UNRESOLVED_speaker_k",
+      "current_candidate": "Speaker_K",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_speaker_k_o2 has low confidence (0.65). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_speaker_k_o2 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_008",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2642,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_sms_35_o12"
+      ],
+      "affected_entity": "UNRESOLVED_sms_35",
+      "current_candidate": "sms_35",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_sms_35_o12 has low confidence (0.67). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_sms_35_o12 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_002",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2581,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_sms_35_o3"
+      ],
+      "affected_entity": "UNRESOLVED_sms_35",
+      "current_candidate": "sms_35",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_sms_35_o3 has low confidence (0.68). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_sms_35_o3 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_007",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2412,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_sms_35_o9"
+      ],
+      "affected_entity": "UNRESOLVED_sms_35",
+      "current_candidate": "sms_35",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_sms_35_o9 has low confidence (0.70). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_sms_35_o9 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_006",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2239,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_speaker_k_o8"
+      ],
+      "affected_entity": "UNRESOLVED_speaker_k",
+      "current_candidate": "Speaker_K",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_speaker_k_o8 has low confidence (0.72). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_speaker_k_o8 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_009",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2214,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_sms_35_o15"
+      ],
+      "affected_entity": "UNRESOLVED_sms_35",
+      "current_candidate": "sms_35",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_sms_35_o15 has low confidence (0.72). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_sms_35_o15 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_005",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2074,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_speaker_k_o5"
+      ],
+      "affected_entity": "UNRESOLVED_speaker_k",
+      "current_candidate": "Speaker_K",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_speaker_k_o5 has low confidence (0.74). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_speaker_k_o5 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_010",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.203,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_speaker_k_o14"
+      ],
+      "affected_entity": "UNRESOLVED_speaker_k",
+      "current_candidate": "Speaker_K",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_speaker_k_o14 has low confidence (0.75). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_speaker_k_o14 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    },
+    {
+      "gap_id": "GAP_004",
+      "gap_type": "G3_low_confidence_event",
+      "severity": 0.2023,
+      "resolvable": false,
+      "affected_events": [
+        "EVT_unresolved_sms_35_o6"
+      ],
+      "affected_entity": "UNRESOLVED_sms_35",
+      "current_candidate": "sms_35",
+      "alternative_candidate": "",
+      "root_cause": "Event EVT_unresolved_sms_35_o6 has low confidence (0.75). Reasons: moderate confidence.",
+      "narrative_label": "Event EVT_unresolved_sms_35_o6 is a weak point in the reconstruction.",
+      "fix_hint": "SURFACE_TO_INVESTIGATOR"
+    }
+  ],
+  "unresolvable_gaps": [
+    "GAP_001",
+    "GAP_012",
+    "GAP_013",
+    "GAP_011",
+    "GAP_003",
+    "GAP_008",
+    "GAP_002",
+    "GAP_007",
+    "GAP_006",
+    "GAP_009",
+    "GAP_005",
+    "GAP_010",
+    "GAP_004"
+  ],
+  "issues": [
+    {
+      "event_id": "EVT_unresolved_speaker_k_o8",
+      "issue_type": "G1_missing_linking_event",
+      "severity": "critical",
+      "description": "Rule chain 'ENTER\u2192STEAL\u2192EXIT' broken for UNRESOLVED_speaker_k: 'STEAL' event missing between EVT_unresolved_speaker_k_o8 and EVT_unresolved_speaker_k_o14.",
+      "recommendation": "UNRESOLVED_speaker_k jumps from ENTER to EXIT with no STEAL event in between (window: 62s). An observation may be missing or unclustered.",
+      "showrunner_action": "re_run_er",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O8",
+        "O14"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o16",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_person_32_o16 has low confidence (0.59). Reasons: low observation confidence.",
+      "recommendation": "Event EVT_unresolved_person_32_o16 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O16"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o17",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_person_32_o17 has low confidence (0.60). Reasons: low observation confidence.",
+      "recommendation": "Event EVT_unresolved_person_32_o17 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O17"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o13",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_person_97_o13 has low confidence (0.61). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_person_97_o13 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O13"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o2",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_speaker_k_o2 has low confidence (0.65). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_speaker_k_o2 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O2"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o12",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_sms_35_o12 has low confidence (0.67). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_sms_35_o12 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O12"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o3",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_sms_35_o3 has low confidence (0.68). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_sms_35_o3 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O3"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o9",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_sms_35_o9 has low confidence (0.70). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_sms_35_o9 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O9"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o8",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_speaker_k_o8 has low confidence (0.72). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_speaker_k_o8 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O8"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o15",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_sms_35_o15 has low confidence (0.72). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_sms_35_o15 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O15"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o5",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_speaker_k_o5 has low confidence (0.74). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_speaker_k_o5 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O5"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o14",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_speaker_k_o14 has low confidence (0.75). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_speaker_k_o14 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O14"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o6",
+      "issue_type": "G3_low_confidence_event",
+      "severity": "minor",
+      "description": "Event EVT_unresolved_sms_35_o6 has low confidence (0.75). Reasons: moderate confidence.",
+      "recommendation": "Event EVT_unresolved_sms_35_o6 is a weak point in the reconstruction.",
+      "showrunner_action": "human_review",
+      "must_not_merge": [],
+      "affected_obs": [
+        "O6"
+      ]
+    }
+  ]
+}

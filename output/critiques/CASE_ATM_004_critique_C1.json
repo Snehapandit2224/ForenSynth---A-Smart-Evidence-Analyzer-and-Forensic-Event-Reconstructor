@@ -1,0 +1,141 @@
+{
+  "case_id": "CASE_ATM_004",
+  "timeline_version": "V1",
+  "critique_version": "C1",
+  "revision_number": 0,
+  "verdict": "ACCEPT",
+  "reason": "no blocking issues",
+  "checks_run": [
+    "causal_cycle",
+    "orphaned_high_confidence_event",
+    "llm_edge_dependency_ratio",
+    "classification_structural_sanity",
+    "missing_linking_event",
+    "narrative_break",
+    "role_count_mismatch",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "llm_used": true,
+  "overall_score": 0.94,
+  "requires_revision": false,
+  "revision_target": "",
+  "narrative_summary": "Case CASE_ATM_004 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 3 info. Top: low_confidence_event \u2014 Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution confl",
+  "belief_updates": {},
+  "issues": [
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o16"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o16",
+      "affected_obs": [
+        "O16"
+      ]
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o17"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o17",
+      "affected_obs": [
+        "O17"
+      ]
+    },
+    {
+      "check": "llm_coherence",
+      "severity": "info",
+      "detail": "LLM flagged: The suspect's action of setting the skimmer (EVT_entity_1_o12) is claimed to occur after entering the ATM booth (EVT_entity_1_o7_o8_o9), but the timestamp of setting the skimmer (2024-01-15T10:04:42Z) is before the timestamp of entering the ATM booth (2024-01-15T10:03:58Z).; The suspect's action of leaving the ATM area (EVT_entity_1_o14_o15) is claimed to occur after the individual walking towards the ATM kiosk (EVT_entity_1_o1_o2_o3), but the timestamp of leaving the ATM area (2024-01-15T10:04:57Z) is before the timestamp of the individual walking towards the ATM kiosk (2024-01-15T10:01:09Z). (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_coherence",
+      "description": "LLM flagged: The suspect's action of setting the skimmer (EVT_entity_1_o12) is claimed to occur after entering the ATM booth (EVT_entity_1_o7_o8_o9), but the timestamp of setting the skimmer (2024-01-15T10:04:42Z) is before the timestamp of entering the ATM booth (2024-01-15T10:03:58Z).; The suspect's action of leaving the ATM area (EVT_entity_1_o14_o15) is claimed to occur after the individual walking towards the ATM kiosk (EVT_entity_1_o1_o2_o3), but the timestamp of leaving the ATM area (2024-01-15T10:04:57Z) is before the timestamp of the individual walking towards the ATM kiosk (2024-01-15T10:01:09Z). (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    }
+  ],
+  "gaps": [
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o16"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o16",
+      "affected_obs": [
+        "O16"
+      ]
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o17"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o17",
+      "affected_obs": [
+        "O17"
+      ]
+    },
+    {
+      "check": "llm_coherence",
+      "severity": "info",
+      "detail": "LLM flagged: The suspect's action of setting the skimmer (EVT_entity_1_o12) is claimed to occur after entering the ATM booth (EVT_entity_1_o7_o8_o9), but the timestamp of setting the skimmer (2024-01-15T10:04:42Z) is before the timestamp of entering the ATM booth (2024-01-15T10:03:58Z).; The suspect's action of leaving the ATM area (EVT_entity_1_o14_o15) is claimed to occur after the individual walking towards the ATM kiosk (EVT_entity_1_o1_o2_o3), but the timestamp of leaving the ATM area (2024-01-15T10:04:57Z) is before the timestamp of the individual walking towards the ATM kiosk (2024-01-15T10:01:09Z). (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_coherence",
+      "description": "LLM flagged: The suspect's action of setting the skimmer (EVT_entity_1_o12) is claimed to occur after entering the ATM booth (EVT_entity_1_o7_o8_o9), but the timestamp of setting the skimmer (2024-01-15T10:04:42Z) is before the timestamp of entering the ATM booth (2024-01-15T10:03:58Z).; The suspect's action of leaving the ATM area (EVT_entity_1_o14_o15) is claimed to occur after the individual walking towards the ATM kiosk (EVT_entity_1_o1_o2_o3), but the timestamp of leaving the ATM area (2024-01-15T10:04:57Z) is before the timestamp of the individual walking towards the ATM kiosk (2024-01-15T10:01:09Z). (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    }
+  ],
+  "edges_to_exclude": [],
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {}
+  },
+  "unresolvable_gaps": [
+    "low_confidence_event",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "recommended_action": "FINALIZE"
+}

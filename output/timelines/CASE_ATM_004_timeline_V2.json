@@ -1,0 +1,2206 @@
+{
+  "case_id": "CASE_ATM_004",
+  "timeline_version": "V2",
+  "schema_version": "1.1.0",
+  "generated_at": "2026-07-24T12:21:56Z",
+  "events": [
+    {
+      "event_id": "EVT_unresolved_sms_35_o3",
+      "obs_ids": [
+        "O3"
+      ],
+      "timestamp": "2024-01-15T10:00:55Z",
+      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location_key": "remote \u00e2\u20ac\u201d email server log",
+      "entity_id": "UNRESOLVED_sms_35",
+      "primary_alias": "sms_35",
+      "aliases": [
+        "sms_35"
+      ],
+      "modality": "text",
+      "content": "Heading there. Any activity?",
+      "confidence": 0.6774,
+      "role": "suspect",
+      "action_tags": [
+        "APPROACH"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o2",
+      "obs_ids": [
+        "O2"
+      ],
+      "timestamp": "2024-01-15T10:01:12Z",
+      "location": "near ATM location, mobile network",
+      "location_key": "near atm location",
+      "entity_id": "UNRESOLVED_speaker_k",
+      "primary_alias": "Speaker_K",
+      "aliases": [
+        "Speaker_K"
+      ],
+      "modality": "audio",
+      "content": "I can see the booth from here.",
+      "confidence": 0.6459,
+      "role": "suspect",
+      "action_tags": [
+        "APPROACH"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o1",
+      "obs_ids": [
+        "O1"
+      ],
+      "timestamp": "2024-01-15T10:01:20Z",
+      "location": "ATM booth entrance, exterior facing",
+      "location_key": "atm booth entrance",
+      "entity_id": "UNRESOLVED_person_97",
+      "primary_alias": "Person_97",
+      "aliases": [
+        "Person_97"
+      ],
+      "modality": "video",
+      "content": "Individual seen walking towards ATM kiosk (captured on footage).",
+      "confidence": 0.7777,
+      "role": "suspect",
+      "action_tags": [
+        "APPROACH"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o6",
+      "obs_ids": [
+        "O6"
+      ],
+      "timestamp": "2024-01-15T10:03:34Z",
+      "location": "bank security office, incident registry",
+      "location_key": "bank security office",
+      "entity_id": "UNRESOLVED_sms_35",
+      "primary_alias": "sms_35",
+      "aliases": [
+        "sms_35"
+      ],
+      "modality": "text",
+      "content": "Few more minutes. Stay ready.",
+      "confidence": 0.7471,
+      "role": "suspect",
+      "action_tags": [
+        "LOITER"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o5",
+      "obs_ids": [
+        "O5"
+      ],
+      "timestamp": "2024-01-15T10:03:35Z",
+      "location": "ATM vicinity, intercepted channel",
+      "location_key": "atm vicinity",
+      "entity_id": "UNRESOLVED_speaker_k",
+      "primary_alias": "Speaker_K",
+      "aliases": [
+        "Speaker_K"
+      ],
+      "modality": "audio",
+      "content": "Almost ready, just watching.",
+      "confidence": 0.7408,
+      "role": "suspect",
+      "action_tags": [
+        "LOITER"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o7",
+      "obs_ids": [
+        "O7"
+      ],
+      "timestamp": "2024-01-15T10:03:54Z",
+      "location": "ATM booth interior, card reader and keypad area",
+      "location_key": "atm booth interior",
+      "entity_id": "UNRESOLVED_person_97",
+      "primary_alias": "Person_97",
+      "aliases": [
+        "Person_97"
+      ],
+      "modality": "video",
+      "content": "Suspect enters the ATM booth unaccompanied (captured on footage).",
+      "confidence": 0.7637,
+      "role": "suspect",
+      "action_tags": [
+        "ENTER"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o8",
+      "obs_ids": [
+        "O8"
+      ],
+      "timestamp": "2024-01-15T10:03:56Z",
+      "location": "ATM vicinity, intercepted channel",
+      "location_key": "atm vicinity",
+      "entity_id": "UNRESOLVED_speaker_k",
+      "primary_alias": "Speaker_K",
+      "aliases": [
+        "Speaker_K"
+      ],
+      "modality": "audio",
+      "content": "I'm in, it's clear.",
+      "confidence": 0.7201,
+      "role": "suspect",
+      "action_tags": [
+        "ENTER"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o9",
+      "obs_ids": [
+        "O9"
+      ],
+      "timestamp": "2024-01-15T10:04:06Z",
+      "location": "local police station, complaint desk",
+      "location_key": "local police station",
+      "entity_id": "UNRESOLVED_sms_35",
+      "primary_alias": "sms_35",
+      "aliases": [
+        "sms_35"
+      ],
+      "modality": "text",
+      "content": "Entered. Starting now.",
+      "confidence": 0.6985,
+      "role": "suspect",
+      "action_tags": [
+        "ENTER"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o12",
+      "obs_ids": [
+        "O12"
+      ],
+      "timestamp": "2024-01-15T10:04:42Z",
+      "location": "bank security office, incident registry",
+      "location_key": "bank security office",
+      "entity_id": "UNRESOLVED_sms_35",
+      "primary_alias": "sms_35",
+      "aliases": [
+        "sms_35"
+      ],
+      "modality": "text",
+      "content": "Skimmer set. Walk away normal.",
+      "confidence": 0.6697,
+      "role": "suspect",
+      "action_tags": [
+        "TAMPER"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o15",
+      "obs_ids": [
+        "O15"
+      ],
+      "timestamp": "2024-01-15T10:04:57Z",
+      "location": "bank security office, incident registry",
+      "location_key": "bank security office",
+      "entity_id": "UNRESOLVED_sms_35",
+      "primary_alias": "sms_35",
+      "aliases": [
+        "sms_35"
+      ],
+      "modality": "text",
+      "content": "Exited. Don't wait for me.",
+      "confidence": 0.7233,
+      "role": "suspect",
+      "action_tags": [
+        "EXIT"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o14",
+      "obs_ids": [
+        "O14"
+      ],
+      "timestamp": "2024-01-15T10:04:58Z",
+      "location": "ATM vicinity, intercepted channel",
+      "location_key": "atm vicinity",
+      "entity_id": "UNRESOLVED_speaker_k",
+      "primary_alias": "Speaker_K",
+      "aliases": [
+        "Speaker_K"
+      ],
+      "modality": "audio",
+      "content": "Done, I'm coming out.",
+      "confidence": 0.7462,
+      "role": "suspect",
+      "action_tags": [
+        "EXIT"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o13",
+      "obs_ids": [
+        "O13"
+      ],
+      "timestamp": "2024-01-15T10:05:02Z",
+      "location": "ATM lobby doorway, entry/exit point",
+      "location_key": "atm lobby doorway",
+      "entity_id": "UNRESOLVED_person_97",
+      "primary_alias": "Person_97",
+      "aliases": [
+        "Person_97"
+      ],
+      "modality": "video",
+      "content": "Visual feed interrupted; action not fully captured.",
+      "confidence": 0.6076,
+      "role": "suspect",
+      "action_tags": [],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o16",
+      "obs_ids": [
+        "O16"
+      ],
+      "timestamp": "2024-01-15T10:05:09Z",
+      "location": "ATM lobby doorway, entry/exit point",
+      "location_key": "atm lobby doorway",
+      "entity_id": "UNRESOLVED_person_32",
+      "primary_alias": "Person_32",
+      "aliases": [
+        "Person_32"
+      ],
+      "modality": "video",
+      "content": "Eyewitness notices a person leaving the ATM enclosure in a rush.",
+      "confidence": 0.5869,
+      "role": "witness",
+      "action_tags": [
+        "OBSERVE"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o17",
+      "obs_ids": [
+        "O17"
+      ],
+      "timestamp": "2024-01-15T10:08:44Z",
+      "location": "ATM booth entrance, exterior facing",
+      "location_key": "atm booth entrance",
+      "entity_id": "UNRESOLVED_person_32",
+      "primary_alias": "Person_32",
+      "aliases": [
+        "Person_32"
+      ],
+      "modality": "video",
+      "content": "Bystander seen speaking with bank security personnel outside (captured on footage).",
+      "confidence": 0.5955,
+      "role": "witness",
+      "action_tags": [
+        "OBSERVE"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    }
+  ],
+  "causal_links": [
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_person_97_o7",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5909,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_speaker_k_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.573,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_sms_35_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6054,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5927,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o2",
+      "target": "EVT_unresolved_person_97_o7",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5779,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o2",
+      "target": "EVT_unresolved_speaker_k_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.601,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o2",
+      "target": "EVT_unresolved_sms_35_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5512,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o2",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5394,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o1",
+      "target": "EVT_unresolved_person_97_o7",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6782,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o1",
+      "target": "EVT_unresolved_speaker_k_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6141,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o1",
+      "target": "EVT_unresolved_sms_35_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6052,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o1",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5934,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o6",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5526,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o6",
+      "target": "EVT_unresolved_sms_35_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6764,
+      "relation": "BEFORE",
+      "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o6",
+      "target": "EVT_unresolved_speaker_k_o14",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6123,
+      "relation": "BEFORE",
+      "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o5",
+      "target": "EVT_unresolved_speaker_k_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5698,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o5",
+      "target": "EVT_unresolved_sms_35_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6003,
+      "relation": "BEFORE",
+      "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o5",
+      "target": "EVT_unresolved_speaker_k_o14",
+      "edge_type": "CAUSAL",
+      "confidence": 0.684,
+      "relation": "BEFORE",
+      "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o7",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5877,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o8",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5698,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o8",
+      "target": "EVT_unresolved_speaker_k_o14",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5719,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o9",
+      "target": "EVT_unresolved_sms_35_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.602,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o12",
+      "target": "EVT_unresolved_sms_35_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6408,
+      "relation": "BEFORE",
+      "label": "action dependency: TAMPER->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o12",
+      "target": "EVT_unresolved_speaker_k_o14",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5805,
+      "relation": "BEFORE",
+      "label": "action dependency: TAMPER->EXIT"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_sms_35_o6",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused sms_35 to enter the ATM booth."
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_sms_35_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: sms_35's message 'Heading there. Any activity?' likely caused sms_35 to enter the ATM booth."
+    },
+    {
+      "source": "EVT_unresolved_person_97_o7",
+      "target": "EVT_unresolved_speaker_k_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'I'm in, it's clear.'"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o6",
+      "target": "EVT_unresolved_speaker_k_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'Almost ready, just watching.'"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o15",
+      "target": "EVT_unresolved_speaker_k_o14",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: sms_35's message 'Exited. Don't wait for me.' likely caused Speaker_K to say 'Done, I'm coming out.'"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o6",
+      "target": "EVT_unresolved_speaker_k_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'I'm in, it's clear.'"
+    },
+    {
+      "source": "EVT_unresolved_sms_35_o3",
+      "target": "EVT_unresolved_speaker_k_o2",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: sms_35's message 'Heading there. Any activity?' likely caused Speaker_K to say 'I can see the booth from here.'"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o1",
+      "target": "EVT_unresolved_speaker_k_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_97's action of walking towards the ATM kiosk likely caused Speaker_K to say 'Almost ready, just watching.'"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o8",
+      "target": "EVT_unresolved_sms_35_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.'"
+    },
+    {
+      "source": "EVT_unresolved_person_97_o7",
+      "target": "EVT_unresolved_speaker_k_o14",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'Done, I'm coming out.'"
+    },
+    {
+      "source": "EVT_unresolved_speaker_k_o5",
+      "target": "EVT_unresolved_sms_35_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.'"
+    }
+  ],
+  "timeline_graph": {
+    "nodes": [
+      {
+        "id": "EVT_unresolved_sms_35_o3",
+        "timestamp": "2024-01-15T10:00:55Z",
+        "ts_epoch": 1705312855.0,
+        "entity_id": "UNRESOLVED_sms_35",
+        "primary_alias": "sms_35",
+        "confidence": 0.6774,
+        "location": "remote \u00e2\u20ac\u201d email server log",
+        "modality": "text",
+        "content": "Heading there. Any activity?",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O3"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_speaker_k_o2",
+        "timestamp": "2024-01-15T10:01:12Z",
+        "ts_epoch": 1705312872.0,
+        "entity_id": "UNRESOLVED_speaker_k",
+        "primary_alias": "Speaker_K",
+        "confidence": 0.6459,
+        "location": "near ATM location, mobile network",
+        "modality": "audio",
+        "content": "I can see the booth from here.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O2"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_person_97_o1",
+        "timestamp": "2024-01-15T10:01:20Z",
+        "ts_epoch": 1705312880.0,
+        "entity_id": "UNRESOLVED_person_97",
+        "primary_alias": "Person_97",
+        "confidence": 0.7777,
+        "location": "ATM booth entrance, exterior facing",
+        "modality": "video",
+        "content": "Individual seen walking towards ATM kiosk (captured on footage).",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O1"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_sms_35_o6",
+        "timestamp": "2024-01-15T10:03:34Z",
+        "ts_epoch": 1705313014.0,
+        "entity_id": "UNRESOLVED_sms_35",
+        "primary_alias": "sms_35",
+        "confidence": 0.7471,
+        "location": "bank security office, incident registry",
+        "modality": "text",
+        "content": "Few more minutes. Stay ready.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O6"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_speaker_k_o5",
+        "timestamp": "2024-01-15T10:03:35Z",
+        "ts_epoch": 1705313015.0,
+        "entity_id": "UNRESOLVED_speaker_k",
+        "primary_alias": "Speaker_K",
+        "confidence": 0.7408,
+        "location": "ATM vicinity, intercepted channel",
+        "modality": "audio",
+        "content": "Almost ready, just watching.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O5"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_person_97_o7",
+        "timestamp": "2024-01-15T10:03:54Z",
+        "ts_epoch": 1705313034.0000002,
+        "entity_id": "UNRESOLVED_person_97",
+        "primary_alias": "Person_97",
+        "confidence": 0.7637,
+        "location": "ATM booth interior, card reader and keypad area",
+        "modality": "video",
+        "content": "Suspect enters the ATM booth unaccompanied (captured on footage).",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O7"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_speaker_k_o8",
+        "timestamp": "2024-01-15T10:03:56Z",
+        "ts_epoch": 1705313036.0,
+        "entity_id": "UNRESOLVED_speaker_k",
+        "primary_alias": "Speaker_K",
+        "confidence": 0.7201,
+        "location": "ATM vicinity, intercepted channel",
+        "modality": "audio",
+        "content": "I'm in, it's clear.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O8"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_sms_35_o9",
+        "timestamp": "2024-01-15T10:04:06Z",
+        "ts_epoch": 1705313046.0,
+        "entity_id": "UNRESOLVED_sms_35",
+        "primary_alias": "sms_35",
+        "confidence": 0.6985,
+        "location": "local police station, complaint desk",
+        "modality": "text",
+        "content": "Entered. Starting now.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O9"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_sms_35_o12",
+        "timestamp": "2024-01-15T10:04:42Z",
+        "ts_epoch": 1705313082.0,
+        "entity_id": "UNRESOLVED_sms_35",
+        "primary_alias": "sms_35",
+        "confidence": 0.6697,
+        "location": "bank security office, incident registry",
+        "modality": "text",
+        "content": "Skimmer set. Walk away normal.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O12"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_sms_35_o15",
+        "timestamp": "2024-01-15T10:04:57Z",
+        "ts_epoch": 1705313097.0,
+        "entity_id": "UNRESOLVED_sms_35",
+        "primary_alias": "sms_35",
+        "confidence": 0.7233,
+        "location": "bank security office, incident registry",
+        "modality": "text",
+        "content": "Exited. Don't wait for me.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O15"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_speaker_k_o14",
+        "timestamp": "2024-01-15T10:04:58Z",
+        "ts_epoch": 1705313097.9999998,
+        "entity_id": "UNRESOLVED_speaker_k",
+        "primary_alias": "Speaker_K",
+        "confidence": 0.7462,
+        "location": "ATM vicinity, intercepted channel",
+        "modality": "audio",
+        "content": "Done, I'm coming out.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O14"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_person_97_o13",
+        "timestamp": "2024-01-15T10:05:02Z",
+        "ts_epoch": 1705313102.0,
+        "entity_id": "UNRESOLVED_person_97",
+        "primary_alias": "Person_97",
+        "confidence": 0.6076,
+        "location": "ATM lobby doorway, entry/exit point",
+        "modality": "video",
+        "content": "Visual feed interrupted; action not fully captured.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O13"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_person_32_o16",
+        "timestamp": "2024-01-15T10:05:09Z",
+        "ts_epoch": 1705313109.0,
+        "entity_id": "UNRESOLVED_person_32",
+        "primary_alias": "Person_32",
+        "confidence": 0.5869,
+        "location": "ATM lobby doorway, entry/exit point",
+        "modality": "video",
+        "content": "Eyewitness notices a person leaving the ATM enclosure in a rush.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O16"
+        ]
+      },
+      {
+        "id": "EVT_unresolved_person_32_o17",
+        "timestamp": "2024-01-15T10:08:44Z",
+        "ts_epoch": 1705313324.0,
+        "entity_id": "UNRESOLVED_person_32",
+        "primary_alias": "Person_32",
+        "confidence": 0.5955,
+        "location": "ATM booth entrance, exterior facing",
+        "modality": "video",
+        "content": "Bystander seen speaking with bank security personnel outside (captured on footage).",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O17"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_speaker_k_o2",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Heading there. Any activity?' likely caused Speaker_K to say 'I can see the booth from here.'"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5909,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.573,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6054,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5927,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o6",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused sms_35 to enter the ATM booth."
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Heading there. Any activity?' likely caused sms_35 to enter the ATM booth."
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_person_97_o1",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.9,
+        "relation": "SIMULTANEOUS",
+        "label": "SIMULTANEOUS (0.90)"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5779,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.601,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5512,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5394,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_sms_35_o6",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
+        "relation": "BEFORE",
+        "label": "BEFORE (0.95)"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6782,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6141,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6052,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5934,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_speaker_k_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_97's action of walking towards the ATM kiosk likely caused Speaker_K to say 'Almost ready, just watching.'"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_speaker_k_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'Almost ready, just watching.'"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5526,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6764,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6123,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'I'm in, it's clear.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.9,
+        "relation": "SIMULTANEOUS",
+        "label": "SIMULTANEOUS (0.90)"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5698,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6003,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.684,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.'"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o7",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'I'm in, it's clear.'"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o7",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5877,
+        "relation": "BEFORE",
+        "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o7",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'Done, I'm coming out.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o8",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o8",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5698,
+        "relation": "BEFORE",
+        "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o8",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5719,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o9",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.602,
+        "relation": "BEFORE",
+        "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o12",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6408,
+        "relation": "BEFORE",
+        "label": "action dependency: TAMPER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o12",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5805,
+        "relation": "BEFORE",
+        "label": "action dependency: TAMPER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o15",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Exited. Don't wait for me.' likely caused Speaker_K to say 'Done, I'm coming out.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o14",
+        "target": "EVT_unresolved_person_97_o13",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.9,
+        "relation": "SIMULTANEOUS",
+        "label": "SIMULTANEOUS (0.90)"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o13",
+        "target": "EVT_unresolved_person_32_o16",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.9,
+        "relation": "SIMULTANEOUS",
+        "label": "SIMULTANEOUS (0.90)"
+      },
+      {
+        "source": "EVT_unresolved_person_32_o16",
+        "target": "EVT_unresolved_person_32_o17",
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
+        "relation": "BEFORE",
+        "label": "BEFORE (0.95)"
+      }
+    ],
+    "causal_links": [
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_speaker_k_o2",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Heading there. Any activity?' likely caused Speaker_K to say 'I can see the booth from here.'"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5909,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.573,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6054,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5927,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o6",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused sms_35 to enter the ATM booth."
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o3",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Heading there. Any activity?' likely caused sms_35 to enter the ATM booth."
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5779,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.601,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5512,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o2",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5394,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_person_97_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6782,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6141,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6052,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->ENTER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5934,
+        "relation": "BEFORE",
+        "label": "action dependency: APPROACH->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o1",
+        "target": "EVT_unresolved_speaker_k_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_97's action of walking towards the ATM kiosk likely caused Speaker_K to say 'Almost ready, just watching.'"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_speaker_k_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'Almost ready, just watching.'"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5526,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6764,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6123,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o6",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'I'm in, it's clear.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5698,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6003,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.684,
+        "relation": "BEFORE",
+        "label": "action dependency: LOITER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o5",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.'"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o7",
+        "target": "EVT_unresolved_speaker_k_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'I'm in, it's clear.'"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o7",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5877,
+        "relation": "BEFORE",
+        "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_person_97_o7",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'Done, I'm coming out.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o8",
+        "target": "EVT_unresolved_sms_35_o9",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.'"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o8",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5698,
+        "relation": "BEFORE",
+        "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_speaker_k_o8",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5719,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=1.00), sequential"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o9",
+        "target": "EVT_unresolved_sms_35_o12",
+        "edge_type": "CAUSAL",
+        "confidence": 0.602,
+        "relation": "BEFORE",
+        "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o12",
+        "target": "EVT_unresolved_sms_35_o15",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6408,
+        "relation": "BEFORE",
+        "label": "action dependency: TAMPER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o12",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5805,
+        "relation": "BEFORE",
+        "label": "action dependency: TAMPER->EXIT"
+      },
+      {
+        "source": "EVT_unresolved_sms_35_o15",
+        "target": "EVT_unresolved_speaker_k_o14",
+        "edge_type": "CAUSAL",
+        "confidence": 0.9,
+        "relation": "BEFORE",
+        "label": "local LLM: sms_35's message 'Exited. Don't wait for me.' likely caused Speaker_K to say 'Done, I'm coming out.'"
+      }
+    ],
+    "node_count": 14,
+    "edge_count": 41
+  },
+  "uncertainties": [
+    {
+      "event_id": "EVT_unresolved_sms_35_o3",
+      "uncertainty_score": 0.3226,
+      "sources": [
+        "O3"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o2",
+      "uncertainty_score": 0.3541,
+      "sources": [
+        "O2"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o1",
+      "uncertainty_score": 0.2223,
+      "sources": [
+        "O1"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o6",
+      "uncertainty_score": 0.2529,
+      "sources": [
+        "O6"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o5",
+      "uncertainty_score": 0.2592,
+      "sources": [
+        "O5"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o7",
+      "uncertainty_score": 0.2363,
+      "sources": [
+        "O7"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o8",
+      "uncertainty_score": 0.2799,
+      "sources": [
+        "O8"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o9",
+      "uncertainty_score": 0.3015,
+      "sources": [
+        "O9"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o12",
+      "uncertainty_score": 0.3303,
+      "sources": [
+        "O12"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o15",
+      "uncertainty_score": 0.2767,
+      "sources": [
+        "O15"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o14",
+      "uncertainty_score": 0.2538,
+      "sources": [
+        "O14"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o13",
+      "uncertainty_score": 0.3924,
+      "sources": [
+        "O13"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o16",
+      "uncertainty_score": 0.4131,
+      "sources": [
+        "O16"
+      ],
+      "reasons": [
+        "low observation confidence"
+      ]
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o17",
+      "uncertainty_score": 0.4045,
+      "sources": [
+        "O17"
+      ],
+      "reasons": [
+        "low observation confidence"
+      ]
+    }
+  ],
+  "narrative": [
+    {
+      "event_id": "EVT_unresolved_sms_35_o3",
+      "timestamp": "2024-01-15T10:00:55Z",
+      "actor": "sms_35",
+      "action": "Heading there. Any activity?",
+      "location": "remote \u00e2\u20ac\u201d email server log",
+      "evidence": [
+        "O3"
+      ],
+      "confidence": 0.6774
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o2",
+      "timestamp": "2024-01-15T10:01:12Z",
+      "actor": "Speaker_K",
+      "action": "I can see the booth from here.  [-> local LLM: sms_35's message 'Heading there. Any activity?' likely caused Speaker_K to say 'I can see the booth from here.']",
+      "location": "near ATM location, mobile network",
+      "evidence": [
+        "O2"
+      ],
+      "confidence": 0.6459
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o1",
+      "timestamp": "2024-01-15T10:01:20Z",
+      "actor": "Person_97",
+      "action": "Individual seen walking towards ATM kiosk (captured on footage).",
+      "location": "ATM booth entrance, exterior facing",
+      "evidence": [
+        "O1"
+      ],
+      "confidence": 0.7777
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o6",
+      "timestamp": "2024-01-15T10:03:34Z",
+      "actor": "sms_35",
+      "action": "Few more minutes. Stay ready.  [-> local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused sms_35 to enter the ATM booth.]",
+      "location": "bank security office, incident registry",
+      "evidence": [
+        "O6"
+      ],
+      "confidence": 0.7471
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o5",
+      "timestamp": "2024-01-15T10:03:35Z",
+      "actor": "Speaker_K",
+      "action": "Almost ready, just watching.  [-> local LLM: Person_97's action of walking towards the ATM kiosk likely caused Speaker_K to say 'Almost ready, just watching.']",
+      "location": "ATM vicinity, intercepted channel",
+      "evidence": [
+        "O5"
+      ],
+      "confidence": 0.7408
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o7",
+      "timestamp": "2024-01-15T10:03:54Z",
+      "actor": "Person_97",
+      "action": "Suspect enters the ATM booth unaccompanied (captured on footage).  [-> action dependency: APPROACH->ENTER]",
+      "location": "ATM booth interior, card reader and keypad area",
+      "evidence": [
+        "O7"
+      ],
+      "confidence": 0.7637
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o8",
+      "timestamp": "2024-01-15T10:03:56Z",
+      "actor": "Speaker_K",
+      "action": "I'm in, it's clear.  [-> local LLM: sms_35's message 'Few more minutes. Stay ready.' likely caused Speaker_K to say 'I'm in, it's clear.']",
+      "location": "ATM vicinity, intercepted channel",
+      "evidence": [
+        "O8"
+      ],
+      "confidence": 0.7201
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o9",
+      "timestamp": "2024-01-15T10:04:06Z",
+      "actor": "sms_35",
+      "action": "Entered. Starting now.  [-> local LLM: Speaker_K's action of entering the ATM booth likely caused sms_35 to say 'Entered. Starting now.']",
+      "location": "local police station, complaint desk",
+      "evidence": [
+        "O9"
+      ],
+      "confidence": 0.6985
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o12",
+      "timestamp": "2024-01-15T10:04:42Z",
+      "actor": "sms_35",
+      "action": "Skimmer set. Walk away normal.  [-> action dependency: ENTER->TAMPER]",
+      "location": "bank security office, incident registry",
+      "evidence": [
+        "O12"
+      ],
+      "confidence": 0.6697
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o15",
+      "timestamp": "2024-01-15T10:04:57Z",
+      "actor": "sms_35",
+      "action": "Exited. Don't wait for me.  [-> local LLM: sms_35's message 'Heading there. Any activity?' likely caused sms_35 to enter the ATM booth.]",
+      "location": "bank security office, incident registry",
+      "evidence": [
+        "O15"
+      ],
+      "confidence": 0.7233
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o14",
+      "timestamp": "2024-01-15T10:04:58Z",
+      "actor": "Speaker_K",
+      "action": "Done, I'm coming out.  [-> local LLM: Person_97's action of entering the ATM booth likely caused Speaker_K to say 'Done, I'm coming out.']",
+      "location": "ATM vicinity, intercepted channel",
+      "evidence": [
+        "O14"
+      ],
+      "confidence": 0.7462
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o13",
+      "timestamp": "2024-01-15T10:05:02Z",
+      "actor": "Person_97",
+      "action": "Visual feed interrupted; action not fully captured.",
+      "location": "ATM lobby doorway, entry/exit point",
+      "evidence": [
+        "O13"
+      ],
+      "confidence": 0.6076
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o16",
+      "timestamp": "2024-01-15T10:05:09Z",
+      "actor": "Person_32",
+      "action": "Eyewitness notices a person leaving the ATM enclosure in a rush.",
+      "location": "ATM lobby doorway, entry/exit point",
+      "evidence": [
+        "O16"
+      ],
+      "confidence": 0.5869
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o17",
+      "timestamp": "2024-01-15T10:08:44Z",
+      "actor": "Person_32",
+      "action": "Bystander seen speaking with bank security personnel outside (captured on footage).",
+      "location": "ATM booth entrance, exterior facing",
+      "evidence": [
+        "O17"
+      ],
+      "confidence": 0.5955
+    }
+  ],
+  "explainability": [
+    {
+      "event_id": "EVT_unresolved_sms_35_o3",
+      "derived_from": [
+        "O3"
+      ],
+      "entity_used": "UNRESOLVED_sms_35",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.6774
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o2",
+      "derived_from": [
+        "O2"
+      ],
+      "entity_used": "UNRESOLVED_speaker_k",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.6459
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o1",
+      "derived_from": [
+        "O1"
+      ],
+      "entity_used": "UNRESOLVED_person_97",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7777
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o6",
+      "derived_from": [
+        "O6"
+      ],
+      "entity_used": "UNRESOLVED_sms_35",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7471
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o5",
+      "derived_from": [
+        "O5"
+      ],
+      "entity_used": "UNRESOLVED_speaker_k",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7408
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o7",
+      "derived_from": [
+        "O7"
+      ],
+      "entity_used": "UNRESOLVED_person_97",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7637
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o8",
+      "derived_from": [
+        "O8"
+      ],
+      "entity_used": "UNRESOLVED_speaker_k",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7201
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o9",
+      "derived_from": [
+        "O9"
+      ],
+      "entity_used": "UNRESOLVED_sms_35",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.6985
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o12",
+      "derived_from": [
+        "O12"
+      ],
+      "entity_used": "UNRESOLVED_sms_35",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.6697
+    },
+    {
+      "event_id": "EVT_unresolved_sms_35_o15",
+      "derived_from": [
+        "O15"
+      ],
+      "entity_used": "UNRESOLVED_sms_35",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7233
+    },
+    {
+      "event_id": "EVT_unresolved_speaker_k_o14",
+      "derived_from": [
+        "O14"
+      ],
+      "entity_used": "UNRESOLVED_speaker_k",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.7462
+    },
+    {
+      "event_id": "EVT_unresolved_person_97_o13",
+      "derived_from": [
+        "O13"
+      ],
+      "entity_used": "UNRESOLVED_person_97",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.6076
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o16",
+      "derived_from": [
+        "O16"
+      ],
+      "entity_used": "UNRESOLVED_person_32",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.5869
+    },
+    {
+      "event_id": "EVT_unresolved_person_32_o17",
+      "derived_from": [
+        "O17"
+      ],
+      "entity_used": "UNRESOLVED_person_32",
+      "reasoning": [
+        "timestamp ordering",
+        "unresolved entity - fallback",
+        "valid timestamp"
+      ],
+      "confidence": 0.5955
+    }
+  ],
+  "conflicts_summary": [],
+  "conflicts_unlocalized_count": 0,
+  "unresolved_temporal_pairs": [],
+  "unresolved_causal_pairs": [
+    {
+      "event_a": "EVT_unresolved_sms_35_o6",
+      "event_b": "EVT_unresolved_sms_35_o9",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o9",
+      "event_b": "EVT_unresolved_sms_35_o15",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o2",
+      "event_b": "EVT_unresolved_speaker_k_o5",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_person_32_o16",
+      "event_b": "EVT_unresolved_person_32_o17",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o2",
+      "event_b": "EVT_unresolved_speaker_k_o14",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o7",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o1",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o2",
+      "event_b": "EVT_unresolved_person_97_o1",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o5",
+      "event_b": "EVT_unresolved_person_97_o7",
+      "reason": "local LLM determined no causal link"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o3",
+      "event_b": "EVT_unresolved_person_97_o1",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o8",
+      "event_b": "EVT_unresolved_sms_35_o15",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o6",
+      "event_b": "EVT_unresolved_person_97_o7",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o9",
+      "event_b": "EVT_unresolved_speaker_k_o14",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o5",
+      "event_b": "EVT_unresolved_sms_35_o12",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o1",
+      "event_b": "EVT_unresolved_speaker_k_o14",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o7",
+      "event_b": "EVT_unresolved_sms_35_o9",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o7",
+      "event_b": "EVT_unresolved_sms_35_o15",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o1",
+      "event_b": "EVT_unresolved_sms_35_o6",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o2",
+      "event_b": "EVT_unresolved_sms_35_o6",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_person_97_o1",
+      "event_b": "EVT_unresolved_sms_35_o15",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o2",
+      "event_b": "EVT_unresolved_sms_35_o15",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o3",
+      "event_b": "EVT_unresolved_speaker_k_o5",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o3",
+      "event_b": "EVT_unresolved_speaker_k_o14",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o14",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o8",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o15",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o5",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o12",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o9",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o6",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_speaker_k_o2",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_unresolved_sms_35_o3",
+      "event_b": "EVT_unresolved_person_97_o13",
+      "reason": "local LLM returned no result for this pair"
+    }
+  ],
+  "unresolved_entities": [
+    "sms_35",
+    "Speaker_K",
+    "Person_97",
+    "sms_35",
+    "Speaker_K",
+    "Person_97",
+    "Speaker_K",
+    "sms_35",
+    "sms_35",
+    "sms_35",
+    "Speaker_K",
+    "Person_97",
+    "Person_32",
+    "Person_32"
+  ],
+  "stage_timings": {
+    "stage_1_validation": 0.0002,
+    "stage_2_enrichment": 0.002,
+    "stage_3_ordering": 0.0,
+    "stage_4_5_temporal": 0.0001,
+    "stage_6_causal": 32.0612,
+    "stage_7_uncertainty": 0.0,
+    "stage_8_conflicts": 0.0,
+    "stage_10_explainability": 0.0001,
+    "stage_11_narrative": 0.0001,
+    "stage_12_versioning": 0.0011,
+    "stage_13_export": 0.0187
+  },
+  "total_time_sec": 32.0861,
+  "validation_warnings": [
+    "No canonical entities found - all observations will be treated as unresolved"
+  ],
+  "llm_backend_used": "CloudLLMFallback",
+  "llm_calls_made": 1,
+  "output_classification": "AMBIGUOUS",
+  "output_classification_reason": "avg_confidence=0.69, conflict_fraction=0.00, unresolved_ratio=2.29 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+}

@@ -1,0 +1,167 @@
+{
+  "nodes": [
+    {
+      "id": "EVT_entity_1_o1",
+      "timestamp": "2024-01-15T10:00:45Z",
+      "ts_epoch": 1705312845.0,
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "confidence": 0.8997,
+      "location": "ATM booth entrance, exterior facing",
+      "modality": "video",
+      "content": "Subject is seen nearing the ATM from the main road.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O1"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o3",
+      "timestamp": "2024-01-15T10:04:03Z",
+      "ts_epoch": 1705313043.0000002,
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "confidence": 0.7589,
+      "location": "ATM booth entrance, exterior facing",
+      "modality": "video",
+      "content": "I did not go inside that booth at any point.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O3"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o4",
+      "timestamp": "2024-01-15T10:04:59Z",
+      "ts_epoch": 1705313099.0,
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "confidence": 0.9092,
+      "location": "ATM street frontage, wide-angle coverage",
+      "modality": "video",
+      "content": "Individual seen fiddling with the ATM card insertion area.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O4"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o5",
+      "timestamp": "2024-01-15T10:05:21Z",
+      "ts_epoch": 1705313121.0,
+      "entity_id": "entity_1",
+      "primary_alias": "Person_14",
+      "confidence": 0.9245,
+      "location": "ATM booth interior, card reader and keypad area",
+      "modality": "video",
+      "content": "Individual leaves ATM booth.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O5"
+      ]
+    },
+    {
+      "id": "EVT_entity_2_o6_o7_o8",
+      "timestamp": "2024-01-15T10:05:52Z",
+      "ts_epoch": 1705313152.0,
+      "entity_id": "entity_2",
+      "primary_alias": "Person_55",
+      "confidence": 0.7063,
+      "location": "local police station, complaint desk",
+      "modality": "multimodal",
+      "content": "Two men just ran out of the ATM. Looked suspicious.",
+      "conflict_flag": true,
+      "obs_ids": [
+        "O6",
+        "O7",
+        "O8"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6468,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o4",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8068,
+      "relation": "BEFORE",
+      "label": "action dependency: WITHDRAW->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o5",
+      "target": "EVT_entity_2_o6_o7_o8",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    }
+  ],
+  "causal_links": [
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6468,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.9,
+      "relation": "BEFORE",
+      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8068,
+      "relation": "BEFORE",
+      "label": "action dependency: WITHDRAW->EXIT"
+    }
+  ],
+  "node_count": 5,
+  "edge_count": 6
+}
