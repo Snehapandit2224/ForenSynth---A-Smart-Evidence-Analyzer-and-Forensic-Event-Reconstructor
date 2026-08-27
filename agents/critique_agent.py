@@ -188,7 +188,7 @@ Respond ONLY with JSON:
 
 
 class CritiqueLLM:
-    def __init__(self, model: str = "llama-3.1-8b-instant", timeout: float = 20.0):
+    def __init__(self, model: str = "openai/gpt-oss-20b", timeout: float = 20.0):
         self._model   = model
         self._timeout = timeout
         self._ok      = False

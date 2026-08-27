@@ -1,0 +1,35 @@
+{
+  "case_id": "CASE_ATM_007",
+  "timeline_version": "V2",
+  "critique_version": "C2",
+  "revision_number": 0,
+  "verdict": "ACCEPT",
+  "reason": "no blocking issues",
+  "checks_run": [
+    "causal_cycle",
+    "orphaned_high_confidence_event",
+    "llm_edge_dependency_ratio",
+    "classification_structural_sanity",
+    "missing_linking_event",
+    "narrative_break",
+    "role_count_mismatch",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "llm_used": true,
+  "overall_score": 1.0,
+  "requires_revision": false,
+  "revision_target": "",
+  "narrative_summary": "Case CASE_ATM_007 (pass 1): no issues. ACCEPT.",
+  "belief_updates": {},
+  "issues": [],
+  "gaps": [],
+  "edges_to_exclude": [],
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {}
+  },
+  "unresolvable_gaps": [],
+  "recommended_action": "FINALIZE"
+}

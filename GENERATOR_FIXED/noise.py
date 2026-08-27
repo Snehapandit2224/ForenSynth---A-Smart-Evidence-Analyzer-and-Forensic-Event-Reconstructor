@@ -144,13 +144,28 @@ def _paraphrase(content: str, rng: random.Random, modality: str = "video") -> st
     if content in _SEMANTIC_VARIANTS:
         return rng.choice(_SEMANTIC_VARIANTS[content])
     if modality == "video":
+        # FIX: removed "(reported by bystander)" — that implies audio, not camera capture
         qualifiers = [
             " (partially obscured)",
             " (observed from distance)",
-            " (reported by bystander)",
             " (captured on footage)",
+            " (poor image quality)",
+            " (wide-angle view)",
         ]
         return content.rstrip(".") + rng.choice(qualifiers) + "."
+    if modality == "audio":
+        # Paraphrase spoken content with hedging qualifiers
+        hedges = [
+            " (statement recorded under caution)",
+            " (per call log transcript)",
+            " (reconstructed from partial recording)",
+        ]
+        return content.rstrip(".") + rng.choice(hedges) + "."
+    if modality == "text":
+        # For text, apply minor surface variation if key not found
+        suffixes = [" (forwarded)", " (partial extract)", ""]
+        suffix = rng.choice(suffixes)
+        return content + suffix if suffix and not content.endswith(suffix) else content
     return content
 
 
@@ -279,11 +294,12 @@ _CONTRADICTIONS: dict[str, list[str]] = {
         "I deny performing any work activities at the time indicated.",
     ],
     "observe_exit": [
-        "I did not see anyone leave the ATM or office during that time.",
+        "I did not see anyone leave the area during that time.",
         "I was not in a position to observe any exits from that location.",
         "I cannot confirm having seen anyone depart the premises.",
         "I was not paying attention to anyone leaving the area.",
         "I deny witnessing the departures described.",
+        "I did not notice anyone exit at the time mentioned.",
     ],
     "report_incident": [
         "I did not file any report or complaint regarding this incident.",
@@ -492,27 +508,43 @@ def _infer_action_from_event_ref(obs: CleanObservation) -> str:
     Best-effort action inference from obs content for contradiction lookup.
     """
     content_lower = obs.content.lower()
+    # FIX: domain-agnostic keyword map using canonical action names
     keyword_action_map = {
+        # ATM actions
         "enter":       "enter_atm",
         "inside":      "enter_atm",
         "withdraw":    "withdraw_cash",
         "transaction": "withdraw_cash",
         "exit":        "exit_atm",
-        "leave":       "exit_atm",
-        "steal":       "steal_items",
-        "transfer":    "steal_data",
         "tamper":      "tamper_atm",
-        "approach":    "approach_atm",
-        "message":     "initiate_communication",
-        "plan":        "confirm_plan",
-        "files":       "steal_items",
+        "card slot":   "tamper_atm",
         "loiter":      "loiter_near_atm",
         "pacing":      "loiter_near_atm",
-        "coordinate":  "coordinate_activity",
+        # Office actions
         "navigate":    "navigate_to_target",
         "server":      "navigate_to_target",
-        "fleet":       "flee_scene",
+        "corridor":    "navigate_to_target",
+        "steal":       "steal_items",
+        "transfer":    "steal_data",
+        "usb":         "steal_data",
+        "files":       "steal_items",
+        "data":        "steal_data",
+        # General movement
+        "approach":    "approach_atm",
+        "leave":       "exit_atm",
+        "flee":        "flee_scene",
         "run":         "flee_scene",
+        "depart":      "exit_atm",
+        # Communication actions
+        "message":     "initiate_communication",
+        "plan":        "confirm_plan",
+        "coordinate":  "coordinate_activity",
+        "confirm":     "confirm_plan",
+        # Witness actions
+        "observe":     "observe_exit",
+        "witness":     "observe_exit",
+        "report":      "report_incident",
+        "suspicious":  "report_incident",
     }
     for keyword, action in keyword_action_map.items():
         if keyword in content_lower:

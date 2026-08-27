@@ -6,7 +6,7 @@
   "output_tl_version": "V1",
   "er_constraints": {},
   "belief_updates": {},
-  "reasoning": "Critique found no actionable gaps. Output case: PARTIAL. Single timeline, moderate confidence (0.84).",
+  "reasoning": "Critique found no actionable gaps. Output case: PARTIAL. Single timeline, moderate confidence (0.82).",
   "issues_addressed": [],
   "issues_deferred": [],
   "output_case": "PARTIAL",
@@ -15,36 +15,21 @@
       "iteration": 1,
       "timeline_version": "V1",
       "critique_version": "C1",
-      "gaps_detected": 2,
+      "gaps_detected": 0,
       "resolvable_gaps": 0,
-      "unresolvable_gaps": 2,
+      "unresolvable_gaps": 0,
       "recommended_action": "FINALIZE",
-      "overall_score": 0.96,
-      "narrative_summary": "Case CASE_ATM_001 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 2 info. Top: llm_edge_dependency_ratio \u2014 2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error."
+      "overall_score": 1.0,
+      "narrative_summary": "Case CASE_ATM_001 (pass 1): no issues. ACCEPT."
     }
   ],
-  "investigator_flags": [
-    {
-      "gap_type": "llm_edge_dependency_ratio",
-      "affected_entity": "",
-      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
-      "fix_hint": "",
-      "iteration": 1
-    },
-    {
-      "gap_type": "llm_coherence",
-      "affected_entity": "",
-      "detail": "LLM coherence flagged: Person_14's statement that they did not go inside the ATM booth (EVT_entity_1_o3) contradicts the events that show them fiddling with the ATM card insertion area (EVT_entity_1_o4) and leaving the ATM booth (EVT_entity_1_o5). (no LLM-derived causal edge connects these events \u2014 informational only.)",
-      "fix_hint": "",
-      "iteration": 1
-    }
-  ],
+  "investigator_flags": [],
   "all_timelines": [
     {
       "case_id": "CASE_ATM_001",
       "timeline_version": "V1",
       "schema_version": "1.1.0",
-      "generated_at": "2026-07-29T12:39:46Z",
+      "generated_at": "2026-08-26T06:01:38Z",
       "events": [
         {
           "event_id": "EVT_entity_1_o1",
@@ -71,6 +56,35 @@
           "reasoning": [
             "timestamp ordering",
             "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_unresolved_person_14_o2",
+          "obs_ids": [
+            "O2"
+          ],
+          "timestamp": "2024-01-15T10:03:34Z",
+          "location": "ATM street frontage, wide-angle coverage",
+          "location_key": "atm street frontage",
+          "entity_id": "UNRESOLVED_person_14",
+          "primary_alias": "Person_14",
+          "aliases": [
+            "Person_14"
+          ],
+          "modality": "video",
+          "content": "Subject lingers near the ATM kiosk for an unusually long time.",
+          "confidence": 0.7268,
+          "role": "suspect",
+          "action_tags": [
+            "LOITER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
             "valid timestamp"
           ],
           "version": "V1"
@@ -208,28 +222,20 @@
           "label": "same entity, semantically same location (sim=1.00), sequential"
         },
         {
+          "source": "EVT_unresolved_person_14_o2",
+          "target": "EVT_entity_1_o5",
+          "edge_type": "CAUSAL",
+          "confidence": 0.677,
+          "relation": "BEFORE",
+          "label": "action dependency: LOITER->EXIT"
+        },
+        {
           "source": "EVT_entity_1_o4",
           "target": "EVT_entity_1_o5",
           "edge_type": "CAUSAL",
           "confidence": 0.8068,
           "relation": "BEFORE",
           "label": "action dependency: WITHDRAW->EXIT"
-        },
-        {
-          "source": "EVT_entity_1_o1",
-          "target": "EVT_entity_1_o5",
-          "edge_type": "CAUSAL",
-          "confidence": 0.8,
-          "relation": "BEFORE",
-          "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
-        },
-        {
-          "source": "EVT_entity_1_o1",
-          "target": "EVT_entity_1_o4",
-          "edge_type": "CAUSAL",
-          "confidence": 0.9,
-          "relation": "BEFORE",
-          "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
         }
       ],
       "timeline_graph": {
@@ -247,6 +253,21 @@
             "conflict_flag": false,
             "obs_ids": [
               "O1"
+            ]
+          },
+          {
+            "id": "EVT_unresolved_person_14_o2",
+            "timestamp": "2024-01-15T10:03:34Z",
+            "ts_epoch": 1705313014.0,
+            "entity_id": "UNRESOLVED_person_14",
+            "primary_alias": "Person_14",
+            "confidence": 0.7268,
+            "location": "ATM street frontage, wide-angle coverage",
+            "modality": "video",
+            "content": "Subject lingers near the ATM kiosk for an unusually long time.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O2"
             ]
           },
           {
@@ -315,6 +336,14 @@
         "edges": [
           {
             "source": "EVT_entity_1_o1",
+            "target": "EVT_unresolved_person_14_o2",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_1_o1",
             "target": "EVT_entity_1_o3",
             "edge_type": "CAUSAL",
             "confidence": 0.6468,
@@ -322,20 +351,20 @@
             "label": "same entity, semantically same location (sim=1.00), sequential"
           },
           {
-            "source": "EVT_entity_1_o1",
-            "target": "EVT_entity_1_o5",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
+            "source": "EVT_unresolved_person_14_o2",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
           },
           {
-            "source": "EVT_entity_1_o1",
-            "target": "EVT_entity_1_o4",
+            "source": "EVT_unresolved_person_14_o2",
+            "target": "EVT_entity_1_o5",
             "edge_type": "CAUSAL",
-            "confidence": 0.9,
+            "confidence": 0.677,
             "relation": "BEFORE",
-            "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
+            "label": "action dependency: LOITER->EXIT"
           },
           {
             "source": "EVT_entity_1_o3",
@@ -372,20 +401,12 @@
             "label": "same entity, semantically same location (sim=1.00), sequential"
           },
           {
-            "source": "EVT_entity_1_o1",
+            "source": "EVT_unresolved_person_14_o2",
             "target": "EVT_entity_1_o5",
             "edge_type": "CAUSAL",
-            "confidence": 0.8,
+            "confidence": 0.677,
             "relation": "BEFORE",
-            "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
-          },
-          {
-            "source": "EVT_entity_1_o1",
-            "target": "EVT_entity_1_o4",
-            "edge_type": "CAUSAL",
-            "confidence": 0.9,
-            "relation": "BEFORE",
-            "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
+            "label": "action dependency: LOITER->EXIT"
           },
           {
             "source": "EVT_entity_1_o4",
@@ -396,10 +417,20 @@
             "label": "action dependency: WITHDRAW->EXIT"
           }
         ],
-        "node_count": 5,
-        "edge_count": 6
+        "node_count": 6,
+        "edge_count": 7
       },
       "uncertainties": [
+        {
+          "event_id": "EVT_unresolved_person_14_o2",
+          "uncertainty_score": 0.2732,
+          "sources": [
+            "O2"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
         {
           "event_id": "EVT_entity_1_o3",
           "uncertainty_score": 0.2411,
@@ -436,6 +467,17 @@
           "confidence": 0.8997
         },
         {
+          "event_id": "EVT_unresolved_person_14_o2",
+          "timestamp": "2024-01-15T10:03:34Z",
+          "actor": "Person_14",
+          "action": "Subject lingers near the ATM kiosk for an unusually long time.",
+          "location": "ATM street frontage, wide-angle coverage",
+          "evidence": [
+            "O2"
+          ],
+          "confidence": 0.7268
+        },
+        {
           "event_id": "EVT_entity_1_o3",
           "timestamp": "2024-01-15T10:04:03Z",
           "actor": "Person_14",
@@ -450,7 +492,7 @@
           "event_id": "EVT_entity_1_o4",
           "timestamp": "2024-01-15T10:04:59Z",
           "actor": "Person_14",
-          "action": "Individual seen fiddling with the ATM card insertion area.  [-> local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area.]",
+          "action": "Individual seen fiddling with the ATM card insertion area.",
           "location": "ATM street frontage, wide-angle coverage",
           "evidence": [
             "O4"
@@ -461,7 +503,7 @@
           "event_id": "EVT_entity_1_o5",
           "timestamp": "2024-01-15T10:05:21Z",
           "actor": "Person_14",
-          "action": "Individual leaves ATM booth.  [-> local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth.]",
+          "action": "Individual leaves ATM booth.  [-> action dependency: WITHDRAW->EXIT]",
           "location": "ATM booth interior, card reader and keypad area",
           "evidence": [
             "O5"
@@ -495,6 +537,19 @@
             "valid timestamp"
           ],
           "confidence": 0.8997
+        },
+        {
+          "event_id": "EVT_unresolved_person_14_o2",
+          "derived_from": [
+            "O2"
+          ],
+          "entity_used": "UNRESOLVED_person_14",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
+            "valid timestamp"
+          ],
+          "confidence": 0.7268
         },
         {
           "event_id": "EVT_entity_1_o3",
@@ -567,38 +622,65 @@
       "unresolved_temporal_pairs": [],
       "unresolved_causal_pairs": [
         {
+          "event_a": "EVT_entity_1_o1",
+          "event_b": "EVT_entity_1_o5",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1",
+          "event_b": "EVT_entity_1_o4",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
           "event_a": "EVT_entity_1_o3",
           "event_b": "EVT_entity_1_o5",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o3",
           "event_b": "EVT_entity_1_o4",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_14_o2",
+          "event_b": "EVT_entity_1_o4",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1",
+          "event_b": "EVT_unresolved_person_14_o2",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_14_o2",
+          "event_b": "EVT_entity_1_o3",
+          "reason": "local LLM returned no result for this pair"
         }
       ],
-      "unresolved_entities": [],
+      "unresolved_entities": [
+        "Person_14"
+      ],
       "stage_timings": {
         "stage_1_validation": 0.0001,
-        "stage_2_enrichment": 0.0019,
-        "stage_3_ordering": 0.0,
-        "stage_4_5_temporal": 0.0,
-        "stage_6_causal": 14.3559,
+        "stage_2_enrichment": 0.0026,
+        "stage_3_ordering": 0.0001,
+        "stage_4_5_temporal": 0.0001,
+        "stage_6_causal": 2.0355,
         "stage_7_uncertainty": 0.0,
-        "stage_8_conflicts": 0.0001,
+        "stage_8_conflicts": 0.0,
         "stage_10_explainability": 0.0001,
-        "stage_11_narrative": 0.0,
-        "stage_12_versioning": 0.0012,
-        "stage_13_export": 0.0069
+        "stage_11_narrative": 0.0001,
+        "stage_12_versioning": 0.0007,
+        "stage_13_export": 0.0091
       },
-      "total_time_sec": 14.3676,
+      "total_time_sec": 2.0559,
       "validation_warnings": [],
       "llm_backend_used": "CloudLLMFallback",
       "llm_calls_made": 1,
-      "output_classification": "PARTIAL",
-      "output_classification_reason": "avg_confidence=0.84, conflict_fraction=0.20, unresolved_ratio=0.40 - reconstruction is usable but has some flagged or unresolved items worth investigator attention."
+      "output_classification": "AMBIGUOUS",
+      "output_classification_reason": "avg_confidence=0.82, conflict_fraction=0.17, unresolved_ratio=1.17 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
     }
   ],
-  "generated_at": "2026-07-29T12:39:47.688528+00:00",
+  "generated_at": "2026-08-26T06:01:40.188628+00:00",
   "status": "complete"
 }

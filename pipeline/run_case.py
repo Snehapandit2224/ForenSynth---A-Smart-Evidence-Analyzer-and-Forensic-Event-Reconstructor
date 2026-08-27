@@ -33,7 +33,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("forensynth.run_case")
 
-MAX_LOOPS = 3
+MAX_LOOPS = 5
 
 
 def _banner(msg: str) -> None:
@@ -127,7 +127,7 @@ def run_critique(mem, case_id, tl_version, crit_version,
     return result
 
 
-def run_showrunner(mem, case_id, tl_ver, crit_ver, out_dir=None):
+def run_showrunner(mem, case_id, tl_ver, crit_ver, out_dir=None, prev_decision=None):
     from showrunner_agent import run_showrunner as _sr
     _banner(f"Showrunner — {case_id}")
     payload = mem.load_for_showrunner(case_id,
@@ -135,24 +135,31 @@ def run_showrunner(mem, case_id, tl_ver, crit_ver, out_dir=None):
                                        crit_version=crit_ver)
     if not payload:
         raise RuntimeError(f"Cannot load showrunner payload for {case_id}")
+    # FIX: inject full previous decision as previous_constraints
+    # The DB only stores sparse er_constraints row, losing iter_log, belief_state etc.
+    # Passing the full previous result preserves convergence detection state.
+    if prev_decision:
+        payload["previous_constraints"] = prev_decision.get("er_constraints", {})
     result = _sr(payload)
 
-    if result["action"] == "re_run_er" and result.get("er_constraints"):
+    if result.get("er_constraints"):
         c = result["er_constraints"]
+        # Save constraints for both re_run_er and re_run_timeline
+        # so recurrence detection works on subsequent loops
         ver = mem.save_er_constraints(
             case_id,
             constraints={
                 "must_not_merge":     c.get("must_not_merge", []),
                 "must_merge":         c.get("must_merge", []),
                 "soft_hints":         c.get("soft_hints", {}),
-                "previous_gap_types": [
-                    g.get("gap_type", "")
+                "previous_gap_types": c.get("previous_gap_types", [
+                    g.get("gap_type") or g.get("check","")
                     for g in payload["critique"].get("gaps", [])
-                ],
+                ]),
             },
             reason=result.get("reasoning", "")[:500],
         )
-        print(f"  ER constraints v{ver} saved")
+        print(f"  Constraints v{ver} saved (action={result['action']})")
 
     mem.save_showrunner_run({
         **result,
@@ -225,9 +232,10 @@ def main():
         er_ver = 1
 
     # ── Main loop ─────────────────────────────────────────────────────────────
-    tl_result  = None   # timeline result from this iteration
-    tl_ver     = None   # current timeline version
-    crit_ver   = None   # current critique version
+    tl_result    = None   # timeline result from this iteration
+    tl_ver       = None   # current timeline version
+    crit_ver     = None   # current critique version
+    prev_decision = None  # full previous Showrunner result for convergence tracking
 
     for loop in range(1, MAX_LOOPS + 1):
         next_tl   = f"V{loop}"
@@ -246,9 +254,11 @@ def main():
                                 out_dir=out / "critiques")
         crit_ver = next_crit
 
-        # Showrunner
+        # Showrunner — pass previous decision for convergence tracking
         decision = run_showrunner(mem, case_id, tl_ver, crit_ver,
-                                  out_dir=out / "showrunner")
+                                  out_dir=out / "showrunner",
+                                  prev_decision=prev_decision)
+        prev_decision = decision  # carry forward for next loop
         action = decision["action"]
 
         # ── Decide next step ──────────────────────────────────────────────────

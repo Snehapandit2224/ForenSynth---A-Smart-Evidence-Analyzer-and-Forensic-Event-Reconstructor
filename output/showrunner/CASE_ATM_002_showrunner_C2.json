@@ -9,8 +9,8 @@
     "must_merge": [],
     "soft_hints": {},
     "previous_gap_types": [
-      "low_confidence_event",
-      "missing_linking_event"
+      "missing_linking_event",
+      "low_confidence_event"
     ],
     "iter_log": [
       {
@@ -22,7 +22,7 @@
         "unresolvable_gaps": 1,
         "recommended_action": "REBUILD_WITH_BELIEF_UPDATE",
         "overall_score": 0.88,
-        "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolv"
+        "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unre"
       }
     ],
     "investigator_flags": [
@@ -39,7 +39,7 @@
         "case_id": "CASE_ATM_002",
         "timeline_version": "V2",
         "schema_version": "1.1.0",
-        "generated_at": "2026-07-29T12:38:05Z",
+        "generated_at": "2026-08-26T05:58:25Z",
         "events": [
           {
             "event_id": "EVT_unresolved_speaker_d_o2",
@@ -746,38 +746,6 @@
             "confidence": 0.568,
             "relation": "BEFORE",
             "label": "action dependency: EXIT->FLEE"
-          },
-          {
-            "source": "EVT_unresolved_person_50_o4",
-            "target": "EVT_unresolved_person_50_o9",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-          },
-          {
-            "source": "EVT_unresolved_person_50_o4",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-          },
-          {
-            "source": "EVT_unresolved_speaker_d_o15",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
-          },
-          {
-            "source": "EVT_unresolved_person_97_o6",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
           }
         ],
         "timeline_graph": {
@@ -1192,22 +1160,6 @@
               "label": "SIMULTANEOUS (0.90)"
             },
             {
-              "source": "EVT_unresolved_person_50_o4",
-              "target": "EVT_unresolved_person_50_o9",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-            },
-            {
-              "source": "EVT_unresolved_person_50_o4",
-              "target": "EVT_unresolved_person_50_o17",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-            },
-            {
               "source": "EVT_unresolved_speaker_q_o10",
               "target": "EVT_unresolved_log_30_o8",
               "edge_type": "TEMPORAL",
@@ -1288,14 +1240,6 @@
               "label": "action dependency: ENTER->WITHDRAW"
             },
             {
-              "source": "EVT_unresolved_person_97_o6",
-              "target": "EVT_unresolved_person_50_o17",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
-            },
-            {
               "source": "EVT_unresolved_speaker_d_o12",
               "target": "EVT_unresolved_speaker_d_o15",
               "edge_type": "CAUSAL",
@@ -1334,14 +1278,6 @@
               "confidence": 0.5549,
               "relation": "BEFORE",
               "label": "action dependency: EXIT->FLEE"
-            },
-            {
-              "source": "EVT_unresolved_speaker_d_o15",
-              "target": "EVT_unresolved_person_50_o17",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
             },
             {
               "source": "EVT_unresolved_log_30_o16",
@@ -1514,22 +1450,6 @@
               "label": "action dependency: APPROACH->ENTER"
             },
             {
-              "source": "EVT_unresolved_person_50_o4",
-              "target": "EVT_unresolved_person_50_o9",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-            },
-            {
-              "source": "EVT_unresolved_person_50_o4",
-              "target": "EVT_unresolved_person_50_o17",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-            },
-            {
               "source": "EVT_unresolved_speaker_q_o10",
               "target": "EVT_unresolved_speaker_q_o18",
               "edge_type": "CAUSAL",
@@ -1578,14 +1498,6 @@
               "label": "action dependency: ENTER->WITHDRAW"
             },
             {
-              "source": "EVT_unresolved_person_97_o6",
-              "target": "EVT_unresolved_person_50_o17",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
-            },
-            {
               "source": "EVT_unresolved_speaker_d_o12",
               "target": "EVT_unresolved_speaker_d_o15",
               "edge_type": "CAUSAL",
@@ -1618,14 +1530,6 @@
               "label": "action dependency: EXIT->FLEE"
             },
             {
-              "source": "EVT_unresolved_speaker_d_o15",
-              "target": "EVT_unresolved_person_50_o17",
-              "edge_type": "CAUSAL",
-              "confidence": 0.8,
-              "relation": "BEFORE",
-              "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
-            },
-            {
               "source": "EVT_unresolved_log_30_o16",
               "target": "EVT_unresolved_speaker_q_o18",
               "edge_type": "CAUSAL",
@@ -1643,7 +1547,7 @@
             }
           ],
           "node_count": 17,
-          "edge_count": 44
+          "edge_count": 40
         },
         "uncertainties": [
           {
@@ -1888,7 +1792,7 @@
             "event_id": "EVT_unresolved_person_50_o9",
             "timestamp": "2024-01-15T10:01:45Z",
             "actor": "Person_50",
-            "action": "Second actor remains outside the booth, watching the area.  [-> local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity.]",
+            "action": "Second actor remains outside the booth, watching the area.  [-> action dependency: APPROACH->WATCH]",
             "location": "ATM booth interior, card reader and keypad area",
             "evidence": [
               "O9"
@@ -1954,7 +1858,7 @@
             "event_id": "EVT_unresolved_person_50_o17",
             "timestamp": "2024-01-15T10:03:08Z",
             "actor": "Person_50",
-            "action": "Two individuals are recorded leaving the scene side by side.  [-> local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk.]",
+            "action": "Two individuals are recorded leaving the scene side by side.  [-> action dependency: WITHDRAW->EXIT]",
             "location": "ATM booth entrance, exterior facing",
             "evidence": [
               "O17"
@@ -2236,82 +2140,102 @@
           {
             "event_a": "EVT_unresolved_person_50_o9",
             "event_b": "EVT_unresolved_person_50_o17",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_d_o2",
             "event_b": "EVT_unresolved_speaker_d_o12",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o5",
             "event_b": "EVT_unresolved_speaker_q_o18",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_unresolved_person_50_o4",
+            "event_b": "EVT_unresolved_person_50_o9",
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_d_o7",
             "event_b": "EVT_unresolved_speaker_d_o12",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_unresolved_person_50_o4",
+            "event_b": "EVT_unresolved_person_50_o17",
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_d_o2",
             "event_b": "EVT_unresolved_speaker_q_o5",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_d_o12",
             "event_b": "EVT_unresolved_speaker_q_o18",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o10",
             "event_b": "EVT_unresolved_speaker_d_o12",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o5",
             "event_b": "EVT_unresolved_speaker_d_o15",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_email_68_o20",
             "event_b": "EVT_unresolved_sms_74_o21",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_unresolved_speaker_d_o15",
+            "event_b": "EVT_unresolved_person_50_o17",
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o10",
             "event_b": "EVT_unresolved_person_50_o9",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_unresolved_person_97_o6",
+            "event_b": "EVT_unresolved_person_50_o17",
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o10",
             "event_b": "EVT_unresolved_person_97_o6",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_person_97_o6",
             "event_b": "EVT_unresolved_speaker_d_o15",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o10",
             "event_b": "EVT_unresolved_log_30_o8",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_person_50_o9",
             "event_b": "EVT_unresolved_speaker_d_o12",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_person_50_o9",
             "event_b": "EVT_unresolved_person_97_o6",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_speaker_q_o5",
             "event_b": "EVT_unresolved_person_50_o17",
-            "reason": "local LLM determined no causal link"
+            "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_unresolved_log_30_o8",
@@ -2569,26 +2493,26 @@
           "sms_74"
         ],
         "stage_timings": {
-          "stage_1_validation": 0.0002,
-          "stage_2_enrichment": 0.0028,
+          "stage_1_validation": 0.0003,
+          "stage_2_enrichment": 0.002,
           "stage_3_ordering": 0.0,
           "stage_4_5_temporal": 0.0001,
-          "stage_6_causal": 29.4445,
+          "stage_6_causal": 20.4839,
           "stage_7_uncertainty": 0.0,
           "stage_8_conflicts": 0.0,
-          "stage_10_explainability": 0.0002,
+          "stage_10_explainability": 0.0001,
           "stage_11_narrative": 0.0001,
-          "stage_12_versioning": 0.0012,
-          "stage_13_export": 0.0176
+          "stage_12_versioning": 0.0016,
+          "stage_13_export": 0.0153
         },
-        "total_time_sec": 29.4682,
+        "total_time_sec": 20.5056,
         "validation_warnings": [
           "No canonical entities found - all observations will be treated as unresolved"
         ],
         "llm_backend_used": "CloudLLMFallback",
         "llm_calls_made": 1,
         "output_classification": "AMBIGUOUS",
-        "output_classification_reason": "avg_confidence=0.70, conflict_fraction=0.00, unresolved_ratio=3.71 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+        "output_classification_reason": "avg_confidence=0.70, conflict_fraction=0.00, unresolved_ratio=3.94 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
       }
     ],
     "belief_state": {},
@@ -2611,7 +2535,7 @@
       "unresolvable_gaps": 1,
       "recommended_action": "REBUILD_WITH_BELIEF_UPDATE",
       "overall_score": 0.88,
-      "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolv"
+      "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unre"
     }
   ],
   "investigator_flags": [
@@ -2628,7 +2552,7 @@
       "case_id": "CASE_ATM_002",
       "timeline_version": "V2",
       "schema_version": "1.1.0",
-      "generated_at": "2026-07-29T12:38:05Z",
+      "generated_at": "2026-08-26T05:58:25Z",
       "events": [
         {
           "event_id": "EVT_unresolved_speaker_d_o2",
@@ -3335,38 +3259,6 @@
           "confidence": 0.568,
           "relation": "BEFORE",
           "label": "action dependency: EXIT->FLEE"
-        },
-        {
-          "source": "EVT_unresolved_person_50_o4",
-          "target": "EVT_unresolved_person_50_o9",
-          "edge_type": "CAUSAL",
-          "confidence": 0.8,
-          "relation": "BEFORE",
-          "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-        },
-        {
-          "source": "EVT_unresolved_person_50_o4",
-          "target": "EVT_unresolved_person_50_o17",
-          "edge_type": "CAUSAL",
-          "confidence": 0.8,
-          "relation": "BEFORE",
-          "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-        },
-        {
-          "source": "EVT_unresolved_speaker_d_o15",
-          "target": "EVT_unresolved_person_50_o17",
-          "edge_type": "CAUSAL",
-          "confidence": 0.8,
-          "relation": "BEFORE",
-          "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
-        },
-        {
-          "source": "EVT_unresolved_person_97_o6",
-          "target": "EVT_unresolved_person_50_o17",
-          "edge_type": "CAUSAL",
-          "confidence": 0.8,
-          "relation": "BEFORE",
-          "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
         }
       ],
       "timeline_graph": {
@@ -3781,22 +3673,6 @@
             "label": "SIMULTANEOUS (0.90)"
           },
           {
-            "source": "EVT_unresolved_person_50_o4",
-            "target": "EVT_unresolved_person_50_o9",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-          },
-          {
-            "source": "EVT_unresolved_person_50_o4",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-          },
-          {
             "source": "EVT_unresolved_speaker_q_o10",
             "target": "EVT_unresolved_log_30_o8",
             "edge_type": "TEMPORAL",
@@ -3877,14 +3753,6 @@
             "label": "action dependency: ENTER->WITHDRAW"
           },
           {
-            "source": "EVT_unresolved_person_97_o6",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
-          },
-          {
             "source": "EVT_unresolved_speaker_d_o12",
             "target": "EVT_unresolved_speaker_d_o15",
             "edge_type": "CAUSAL",
@@ -3923,14 +3791,6 @@
             "confidence": 0.5549,
             "relation": "BEFORE",
             "label": "action dependency: EXIT->FLEE"
-          },
-          {
-            "source": "EVT_unresolved_speaker_d_o15",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
           },
           {
             "source": "EVT_unresolved_log_30_o16",
@@ -4103,22 +3963,6 @@
             "label": "action dependency: APPROACH->ENTER"
           },
           {
-            "source": "EVT_unresolved_person_50_o4",
-            "target": "EVT_unresolved_person_50_o9",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-          },
-          {
-            "source": "EVT_unresolved_person_50_o4",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-          },
-          {
             "source": "EVT_unresolved_speaker_q_o10",
             "target": "EVT_unresolved_speaker_q_o18",
             "edge_type": "CAUSAL",
@@ -4167,14 +4011,6 @@
             "label": "action dependency: ENTER->WITHDRAW"
           },
           {
-            "source": "EVT_unresolved_person_97_o6",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
-          },
-          {
             "source": "EVT_unresolved_speaker_d_o12",
             "target": "EVT_unresolved_speaker_d_o15",
             "edge_type": "CAUSAL",
@@ -4207,14 +4043,6 @@
             "label": "action dependency: EXIT->FLEE"
           },
           {
-            "source": "EVT_unresolved_speaker_d_o15",
-            "target": "EVT_unresolved_person_50_o17",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
-          },
-          {
             "source": "EVT_unresolved_log_30_o16",
             "target": "EVT_unresolved_speaker_q_o18",
             "edge_type": "CAUSAL",
@@ -4232,7 +4060,7 @@
           }
         ],
         "node_count": 17,
-        "edge_count": 44
+        "edge_count": 40
       },
       "uncertainties": [
         {
@@ -4477,7 +4305,7 @@
           "event_id": "EVT_unresolved_person_50_o9",
           "timestamp": "2024-01-15T10:01:45Z",
           "actor": "Person_50",
-          "action": "Second actor remains outside the booth, watching the area.  [-> local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity.]",
+          "action": "Second actor remains outside the booth, watching the area.  [-> action dependency: APPROACH->WATCH]",
           "location": "ATM booth interior, card reader and keypad area",
           "evidence": [
             "O9"
@@ -4543,7 +4371,7 @@
           "event_id": "EVT_unresolved_person_50_o17",
           "timestamp": "2024-01-15T10:03:08Z",
           "actor": "Person_50",
-          "action": "Two individuals are recorded leaving the scene side by side.  [-> local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk.]",
+          "action": "Two individuals are recorded leaving the scene side by side.  [-> action dependency: WITHDRAW->EXIT]",
           "location": "ATM booth entrance, exterior facing",
           "evidence": [
             "O17"
@@ -4825,82 +4653,102 @@
         {
           "event_a": "EVT_unresolved_person_50_o9",
           "event_b": "EVT_unresolved_person_50_o17",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_d_o2",
           "event_b": "EVT_unresolved_speaker_d_o12",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o5",
           "event_b": "EVT_unresolved_speaker_q_o18",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_unresolved_person_50_o9",
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_d_o7",
           "event_b": "EVT_unresolved_speaker_d_o12",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_unresolved_person_50_o17",
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_d_o2",
           "event_b": "EVT_unresolved_speaker_q_o5",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_d_o12",
           "event_b": "EVT_unresolved_speaker_q_o18",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o10",
           "event_b": "EVT_unresolved_speaker_d_o12",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o5",
           "event_b": "EVT_unresolved_speaker_d_o15",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_email_68_o20",
           "event_b": "EVT_unresolved_sms_74_o21",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_speaker_d_o15",
+          "event_b": "EVT_unresolved_person_50_o17",
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o10",
           "event_b": "EVT_unresolved_person_50_o9",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_97_o6",
+          "event_b": "EVT_unresolved_person_50_o17",
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o10",
           "event_b": "EVT_unresolved_person_97_o6",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_person_97_o6",
           "event_b": "EVT_unresolved_speaker_d_o15",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o10",
           "event_b": "EVT_unresolved_log_30_o8",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_person_50_o9",
           "event_b": "EVT_unresolved_speaker_d_o12",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_person_50_o9",
           "event_b": "EVT_unresolved_person_97_o6",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_speaker_q_o5",
           "event_b": "EVT_unresolved_person_50_o17",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_unresolved_log_30_o8",
@@ -5158,28 +5006,28 @@
         "sms_74"
       ],
       "stage_timings": {
-        "stage_1_validation": 0.0002,
-        "stage_2_enrichment": 0.0028,
+        "stage_1_validation": 0.0003,
+        "stage_2_enrichment": 0.002,
         "stage_3_ordering": 0.0,
         "stage_4_5_temporal": 0.0001,
-        "stage_6_causal": 29.4445,
+        "stage_6_causal": 20.4839,
         "stage_7_uncertainty": 0.0,
         "stage_8_conflicts": 0.0,
-        "stage_10_explainability": 0.0002,
+        "stage_10_explainability": 0.0001,
         "stage_11_narrative": 0.0001,
-        "stage_12_versioning": 0.0012,
-        "stage_13_export": 0.0176
+        "stage_12_versioning": 0.0016,
+        "stage_13_export": 0.0153
       },
-      "total_time_sec": 29.4682,
+      "total_time_sec": 20.5056,
       "validation_warnings": [
         "No canonical entities found - all observations will be treated as unresolved"
       ],
       "llm_backend_used": "CloudLLMFallback",
       "llm_calls_made": 1,
       "output_classification": "AMBIGUOUS",
-      "output_classification_reason": "avg_confidence=0.70, conflict_fraction=0.00, unresolved_ratio=3.71 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+      "output_classification_reason": "avg_confidence=0.70, conflict_fraction=0.00, unresolved_ratio=3.94 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
     }
   ],
-  "generated_at": "2026-07-29T12:38:24.109160+00:00",
+  "generated_at": "2026-08-26T05:58:38.228399+00:00",
   "status": "complete"
 }

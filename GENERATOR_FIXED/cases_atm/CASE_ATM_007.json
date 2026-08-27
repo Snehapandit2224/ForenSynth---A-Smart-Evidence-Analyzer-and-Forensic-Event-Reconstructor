@@ -1,0 +1,390 @@
+{
+  "case_id": "CASE_ATM_007",
+  "domain": "ATM_Robbery",
+  "template": "MultiActor_Entry_Action_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "Whitefield ATM Kiosk",
+    "time_window": [
+      0,
+      345
+    ],
+    "description": "A coordinated ATM robbery was reported involving 2 accused individuals. Division of roles was evident from CCTV footage, with one party operating the terminal and another standing guard. 2 eyewitness(es) are on record.",
+    "roles": {
+      "suspect": 2,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O3",
+      "event_ref": "E1",
+      "entity": "log_66",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Walking up to it now. Clear?",
+      "timestamp": "2024-01-15T10:00:56",
+      "time_offset": 56,
+      "confidence": 0.69,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E1",
+      "entity": "Speaker_J",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "On my way to the machine now.",
+      "timestamp": "2024-01-15T10:01:06",
+      "time_offset": 66,
+      "confidence": 0.796,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Person_99",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "First suspect is seen nearing the ATM enclosure.",
+      "timestamp": "2024-01-15T10:01:12",
+      "time_offset": 72,
+      "confidence": 0.926,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E2",
+      "entity": "Speaker_Y",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "I can see the booth from here (statement recorded under caution).",
+      "timestamp": "2024-01-15T10:01:23",
+      "time_offset": 83,
+      "confidence": 0.687,
+      "noise_tags": [
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E3",
+      "entity": "Speaker_J",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I'm inside the booth, door's shut.",
+      "timestamp": "2024-01-15T10:01:40",
+      "time_offset": 100,
+      "confidence": 0.816,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E3",
+      "entity": "log_66",
+      "role": "suspect",
+      "modality": "text",
+      "source": "incident_report",
+      "location": "bank security office, incident registry",
+      "content": "Booth clear. Proceeding.",
+      "timestamp": "2024-01-15T10:01:40",
+      "time_offset": 100,
+      "confidence": 0.75,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E4",
+      "entity": "Speaker_Y",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "I'm at the kiosk entrance, nothing suspicious.",
+      "timestamp": "2024-01-15T10:01:53",
+      "time_offset": 113,
+      "confidence": 0.61,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O13",
+      "event_ref": "E5",
+      "entity": "log_66",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "It went through. Full amount. (forwarded)",
+      "timestamp": "2024-01-15T10:03:36",
+      "time_offset": 216,
+      "confidence": 0.881,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E5",
+      "entity": "Speaker_J",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "Card's in, processing.",
+      "timestamp": "2024-01-15T10:03:48",
+      "time_offset": 228,
+      "confidence": 0.664,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O15",
+      "event_ref": "E6",
+      "entity": "Speaker_J",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "Out of the ATM, heading your way.",
+      "timestamp": "2024-01-15T10:03:49",
+      "time_offset": 229,
+      "confidence": 0.766,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E5",
+      "entity": "Person_99",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Subject's face not visible in available footage.",
+      "timestamp": "2024-01-15T10:03:50",
+      "time_offset": 230,
+      "confidence": 0.471,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O14",
+      "event_ref": "E6",
+      "entity": "Person_99",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "I departed that location long before the time mentioned.",
+      "timestamp": "2024-01-15T10:04:00",
+      "time_offset": 240,
+      "confidence": 0.497,
+      "noise_tags": [
+        "contradiction"
+      ]
+    },
+    {
+      "obs_id": "O18",
+      "event_ref": "E7",
+      "entity": "Speaker_Y",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "Security's nearby, get out! (reconstructed from partial recording).",
+      "timestamp": "2024-01-15T10:04:23",
+      "time_offset": 263,
+      "confidence": 0.766,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O17",
+      "event_ref": "E7",
+      "entity": "Person_15",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Both persons leave the ATM location at pace.",
+      "timestamp": "2024-01-15T10:04:24",
+      "time_offset": 264,
+      "confidence": 0.889,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O19",
+      "event_ref": "E8",
+      "entity": "Speaker_E",
+      "role": "witness",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "Someone just ran out of the booth (reconstructed from partial recording).",
+      "timestamp": "2024-01-15T10:04:32",
+      "time_offset": 272,
+      "confidence": 0.781,
+      "noise_tags": [
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O20",
+      "event_ref": "E9",
+      "entity": "Speaker_M",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I'd like to speak to an officer about what I saw at the kiosk (per call log transcript).",
+      "timestamp": "2024-01-15T10:05:11",
+      "time_offset": 311,
+      "confidence": 0.742,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_99",
+          "audio": "Speaker_J",
+          "text": "log_66"
+        }
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_15",
+          "audio": "Speaker_Y"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_E"
+        }
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_M"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:01:06",
+        "time_offset": 66
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:01:22",
+        "time_offset": 82
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:01:38",
+        "time_offset": 98
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "action": "wait_outside",
+        "timestamp": "2024-01-15T10:01:50",
+        "time_offset": 110
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "withdraw_cash",
+        "timestamp": "2024-01-15T10:03:45",
+        "time_offset": 225
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:03:58",
+        "time_offset": 238
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "action": "flee_scene",
+        "timestamp": "2024-01-15T10:04:14",
+        "time_offset": 254
+      },
+      {
+        "event_id": "E8",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:04:32",
+        "time_offset": 272
+      },
+      {
+        "event_id": "E9",
+        "entity_id": "witness_2",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:05:06",
+        "time_offset": 306
+      }
+    ],
+    "entity_mapping": {
+      "Person_99": "suspect_1",
+      "Speaker_J": "suspect_1",
+      "log_66": "suspect_1",
+      "Person_15": "suspect_2",
+      "Speaker_Y": "suspect_2",
+      "Speaker_E": "witness_1",
+      "Speaker_M": "witness_2"
+    }
+  }
+}

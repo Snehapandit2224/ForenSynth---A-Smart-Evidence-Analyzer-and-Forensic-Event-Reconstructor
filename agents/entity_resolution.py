@@ -121,7 +121,7 @@ LLM_BATCH_CHUNK_SIZE:     int   = 5   # FIX: was 20 — at ~300 tokens/pair that
 MAX_LLM_CALLS_PER_RUN: int = 14  # FIX: 131 pairs / 20 per batch = 7 calls per agent needed to score all pairs
                                    # was 2 — only first 20 pairs got real LLM scores, rest fell back to heuristic
 
-GROQ_MODEL: str = "llama-3.1-8b-instant"
+GROQ_MODEL: str = "openai/gpt-oss-20b"
 
 FEATURE_NAMES: Tuple[str, ...] = (
     "entity_coreference", "mention_consistency", "temporal", "location",

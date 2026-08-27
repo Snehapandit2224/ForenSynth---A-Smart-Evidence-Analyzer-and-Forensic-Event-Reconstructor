@@ -4,7 +4,7 @@
   "critique_version": "C1",
   "revision_number": 0,
   "verdict": "REVISE",
-  "reason": "2 warning(s) on first pass",
+  "reason": "1 warning(s) on first pass",
   "checks_run": [
     "causal_cycle",
     "orphaned_high_confidence_event",
@@ -17,133 +17,89 @@
     "llm_coherence"
   ],
   "llm_used": true,
-  "overall_score": 0.76,
+  "overall_score": 0.88,
   "requires_revision": true,
-  "revision_target": "er",
-  "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 2 warning(s), 2 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can",
+  "revision_target": "timeline",
+  "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unre",
   "belief_updates": {},
   "issues": [
     {
-      "check": "role_count_mismatch",
+      "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "detail": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "re_run_er",
-      "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
-      "event_id": "",
-      "affected_obs": []
-    },
-    {
-      "check": "role_count_mismatch",
-      "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "flagged_edges": [],
-      "must_not_merge": [],
-      "showrunner_action": "re_run_er",
-      "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
-      "event_id": "",
-      "affected_obs": []
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_unresolved_log_30_o8",
+        "EVT_unresolved_log_30_o16"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_unresolved_log_30_o8",
+      "affected_obs": [
+        "O8",
+        "O16"
+      ]
     },
     {
       "check": "low_confidence_event",
       "severity": "info",
-      "detail": "Event EVT_entity_1_o7 confidence=0.50. Reasons: low observation confidence; entity resolution conflict present",
+      "detail": "Event EVT_unresolved_speaker_d_o7 confidence=0.54. Reasons: low observation confidence",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "",
       "affected_events": [
-        "EVT_entity_1_o7"
+        "EVT_unresolved_speaker_d_o7"
       ],
       "issue_type": "low_confidence_event",
-      "description": "Event EVT_entity_1_o7 confidence=0.50. Reasons: low observation confidence; entity resolution conflict present",
+      "description": "Event EVT_unresolved_speaker_d_o7 confidence=0.54. Reasons: low observation confidence",
       "recommendation": "Informational.",
-      "event_id": "EVT_entity_1_o7",
+      "event_id": "EVT_unresolved_speaker_d_o7",
       "affected_obs": [
         "O7"
       ]
-    },
-    {
-      "check": "llm_coherence",
-      "severity": "info",
-      "detail": "LLM flagged: The second actor's arrival at the ATM vicinity likely caused the first person to proceed into the ATM kiosk, but the timestamps show the first person proceeding into the ATM kiosk before the second actor's arrival. (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
-      "flagged_edges": [],
-      "must_not_merge": [],
-      "showrunner_action": "",
-      "affected_events": [],
-      "issue_type": "llm_coherence",
-      "description": "LLM flagged: The second actor's arrival at the ATM vicinity likely caused the first person to proceed into the ATM kiosk, but the timestamps show the first person proceeding into the ATM kiosk before the second actor's arrival. (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
-      "recommendation": "Informational.",
-      "event_id": "",
-      "affected_obs": []
     }
   ],
   "gaps": [
     {
-      "check": "role_count_mismatch",
+      "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "detail": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "re_run_er",
-      "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
-      "event_id": "",
-      "affected_obs": []
-    },
-    {
-      "check": "role_count_mismatch",
-      "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "flagged_edges": [],
-      "must_not_merge": [],
-      "showrunner_action": "re_run_er",
-      "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
-      "event_id": "",
-      "affected_obs": []
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_unresolved_log_30_o8",
+        "EVT_unresolved_log_30_o16"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_unresolved_log_30_o8",
+      "affected_obs": [
+        "O8",
+        "O16"
+      ]
     },
     {
       "check": "low_confidence_event",
       "severity": "info",
-      "detail": "Event EVT_entity_1_o7 confidence=0.50. Reasons: low observation confidence; entity resolution conflict present",
+      "detail": "Event EVT_unresolved_speaker_d_o7 confidence=0.54. Reasons: low observation confidence",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "",
       "affected_events": [
-        "EVT_entity_1_o7"
+        "EVT_unresolved_speaker_d_o7"
       ],
       "issue_type": "low_confidence_event",
-      "description": "Event EVT_entity_1_o7 confidence=0.50. Reasons: low observation confidence; entity resolution conflict present",
+      "description": "Event EVT_unresolved_speaker_d_o7 confidence=0.54. Reasons: low observation confidence",
       "recommendation": "Informational.",
-      "event_id": "EVT_entity_1_o7",
+      "event_id": "EVT_unresolved_speaker_d_o7",
       "affected_obs": [
         "O7"
       ]
-    },
-    {
-      "check": "llm_coherence",
-      "severity": "info",
-      "detail": "LLM flagged: The second actor's arrival at the ATM vicinity likely caused the first person to proceed into the ATM kiosk, but the timestamps show the first person proceeding into the ATM kiosk before the second actor's arrival. (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
-      "flagged_edges": [],
-      "must_not_merge": [],
-      "showrunner_action": "",
-      "affected_events": [],
-      "issue_type": "llm_coherence",
-      "description": "LLM flagged: The second actor's arrival at the ATM vicinity likely caused the first person to proceed into the ATM kiosk, but the timestamps show the first person proceeding into the ATM kiosk before the second actor's arrival. (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
-      "recommendation": "Informational.",
-      "event_id": "",
-      "affected_obs": []
     }
   ],
   "edges_to_exclude": [],
@@ -153,8 +109,7 @@
     "soft_hints": {}
   },
   "unresolvable_gaps": [
-    "low_confidence_event",
-    "llm_coherence"
+    "low_confidence_event"
   ],
-  "recommended_action": "RECHECK_OBSERVATIONS"
+  "recommended_action": "REBUILD_WITH_BELIEF_UPDATE"
 }

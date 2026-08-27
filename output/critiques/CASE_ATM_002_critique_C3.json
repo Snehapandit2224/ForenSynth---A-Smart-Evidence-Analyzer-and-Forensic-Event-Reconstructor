@@ -20,13 +20,13 @@
   "overall_score": 0.88,
   "requires_revision": true,
   "revision_target": "timeline",
-  "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolv",
+  "narrative_summary": "Case CASE_ATM_002 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unre",
   "belief_updates": {},
   "issues": [
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
@@ -35,7 +35,7 @@
         "EVT_unresolved_log_30_o16"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
       "event_id": "EVT_unresolved_log_30_o8",
       "affected_obs": [
@@ -66,7 +66,7 @@
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
@@ -75,7 +75,7 @@
         "EVT_unresolved_log_30_o16"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'ENTER->TAMPER->EXIT' broken for UNRESOLVED_log_30: 'TAMPER' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'ENTER->WITHDRAW->EXIT' broken for UNRESOLVED_log_30: 'WITHDRAW' missing between EVT_unresolved_log_30_o8 and EVT_unresolved_log_30_o16 (91s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
       "event_id": "EVT_unresolved_log_30_o8",
       "affected_obs": [

@@ -16,6 +16,21 @@
       ]
     },
     {
+      "id": "EVT_unresolved_person_14_o2",
+      "timestamp": "2024-01-15T10:03:34Z",
+      "ts_epoch": 1705313014.0,
+      "entity_id": "UNRESOLVED_person_14",
+      "primary_alias": "Person_14",
+      "confidence": 0.7268,
+      "location": "ATM street frontage, wide-angle coverage",
+      "modality": "video",
+      "content": "Subject lingers near the ATM kiosk for an unusually long time.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O2"
+      ]
+    },
+    {
       "id": "EVT_entity_1_o3",
       "timestamp": "2024-01-15T10:04:03Z",
       "ts_epoch": 1705313043.0000002,
@@ -81,6 +96,14 @@
   "edges": [
     {
       "source": "EVT_entity_1_o1",
+      "target": "EVT_unresolved_person_14_o2",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_1_o1",
       "target": "EVT_entity_1_o3",
       "edge_type": "CAUSAL",
       "confidence": 0.6468,
@@ -88,20 +111,20 @@
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o5",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
+      "source": "EVT_unresolved_person_14_o2",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
     },
     {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o4",
+      "source": "EVT_unresolved_person_14_o2",
+      "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.9,
+      "confidence": 0.677,
       "relation": "BEFORE",
-      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
+      "label": "action dependency: LOITER->EXIT"
     },
     {
       "source": "EVT_entity_1_o3",
@@ -138,20 +161,12 @@
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o1",
+      "source": "EVT_unresolved_person_14_o2",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.8,
+      "confidence": 0.677,
       "relation": "BEFORE",
-      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them leaving the ATM booth."
-    },
-    {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o4",
-      "edge_type": "CAUSAL",
-      "confidence": 0.9,
-      "relation": "BEFORE",
-      "label": "local LLM: Person_14's approach to the ATM from the main road likely led to them fiddling with the ATM card insertion area."
+      "label": "action dependency: LOITER->EXIT"
     },
     {
       "source": "EVT_entity_1_o4",
@@ -162,6 +177,6 @@
       "label": "action dependency: WITHDRAW->EXIT"
     }
   ],
-  "node_count": 5,
-  "edge_count": 6
+  "node_count": 6,
+  "edge_count": 7
 }

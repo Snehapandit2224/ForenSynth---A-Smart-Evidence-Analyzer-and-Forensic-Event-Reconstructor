@@ -410,22 +410,6 @@
       "label": "SIMULTANEOUS (0.90)"
     },
     {
-      "source": "EVT_unresolved_person_50_o4",
-      "target": "EVT_unresolved_person_50_o9",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-    },
-    {
-      "source": "EVT_unresolved_person_50_o4",
-      "target": "EVT_unresolved_person_50_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-    },
-    {
       "source": "EVT_unresolved_speaker_q_o10",
       "target": "EVT_unresolved_log_30_o8",
       "edge_type": "TEMPORAL",
@@ -506,14 +490,6 @@
       "label": "action dependency: ENTER->WITHDRAW"
     },
     {
-      "source": "EVT_unresolved_person_97_o6",
-      "target": "EVT_unresolved_person_50_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
-    },
-    {
       "source": "EVT_unresolved_speaker_d_o12",
       "target": "EVT_unresolved_speaker_d_o15",
       "edge_type": "CAUSAL",
@@ -552,14 +528,6 @@
       "confidence": 0.5549,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->FLEE"
-    },
-    {
-      "source": "EVT_unresolved_speaker_d_o15",
-      "target": "EVT_unresolved_person_50_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
     },
     {
       "source": "EVT_unresolved_log_30_o16",
@@ -732,22 +700,6 @@
       "label": "action dependency: APPROACH->ENTER"
     },
     {
-      "source": "EVT_unresolved_person_50_o4",
-      "target": "EVT_unresolved_person_50_o9",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The second actor's action of watching the area is likely caused by the second actor's arrival at the ATM vicinity."
-    },
-    {
-      "source": "EVT_unresolved_person_50_o4",
-      "target": "EVT_unresolved_person_50_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the second actor's arrival at the ATM vicinity."
-    },
-    {
       "source": "EVT_unresolved_speaker_q_o10",
       "target": "EVT_unresolved_speaker_q_o18",
       "edge_type": "CAUSAL",
@@ -796,14 +748,6 @@
       "label": "action dependency: ENTER->WITHDRAW"
     },
     {
-      "source": "EVT_unresolved_person_97_o6",
-      "target": "EVT_unresolved_person_50_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the first person proceeding into the ATM kiosk."
-    },
-    {
       "source": "EVT_unresolved_speaker_d_o12",
       "target": "EVT_unresolved_speaker_d_o15",
       "edge_type": "CAUSAL",
@@ -836,14 +780,6 @@
       "label": "action dependency: EXIT->FLEE"
     },
     {
-      "source": "EVT_unresolved_speaker_d_o15",
-      "target": "EVT_unresolved_person_50_o17",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
-      "relation": "BEFORE",
-      "label": "local LLM: The two individuals leaving the scene side by side are likely caused by the speaker's statement of being done."
-    },
-    {
       "source": "EVT_unresolved_log_30_o16",
       "target": "EVT_unresolved_speaker_q_o18",
       "edge_type": "CAUSAL",
@@ -861,5 +797,5 @@
     }
   ],
   "node_count": 17,
-  "edge_count": 44
+  "edge_count": 40
 }

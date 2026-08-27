@@ -15,12 +15,12 @@
       "iteration": 1,
       "timeline_version": "V1",
       "critique_version": "C1",
-      "gaps_detected": 3,
+      "gaps_detected": 2,
       "resolvable_gaps": 0,
-      "unresolvable_gaps": 3,
+      "unresolvable_gaps": 2,
       "recommended_action": "FINALIZE",
-      "overall_score": 0.94,
-      "narrative_summary": "Case CASE_ATM_004 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 3 info. Top: low_confidence_event \u2014 Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution confl"
+      "overall_score": 0.96,
+      "narrative_summary": "Case CASE_ATM_004 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 2 info. Top: low_confidence_event \u2014 Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution confl"
     }
   ],
   "investigator_flags": [
@@ -37,13 +37,6 @@
       "detail": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
       "fix_hint": "",
       "iteration": 1
-    },
-    {
-      "gap_type": "llm_coherence",
-      "affected_entity": "",
-      "detail": "LLM flagged: The suspect's action of setting the skimmer (EVT_entity_1_o12) is claimed to occur after entering the ATM booth (EVT_entity_1_o7_o8_o9), but the timestamp of setting the skimmer (2024-01-15T10:04:42Z) is before the timestamp of entering the ATM booth (2024-01-15T10:03:58Z).; The suspect's action of leaving the ATM area (EVT_entity_1_o14_o15) is claimed to occur after the individual walking towards the ATM kiosk (EVT_entity_1_o1_o2_o3), but the timestamp of leaving the ATM area (2024-01-15T10:04:57Z) is before the timestamp of the individual walking towards the ATM kiosk (2024-01-15T10:01:09Z). (timestamps checked \u2014 no ordering contradiction found. Informational only.)",
-      "fix_hint": "",
-      "iteration": 1
     }
   ],
   "all_timelines": [
@@ -51,7 +44,7 @@
       "case_id": "CASE_ATM_004",
       "timeline_version": "V1",
       "schema_version": "1.1.0",
-      "generated_at": "2026-07-29T12:43:35Z",
+      "generated_at": "2026-08-26T06:11:49Z",
       "events": [
         {
           "event_id": "EVT_entity_1_o1_o2_o3",
@@ -83,6 +76,89 @@
             "timestamp ordering",
             "canonical entity match",
             "reconstructed from 3 supporting observations across modalities: audio, text, video",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_unresolved_person_50_o4",
+          "obs_ids": [
+            "O4"
+          ],
+          "timestamp": "2024-01-15T10:01:21Z",
+          "location": "ATM lobby doorway, entry/exit point",
+          "location_key": "atm lobby doorway",
+          "entity_id": "UNRESOLVED_person_50",
+          "primary_alias": "Person_50",
+          "aliases": [
+            "Person_50"
+          ],
+          "modality": "video",
+          "content": "First individual steps through the ATM booth door (poor image quality).",
+          "confidence": 0.7764,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_unresolved_person_80_o11",
+          "obs_ids": [
+            "O11"
+          ],
+          "timestamp": "2024-01-15T10:02:56Z",
+          "location": "ATM booth entrance, exterior facing",
+          "location_key": "atm booth entrance",
+          "entity_id": "UNRESOLVED_person_80",
+          "primary_alias": "Person_80",
+          "aliases": [
+            "Person_80"
+          ],
+          "modality": "video",
+          "content": "Both persons leave the ATM location at pace (poor image quality).",
+          "confidence": 0.7813,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_unresolved_speaker_x_o10",
+          "obs_ids": [
+            "O10"
+          ],
+          "timestamp": "2024-01-15T10:03:01Z",
+          "location": "ATM vicinity, intercepted channel",
+          "location_key": "atm vicinity",
+          "entity_id": "UNRESOLVED_speaker_x",
+          "primary_alias": "Speaker_X",
+          "aliases": [
+            "Speaker_X"
+          ],
+          "modality": "audio",
+          "content": "Out of the ATM, heading your way (statement recorded under caution).",
+          "confidence": 0.6477,
+          "role": "suspect",
+          "action_tags": [
+            "EXIT"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
             "valid timestamp"
           ],
           "version": "V1"
@@ -356,22 +432,6 @@
           "confidence": 0.725,
           "relation": "BEFORE",
           "label": "action dependency: TAMPER->EXIT"
-        },
-        {
-          "source": "EVT_entity_1_o7_o8_o9",
-          "target": "EVT_entity_1_o14_o15",
-          "edge_type": "CAUSAL",
-          "confidence": 0.8,
-          "relation": "BEFORE",
-          "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect leaving the ATM area."
-        },
-        {
-          "source": "EVT_entity_1_o1_o2_o3",
-          "target": "EVT_entity_1_o14_o15",
-          "edge_type": "CAUSAL",
-          "confidence": 0.7,
-          "relation": "BEFORE",
-          "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect leaving the ATM area."
         }
       ],
       "timeline_graph": {
@@ -391,6 +451,51 @@
               "O1",
               "O2",
               "O3"
+            ]
+          },
+          {
+            "id": "EVT_unresolved_person_50_o4",
+            "timestamp": "2024-01-15T10:01:21Z",
+            "ts_epoch": 1705312881.0000002,
+            "entity_id": "UNRESOLVED_person_50",
+            "primary_alias": "Person_50",
+            "confidence": 0.7764,
+            "location": "ATM lobby doorway, entry/exit point",
+            "modality": "video",
+            "content": "First individual steps through the ATM booth door (poor image quality).",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O4"
+            ]
+          },
+          {
+            "id": "EVT_unresolved_person_80_o11",
+            "timestamp": "2024-01-15T10:02:56Z",
+            "ts_epoch": 1705312975.9999998,
+            "entity_id": "UNRESOLVED_person_80",
+            "primary_alias": "Person_80",
+            "confidence": 0.7813,
+            "location": "ATM booth entrance, exterior facing",
+            "modality": "video",
+            "content": "Both persons leave the ATM location at pace (poor image quality).",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O11"
+            ]
+          },
+          {
+            "id": "EVT_unresolved_speaker_x_o10",
+            "timestamp": "2024-01-15T10:03:01Z",
+            "ts_epoch": 1705312980.9999998,
+            "entity_id": "UNRESOLVED_speaker_x",
+            "primary_alias": "Speaker_X",
+            "confidence": 0.6477,
+            "location": "ATM vicinity, intercepted channel",
+            "modality": "audio",
+            "content": "Out of the ATM, heading your way (statement recorded under caution).",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O10"
             ]
           },
           {
@@ -506,11 +611,11 @@
         "edges": [
           {
             "source": "EVT_entity_1_o1_o2_o3",
-            "target": "EVT_entity_1_o5_o6",
+            "target": "EVT_unresolved_person_50_o4",
             "edge_type": "TEMPORAL",
-            "confidence": 0.95,
-            "relation": "BEFORE",
-            "label": "BEFORE (0.95)"
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
           },
           {
             "source": "EVT_entity_1_o1_o2_o3",
@@ -529,12 +634,28 @@
             "label": "action dependency: APPROACH->TAMPER"
           },
           {
-            "source": "EVT_entity_1_o1_o2_o3",
-            "target": "EVT_entity_1_o14_o15",
-            "edge_type": "CAUSAL",
-            "confidence": 0.7,
+            "source": "EVT_unresolved_person_50_o4",
+            "target": "EVT_unresolved_person_80_o11",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
             "relation": "BEFORE",
-            "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect leaving the ATM area."
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_unresolved_person_80_o11",
+            "target": "EVT_unresolved_speaker_x_o10",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_unresolved_speaker_x_o10",
+            "target": "EVT_entity_1_o5_o6",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
           },
           {
             "source": "EVT_entity_1_o5_o6",
@@ -567,14 +688,6 @@
             "confidence": 0.7353,
             "relation": "BEFORE",
             "label": "action dependency: ENTER->TAMPER"
-          },
-          {
-            "source": "EVT_entity_1_o7_o8_o9",
-            "target": "EVT_entity_1_o14_o15",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect leaving the ATM area."
           },
           {
             "source": "EVT_entity_1_o12",
@@ -627,14 +740,6 @@
             "label": "action dependency: APPROACH->TAMPER"
           },
           {
-            "source": "EVT_entity_1_o1_o2_o3",
-            "target": "EVT_entity_1_o14_o15",
-            "edge_type": "CAUSAL",
-            "confidence": 0.7,
-            "relation": "BEFORE",
-            "label": "local LLM: The individual walking towards the ATM kiosk likely led to the suspect leaving the ATM area."
-          },
-          {
             "source": "EVT_entity_1_o5_o6",
             "target": "EVT_entity_1_o12",
             "edge_type": "CAUSAL",
@@ -659,14 +764,6 @@
             "label": "action dependency: ENTER->TAMPER"
           },
           {
-            "source": "EVT_entity_1_o7_o8_o9",
-            "target": "EVT_entity_1_o14_o15",
-            "edge_type": "CAUSAL",
-            "confidence": 0.8,
-            "relation": "BEFORE",
-            "label": "local LLM: The suspect's entry into the ATM booth unaccompanied likely led to the suspect leaving the ATM area."
-          },
-          {
             "source": "EVT_entity_1_o12",
             "target": "EVT_entity_1_o14_o15",
             "edge_type": "CAUSAL",
@@ -675,10 +772,40 @@
             "label": "action dependency: TAMPER->EXIT"
           }
         ],
-        "node_count": 8,
-        "edge_count": 13
+        "node_count": 11,
+        "edge_count": 14
       },
       "uncertainties": [
+        {
+          "event_id": "EVT_unresolved_person_50_o4",
+          "uncertainty_score": 0.2236,
+          "sources": [
+            "O4"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_unresolved_person_80_o11",
+          "uncertainty_score": 0.2187,
+          "sources": [
+            "O11"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_unresolved_speaker_x_o10",
+          "uncertainty_score": 0.3523,
+          "sources": [
+            "O10"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
         {
           "event_id": "EVT_entity_1_o12",
           "uncertainty_score": 0.2237,
@@ -737,6 +864,39 @@
           "confidence": 0.8708
         },
         {
+          "event_id": "EVT_unresolved_person_50_o4",
+          "timestamp": "2024-01-15T10:01:21Z",
+          "actor": "Person_50",
+          "action": "First individual steps through the ATM booth door (poor image quality).",
+          "location": "ATM lobby doorway, entry/exit point",
+          "evidence": [
+            "O4"
+          ],
+          "confidence": 0.7764
+        },
+        {
+          "event_id": "EVT_unresolved_person_80_o11",
+          "timestamp": "2024-01-15T10:02:56Z",
+          "actor": "Person_80",
+          "action": "Both persons leave the ATM location at pace (poor image quality).",
+          "location": "ATM booth entrance, exterior facing",
+          "evidence": [
+            "O11"
+          ],
+          "confidence": 0.7813
+        },
+        {
+          "event_id": "EVT_unresolved_speaker_x_o10",
+          "timestamp": "2024-01-15T10:03:01Z",
+          "actor": "Speaker_X",
+          "action": "Out of the ATM, heading your way (statement recorded under caution).",
+          "location": "ATM vicinity, intercepted channel",
+          "evidence": [
+            "O10"
+          ],
+          "confidence": 0.6477
+        },
+        {
           "event_id": "EVT_entity_1_o5_o6",
           "timestamp": "2024-01-15T10:03:34Z",
           "actor": "sms_35",
@@ -776,7 +936,7 @@
           "event_id": "EVT_entity_1_o14_o15",
           "timestamp": "2024-01-15T10:04:57Z",
           "actor": "sms_35",
-          "action": "Done, I'm coming out.  [-> local LLM: The individual walking towards the ATM kiosk likely led to the suspect leaving the ATM area.]",
+          "action": "Done, I'm coming out.  [-> action dependency: TAMPER->EXIT]",
           "location": "ATM vicinity, intercepted channel",
           "evidence": [
             "O14",
@@ -834,6 +994,45 @@
             "valid timestamp"
           ],
           "confidence": 0.8708
+        },
+        {
+          "event_id": "EVT_unresolved_person_50_o4",
+          "derived_from": [
+            "O4"
+          ],
+          "entity_used": "UNRESOLVED_person_50",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
+            "valid timestamp"
+          ],
+          "confidence": 0.7764
+        },
+        {
+          "event_id": "EVT_unresolved_person_80_o11",
+          "derived_from": [
+            "O11"
+          ],
+          "entity_used": "UNRESOLVED_person_80",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
+            "valid timestamp"
+          ],
+          "confidence": 0.7813
+        },
+        {
+          "event_id": "EVT_unresolved_speaker_x_o10",
+          "derived_from": [
+            "O10"
+          ],
+          "entity_used": "UNRESOLVED_speaker_x",
+          "reasoning": [
+            "timestamp ordering",
+            "unresolved entity - fallback",
+            "valid timestamp"
+          ],
+          "confidence": 0.6477
         },
         {
           "event_id": "EVT_entity_1_o5_o6",
@@ -951,68 +1150,187 @@
       "unresolved_temporal_pairs": [],
       "unresolved_causal_pairs": [
         {
+          "event_a": "EVT_entity_1_o7_o8_o9",
+          "event_b": "EVT_entity_1_o14_o15",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
           "event_a": "EVT_entity_1_o5_o6",
           "event_b": "EVT_entity_1_o7_o8_o9",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1_o2_o3",
+          "event_b": "EVT_entity_1_o14_o15",
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o1_o2_o3",
           "event_b": "EVT_entity_1_o5_o6",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_2_o16",
           "event_b": "EVT_entity_2_o17",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o14_o15",
           "event_b": "EVT_entity_1_o13",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o12",
           "event_b": "EVT_entity_1_o13",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o7_o8_o9",
           "event_b": "EVT_entity_1_o13",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o1_o2_o3",
           "event_b": "EVT_entity_1_o13",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o5_o6",
           "event_b": "EVT_entity_1_o13",
-          "reason": "local LLM determined no causal link"
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_speaker_x_o10",
+          "event_b": "EVT_entity_1_o14_o15",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1_o2_o3",
+          "event_b": "EVT_unresolved_person_80_o11",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1_o2_o3",
+          "event_b": "EVT_unresolved_speaker_x_o10",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_speaker_x_o10",
+          "event_b": "EVT_entity_1_o5_o6",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_speaker_x_o10",
+          "event_b": "EVT_entity_1_o7_o8_o9",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_speaker_x_o10",
+          "event_b": "EVT_entity_1_o12",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_entity_1_o13",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_80_o11",
+          "event_b": "EVT_entity_1_o7_o8_o9",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1_o2_o3",
+          "event_b": "EVT_unresolved_person_50_o4",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_80_o11",
+          "event_b": "EVT_unresolved_speaker_x_o10",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_80_o11",
+          "event_b": "EVT_entity_1_o14_o15",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_80_o11",
+          "event_b": "EVT_entity_1_o5_o6",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_unresolved_speaker_x_o10",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_80_o11",
+          "event_b": "EVT_entity_1_o12",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_speaker_x_o10",
+          "event_b": "EVT_entity_1_o13",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_entity_1_o5_o6",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_entity_1_o7_o8_o9",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_entity_1_o14_o15",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_unresolved_person_80_o11",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_50_o4",
+          "event_b": "EVT_entity_1_o12",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_unresolved_person_80_o11",
+          "event_b": "EVT_entity_1_o13",
+          "reason": "local LLM returned no result for this pair"
         }
       ],
-      "unresolved_entities": [],
+      "unresolved_entities": [
+        "Person_50",
+        "Person_80",
+        "Speaker_X"
+      ],
       "stage_timings": {
         "stage_1_validation": 0.0001,
-        "stage_2_enrichment": 0.005,
+        "stage_2_enrichment": 0.0056,
         "stage_3_ordering": 0.0,
         "stage_4_5_temporal": 0.0001,
-        "stage_6_causal": 24.3392,
+        "stage_6_causal": 2.1307,
         "stage_7_uncertainty": 0.0,
         "stage_8_conflicts": 0.0,
         "stage_10_explainability": 0.0001,
         "stage_11_narrative": 0.0001,
-        "stage_12_versioning": 0.0014,
-        "stage_13_export": 0.0114
+        "stage_12_versioning": 0.001,
+        "stage_13_export": 0.0085
       },
-      "total_time_sec": 24.3592,
+      "total_time_sec": 2.1561,
       "validation_warnings": [],
       "llm_backend_used": "CloudLLMFallback",
       "llm_calls_made": 1,
       "output_classification": "AMBIGUOUS",
-      "output_classification_reason": "avg_confidence=0.74, conflict_fraction=0.25, unresolved_ratio=1.00 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+      "output_classification_reason": "avg_confidence=0.74, conflict_fraction=0.18, unresolved_ratio=2.82 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
     }
   ],
-  "generated_at": "2026-07-29T12:43:42.618980+00:00",
+  "generated_at": "2026-08-26T06:11:51.071551+00:00",
   "status": "complete"
 }

@@ -58,7 +58,7 @@ log = logging.getLogger("forensynth.timeline_agent")
 #   3. NoOpLLMFallback - fully offline, zero calls, zero dependency. Used if
 #      neither of the above is configured. Recommended for reproducible
 #      grading runs where you don't want output to vary between runs.
-CLOUD_LLM_MODEL: str = os.environ.get("TIMELINE_CLOUD_LLM_MODEL", "llama-3.1-8b-instant")
+CLOUD_LLM_MODEL: str = os.environ.get("TIMELINE_CLOUD_LLM_MODEL", "openai/gpt-oss-20b")
 CLOUD_LLM_TIMEOUT_SEC: float = 20.0
 
 # Local-only fallback (opt-in via env var; talks only to localhost / in-process)
