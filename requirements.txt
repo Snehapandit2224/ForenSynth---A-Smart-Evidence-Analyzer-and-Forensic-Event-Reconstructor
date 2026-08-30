@@ -18,3 +18,9 @@ sentence-transformers>=2.2
 
 # ── HTTP client (used internally by sentence-transformers and groq) ───────────
 httpx>=0.24
+
+# ── Post-pipeline outputs: scene reconstruction video + explainability PDF ────
+moviepy>=2.1.2
+Pillow>=10.0.0
+fpdf2>=2.7.0
+numpy>=1.24.0

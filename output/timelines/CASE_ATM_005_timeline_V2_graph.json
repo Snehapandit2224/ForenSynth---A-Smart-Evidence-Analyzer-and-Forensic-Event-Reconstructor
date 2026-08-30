@@ -97,7 +97,7 @@
       "entity_id": "entity_2",
       "primary_alias": "Person_55",
       "confidence": 0.7608,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "Two individuals left together quickly. One carrying a bag.",
       "conflict_flag": false,
@@ -134,10 +134,10 @@
     {
       "source": "EVT_entity_1_o2",
       "target": "EVT_entity_1_o3",
-      "edge_type": "CAUSAL",
-      "confidence": 0.9,
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
       "relation": "BEFORE",
-      "label": "local LLM: The suspect\u2019s lingering near the ATM plausibly prompted the subsequent action of pushing into the enclosure."
+      "label": "BEFORE (0.95)"
     },
     {
       "source": "EVT_entity_1_o2",
@@ -196,14 +196,6 @@
       "confidence": 0.6735,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o3",
-      "edge_type": "CAUSAL",
-      "confidence": 0.9,
-      "relation": "BEFORE",
-      "label": "local LLM: The suspect\u2019s lingering near the ATM plausibly prompted the subsequent action of pushing into the enclosure."
     },
     {
       "source": "EVT_entity_1_o2",

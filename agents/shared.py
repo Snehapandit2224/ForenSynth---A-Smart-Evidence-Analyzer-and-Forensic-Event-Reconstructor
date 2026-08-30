@@ -227,7 +227,7 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
     ),
     "WITHDRAW": (
         "withdraw", "transaction", "operate the atm", "operating the atm", "pressing keys",
-        "inserts card", "insertion area", "conducting activity", "conducting transaction",
+        "inserts card", "conducting activity", "conducting transaction",
         "dispensing", "cash is coming out", "cash out", "getting the money",
         "machine is dispensing", "transaction complete", "transaction going through",
         "card working", "card's in", "processing",
@@ -235,6 +235,14 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
     "TAMPER": (
         "tamper", "skimmer", "device is attached", "device placed", "reader fitted",
         "reader's set", "rigged", "looks factory", "looks stock", "fitted",
+        # FIX: found via CASE_ATM_004 ground-truth evaluation - "insertion
+        # area" was listed under WITHDRAW, so content describing tampering
+        # with the card slot ("fiddling with the ATM card insertion area")
+        # was mistagged WITHDRAW instead of TAMPER, and "fiddling" itself
+        # had no fragment coverage anywhere. Moved "insertion area" here
+        # and added the real phrasing the generator actually uses.
+        "fiddling", "fiddling with", "card slot", "manipulating", "messing with",
+        "insertion area",
     ),
     "LOITER": (
         "loiter", "lingers", "linger", "remains in", "standing near", "waiting for the right moment",
@@ -356,36 +364,62 @@ _ACTION_TAG_CANONICAL_EXAMPLES: dict[str, tuple[str, ...]] = {
     "REPORT":      ("The witness reports the incident, informing an officer or filing a complaint.",),
     "INTERCEPT":   ("The observation was intercepted, redirected from a communication not meant for this recipient.",),
 }
-# Matches the spirit of LOCATION_SEMANTIC_SIMILARITY_THRESHOLD elsewhere in
-# this codebase (config.py) - "confidently related, not just vaguely
-# plausible". Same honest caveat as location similarity: verified here with
-# a mocked encoder (proves the wiring - threshold comparison, negation
-# gating, correct tag selection); real semantic QUALITY (does "roam" really
-# score >=0.60 against the LOITER example with the real model) can only be
-# confirmed by running with the actual model downloaded, same as the
-# skipped live-model smoke test elsewhere in this project.
-_ACTION_TAG_SEMANTIC_THRESHOLD = 0.60
+# Hybrid scoring weights. A fragment hit alone (0.55) already clears the
+# 0.45 threshold, so fragments remain sufficient on their own - semantic
+# similarity mainly adds tags fragments missed entirely, or reinforces a
+# fragment hit. Note the arithmetic consequence: semantic support alone can
+# only clear 0.45 threshold at a similarity >= 1.0 (0.45 * 1.0), i.e.
+# semantic-only rarely single-handedly introduces a new tag unless the
+# match is (near-)exact text; in practice it mostly matters combined with
+# at least partial fragment support. Matches the spirit of
+# LOCATION_SEMANTIC_SIMILARITY_THRESHOLD elsewhere in this codebase
+# (config.py) - "confidently related, not just vaguely plausible".
+_ACTION_TAG_FRAGMENT_WEIGHT = 0.55
+_ACTION_TAG_SEMANTIC_WEIGHT = 0.45
+_ACTION_TAG_COMBINED_THRESHOLD = 0.45
 
 
 def extract_action_tags(content: Optional[str]) -> Set[str]:
     """
-    Return the set of canonical action tags detected in `content`, using
-    substring/fragment matching grounded in the generator's real phrase
-    banks. Best-effort: absence of a tag does not mean "no action happened",
-    only "this heuristic layer didn't recognise the phrasing" - callers
-    should treat a fully-empty result as a genuinely ambiguous case, not a
+    Return the set of canonical action tags detected in `content`, using a
+    hybrid of substring/fragment matching (grounded in the generator's real
+    phrase banks) and semantic similarity against
+    _ACTION_TAG_CANONICAL_EXAMPLES:
+
+        1. Fragment matching produces a candidate score per tag (0 or 1).
+        2. Semantic similarity produces a score per tag (0.0-1.0), via the
+           lazily-loaded singleton from get_semantic_scorer() (only loaded
+           on first call, cached for the process after that - see
+           SemanticSimilarityScorer above).
+        3. combined = FRAGMENT_WEIGHT * fragment_score + SEMANTIC_WEIGHT * semantic_score
+        4. Tags with combined >= _ACTION_TAG_COMBINED_THRESHOLD are returned.
+
+    Best-effort: absence of a tag does not mean "no action happened", only
+    "this heuristic layer didn't recognise the phrasing" - callers should
+    treat a fully-empty result as a genuinely ambiguous case, not a
     negative signal.
 
-    Negation-aware: a fragment preceded closely by a negation word ("did
-    not go inside", "never entered") is NOT tagged. This matters
-    specifically for a forensic tool - a suspect's denial ("I did not go
-    inside that booth") must never silently become an inferred ENTER
-    action; that would fabricate evidence, not just miss it.
+    Negation-aware on BOTH paths: a fragment preceded closely by a negation
+    word ("did not go inside", "never entered") is not scored, AND if the
+    content contains a negation word anywhere, semantic scoring is skipped
+    entirely for the whole call. This matters specifically for a forensic
+    tool - a suspect's denial ("I did not go inside that booth") must never
+    silently become an inferred ENTER action; that would fabricate
+    evidence, not just miss it. The semantic path needs the stricter,
+    whole-text gate (rather than the fragment path's narrower clause-aware
+    window) because small embedding models are known to be weak at
+    negation - a pure-embedding comparison of "I did not go inside that
+    booth" against the ENTER example can score deceptively high, since it
+    has no notion of the "not" flipping the meaning.
     """
     text = clean_content(content).lower()
     if not text:
         return set()
-    tags: Set[str] = set()
+
+    is_negated = any(neg in text for neg in _NEGATION_WORDS)
+
+    # ---- 1. Fragment scoring (0 or 1 per tag), negation-aware per match ----
+    fragment_scores: Dict[str, float] = {}
     for tag, fragments in ACTION_TAG_FRAGMENTS.items():
         for frag in fragments:
             idx = text.find(frag)
@@ -412,44 +446,38 @@ def extract_action_tags(content: Optional[str]) -> Set[str]:
             if last_boundary != -1:
                 preceding = preceding[last_boundary + 1:]
             if any(neg in preceding for neg in _NEGATION_WORDS):
-                continue  # negated - do not tag
-            tags.add(tag)
+                continue  # this specific match is negated
+            fragment_scores[tag] = 1.0
             break
-    if tags:
-        return tags
 
-    # FIX: semantic fallback, only reached when fragment matching found
-    # NOTHING - fragments remain the primary, high-precision path (see
-    # module docstring above _ACTION_TAG_CANONICAL_EXAMPLES for why: small
-    # embedding models are known to be weak at negation, so a pure-
-    # embedding approach risks reading "I did not go inside" as ENTER,
-    # which for a forensic tool means fabricating evidence, not just
-    # missing it). Negation check here is deliberately MORE conservative
-    # than the fragment path above (whole-text, not a windowed check
-    # around a match position) - an embedding comparison has no single
-    # match index to anchor a window to, so any negation word anywhere in
-    # the sentence blocks the semantic fallback entirely.
-    if any(neg in text for neg in _NEGATION_WORDS):
-        return set()
+    # ---- 2. Semantic scoring (0.0-1.0 per tag), skipped entirely if negated ----
+    semantic_scores: Dict[str, float] = {}
+    if not is_negated:
+        try:
+            from shared import get_semantic_scorer as _get_scorer
+        except ImportError:
+            _get_scorer = None
+        if _get_scorer is not None:
+            scorer = _get_scorer()
+            clean_text = clean_content(content)
+            for tag, examples in _ACTION_TAG_CANONICAL_EXAMPLES.items():
+                best = 0.0
+                for example in examples:
+                    score = scorer.similarity(clean_text, example)
+                    if score > best:
+                        best = score
+                semantic_scores[tag] = best
 
-    try:
-        from shared import get_semantic_scorer as _get_scorer
-    except ImportError:
-        return set()  # shared not importable in this context
-    get_semantic_scorer = _get_scorer
-    scorer = get_semantic_scorer()
-    clean_text = clean_content(content)
-    best_tag: Optional[str] = None
-    best_score = 0.0
-    for tag, examples in _ACTION_TAG_CANONICAL_EXAMPLES.items():
-        for example in examples:
-            score = scorer.similarity(clean_text, example)
-            if score > best_score:
-                best_score = score
-                best_tag = tag
-    if best_tag is not None and best_score >= _ACTION_TAG_SEMANTIC_THRESHOLD:
-        return {best_tag}
-    return set()
+    # ---- 3. Combine and threshold ----
+    tags: Set[str] = set()
+    for tag in set(fragment_scores) | set(semantic_scores):
+        combined = (
+            _ACTION_TAG_FRAGMENT_WEIGHT * fragment_scores.get(tag, 0.0)
+            + _ACTION_TAG_SEMANTIC_WEIGHT * semantic_scores.get(tag, 0.0)
+        )
+        if combined >= _ACTION_TAG_COMBINED_THRESHOLD:
+            tags.add(tag)
+    return tags
 
 
 # ==============================================================================

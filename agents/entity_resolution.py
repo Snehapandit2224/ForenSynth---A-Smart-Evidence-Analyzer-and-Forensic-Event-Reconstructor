@@ -709,6 +709,16 @@ class EntityResolutionPipeline:
         and bool(os.environ.get('GROQ_API_KEY', ''))
     )
 
+    if isinstance(human_constraints, dict):
+      # Callers (e.g. run_case.py, loading constraints back out of the DB via
+      # mem.load_er_constraints()) pass a plain dict, not a HumanConstraints
+      # instance -- normalize it here so every attribute access below works
+      # regardless of which shape the caller handed in.
+      human_constraints = HumanConstraints(
+        must_merge=human_constraints.get("must_merge", []),
+        must_not_merge=human_constraints.get("must_not_merge", []),
+        soft_hints=human_constraints.get("soft_hints", {}),
+      )
     self.constraints = human_constraints or HumanConstraints()
     # FIX: previously one shared LLMCallBudget across both agents meant
     # whichever agent ran first (context-scoring) could consume the ENTIRE

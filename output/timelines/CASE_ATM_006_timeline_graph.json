@@ -7,7 +7,7 @@
       "entity_id": "entity_1",
       "primary_alias": "Speaker_D",
       "confidence": 0.8545,
-      "location": "remote â€” email server log",
+      "location": "remote — email server log",
       "modality": "multimodal",
       "content": "Heading there. Any activity?",
       "conflict_flag": false,
@@ -132,7 +132,7 @@
       "entity_id": "entity_2",
       "primary_alias": "Speaker_K",
       "confidence": 0.8149,
-      "location": "remote â€” email server log",
+      "location": "remote — email server log",
       "modality": "text",
       "content": "Saw a man rush out and walk away fast. Seemed nervous.",
       "conflict_flag": false,
@@ -177,7 +177,7 @@
       "entity_id": "entity_3",
       "primary_alias": "sms_74",
       "confidence": 0.7983,
-      "location": "remote â€” mobile network SMS",
+      "location": "remote — mobile network SMS",
       "modality": "text",
       "content": "Filing complaint: saw someone tamper with the card slot at the ATM near Koramangala.",
       "conflict_flag": false,
@@ -214,10 +214,10 @@
     {
       "source": "EVT_entity_1_o4",
       "target": "EVT_entity_1_o10",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.9,
-      "relation": "SIMULTANEOUS",
-      "label": "SIMULTANEOUS (0.90)"
+      "edge_type": "CAUSAL",
+      "confidence": 0.6804,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
     },
     {
       "source": "EVT_entity_1_o4",
@@ -228,12 +228,44 @@
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o6_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6899,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6725,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o15_o16_o17",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6908,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o18",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6488,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
       "source": "EVT_entity_1_o10",
       "target": "EVT_entity_1_o9",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.9,
-      "relation": "SIMULTANEOUS",
-      "label": "SIMULTANEOUS (0.90)"
+      "edge_type": "CAUSAL",
+      "confidence": 0.6496,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
     },
     {
       "source": "EVT_entity_1_o10",
@@ -249,7 +281,7 @@
       "edge_type": "CAUSAL",
       "confidence": 0.671,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.67), sequential"
+      "label": "same entity, semantically same location (sim=0.86), sequential"
     },
     {
       "source": "EVT_entity_1_o10",
@@ -262,18 +294,34 @@
     {
       "source": "EVT_entity_1_o9",
       "target": "EVT_entity_1_o6_o8",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.9,
-      "relation": "SIMULTANEOUS",
-      "label": "SIMULTANEOUS (0.90)"
+      "edge_type": "CAUSAL",
+      "confidence": 0.6592,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o9",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6417,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
     },
     {
       "source": "EVT_entity_1_o9",
       "target": "EVT_entity_1_o15_o16_o17",
       "edge_type": "CAUSAL",
-      "confidence": 0.7448,
+      "confidence": 0.7786,
       "relation": "BEFORE",
       "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o9",
+      "target": "EVT_entity_1_o18",
+      "edge_type": "CAUSAL",
+      "confidence": 0.618,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
     },
     {
       "source": "EVT_entity_1_o6_o8",
@@ -375,11 +423,59 @@
     },
     {
       "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6804,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
       "target": "EVT_entity_1_o9",
       "edge_type": "CAUSAL",
       "confidence": 0.6695,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o6_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6899,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6725,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o15_o16_o17",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6908,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o18",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6488,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o10",
+      "target": "EVT_entity_1_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6496,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
     },
     {
       "source": "EVT_entity_1_o10",
@@ -395,7 +491,7 @@
       "edge_type": "CAUSAL",
       "confidence": 0.671,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.67), sequential"
+      "label": "same entity, semantically same location (sim=0.86), sequential"
     },
     {
       "source": "EVT_entity_1_o10",
@@ -407,11 +503,35 @@
     },
     {
       "source": "EVT_entity_1_o9",
+      "target": "EVT_entity_1_o6_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6592,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o9",
+      "target": "EVT_entity_1_o12",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6417,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o9",
       "target": "EVT_entity_1_o15_o16_o17",
       "edge_type": "CAUSAL",
-      "confidence": 0.7448,
+      "confidence": 0.7786,
       "relation": "BEFORE",
       "label": "action dependency: LOITER->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o9",
+      "target": "EVT_entity_1_o18",
+      "edge_type": "CAUSAL",
+      "confidence": 0.618,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
     },
     {
       "source": "EVT_entity_1_o6_o8",
@@ -447,5 +567,5 @@
     }
   ],
   "node_count": 12,
-  "edge_count": 21
+  "edge_count": 27
 }

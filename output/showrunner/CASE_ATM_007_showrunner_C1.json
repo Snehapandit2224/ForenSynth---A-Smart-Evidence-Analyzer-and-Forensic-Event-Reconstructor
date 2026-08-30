@@ -15,8 +15,8 @@
     "soft_hints": {},
     "er_version": 2,
     "previous_gap_types": [
-      "role_count_mismatch",
-      "low_confidence_event"
+      "low_confidence_event",
+      "role_count_mismatch"
     ],
     "iter_log": [
       {
@@ -45,7 +45,7 @@
         "case_id": "CASE_ATM_007",
         "timeline_version": "V1",
         "schema_version": "1.1.0",
-        "generated_at": "2026-08-26T06:22:36Z",
+        "generated_at": "2026-08-30T06:17:09Z",
         "events": [
           {
             "event_id": "EVT_entity_1_o1_o2_o3_o5",
@@ -161,8 +161,8 @@
               "O13"
             ],
             "timestamp": "2024-01-15T10:03:36Z",
-            "location": "remote \u00e2\u20ac\u201d email server log",
-            "location_key": "remote \u00e2\u20ac\u201d email server log",
+            "location": "remote \u2014 email server log",
+            "location_key": "remote \u2014 email server log",
             "entity_id": "entity_1",
             "primary_alias": "Speaker_J",
             "aliases": [
@@ -429,9 +429,33 @@
             "source": "EVT_entity_1_o1_o2_o3_o5",
             "target": "EVT_entity_1_o10",
             "edge_type": "CAUSAL",
-            "confidence": 0.5824,
+            "confidence": 0.6088,
             "relation": "BEFORE",
             "label": "action dependency: APPROACH->WATCH"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o11",
+            "edge_type": "CAUSAL",
+            "confidence": 0.4918,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o18",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5436,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.60), sequential"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o17",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5652,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
           },
           {
             "source": "EVT_entity_1_o7_o8",
@@ -440,6 +464,14 @@
             "confidence": 0.6067,
             "relation": "BEFORE",
             "label": "action dependency: ENTER->WITHDRAW"
+          },
+          {
+            "source": "EVT_entity_1_o7_o8",
+            "target": "EVT_entity_1_o14_o15",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5228,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
           },
           {
             "source": "EVT_entity_1_o10",
@@ -453,7 +485,7 @@
             "source": "EVT_entity_1_o12",
             "target": "EVT_entity_1_o14_o15",
             "edge_type": "CAUSAL",
-            "confidence": 0.5529,
+            "confidence": 0.578,
             "relation": "BEFORE",
             "label": "action dependency: WITHDRAW->EXIT"
           },
@@ -477,7 +509,7 @@
             "source": "EVT_entity_2_o19",
             "target": "EVT_entity_3_o20",
             "edge_type": "CAUSAL",
-            "confidence": 0.6733,
+            "confidence": 0.7062,
             "relation": "BEFORE",
             "label": "action dependency: EXIT->OBSERVE"
           }
@@ -540,7 +572,7 @@
               "entity_id": "entity_1",
               "primary_alias": "Speaker_J",
               "confidence": 0.7152,
-              "location": "remote \u00e2\u20ac\u201d email server log",
+              "location": "remote \u2014 email server log",
               "modality": "text",
               "content": "It went through. Full amount. (forwarded)",
               "conflict_flag": true,
@@ -668,9 +700,33 @@
               "source": "EVT_entity_1_o1_o2_o3_o5",
               "target": "EVT_entity_1_o10",
               "edge_type": "CAUSAL",
-              "confidence": 0.5824,
+              "confidence": 0.6088,
               "relation": "BEFORE",
               "label": "action dependency: APPROACH->WATCH"
+            },
+            {
+              "source": "EVT_entity_1_o1_o2_o3_o5",
+              "target": "EVT_entity_1_o11",
+              "edge_type": "CAUSAL",
+              "confidence": 0.4918,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.68), sequential"
+            },
+            {
+              "source": "EVT_entity_1_o1_o2_o3_o5",
+              "target": "EVT_entity_1_o18",
+              "edge_type": "CAUSAL",
+              "confidence": 0.5436,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.60), sequential"
+            },
+            {
+              "source": "EVT_entity_1_o1_o2_o3_o5",
+              "target": "EVT_entity_1_o17",
+              "edge_type": "CAUSAL",
+              "confidence": 0.5652,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.68), sequential"
             },
             {
               "source": "EVT_entity_1_o7_o8",
@@ -687,6 +743,14 @@
               "confidence": 0.6067,
               "relation": "BEFORE",
               "label": "action dependency: ENTER->WITHDRAW"
+            },
+            {
+              "source": "EVT_entity_1_o7_o8",
+              "target": "EVT_entity_1_o14_o15",
+              "edge_type": "CAUSAL",
+              "confidence": 0.5228,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.68), sequential"
             },
             {
               "source": "EVT_entity_1_o10",
@@ -724,7 +788,7 @@
               "source": "EVT_entity_1_o12",
               "target": "EVT_entity_1_o14_o15",
               "edge_type": "CAUSAL",
-              "confidence": 0.5529,
+              "confidence": 0.578,
               "relation": "BEFORE",
               "label": "action dependency: WITHDRAW->EXIT"
             },
@@ -772,7 +836,7 @@
               "source": "EVT_entity_2_o19",
               "target": "EVT_entity_3_o20",
               "edge_type": "CAUSAL",
-              "confidence": 0.6733,
+              "confidence": 0.7062,
               "relation": "BEFORE",
               "label": "action dependency: EXIT->OBSERVE"
             }
@@ -790,9 +854,33 @@
               "source": "EVT_entity_1_o1_o2_o3_o5",
               "target": "EVT_entity_1_o10",
               "edge_type": "CAUSAL",
-              "confidence": 0.5824,
+              "confidence": 0.6088,
               "relation": "BEFORE",
               "label": "action dependency: APPROACH->WATCH"
+            },
+            {
+              "source": "EVT_entity_1_o1_o2_o3_o5",
+              "target": "EVT_entity_1_o11",
+              "edge_type": "CAUSAL",
+              "confidence": 0.4918,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.68), sequential"
+            },
+            {
+              "source": "EVT_entity_1_o1_o2_o3_o5",
+              "target": "EVT_entity_1_o18",
+              "edge_type": "CAUSAL",
+              "confidence": 0.5436,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.60), sequential"
+            },
+            {
+              "source": "EVT_entity_1_o1_o2_o3_o5",
+              "target": "EVT_entity_1_o17",
+              "edge_type": "CAUSAL",
+              "confidence": 0.5652,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.68), sequential"
             },
             {
               "source": "EVT_entity_1_o7_o8",
@@ -801,6 +889,14 @@
               "confidence": 0.6067,
               "relation": "BEFORE",
               "label": "action dependency: ENTER->WITHDRAW"
+            },
+            {
+              "source": "EVT_entity_1_o7_o8",
+              "target": "EVT_entity_1_o14_o15",
+              "edge_type": "CAUSAL",
+              "confidence": 0.5228,
+              "relation": "BEFORE",
+              "label": "same entity, semantically same location (sim=0.68), sequential"
             },
             {
               "source": "EVT_entity_1_o10",
@@ -814,7 +910,7 @@
               "source": "EVT_entity_1_o12",
               "target": "EVT_entity_1_o14_o15",
               "edge_type": "CAUSAL",
-              "confidence": 0.5529,
+              "confidence": 0.578,
               "relation": "BEFORE",
               "label": "action dependency: WITHDRAW->EXIT"
             },
@@ -838,13 +934,13 @@
               "source": "EVT_entity_2_o19",
               "target": "EVT_entity_3_o20",
               "edge_type": "CAUSAL",
-              "confidence": 0.6733,
+              "confidence": 0.7062,
               "relation": "BEFORE",
               "label": "action dependency: EXIT->OBSERVE"
             }
           ],
           "node_count": 11,
-          "edge_count": 15
+          "edge_count": 19
         },
         "uncertainties": [
           {
@@ -1008,7 +1104,7 @@
             "timestamp": "2024-01-15T10:03:36Z",
             "actor": "Speaker_J",
             "action": "It went through. Full amount. (forwarded)",
-            "location": "remote \u00e2\u20ac\u201d email server log",
+            "location": "remote \u2014 email server log",
             "evidence": [
               "O13"
             ],
@@ -1029,7 +1125,7 @@
             "event_id": "EVT_entity_1_o11",
             "timestamp": "2024-01-15T10:03:50Z",
             "actor": "Speaker_J",
-            "action": "Subject's face not visible in available footage.",
+            "action": "Subject's face not visible in available footage.  [-> same entity, semantically same location (sim=0.68), sequential]",
             "location": "ATM street frontage, wide-angle coverage",
             "evidence": [
               "O11"
@@ -1294,37 +1390,37 @@
           },
           {
             "event_a": "EVT_entity_1_o10",
-            "event_b": "EVT_entity_1_o12",
+            "event_b": "EVT_entity_1_o14_o15",
             "reason": "local LLM returned no result for this pair"
           },
           {
-            "event_a": "EVT_entity_1_o7_o8",
-            "event_b": "EVT_entity_1_o18",
+            "event_a": "EVT_entity_1_o1_o2_o3_o5",
+            "event_b": "EVT_entity_1_o12",
             "reason": "local LLM returned no result for this pair"
           },
           {
             "event_a": "EVT_entity_1_o10",
-            "event_b": "EVT_entity_1_o14_o15",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o7_o8",
-            "event_b": "EVT_entity_1_o14_o15",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o1_o2_o3_o5",
             "event_b": "EVT_entity_1_o12",
             "reason": "local LLM returned no result for this pair"
           },
           {
+            "event_a": "EVT_entity_1_o7_o8",
+            "event_b": "EVT_entity_1_o18",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
             "event_a": "EVT_entity_1_o1_o2_o3_o5",
             "event_b": "EVT_entity_1_o14_o15",
             "reason": "local LLM returned no result for this pair"
           },
           {
-            "event_a": "EVT_entity_1_o1_o2_o3_o5",
-            "event_b": "EVT_entity_1_o18",
+            "event_a": "EVT_entity_1_o12",
+            "event_b": "EVT_entity_1_o11",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_entity_1_o12",
+            "event_b": "EVT_entity_1_o17",
             "reason": "local LLM returned no result for this pair"
           },
           {
@@ -1338,43 +1434,8 @@
             "reason": "local LLM returned no result for this pair"
           },
           {
-            "event_a": "EVT_entity_1_o13",
-            "event_b": "EVT_entity_1_o12",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o12",
-            "event_b": "EVT_entity_1_o11",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o12",
-            "event_b": "EVT_entity_1_o17",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
             "event_a": "EVT_entity_1_o18",
             "event_b": "EVT_entity_1_o17",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o1_o2_o3_o5",
-            "event_b": "EVT_entity_1_o11",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o1_o2_o3_o5",
-            "event_b": "EVT_entity_1_o17",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o13",
-            "event_b": "EVT_entity_1_o18",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o7_o8",
-            "event_b": "EVT_entity_1_o13",
             "reason": "local LLM returned no result for this pair"
           },
           {
@@ -1383,11 +1444,6 @@
             "reason": "local LLM returned no result for this pair"
           },
           {
-            "event_a": "EVT_entity_1_o13",
-            "event_b": "EVT_entity_1_o14_o15",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
             "event_a": "EVT_entity_1_o7_o8",
             "event_b": "EVT_entity_1_o11",
             "reason": "local LLM returned no result for this pair"
@@ -1399,6 +1455,31 @@
           },
           {
             "event_a": "EVT_entity_1_o10",
+            "event_b": "EVT_entity_1_o11",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_entity_1_o10",
+            "event_b": "EVT_entity_1_o17",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_entity_1_o13",
+            "event_b": "EVT_entity_1_o14_o15",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_entity_1_o13",
+            "event_b": "EVT_entity_1_o12",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_entity_1_o13",
+            "event_b": "EVT_entity_1_o18",
+            "reason": "local LLM returned no result for this pair"
+          },
+          {
+            "event_a": "EVT_entity_1_o7_o8",
             "event_b": "EVT_entity_1_o13",
             "reason": "local LLM returned no result for this pair"
           },
@@ -1409,12 +1490,7 @@
           },
           {
             "event_a": "EVT_entity_1_o10",
-            "event_b": "EVT_entity_1_o11",
-            "reason": "local LLM returned no result for this pair"
-          },
-          {
-            "event_a": "EVT_entity_1_o10",
-            "event_b": "EVT_entity_1_o17",
+            "event_b": "EVT_entity_1_o13",
             "reason": "local LLM returned no result for this pair"
           },
           {
@@ -1430,26 +1506,26 @@
         ],
         "unresolved_entities": [],
         "stage_timings": {
-          "stage_1_validation": 0.0004,
-          "stage_2_enrichment": 0.0065,
-          "stage_3_ordering": 0.0001,
-          "stage_4_5_temporal": 0.0001,
-          "stage_6_causal": 3.2879,
+          "stage_1_validation": 0.0001,
+          "stage_2_enrichment": 0.0031,
+          "stage_3_ordering": 0.0,
+          "stage_4_5_temporal": 0.0,
+          "stage_6_causal": 0.0829,
           "stage_7_uncertainty": 0.0,
           "stage_8_conflicts": 0.0001,
-          "stage_10_explainability": 0.0002,
+          "stage_10_explainability": 0.0001,
           "stage_11_narrative": 0.0001,
-          "stage_12_versioning": 0.0016,
-          "stage_13_export": 0.0109
+          "stage_12_versioning": 0.0013,
+          "stage_13_export": 0.0061
         },
-        "total_time_sec": 3.3093,
+        "total_time_sec": 0.0945,
         "validation_warnings": [
           "[entity_resolved.conflicts[1]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
         ],
         "llm_backend_used": "CloudLLMFallback",
         "llm_calls_made": 1,
         "output_classification": "AMBIGUOUS",
-        "output_classification_reason": "avg_confidence=0.69, conflict_fraction=0.82, unresolved_ratio=2.64 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+        "output_classification_reason": "avg_confidence=0.69, conflict_fraction=0.82, unresolved_ratio=2.27 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
       }
     ],
     "belief_state": {},
@@ -1489,7 +1565,7 @@
       "case_id": "CASE_ATM_007",
       "timeline_version": "V1",
       "schema_version": "1.1.0",
-      "generated_at": "2026-08-26T06:22:36Z",
+      "generated_at": "2026-08-30T06:17:09Z",
       "events": [
         {
           "event_id": "EVT_entity_1_o1_o2_o3_o5",
@@ -1605,8 +1681,8 @@
             "O13"
           ],
           "timestamp": "2024-01-15T10:03:36Z",
-          "location": "remote \u00e2\u20ac\u201d email server log",
-          "location_key": "remote \u00e2\u20ac\u201d email server log",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
           "entity_id": "entity_1",
           "primary_alias": "Speaker_J",
           "aliases": [
@@ -1873,9 +1949,33 @@
           "source": "EVT_entity_1_o1_o2_o3_o5",
           "target": "EVT_entity_1_o10",
           "edge_type": "CAUSAL",
-          "confidence": 0.5824,
+          "confidence": 0.6088,
           "relation": "BEFORE",
           "label": "action dependency: APPROACH->WATCH"
+        },
+        {
+          "source": "EVT_entity_1_o1_o2_o3_o5",
+          "target": "EVT_entity_1_o11",
+          "edge_type": "CAUSAL",
+          "confidence": 0.4918,
+          "relation": "BEFORE",
+          "label": "same entity, semantically same location (sim=0.68), sequential"
+        },
+        {
+          "source": "EVT_entity_1_o1_o2_o3_o5",
+          "target": "EVT_entity_1_o18",
+          "edge_type": "CAUSAL",
+          "confidence": 0.5436,
+          "relation": "BEFORE",
+          "label": "same entity, semantically same location (sim=0.60), sequential"
+        },
+        {
+          "source": "EVT_entity_1_o1_o2_o3_o5",
+          "target": "EVT_entity_1_o17",
+          "edge_type": "CAUSAL",
+          "confidence": 0.5652,
+          "relation": "BEFORE",
+          "label": "same entity, semantically same location (sim=0.68), sequential"
         },
         {
           "source": "EVT_entity_1_o7_o8",
@@ -1884,6 +1984,14 @@
           "confidence": 0.6067,
           "relation": "BEFORE",
           "label": "action dependency: ENTER->WITHDRAW"
+        },
+        {
+          "source": "EVT_entity_1_o7_o8",
+          "target": "EVT_entity_1_o14_o15",
+          "edge_type": "CAUSAL",
+          "confidence": 0.5228,
+          "relation": "BEFORE",
+          "label": "same entity, semantically same location (sim=0.68), sequential"
         },
         {
           "source": "EVT_entity_1_o10",
@@ -1897,7 +2005,7 @@
           "source": "EVT_entity_1_o12",
           "target": "EVT_entity_1_o14_o15",
           "edge_type": "CAUSAL",
-          "confidence": 0.5529,
+          "confidence": 0.578,
           "relation": "BEFORE",
           "label": "action dependency: WITHDRAW->EXIT"
         },
@@ -1921,7 +2029,7 @@
           "source": "EVT_entity_2_o19",
           "target": "EVT_entity_3_o20",
           "edge_type": "CAUSAL",
-          "confidence": 0.6733,
+          "confidence": 0.7062,
           "relation": "BEFORE",
           "label": "action dependency: EXIT->OBSERVE"
         }
@@ -1984,7 +2092,7 @@
             "entity_id": "entity_1",
             "primary_alias": "Speaker_J",
             "confidence": 0.7152,
-            "location": "remote \u00e2\u20ac\u201d email server log",
+            "location": "remote \u2014 email server log",
             "modality": "text",
             "content": "It went through. Full amount. (forwarded)",
             "conflict_flag": true,
@@ -2112,9 +2220,33 @@
             "source": "EVT_entity_1_o1_o2_o3_o5",
             "target": "EVT_entity_1_o10",
             "edge_type": "CAUSAL",
-            "confidence": 0.5824,
+            "confidence": 0.6088,
             "relation": "BEFORE",
             "label": "action dependency: APPROACH->WATCH"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o11",
+            "edge_type": "CAUSAL",
+            "confidence": 0.4918,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o18",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5436,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.60), sequential"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o17",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5652,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
           },
           {
             "source": "EVT_entity_1_o7_o8",
@@ -2131,6 +2263,14 @@
             "confidence": 0.6067,
             "relation": "BEFORE",
             "label": "action dependency: ENTER->WITHDRAW"
+          },
+          {
+            "source": "EVT_entity_1_o7_o8",
+            "target": "EVT_entity_1_o14_o15",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5228,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
           },
           {
             "source": "EVT_entity_1_o10",
@@ -2168,7 +2308,7 @@
             "source": "EVT_entity_1_o12",
             "target": "EVT_entity_1_o14_o15",
             "edge_type": "CAUSAL",
-            "confidence": 0.5529,
+            "confidence": 0.578,
             "relation": "BEFORE",
             "label": "action dependency: WITHDRAW->EXIT"
           },
@@ -2216,7 +2356,7 @@
             "source": "EVT_entity_2_o19",
             "target": "EVT_entity_3_o20",
             "edge_type": "CAUSAL",
-            "confidence": 0.6733,
+            "confidence": 0.7062,
             "relation": "BEFORE",
             "label": "action dependency: EXIT->OBSERVE"
           }
@@ -2234,9 +2374,33 @@
             "source": "EVT_entity_1_o1_o2_o3_o5",
             "target": "EVT_entity_1_o10",
             "edge_type": "CAUSAL",
-            "confidence": 0.5824,
+            "confidence": 0.6088,
             "relation": "BEFORE",
             "label": "action dependency: APPROACH->WATCH"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o11",
+            "edge_type": "CAUSAL",
+            "confidence": 0.4918,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o18",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5436,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.60), sequential"
+          },
+          {
+            "source": "EVT_entity_1_o1_o2_o3_o5",
+            "target": "EVT_entity_1_o17",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5652,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
           },
           {
             "source": "EVT_entity_1_o7_o8",
@@ -2245,6 +2409,14 @@
             "confidence": 0.6067,
             "relation": "BEFORE",
             "label": "action dependency: ENTER->WITHDRAW"
+          },
+          {
+            "source": "EVT_entity_1_o7_o8",
+            "target": "EVT_entity_1_o14_o15",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5228,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.68), sequential"
           },
           {
             "source": "EVT_entity_1_o10",
@@ -2258,7 +2430,7 @@
             "source": "EVT_entity_1_o12",
             "target": "EVT_entity_1_o14_o15",
             "edge_type": "CAUSAL",
-            "confidence": 0.5529,
+            "confidence": 0.578,
             "relation": "BEFORE",
             "label": "action dependency: WITHDRAW->EXIT"
           },
@@ -2282,13 +2454,13 @@
             "source": "EVT_entity_2_o19",
             "target": "EVT_entity_3_o20",
             "edge_type": "CAUSAL",
-            "confidence": 0.6733,
+            "confidence": 0.7062,
             "relation": "BEFORE",
             "label": "action dependency: EXIT->OBSERVE"
           }
         ],
         "node_count": 11,
-        "edge_count": 15
+        "edge_count": 19
       },
       "uncertainties": [
         {
@@ -2452,7 +2624,7 @@
           "timestamp": "2024-01-15T10:03:36Z",
           "actor": "Speaker_J",
           "action": "It went through. Full amount. (forwarded)",
-          "location": "remote \u00e2\u20ac\u201d email server log",
+          "location": "remote \u2014 email server log",
           "evidence": [
             "O13"
           ],
@@ -2473,7 +2645,7 @@
           "event_id": "EVT_entity_1_o11",
           "timestamp": "2024-01-15T10:03:50Z",
           "actor": "Speaker_J",
-          "action": "Subject's face not visible in available footage.",
+          "action": "Subject's face not visible in available footage.  [-> same entity, semantically same location (sim=0.68), sequential]",
           "location": "ATM street frontage, wide-angle coverage",
           "evidence": [
             "O11"
@@ -2738,37 +2910,37 @@
         },
         {
           "event_a": "EVT_entity_1_o10",
-          "event_b": "EVT_entity_1_o12",
+          "event_b": "EVT_entity_1_o14_o15",
           "reason": "local LLM returned no result for this pair"
         },
         {
-          "event_a": "EVT_entity_1_o7_o8",
-          "event_b": "EVT_entity_1_o18",
+          "event_a": "EVT_entity_1_o1_o2_o3_o5",
+          "event_b": "EVT_entity_1_o12",
           "reason": "local LLM returned no result for this pair"
         },
         {
           "event_a": "EVT_entity_1_o10",
-          "event_b": "EVT_entity_1_o14_o15",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o7_o8",
-          "event_b": "EVT_entity_1_o14_o15",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o1_o2_o3_o5",
           "event_b": "EVT_entity_1_o12",
           "reason": "local LLM returned no result for this pair"
         },
         {
+          "event_a": "EVT_entity_1_o7_o8",
+          "event_b": "EVT_entity_1_o18",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
           "event_a": "EVT_entity_1_o1_o2_o3_o5",
           "event_b": "EVT_entity_1_o14_o15",
           "reason": "local LLM returned no result for this pair"
         },
         {
-          "event_a": "EVT_entity_1_o1_o2_o3_o5",
-          "event_b": "EVT_entity_1_o18",
+          "event_a": "EVT_entity_1_o12",
+          "event_b": "EVT_entity_1_o11",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o12",
+          "event_b": "EVT_entity_1_o17",
           "reason": "local LLM returned no result for this pair"
         },
         {
@@ -2782,43 +2954,8 @@
           "reason": "local LLM returned no result for this pair"
         },
         {
-          "event_a": "EVT_entity_1_o13",
-          "event_b": "EVT_entity_1_o12",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o12",
-          "event_b": "EVT_entity_1_o11",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o12",
-          "event_b": "EVT_entity_1_o17",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
           "event_a": "EVT_entity_1_o18",
           "event_b": "EVT_entity_1_o17",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o1_o2_o3_o5",
-          "event_b": "EVT_entity_1_o11",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o1_o2_o3_o5",
-          "event_b": "EVT_entity_1_o17",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o13",
-          "event_b": "EVT_entity_1_o18",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o7_o8",
-          "event_b": "EVT_entity_1_o13",
           "reason": "local LLM returned no result for this pair"
         },
         {
@@ -2827,11 +2964,6 @@
           "reason": "local LLM returned no result for this pair"
         },
         {
-          "event_a": "EVT_entity_1_o13",
-          "event_b": "EVT_entity_1_o14_o15",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
           "event_a": "EVT_entity_1_o7_o8",
           "event_b": "EVT_entity_1_o11",
           "reason": "local LLM returned no result for this pair"
@@ -2843,6 +2975,31 @@
         },
         {
           "event_a": "EVT_entity_1_o10",
+          "event_b": "EVT_entity_1_o11",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o10",
+          "event_b": "EVT_entity_1_o17",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o13",
+          "event_b": "EVT_entity_1_o14_o15",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o13",
+          "event_b": "EVT_entity_1_o12",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o13",
+          "event_b": "EVT_entity_1_o18",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o7_o8",
           "event_b": "EVT_entity_1_o13",
           "reason": "local LLM returned no result for this pair"
         },
@@ -2853,12 +3010,7 @@
         },
         {
           "event_a": "EVT_entity_1_o10",
-          "event_b": "EVT_entity_1_o11",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_1_o10",
-          "event_b": "EVT_entity_1_o17",
+          "event_b": "EVT_entity_1_o13",
           "reason": "local LLM returned no result for this pair"
         },
         {
@@ -2874,28 +3026,28 @@
       ],
       "unresolved_entities": [],
       "stage_timings": {
-        "stage_1_validation": 0.0004,
-        "stage_2_enrichment": 0.0065,
-        "stage_3_ordering": 0.0001,
-        "stage_4_5_temporal": 0.0001,
-        "stage_6_causal": 3.2879,
+        "stage_1_validation": 0.0001,
+        "stage_2_enrichment": 0.0031,
+        "stage_3_ordering": 0.0,
+        "stage_4_5_temporal": 0.0,
+        "stage_6_causal": 0.0829,
         "stage_7_uncertainty": 0.0,
         "stage_8_conflicts": 0.0001,
-        "stage_10_explainability": 0.0002,
+        "stage_10_explainability": 0.0001,
         "stage_11_narrative": 0.0001,
-        "stage_12_versioning": 0.0016,
-        "stage_13_export": 0.0109
+        "stage_12_versioning": 0.0013,
+        "stage_13_export": 0.0061
       },
-      "total_time_sec": 3.3093,
+      "total_time_sec": 0.0945,
       "validation_warnings": [
         "[entity_resolved.conflicts[1]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
       ],
       "llm_backend_used": "CloudLLMFallback",
       "llm_calls_made": 1,
       "output_classification": "AMBIGUOUS",
-      "output_classification_reason": "avg_confidence=0.69, conflict_fraction=0.82, unresolved_ratio=2.64 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+      "output_classification_reason": "avg_confidence=0.69, conflict_fraction=0.82, unresolved_ratio=2.27 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
     }
   ],
-  "generated_at": "2026-08-26T06:22:38.517799+00:00",
+  "generated_at": "2026-08-30T06:17:09.620657+00:00",
   "status": "complete"
 }

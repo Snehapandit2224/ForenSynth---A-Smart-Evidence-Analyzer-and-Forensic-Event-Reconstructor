@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_005",
   "timeline_version": "V2",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-26T06:18:04Z",
+  "generated_at": "2026-08-30T06:14:16Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -186,8 +186,8 @@
         "O8"
       ],
       "timestamp": "2024-01-15T10:05:54Z",
-      "location": "remote \u00e2\u20ac\u201d email server log",
-      "location_key": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
+      "location_key": "remote \u2014 email server log",
       "entity_id": "entity_2",
       "primary_alias": "Person_55",
       "aliases": [
@@ -250,14 +250,6 @@
       "confidence": 0.6325,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
-    },
-    {
-      "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o3",
-      "edge_type": "CAUSAL",
-      "confidence": 0.9,
-      "relation": "BEFORE",
-      "label": "local LLM: The suspect\u2019s lingering near the ATM plausibly prompted the subsequent action of pushing into the enclosure."
     }
   ],
   "timeline_graph": {
@@ -359,7 +351,7 @@
         "entity_id": "entity_2",
         "primary_alias": "Person_55",
         "confidence": 0.7608,
-        "location": "remote \u00e2\u20ac\u201d email server log",
+        "location": "remote \u2014 email server log",
         "modality": "text",
         "content": "Two individuals left together quickly. One carrying a bag.",
         "conflict_flag": false,
@@ -396,10 +388,10 @@
       {
         "source": "EVT_entity_1_o2",
         "target": "EVT_entity_1_o3",
-        "edge_type": "CAUSAL",
-        "confidence": 0.9,
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
         "relation": "BEFORE",
-        "label": "local LLM: The suspect\u2019s lingering near the ATM plausibly prompted the subsequent action of pushing into the enclosure."
+        "label": "BEFORE (0.95)"
       },
       {
         "source": "EVT_entity_1_o2",
@@ -458,14 +450,6 @@
         "confidence": 0.6735,
         "relation": "BEFORE",
         "label": "same entity, semantically same location (sim=1.00), sequential"
-      },
-      {
-        "source": "EVT_entity_1_o2",
-        "target": "EVT_entity_1_o3",
-        "edge_type": "CAUSAL",
-        "confidence": 0.9,
-        "relation": "BEFORE",
-        "label": "local LLM: The suspect\u2019s lingering near the ATM plausibly prompted the subsequent action of pushing into the enclosure."
       },
       {
         "source": "EVT_entity_1_o2",
@@ -574,7 +558,7 @@
       "event_id": "EVT_entity_1_o3",
       "timestamp": "2024-01-15T10:04:10Z",
       "actor": "Person_14",
-      "action": "Person pushes into ATM enclosure.  [-> local LLM: The suspect\u2019s lingering near the ATM plausibly prompted the subsequent action of pushing into the enclosure.]",
+      "action": "Person pushes into ATM enclosure.  [-> same entity, semantically same location (sim=1.00), sequential]",
       "location": "ATM booth entrance, exterior facing",
       "evidence": [
         "O3"
@@ -619,7 +603,7 @@
       "timestamp": "2024-01-15T10:05:54Z",
       "actor": "Person_55",
       "action": "Two individuals left together quickly. One carrying a bag.",
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "evidence": [
         "O8"
       ],
@@ -726,37 +710,42 @@
     {
       "event_a": "EVT_entity_1_o1",
       "event_b": "EVT_entity_1_o2",
-      "reason": "local LLM determined no causal link"
+      "reason": "local LLM returned no result for this pair"
+    },
+    {
+      "event_a": "EVT_entity_1_o2",
+      "event_b": "EVT_entity_1_o3",
+      "reason": "local LLM returned no result for this pair"
     },
     {
       "event_a": "EVT_entity_2_o6",
       "event_b": "EVT_entity_2_o8",
-      "reason": "local LLM determined no causal link"
+      "reason": "local LLM returned no result for this pair"
     },
     {
       "event_a": "EVT_entity_2_o7",
       "event_b": "EVT_entity_2_o8",
-      "reason": "local LLM determined no causal link"
+      "reason": "local LLM returned no result for this pair"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
     "stage_1_validation": 0.0,
-    "stage_2_enrichment": 0.0015,
+    "stage_2_enrichment": 0.0007,
     "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0001,
-    "stage_6_causal": 1.5293,
+    "stage_4_5_temporal": 0.0,
+    "stage_6_causal": 0.2626,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0001,
-    "stage_11_narrative": 0.0001,
-    "stage_12_versioning": 0.001,
-    "stage_13_export": 0.0043
+    "stage_10_explainability": 0.0,
+    "stage_11_narrative": 0.0,
+    "stage_12_versioning": 0.0002,
+    "stage_13_export": 0.0018
   },
-  "total_time_sec": 1.5377,
+  "total_time_sec": 0.2657,
   "validation_warnings": [],
   "llm_backend_used": "CloudLLMFallback",
   "llm_calls_made": 1,
-  "output_classification": "PARTIAL",
-  "output_classification_reason": "avg_confidence=0.81, conflict_fraction=0.00, unresolved_ratio=0.43 - reconstruction is usable but has some flagged or unresolved items worth investigator attention."
+  "output_classification": "AMBIGUOUS",
+  "output_classification_reason": "avg_confidence=0.81, conflict_fraction=0.00, unresolved_ratio=0.57 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

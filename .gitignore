@@ -18,6 +18,15 @@ __pycache__/
 # Database files
 *.db
 *.sqlite
+*.db-shm
+*.db-wal
+
+# Generated pipeline outputs (video/PDF/evaluation artifacts, not source)
+output/videos/
+output/reports/
+output/evaluation/
+*.mp4
+*.pdf
 
 # IDE
 .vscode/

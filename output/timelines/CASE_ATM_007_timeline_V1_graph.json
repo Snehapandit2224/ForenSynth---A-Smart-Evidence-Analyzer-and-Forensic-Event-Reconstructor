@@ -56,7 +56,7 @@
       "entity_id": "entity_1",
       "primary_alias": "Speaker_J",
       "confidence": 0.7152,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "It went through. Full amount. (forwarded)",
       "conflict_flag": true,
@@ -184,9 +184,33 @@
       "source": "EVT_entity_1_o1_o2_o3_o5",
       "target": "EVT_entity_1_o10",
       "edge_type": "CAUSAL",
-      "confidence": 0.5824,
+      "confidence": 0.6088,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->WATCH"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3_o5",
+      "target": "EVT_entity_1_o11",
+      "edge_type": "CAUSAL",
+      "confidence": 0.4918,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3_o5",
+      "target": "EVT_entity_1_o18",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5436,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3_o5",
+      "target": "EVT_entity_1_o17",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5652,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_1_o7_o8",
@@ -203,6 +227,14 @@
       "confidence": 0.6067,
       "relation": "BEFORE",
       "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_entity_1_o7_o8",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5228,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_1_o10",
@@ -240,7 +272,7 @@
       "source": "EVT_entity_1_o12",
       "target": "EVT_entity_1_o14_o15",
       "edge_type": "CAUSAL",
-      "confidence": 0.5529,
+      "confidence": 0.578,
       "relation": "BEFORE",
       "label": "action dependency: WITHDRAW->EXIT"
     },
@@ -288,7 +320,7 @@
       "source": "EVT_entity_2_o19",
       "target": "EVT_entity_3_o20",
       "edge_type": "CAUSAL",
-      "confidence": 0.6733,
+      "confidence": 0.7062,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     }
@@ -306,9 +338,33 @@
       "source": "EVT_entity_1_o1_o2_o3_o5",
       "target": "EVT_entity_1_o10",
       "edge_type": "CAUSAL",
-      "confidence": 0.5824,
+      "confidence": 0.6088,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->WATCH"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3_o5",
+      "target": "EVT_entity_1_o11",
+      "edge_type": "CAUSAL",
+      "confidence": 0.4918,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3_o5",
+      "target": "EVT_entity_1_o18",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5436,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.60), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2_o3_o5",
+      "target": "EVT_entity_1_o17",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5652,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_1_o7_o8",
@@ -317,6 +373,14 @@
       "confidence": 0.6067,
       "relation": "BEFORE",
       "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_entity_1_o7_o8",
+      "target": "EVT_entity_1_o14_o15",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5228,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_1_o10",
@@ -330,7 +394,7 @@
       "source": "EVT_entity_1_o12",
       "target": "EVT_entity_1_o14_o15",
       "edge_type": "CAUSAL",
-      "confidence": 0.5529,
+      "confidence": 0.578,
       "relation": "BEFORE",
       "label": "action dependency: WITHDRAW->EXIT"
     },
@@ -354,11 +418,11 @@
       "source": "EVT_entity_2_o19",
       "target": "EVT_entity_3_o20",
       "edge_type": "CAUSAL",
-      "confidence": 0.6733,
+      "confidence": 0.7062,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     }
   ],
   "node_count": 11,
-  "edge_count": 15
+  "edge_count": 19
 }

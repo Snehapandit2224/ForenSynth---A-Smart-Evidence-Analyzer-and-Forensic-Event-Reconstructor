@@ -570,6 +570,30 @@ input[type=file]{display:none;}
 }
 .entity-conf-fill{height:100%;border-radius:1px;background:var(--olive);}
 
+/* ── Post-Pipeline Outputs (video + PDF report) ────────── */
+.output-file-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.output-file-row:last-child{border-bottom:none;}
+.output-file-icon{font-size:20px;flex-shrink:0;filter:grayscale(0.3);}
+.output-file-info{flex:1;min-width:0;}
+.output-file-name{
+  font-size:11px;font-weight:500;color:var(--bone);margin-bottom:2px;
+}
+.output-file-path{
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.output-file-link{
+  flex-shrink:0;
+  font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--tobacco);text-decoration:none;
+  padding:5px 12px;border:1px solid var(--tobacco-dim);border-radius:5px;
+  transition:background 0.15s,color 0.15s;
+}
+.output-file-link:hover{background:rgba(138,90,43,0.15);}
+
 /* ── Iter Log ────────────────────────────────────────── */
 .iter-table{width:100%;border-collapse:collapse;}
 .iter-table th{
@@ -843,6 +867,7 @@ input[type=file]{display:none;}
           <button class="output-tab" onclick="switchTab('explainability',this)">Explainability</button>
           <button class="output-tab" onclick="switchTab('showrunner',this)">Showrunner</button>
           <button class="output-tab" onclick="switchTab('iterlog',this)">Iter Log</button>
+          <button class="output-tab" onclick="switchTab('outputs',this)">Outputs</button>
         </div>
         <div id="outputCaseBadge" style="margin-left:auto;"></div>
       </div>
@@ -895,6 +920,11 @@ input[type=file]{display:none;}
           </div>
           <div id="iterLogBody"></div>
         </div>
+      </div>
+
+      <!-- Outputs tab (post-pipeline video + report) -->
+      <div class="tab-panel" id="tab-outputs">
+        <div class="explain-grid" id="postOutputsGrid"></div>
       </div>
 
     </div>
@@ -1189,6 +1219,7 @@ function renderOutput(r) {
   renderExplainability(r);
   renderShowrunner(r);
   renderIterLog(r);
+  renderPostOutputs(r);
   renderOutputCaseBadge(r);
 }
 
@@ -1395,6 +1426,45 @@ function renderIterLog(r) {
         </tr>`).join('')}
       </tbody>
     </table>`;
+}
+
+function renderPostOutputs(r) {
+  // These are produced by the real run_case.py pipeline (scene_reconstruction_v3.py
+  // and explainability_report_v2.py) after the final Showrunner round — not by this
+  // in-browser mock. Paths mirror run_case.py's output/videos and output/reports dirs.
+  const videoName  = `${r.case_id}_scene_reconstruction_v3.mp4`;
+  const reportName = `${r.case_id}_explainability_report_v2.pdf`;
+  const videoPath  = `output/videos/${videoName}`;
+  const reportPath = `output/reports/${reportName}`;
+  document.getElementById('postOutputsGrid').innerHTML = `
+    <div class="explain-card">
+      <div class="explain-title">Scene Reconstruction Video</div>
+      <div class="output-file-row">
+        <div class="output-file-icon">🎬</div>
+        <div class="output-file-info">
+          <div class="output-file-name">${videoName}</div>
+          <div class="output-file-path">${videoPath}</div>
+        </div>
+        <a class="output-file-link" href="${videoPath}" target="_blank" rel="noopener">Open</a>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.6;">
+        Rendered by scene_reconstruction_v3.py once the pipeline finalizes. Run <span style="color:var(--tobacco);">pipeline\\run_case.py</span> to generate it — this demo does not produce it.
+      </div>
+    </div>
+    <div class="explain-card">
+      <div class="explain-title">Explainability Report (PDF)</div>
+      <div class="output-file-row">
+        <div class="output-file-icon">📄</div>
+        <div class="output-file-info">
+          <div class="output-file-name">${reportName}</div>
+          <div class="output-file-path">${reportPath}</div>
+        </div>
+        <a class="output-file-link" href="${reportPath}" target="_blank" rel="noopener">Open</a>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.6;">
+        Dual-layer human + technical report covering ER, Timeline, Critique (C1→C3), and Showrunner rounds.
+      </div>
+    </div>`;
 }
 
 function renderOutputCaseBadge(r) {
