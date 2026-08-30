@@ -1,0 +1,164 @@
+{
+  "case_id": "CASE_ATM_008",
+  "domain": "ATM_Robbery",
+  "template": "MultiActor_Entry_Action_Exit",
+  "fir": {
+    "crime_type": "cash machine theft",
+    "location": "Koramangala SBI ATM",
+    "time_window": [
+      0,
+      746
+    ],
+    "description": "A coordinated ATM robbery was reported involving 3 accused individuals. Division of roles was evident from CCTV footage, with one party operating the terminal and another standing guard. 2 eyewitness(es) are on record.",
+    "roles": {
+      "suspect": 3,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O2",
+      "entity": "Speaker_X",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "Yeah I'm almost at the machine (per call log transcript).",
+      "timestamp": "2024-01-15T10:00:39",
+      "time_offset": 39,
+      "confidence": 0.755
+    },
+    {
+      "obs_id": "O1",
+      "entity": "Person_50",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "My movements that day did not take me anywhere near that kiosk.",
+      "timestamp": "2024-01-15T10:01:10",
+      "time_offset": 70,
+      "confidence": 0.541
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Person_80",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "The second actor arrives at the ATM vicinity.",
+      "timestamp": "2024-01-15T10:01:16",
+      "time_offset": 76,
+      "confidence": 0.884
+    },
+    {
+      "obs_id": "O4",
+      "entity": "Person_50",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "First individual steps through the ATM booth door (poor image quality).",
+      "timestamp": "2024-01-15T10:01:21",
+      "time_offset": 81,
+      "confidence": 0.903
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Speaker_X",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "I'm in, it's clear (reconstructed from partial recording).",
+      "timestamp": "2024-01-15T10:01:24",
+      "time_offset": 84,
+      "confidence": 0.794
+    },
+    {
+      "obs_id": "O11",
+      "entity": "Person_80",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Both persons leave the ATM location at pace (poor image quality).",
+      "timestamp": "2024-01-15T10:02:56",
+      "time_offset": 176,
+      "confidence": 0.914
+    },
+    {
+      "obs_id": "O10",
+      "entity": "Speaker_X",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "Out of the ATM, heading your way (statement recorded under caution).",
+      "timestamp": "2024-01-15T10:03:01",
+      "time_offset": 181,
+      "confidence": 0.617
+    },
+    {
+      "obs_id": "O9",
+      "entity": "Person_50",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "First suspect exits ATM booth (poor image quality).",
+      "timestamp": "2024-01-15T10:03:13",
+      "time_offset": 193,
+      "confidence": 0.819
+    },
+    {
+      "obs_id": "O8",
+      "entity": "Speaker_X",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "Card's in, processing.",
+      "timestamp": "2024-01-15T10:03:22",
+      "time_offset": 202,
+      "confidence": 0.625
+    },
+    {
+      "obs_id": "O14",
+      "entity": "log_43",
+      "role": "witness",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Two individuals left together quickly. One carrying a bag. (forwarded)",
+      "timestamp": "2024-01-15T10:03:31",
+      "time_offset": 211,
+      "confidence": 0.737
+    },
+    {
+      "obs_id": "O13",
+      "entity": "Speaker_Q",
+      "role": "witness",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "They exited the kiosk and separated immediately (per call log transcript).",
+      "timestamp": "2024-01-15T10:03:34",
+      "time_offset": 214,
+      "confidence": 0.735
+    },
+    {
+      "obs_id": "O12",
+      "entity": "Person_55",
+      "role": "witness",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "Person at bus stop observed watching two individuals walk away quickly.",
+      "timestamp": "2024-01-15T10:03:56",
+      "time_offset": 236,
+      "confidence": 0.591
+    }
+  ]
+}

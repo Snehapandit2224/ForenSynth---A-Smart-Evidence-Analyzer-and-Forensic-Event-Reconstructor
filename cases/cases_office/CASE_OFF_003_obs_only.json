@@ -1,0 +1,140 @@
+{
+  "case_id": "CASE_OFF_003",
+  "domain": "Office_Theft",
+  "template": "Entry_LegitAction_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "corporate document theft",
+    "location": "Server Room – RMZ Ecospace",
+    "time_window": [
+      0,
+      1820
+    ],
+    "description": "Confidential documents were found missing following an employee's shift. Internal access logs show the registered user accessed restricted folders beyond their clearance level. 2 staff member(s) corroborate partial observations.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "entity": "Person_73",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "accounts department area, third floor",
+      "content": "Individual seen arriving at the office during business hours.",
+      "timestamp": "2024-01-15T10:01:42",
+      "time_offset": 102,
+      "confidence": 0.871
+    },
+    {
+      "obs_id": "O2",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "Communication log entry. Details under analysis.",
+      "timestamp": "2024-01-15T10:02:20",
+      "time_offset": 140,
+      "confidence": 0.809
+    },
+    {
+      "obs_id": "O4",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Entry clear. No guard at desk.",
+      "timestamp": "2024-01-15T10:02:23",
+      "time_offset": 143,
+      "confidence": 0.857
+    },
+    {
+      "obs_id": "O11",
+      "entity": "Person_45",
+      "role": "witness",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "main office corridor, ground floor",
+      "content": "I deny witnessing the departures described.",
+      "timestamp": "2024-01-15T10:29:36",
+      "time_offset": 1776,
+      "confidence": 0.288
+    },
+    {
+      "obs_id": "O12",
+      "entity": "Person_45",
+      "role": "witness",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "Co-worker seen walking to the IT help desk with a folder.",
+      "timestamp": "2024-01-15T10:29:56",
+      "time_offset": 1796,
+      "confidence": 0.678
+    },
+    {
+      "obs_id": "O6",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "Filing the Q3 audit docs.",
+      "timestamp": "2024-01-15T10:30:00",
+      "time_offset": 1800,
+      "confidence": 0.788
+    },
+    {
+      "obs_id": "O8",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Transfer complete. Wiping history.",
+      "timestamp": "2024-01-15T10:30:10",
+      "time_offset": 1810,
+      "confidence": 0.796
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Person_73",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "main office corridor, ground floor",
+      "content": "Employee participates in scheduled meetings during the day (partially obscured).",
+      "timestamp": "2024-01-15T10:30:20",
+      "time_offset": 1820,
+      "confidence": 0.904
+    },
+    {
+      "obs_id": "O7",
+      "entity": "Person_73",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "The individual was seen copying large volumes of data to a removable drive.",
+      "timestamp": "2024-01-15T10:30:20",
+      "time_offset": 1820,
+      "confidence": 0.772
+    },
+    {
+      "obs_id": "O10",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "I'm outside. No alarms.",
+      "timestamp": "2024-01-15T10:31:07",
+      "time_offset": 1867,
+      "confidence": 0.703
+    }
+  ]
+}

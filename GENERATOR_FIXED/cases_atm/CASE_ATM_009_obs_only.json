@@ -1,0 +1,104 @@
+{
+  "case_id": "CASE_ATM_009",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "Indiranagar HDFC ATM",
+    "time_window": [
+      0,
+      528
+    ],
+    "description": "Deponent reports that 1 accused person(s) were seen pacing near the ATM kiosk for an extended duration before accessing the card reader. 1 bystander(s) noted the suspicious conduct and have filed statements.",
+    "roles": {
+      "suspect": 1,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "entity": "Person_14",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Subject is seen nearing the ATM from the main road (poor image quality).",
+      "timestamp": "2024-01-15T10:00:58",
+      "time_offset": 58,
+      "confidence": 0.89
+    },
+    {
+      "obs_id": "O2",
+      "entity": "Person_14",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Subject lingers near the ATM kiosk for an unusually long time.",
+      "timestamp": "2024-01-15T10:03:34",
+      "time_offset": 214,
+      "confidence": 0.793
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Person_14",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person pushes into ATM enclosure.",
+      "timestamp": "2024-01-15T10:04:10",
+      "time_offset": 250,
+      "confidence": 0.826
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Person_14",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person departs from the ATM kiosk at pace.",
+      "timestamp": "2024-01-15T10:05:20",
+      "time_offset": 320,
+      "confidence": 0.766
+    },
+    {
+      "obs_id": "O7",
+      "entity": "Speaker_C",
+      "role": "witness",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I was not paying attention to anyone leaving the area.",
+      "timestamp": "2024-01-15T10:05:39",
+      "time_offset": 339,
+      "confidence": 0.614
+    },
+    {
+      "obs_id": "O6",
+      "entity": "Person_55",
+      "role": "witness",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Eyewitness notices a person leaving the ATM enclosure in a rush (poor image quality).",
+      "timestamp": "2024-01-15T10:05:50",
+      "time_offset": 350,
+      "confidence": 0.611
+    },
+    {
+      "obs_id": "O8",
+      "entity": "email_74",
+      "role": "witness",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Two individuals left together quickly. One carrying a bag.",
+      "timestamp": "2024-01-15T10:05:54",
+      "time_offset": 354,
+      "confidence": 0.706
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "case_id": "CASE_OFF_002",
+  "domain": "Office_Theft",
+  "template": "Entry_LegitAction_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "internal data breach",
+    "location": "Admin Wing – Manyata Embassy Business Park",
+    "time_window": [
+      0,
+      9905
+    ],
+    "description": "An insider threat is suspected. A registered employee conducted normal work activities during the day before accessing restricted files unusually late in their shift. 1 colleague(s) noted the individual staying back after others had left.",
+    "roles": {
+      "suspect": 1,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "security monitoring room, office premises",
+      "content": "Regarding the approach office.",
+      "timestamp": "2024-01-15T09:56:08",
+      "time_offset": 0,
+      "confidence": 0.765,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "security monitoring room, office premises",
+      "content": "Just finishing up the report.",
+      "timestamp": "2024-01-15T11:53:57",
+      "time_offset": 6837,
+      "confidence": 0.701,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "Out now, everything went clean.",
+      "timestamp": "2024-01-15T11:55:01",
+      "time_offset": 6901,
+      "confidence": 0.646,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "security monitoring room, office premises",
+      "content": "Almost done copying, stay on the line.",
+      "timestamp": "2024-01-15T11:56:05",
+      "time_offset": 6965,
+      "confidence": 0.648,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "Speaker_H",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "I saw them leave the office.",
+      "timestamp": "2024-01-15T11:56:40",
+      "time_offset": 7000,
+      "confidence": 0.789,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E6",
+      "entity": "sms_72",
+      "role": "witness",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Saw a man rush out and walk away fast. Seemed nervous.",
+      "timestamp": "2024-01-15T12:01:09",
+      "time_offset": 7269,
+      "confidence": 0.817,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E7",
+      "entity": "Speaker_H",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "office premises, seized device",
+      "content": "I witnessed something that didn't look right.",
+      "timestamp": "2024-01-15T12:17:37",
+      "time_offset": 8257,
+      "confidence": 0.781,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E7",
+      "entity": "sms_72",
+      "role": "witness",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "I deny having reported any incident to any official.",
+      "timestamp": "2024-01-15T12:22:14",
+      "time_offset": 8534,
+      "confidence": 0.633,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "audio": "Speaker_C"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_H",
+          "text": "sms_72"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_office",
+        "timestamp": "2024-01-15T10:01:02",
+        "time_offset": 62
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_office",
+        "timestamp": "2024-01-15T10:01:58",
+        "time_offset": 118
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "perform_legit_work",
+        "timestamp": "2024-01-15T11:49:55",
+        "time_offset": 6595
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "steal_data",
+        "timestamp": "2024-01-15T11:58:59",
+        "time_offset": 7139
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_office",
+        "timestamp": "2024-01-15T11:59:24",
+        "time_offset": 7164
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T12:01:09",
+        "time_offset": 7269
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T12:18:33",
+        "time_offset": 8313
+      }
+    ],
+    "entity_mapping": {
+      "Speaker_C": "suspect_1",
+      "Speaker_H": "witness_1",
+      "sms_72": "witness_1"
+    }
+  }
+}

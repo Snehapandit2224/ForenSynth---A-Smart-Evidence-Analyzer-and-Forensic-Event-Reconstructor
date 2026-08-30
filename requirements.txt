@@ -1,0 +1,26 @@
+# ForenSynth – requirements.txt
+# Install with: pip install -r requirements.txt
+
+# ── Graph construction ────────────────────────────────────────────────────────
+networkx>=3.1
+
+# ── Fuzzy string matching (entity alias matching, lexical similarity) ─────────
+rapidfuzz>=3.0
+
+# ── LLM API client (Groq — used by ER and Timeline Agent) ────────────────────
+groq>=0.9
+
+# ── Semantic similarity / sentence embeddings ─────────────────────────────────
+# Used for location similarity and action tag matching.
+# Requires internet access to download model on first run (huggingface.co).
+# Falls back to lexical matching if unavailable.
+sentence-transformers>=2.2
+
+# ── HTTP client (used internally by sentence-transformers and groq) ───────────
+httpx>=0.24
+
+# ── Post-pipeline outputs: scene reconstruction video + explainability PDF ────
+moviepy>=2.1.2
+Pillow>=10.0.0
+fpdf2>=2.7.0
+numpy>=1.24.0

@@ -1,0 +1,266 @@
+{
+  "case_id": "CASE_OFF_003",
+  "domain": "Office_Theft",
+  "template": "Entry_LegitAction_HiddenAction_Exit",
+  "fir": {
+    "crime_type": "corporate document theft",
+    "location": "Server Room – RMZ Ecospace",
+    "time_window": [
+      0,
+      1820
+    ],
+    "description": "Confidential documents were found missing following an employee's shift. Internal access logs show the registered user accessed restricted folders beyond their clearance level. 2 staff member(s) corroborate partial observations.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Person_73",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "accounts department area, third floor",
+      "content": "Individual seen arriving at the office during business hours.",
+      "timestamp": "2024-01-15T10:01:42",
+      "time_offset": 102,
+      "confidence": 0.871,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E1",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "Communication log entry. Details under analysis.",
+      "timestamp": "2024-01-15T10:02:20",
+      "time_offset": 140,
+      "confidence": 0.809,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E2",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Entry clear. No guard at desk.",
+      "timestamp": "2024-01-15T10:02:23",
+      "time_offset": 143,
+      "confidence": 0.857,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E6",
+      "entity": "Person_45",
+      "role": "witness",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "main office corridor, ground floor",
+      "content": "I deny witnessing the departures described.",
+      "timestamp": "2024-01-15T10:29:36",
+      "time_offset": 1776,
+      "confidence": 0.288,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E7",
+      "entity": "Person_45",
+      "role": "witness",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "Co-worker seen walking to the IT help desk with a folder.",
+      "timestamp": "2024-01-15T10:29:56",
+      "time_offset": 1796,
+      "confidence": 0.678,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E3",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "off-premises — accused personal device",
+      "content": "Filing the Q3 audit docs.",
+      "timestamp": "2024-01-15T10:30:00",
+      "time_offset": 1800,
+      "confidence": 0.788,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E4",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "Transfer complete. Wiping history.",
+      "timestamp": "2024-01-15T10:30:10",
+      "time_offset": 1810,
+      "confidence": 0.796,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E3",
+      "entity": "Person_73",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "main office corridor, ground floor",
+      "content": "Employee participates in scheduled meetings during the day (partially obscured).",
+      "timestamp": "2024-01-15T10:30:20",
+      "time_offset": 1820,
+      "confidence": 0.904,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E4",
+      "entity": "Person_73",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "cash handling area, internal office",
+      "content": "The individual was seen copying large volumes of data to a removable drive.",
+      "timestamp": "2024-01-15T10:30:20",
+      "time_offset": 1820,
+      "confidence": 0.772,
+      "noise_tags": [
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E5",
+      "entity": "report_37",
+      "role": "suspect",
+      "modality": "text",
+      "source": "email_log",
+      "location": "corporate email server, IT infrastructure",
+      "content": "I'm outside. No alarms.",
+      "timestamp": "2024-01-15T10:31:07",
+      "time_offset": 1867,
+      "confidence": 0.703,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_73",
+          "text": "report_37"
+        }
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "video": "Person_45"
+        }
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_T"
+        }
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_office",
+        "timestamp": "2024-01-15T10:01:40",
+        "time_offset": 100
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_office",
+        "timestamp": "2024-01-15T10:02:23",
+        "time_offset": 143
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "perform_legit_work",
+        "timestamp": "2024-01-15T10:29:57",
+        "time_offset": 1797
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "steal_data",
+        "timestamp": "2024-01-15T10:30:19",
+        "time_offset": 1819
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_office",
+        "timestamp": "2024-01-15T10:30:20",
+        "time_offset": 1820
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:30:20",
+        "time_offset": 1820
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:30:20",
+        "time_offset": 1820
+      }
+    ],
+    "entity_mapping": {
+      "Person_73": "suspect_1",
+      "report_37": "suspect_1",
+      "Person_45": "witness_1",
+      "Speaker_T": "witness_2"
+    }
+  }
+}

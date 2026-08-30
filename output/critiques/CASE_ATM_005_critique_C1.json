@@ -1,0 +1,77 @@
+{
+  "case_id": "CASE_ATM_005",
+  "timeline_version": "V1",
+  "critique_version": "C1",
+  "revision_number": 0,
+  "verdict": "REVISE",
+  "reason": "1 warning(s) on first pass",
+  "checks_run": [
+    "causal_cycle",
+    "orphaned_high_confidence_event",
+    "llm_edge_dependency_ratio",
+    "classification_structural_sanity",
+    "missing_linking_event",
+    "narrative_break",
+    "role_count_mismatch",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "llm_used": true,
+  "overall_score": 0.9,
+  "requires_revision": true,
+  "revision_target": "timeline",
+  "narrative_summary": "Case CASE_ATM_005 (pass 1): REVISE. 0 blocking, 1 warning(s), 0 info. Top: missing_linking_event \u2014 Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o7 and EVT",
+  "belief_updates": {},
+  "issues": [
+    {
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o7 and EVT_entity_2_o6 (11s). ER may have missed an observation cluster.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_2_o7",
+        "EVT_entity_2_o6"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o7 and EVT_entity_2_o6 (11s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_2_o7",
+      "affected_obs": [
+        "O7",
+        "O6"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o7 and EVT_entity_2_o6 (11s). ER may have missed an observation cluster.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_2_o7",
+        "EVT_entity_2_o6"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o7 and EVT_entity_2_o6 (11s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_2_o7",
+      "affected_obs": [
+        "O7",
+        "O6"
+      ]
+    }
+  ],
+  "edges_to_exclude": [],
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {}
+  },
+  "unresolvable_gaps": [],
+  "recommended_action": "REBUILD_WITH_BELIEF_UPDATE"
+}

@@ -1,0 +1,103 @@
+{
+  "case_id": "CASE_ATM_007",
+  "timeline_version": "V1",
+  "critique_version": "C1",
+  "revision_number": 0,
+  "verdict": "REVISE",
+  "reason": "1 warning(s) on first pass",
+  "checks_run": [
+    "causal_cycle",
+    "orphaned_high_confidence_event",
+    "llm_edge_dependency_ratio",
+    "classification_structural_sanity",
+    "missing_linking_event",
+    "narrative_break",
+    "role_count_mismatch",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "llm_used": true,
+  "overall_score": 0.88,
+  "requires_revision": true,
+  "revision_target": "er",
+  "narrative_summary": "Case CASE_ATM_007 (pass 1): REVISE. 0 blocking, 1 warning(s), 1 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can",
+  "belief_updates": {},
+  "issues": [
+    {
+      "check": "role_count_mismatch",
+      "severity": "warning",
+      "detail": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_er",
+      "affected_events": [],
+      "issue_type": "role_count_mismatch",
+      "description": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "recommendation": "re_run_er",
+      "event_id": "",
+      "affected_obs": []
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_1_o11 confidence=0.53. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_1_o11"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_1_o11 confidence=0.53. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_1_o11",
+      "affected_obs": [
+        "O11"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "check": "role_count_mismatch",
+      "severity": "warning",
+      "detail": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_er",
+      "affected_events": [],
+      "issue_type": "role_count_mismatch",
+      "description": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "recommendation": "re_run_er",
+      "event_id": "",
+      "affected_obs": []
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_1_o11 confidence=0.53. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_1_o11"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_1_o11 confidence=0.53. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_1_o11",
+      "affected_obs": [
+        "O11"
+      ]
+    }
+  ],
+  "edges_to_exclude": [],
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {}
+  },
+  "unresolvable_gaps": [
+    "low_confidence_event"
+  ],
+  "recommended_action": "RECHECK_OBSERVATIONS"
+}

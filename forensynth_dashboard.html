@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ForenSynth — Evidence Reconstruction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── Palette ─────────────────────────────────────────── */
+:root {
+  --bone:       #E6E0D6;
+  --bone-dim:   #D4CFC6;
+  --merlot:     #4B1E23;
+  --merlot-dim: #3A1219;
+  --olive:      #6B6F4E;
+  --olive-dim:  #555840;
+  --midnight:   #1C2430;
+  --midnight-dim:#141B25;
+  --tobacco:    #8A5A2B;
+  --tobacco-dim:#6E4820;
+  --graphite:   #121212;
+  --graphite-2: #1A1A1A;
+  --graphite-3: #242424;
+  --text-primary: #E6E0D6;
+  --text-muted:   #8A8580;
+  --text-dim:     #5A5550;
+  --border:       rgba(230,224,214,0.08);
+  --border-strong:rgba(230,224,214,0.16);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--graphite);color:var(--text-primary);font-family:'Inter',sans-serif;font-size:13px;overflow:hidden;}
+
+/* ── Layout ──────────────────────────────────────────── */
+.app{display:flex;height:100vh;}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--graphite-2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.sidebar-header{
+  padding:20px 16px 14px;
+  border-bottom:1px solid var(--border);
+}
+.brand{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:500;letter-spacing:0.02em;
+  color:var(--bone);
+  display:flex;align-items:baseline;gap:6px;
+}
+.brand-sub{
+  font-family:'Inter',sans-serif;
+  font-size:9px;font-weight:500;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-muted);
+}
+.sidebar-label{
+  font-size:9px;font-weight:600;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-dim);
+  padding:14px 16px 6px;
+}
+.sidebar-list{flex:1;overflow-y:auto;padding:0 8px 8px;}
+.sidebar-list::-webkit-scrollbar{width:3px;}
+.sidebar-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px;}
+
+.case-item{
+  border-radius:6px;
+  padding:10px 10px;
+  cursor:pointer;
+  margin-bottom:2px;
+  transition:background 0.15s;
+  position:relative;
+}
+.case-item:hover{background:var(--graphite-3);}
+.case-item.active{background:var(--midnight-dim);border-left:2px solid var(--tobacco);}
+.case-id{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--tobacco);margin-bottom:3px;
+}
+.case-meta{font-size:11px;color:var(--text-primary);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.case-badges{display:flex;gap:4px;align-items:center;margin-top:4px;}
+.badge{
+  font-size:8px;font-weight:600;letter-spacing:0.08em;
+  text-transform:uppercase;padding:2px 5px;border-radius:3px;
+}
+.badge-accept{background:rgba(107,111,78,0.25);color:var(--olive);}
+.badge-revise{background:rgba(138,90,43,0.25);color:var(--tobacco);}
+.badge-human{background:rgba(75,30,35,0.35);color:#C97B82;}
+.badge-loops{background:rgba(28,36,48,0.5);color:var(--text-muted);border:1px solid var(--border);}
+.score-pill{
+  margin-left:auto;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:500;
+  color:var(--bone-dim);
+}
+.sidebar-footer{
+  padding:12px 16px;
+  border-top:1px solid var(--border);
+}
+.new-case-btn{
+  width:100%;padding:9px;
+  background:var(--merlot);color:var(--bone);
+  border:none;border-radius:6px;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;letter-spacing:0.03em;
+  transition:background 0.15s;
+}
+.new-case-btn:hover{background:#5C242A;}
+
+/* ── Main ────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Top bar */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:52px;
+  border-bottom:1px solid var(--border);
+  background:var(--graphite-2);flex-shrink:0;
+}
+.topbar-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:400;letter-spacing:0.04em;
+  color:var(--bone);
+}
+.topbar-sub{font-size:11px;color:var(--text-muted);margin-left:10px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.status-dot{width:7px;height:7px;border-radius:50%;}
+.status-dot.ready{background:var(--olive);}
+.status-dot.running{background:var(--tobacco);animation:pulse 1s infinite;}
+.status-dot.error{background:var(--merlot);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.status-label{font-size:11px;color:var(--text-muted);}
+
+/* ── Content area ────────────────────────────────────── */
+.content{flex:1;overflow:auto;display:flex;flex-direction:column;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:var(--border-strong);}
+
+/* ── Input Zone ──────────────────────────────────────── */
+.input-zone{
+  padding:24px 24px 0;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+}
+
+.drop-card{
+  border:1px solid var(--border-strong);
+  border-radius:10px;
+  background:var(--graphite-2);
+  padding:20px;
+  position:relative;
+  transition:border-color 0.2s,background 0.2s;
+  cursor:pointer;
+}
+.drop-card:hover,.drop-card.drag-over{
+  border-color:var(--tobacco);
+  background:rgba(138,90,43,0.05);
+}
+.drop-card.has-file{border-color:var(--olive);}
+.drop-label{
+  font-size:9px;font-weight:600;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-dim);
+  margin-bottom:10px;
+}
+.drop-icon{
+  font-size:28px;margin-bottom:8px;
+  filter:grayscale(0.5);
+}
+.drop-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:400;color:var(--bone);
+  margin-bottom:4px;
+}
+.drop-hint{font-size:11px;color:var(--text-muted);}
+.drop-filename{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--olive);
+  margin-top:8px;display:none;
+}
+.drop-card.has-file .drop-filename{display:block;}
+.drop-card.has-file .drop-hint{display:none;}
+input[type=file]{display:none;}
+
+/* ── Human Input ─────────────────────────────────────── */
+.human-input-zone{
+  margin:16px 24px 0;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--graphite-2);
+  overflow:hidden;
+}
+.human-input-header{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  user-select:none;
+}
+.human-input-toggle{
+  width:18px;height:18px;border-radius:50%;
+  background:rgba(230,224,214,0.06);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;transition:background 0.15s;
+}
+.human-input-header:hover .human-input-toggle{background:rgba(230,224,214,0.12);}
+.human-input-label{
+  font-size:11px;font-weight:500;color:var(--bone);
+}
+.human-input-sub{font-size:10px;color:var(--text-muted);margin-left:auto;}
+.human-input-body{padding:14px 16px;display:none;}
+.human-input-body.open{display:block;}
+.constraint-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.constraint-label{
+  font-size:9px;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-dim);
+  width:100px;flex-shrink:0;padding-top:7px;
+}
+.constraint-input{
+  flex:1;background:var(--graphite-3);
+  border:1px solid var(--border);border-radius:5px;
+  padding:6px 10px;color:var(--bone);
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  outline:none;transition:border-color 0.15s;
+}
+.constraint-input:focus{border-color:var(--tobacco);}
+.constraint-input::placeholder{color:var(--text-dim);}
+.constraint-hint{font-size:10px;color:var(--text-dim);margin-top:4px;padding-left:108px;}
+.config-row{display:flex;gap:24px;margin-top:12px;}
+.config-item{display:flex;align-items:center;gap:8px;}
+.config-item label{font-size:11px;color:var(--text-muted);}
+.toggle-switch{
+  position:relative;width:32px;height:17px;
+}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;
+  background:var(--graphite-3);border:1px solid var(--border-strong);
+  border-radius:17px;cursor:pointer;transition:0.2s;
+}
+.toggle-slider:before{
+  content:'';position:absolute;
+  width:11px;height:11px;border-radius:50%;
+  background:var(--text-dim);
+  left:2px;top:2px;transition:0.2s;
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--olive);border-color:var(--olive);}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(15px);background:white;}
+
+/* ── Evidence Tape Divider (signature element) ────────── */
+.evidence-tape{
+  margin:20px 24px;height:22px;
+  background:repeating-linear-gradient(
+    -45deg,
+    rgba(138,90,43,0.18) 0px,
+    rgba(138,90,43,0.18) 10px,
+    rgba(138,90,43,0.06) 10px,
+    rgba(138,90,43,0.06) 20px
+  );
+  border-radius:3px;
+  border:1px solid rgba(138,90,43,0.25);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.evidence-tape-label{
+  font-size:8px;font-weight:700;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--tobacco);
+  background:var(--graphite);padding:3px 12px;border-radius:2px;
+  position:relative;z-index:1;
+}
+
+/* ── Run Button ──────────────────────────────────────── */
+.run-section{
+  padding:0 24px;
+  display:flex;gap:10px;align-items:center;
+}
+.run-btn{
+  padding:11px 28px;
+  background:var(--merlot);color:var(--bone);
+  border:none;border-radius:7px;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+  letter-spacing:0.04em;cursor:pointer;
+  transition:background 0.15s,transform 0.1s;
+  display:flex;align-items:center;gap:8px;
+}
+.run-btn:hover{background:#5C242A;}
+.run-btn:active{transform:scale(0.98);}
+.run-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.run-btn .spinner{
+  width:14px;height:14px;
+  border:2px solid rgba(230,224,214,0.3);
+  border-top-color:var(--bone);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  display:none;
+}
+.run-btn.running .spinner{display:block;}
+.run-btn.running .run-icon{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.clear-btn{
+  padding:11px 18px;
+  background:transparent;color:var(--text-muted);
+  border:1px solid var(--border-strong);border-radius:7px;
+  font-family:'Inter',sans-serif;font-size:12px;
+  cursor:pointer;transition:color 0.15s,border-color 0.15s;
+}
+.clear-btn:hover{color:var(--bone);border-color:var(--text-muted);}
+
+.progress-bar-wrap{
+  flex:1;height:4px;background:var(--graphite-3);
+  border-radius:2px;overflow:hidden;display:none;
+}
+.progress-bar-wrap.visible{display:block;}
+.progress-bar{
+  height:100%;width:0%;background:var(--tobacco);
+  border-radius:2px;transition:width 0.4s ease;
+}
+.progress-label{font-size:10px;color:var(--text-muted);}
+
+/* ── Output Section ──────────────────────────────────── */
+.output-section{
+  padding:20px 24px 24px;
+  display:none;flex-direction:column;gap:16px;
+}
+.output-section.visible{display:flex;}
+
+/* Output tab row */
+.output-tabs{
+  display:flex;gap:2px;
+  background:var(--graphite-2);
+  border:1px solid var(--border);
+  border-radius:8px;padding:3px;
+  width:fit-content;
+}
+.output-tab{
+  padding:6px 14px;border-radius:6px;
+  font-size:11px;font-weight:500;
+  color:var(--text-muted);cursor:pointer;
+  transition:background 0.15s,color 0.15s;
+  border:none;background:transparent;
+}
+.output-tab.active{
+  background:var(--midnight);color:var(--bone);
+}
+.output-tab:hover:not(.active){color:var(--bone-dim);}
+
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── Summary Cards ───────────────────────────────────── */
+.summary-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-bottom:16px;
+}
+.summary-card{
+  background:var(--graphite-2);border:1px solid var(--border);
+  border-radius:8px;padding:14px 16px;
+}
+.summary-card-label{
+  font-size:9px;font-weight:600;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--text-dim);
+  margin-bottom:6px;
+}
+.summary-card-value{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:500;
+  line-height:1;
+}
+.summary-card-sub{font-size:10px;color:var(--text-muted);margin-top:4px;}
+.val-accept{color:var(--olive);}
+.val-revise{color:var(--tobacco);}
+.val-human{color:#C97B82;}
+.val-bone{color:var(--bone);}
+
+/* ── Timeline Panel ──────────────────────────────────── */
+.timeline-wrap{
+  background:var(--graphite-2);
+  border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;
+}
+.panel-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+}
+.panel-title{
+  font-size:11px;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-muted);
+}
+.panel-count{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text-dim);
+}
+.timeline-events{padding:0;}
+
+.event-row{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  align-items:stretch;
+}
+.event-row:last-child{border-bottom:none;}
+.event-row:hover{background:rgba(230,224,214,0.02);}
+
+.event-time{
+  width:80px;flex-shrink:0;
+  padding:10px 12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text-dim);
+  border-right:1px solid var(--border);
+  display:flex;align-items:center;
+}
+.event-entity{
+  width:110px;flex-shrink:0;
+  padding:10px 10px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.entity-alias{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--tobacco);
+}
+.entity-role{
+  font-size:9px;color:var(--text-dim);margin-top:1px;
+}
+.event-action{
+  flex:1;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;
+}
+.action-tag{
+  font-size:9px;font-weight:600;letter-spacing:0.08em;
+  text-transform:uppercase;padding:2px 6px;border-radius:3px;
+}
+.action-tag.suspect{background:rgba(75,30,35,0.3);color:#C97B82;}
+.action-tag.witness{background:rgba(28,36,48,0.5);color:#7BA4C9;}
+.event-content{
+  font-size:11px;color:var(--bone-dim);
+}
+.event-conf{
+  width:54px;flex-shrink:0;
+  padding:10px 10px;
+  display:flex;align-items:center;justify-content:flex-end;
+}
+.conf-bar{
+  height:3px;border-radius:2px;
+  background:var(--graphite-3);width:36px;
+  position:relative;overflow:visible;
+}
+.conf-fill{height:100%;border-radius:2px;}
+.conf-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--text-dim);
+}
+.conflict-flag{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--merlot);flex-shrink:0;
+}
+
+/* ── Critique Panel ──────────────────────────────────── */
+.critique-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.critique-card{
+  background:var(--graphite-2);border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;
+}
+.issue-row{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;gap:8px;align-items:flex-start;
+}
+.issue-row:last-child{border-bottom:none;}
+.severity-pill{
+  font-size:8px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;padding:2px 6px;border-radius:3px;
+  flex-shrink:0;margin-top:1px;
+}
+.sev-blocking{background:rgba(75,30,35,0.4);color:#E88B90;}
+.sev-warning{background:rgba(138,90,43,0.35);color:#D4956A;}
+.sev-info{background:rgba(28,36,48,0.6);color:#7BA4C9;}
+.issue-check{
+  font-size:10px;font-weight:500;color:var(--bone-dim);
+  margin-bottom:2px;
+}
+.issue-detail{font-size:10px;color:var(--text-muted);line-height:1.5;}
+
+/* Score dial */
+.score-section{
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px 16px;
+}
+.score-ring{
+  position:relative;width:100px;height:100px;
+}
+.score-ring svg{transform:rotate(-90deg);}
+.score-ring-bg{stroke:var(--graphite-3);fill:none;stroke-width:8;}
+.score-ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+.score-number{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.score-big{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:500;color:var(--bone);
+  line-height:1;
+}
+.score-unit{font-size:10px;color:var(--text-dim);}
+.score-verdict{
+  margin-top:12px;font-size:11px;font-weight:500;letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.score-loops{font-size:10px;color:var(--text-muted);margin-top:4px;}
+
+/* ── Explainability Panel ────────────────────────────── */
+.explain-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.explain-card{
+  background:var(--graphite-2);border:1px solid var(--border);
+  border-radius:8px;padding:16px;
+}
+.explain-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:400;color:var(--bone);
+  margin-bottom:12px;
+}
+.chain-row{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:6px;flex-wrap:wrap;
+}
+.chain-node{
+  padding:4px 10px;border-radius:4px;
+  font-size:10px;font-weight:500;
+}
+.chain-arrow{color:var(--text-dim);font-size:12px;}
+.causal-row{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 0;border-bottom:1px solid var(--border);
+  font-size:11px;
+}
+.causal-row:last-child{border-bottom:none;}
+.causal-src{color:var(--tobacco);font-family:'JetBrains Mono',monospace;font-size:9px;}
+.causal-tgt{color:var(--olive);font-family:'JetBrains Mono',monospace;font-size:9px;}
+.causal-conf{
+  margin-left:auto;
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);
+}
+.causal-type{
+  font-size:8px;padding:1px 5px;border-radius:2px;
+  background:rgba(28,36,48,0.5);color:var(--text-muted);
+}
+.entity-cluster{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;
+}
+.alias-chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;padding:3px 7px;border-radius:4px;
+  border:1px solid var(--border);color:var(--bone-dim);
+}
+.alias-chip.video{border-color:var(--midnight);color:#7BA4C9;}
+.alias-chip.audio{border-color:var(--olive-dim);color:var(--olive);}
+.alias-chip.text{border-color:var(--tobacco-dim);color:var(--tobacco);}
+.entity-label{
+  font-size:10px;font-weight:500;color:var(--bone);margin-bottom:4px;
+}
+.entity-conf-bar{
+  height:2px;background:var(--graphite-3);border-radius:1px;
+  margin-top:6px;margin-bottom:10px;
+}
+.entity-conf-fill{height:100%;border-radius:1px;background:var(--olive);}
+
+/* ── Post-Pipeline Outputs (video + PDF report) ────────── */
+.output-file-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.output-file-row:last-child{border-bottom:none;}
+.output-file-icon{font-size:20px;flex-shrink:0;filter:grayscale(0.3);}
+.output-file-info{flex:1;min-width:0;}
+.output-file-name{
+  font-size:11px;font-weight:500;color:var(--bone);margin-bottom:2px;
+}
+.output-file-path{
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.output-file-link{
+  flex-shrink:0;
+  font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--tobacco);text-decoration:none;
+  padding:5px 12px;border:1px solid var(--tobacco-dim);border-radius:5px;
+  transition:background 0.15s,color 0.15s;
+}
+.output-file-link:hover{background:rgba(138,90,43,0.15);}
+
+/* ── Iter Log ────────────────────────────────────────── */
+.iter-table{width:100%;border-collapse:collapse;}
+.iter-table th{
+  font-size:8px;font-weight:600;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--text-dim);
+  text-align:left;padding:6px 10px;
+  border-bottom:1px solid var(--border);
+}
+.iter-table td{
+  padding:8px 10px;border-bottom:1px solid var(--border);
+  font-size:10px;color:var(--text-muted);vertical-align:top;
+}
+.iter-table tr:last-child td{border-bottom:none;}
+.iter-table td:first-child{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--tobacco);
+}
+
+/* ── Showrunner Decision ─────────────────────────────── */
+.decision-card{
+  background:var(--graphite-2);border:1px solid var(--border);
+  border-radius:8px;padding:16px;
+}
+.decision-action{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.action-label{
+  font-size:9px;font-weight:600;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-dim);
+  margin-bottom:2px;
+}
+.action-value{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:500;
+}
+.reasoning-text{
+  font-size:11px;color:var(--text-muted);
+  line-height:1.7;padding:10px 12px;
+  background:var(--graphite-3);border-radius:5px;
+  border-left:2px solid var(--tobacco);
+}
+.output-case-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:5px;
+  font-size:10px;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+.oc-clear{background:rgba(107,111,78,0.25);color:var(--olive);}
+.oc-partial{background:rgba(138,90,43,0.25);color:var(--tobacco);}
+.oc-ambiguous{background:rgba(75,30,35,0.3);color:#C97B82;}
+
+/* ── Empty state ─────────────────────────────────────── */
+.empty-state{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px;color:var(--text-dim);
+  text-align:center;gap:10px;
+}
+.empty-icon{font-size:32px;filter:grayscale(1);opacity:0.5;}
+.empty-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:300;color:var(--text-muted);
+}
+.empty-sub{font-size:11px;line-height:1.7;max-width:300px;}
+
+/* ── Notification toast ──────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--graphite-2);border:1px solid var(--border-strong);
+  border-radius:8px;padding:12px 16px;
+  font-size:12px;color:var(--bone);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  transform:translateY(80px);opacity:0;
+  transition:transform 0.3s,opacity 0.3s;
+  z-index:100;max-width:320px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-label{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
+
+/* ── DB connection badge ─────────────────────────────── */
+.db-badge{
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;color:var(--text-muted);
+  padding:4px 10px;border-radius:5px;
+  background:var(--graphite-3);border:1px solid var(--border);
+}
+.db-dot{width:5px;height:5px;border-radius:50%;background:var(--olive);}
+
+/* ── Scrollable output ───────────────────────────────── */
+.output-body{max-height:420px;overflow-y:auto;}
+.output-body::-webkit-scrollbar{width:3px;}
+.output-body::-webkit-scrollbar-thumb{background:var(--border-strong);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+      ForenSynth
+    </div>
+    <div class="brand-sub" style="margin-top:4px;">Evidence Reconstruction System</div>
+  </div>
+
+  <div class="sidebar-label">Case History</div>
+  <div class="sidebar-list" id="caseList">
+    <!-- populated by JS -->
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="new-case-btn" onclick="startNewCase()">+ New Case</button>
+  </div>
+</aside>
+
+<!-- ══ MAIN ═════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:baseline;gap:0;">
+      <span class="topbar-title" id="topbarTitle">New Analysis</span>
+      <span class="topbar-sub" id="topbarSub"></span>
+    </div>
+    <div class="topbar-right">
+      <div class="db-badge">
+        <div class="db-dot"></div>
+        forensynth.db
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="status-dot ready" id="statusDot"></div>
+        <span class="status-label" id="statusLabel">Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrollable content -->
+  <div class="content" id="mainContent">
+
+    <!-- ── Input section ── -->
+    <div id="inputSection">
+      <div class="input-zone">
+
+        <!-- Drop: Case file -->
+        <div class="drop-card" id="dropCase"
+             onclick="document.getElementById('fileCase').click()"
+             ondragover="handleDragOver(event,'dropCase')"
+             ondragleave="handleDragLeave('dropCase')"
+             ondrop="handleDrop(event,'dropCase','fileCase')">
+          <div class="drop-label">Evidence File</div>
+          <div class="drop-icon">🗂</div>
+          <div class="drop-title">Full Case JSON</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.json</code> or click to browse<br/>Includes ground truth + observations</div>
+          <div class="drop-filename" id="caseName">—</div>
+          <input type="file" id="fileCase" accept=".json" onchange="loadFile(event,'dropCase','caseName','caseData')"/>
+        </div>
+
+        <!-- Drop: Obs only file -->
+        <div class="drop-card" id="dropObs"
+             onclick="document.getElementById('fileObs').click()"
+             ondragover="handleDragOver(event,'dropObs')"
+             ondragleave="handleDragLeave('dropObs')"
+             ondrop="handleDrop(event,'dropObs','fileObs')">
+          <div class="drop-label">Pipeline Input</div>
+          <div class="drop-icon">📋</div>
+          <div class="drop-title">Observations Only</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">_obs_only.json</code> or click to browse<br/>No ground truth — used by ER agent</div>
+          <div class="drop-filename" id="obsName">—</div>
+          <input type="file" id="fileObs" accept=".json" onchange="loadFile(event,'dropObs','obsName','obsData')"/>
+        </div>
+
+      </div>
+
+      <!-- Human Input Panel -->
+      <div class="human-input-zone">
+        <div class="human-input-header" onclick="toggleHumanInput()">
+          <div class="human-input-toggle" id="hiToggle">▸</div>
+          <span class="human-input-label">Human Investigator Input</span>
+          <span class="human-input-sub">Override entity constraints · inject domain knowledge</span>
+        </div>
+        <div class="human-input-body" id="humanInputBody">
+          <div class="constraint-row">
+            <div class="constraint-label">Must Not Merge</div>
+            <div style="flex:1;">
+              <input class="constraint-input" id="mustNotMerge" placeholder='["Speaker_D", "Speaker_Q"], ["Person_50", "Person_97"]'/>
+            </div>
+          </div>
+          <div class="constraint-hint">Alias pairs the ER agent must keep as separate entities</div>
+
+          <div class="constraint-row" style="margin-top:10px;">
+            <div class="constraint-label">Must Merge</div>
+            <div style="flex:1;">
+              <input class="constraint-input" id="mustMerge" placeholder='["Person_14", "Speaker_C"]'/>
+            </div>
+          </div>
+          <div class="constraint-hint">Aliases the ER agent must cluster into the same entity</div>
+
+          <div class="constraint-row" style="margin-top:10px;">
+            <div class="constraint-label">Notes</div>
+            <div style="flex:1;">
+              <input class="constraint-input" id="humanNotes" placeholder="Free-form investigator notes attached to this run…"/>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-item">
+              <label for="llmToggle">LLM Enabled</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="llmToggle" checked/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="config-item">
+              <label for="noLlmToggle">Heuristic Only</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="noLlmToggle"/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="config-item">
+              <label>Max Loops</label>
+              <select id="maxLoops" style="background:var(--graphite-3);border:1px solid var(--border);color:var(--bone);border-radius:4px;padding:3px 6px;font-size:11px;outline:none;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evidence tape divider -->
+      <div class="evidence-tape">
+        <div class="evidence-tape-label">Pipeline Execution Boundary</div>
+      </div>
+
+      <!-- Run controls -->
+      <div class="run-section">
+        <button class="run-btn" id="runBtn" onclick="runPipeline()">
+          <span class="run-icon">▶</span>
+          <div class="spinner"></div>
+          Run Pipeline
+        </button>
+        <button class="clear-btn" onclick="clearAll()">Clear</button>
+        <div class="progress-bar-wrap" id="progressWrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <span class="progress-label" id="progressLabel"></span>
+      </div>
+
+      <!-- Empty state when no output yet -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No reconstruction yet</div>
+        <div class="empty-sub">Drop a case file and observations file above, configure any investigator overrides, then run the pipeline.</div>
+      </div>
+    </div>
+
+    <!-- ── Output section ── -->
+    <div class="output-section" id="outputSection">
+
+      <!-- Summary cards -->
+      <div class="summary-grid" id="summaryGrid"></div>
+
+      <!-- Tab bar -->
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="switchTab('timeline',this)">Timeline</button>
+          <button class="output-tab" onclick="switchTab('critique',this)">Critique</button>
+          <button class="output-tab" onclick="switchTab('explainability',this)">Explainability</button>
+          <button class="output-tab" onclick="switchTab('showrunner',this)">Showrunner</button>
+          <button class="output-tab" onclick="switchTab('iterlog',this)">Iter Log</button>
+          <button class="output-tab" onclick="switchTab('outputs',this)">Outputs</button>
+        </div>
+        <div id="outputCaseBadge" style="margin-left:auto;"></div>
+      </div>
+
+      <!-- Timeline tab -->
+      <div class="tab-panel active" id="tab-timeline">
+        <div class="timeline-wrap">
+          <div class="panel-header">
+            <span class="panel-title">Event Timeline</span>
+            <span class="panel-count" id="tlCount"></span>
+          </div>
+          <div class="output-body" id="timelineBody"></div>
+        </div>
+      </div>
+
+      <!-- Critique tab -->
+      <div class="tab-panel" id="tab-critique">
+        <div class="critique-wrap">
+          <div class="critique-card">
+            <div class="panel-header">
+              <span class="panel-title">Structural Issues</span>
+              <span class="panel-count" id="issueCount"></span>
+            </div>
+            <div class="output-body" id="issueBody"></div>
+          </div>
+          <div class="critique-card">
+            <div class="panel-header">
+              <span class="panel-title">Quality Score</span>
+            </div>
+            <div class="score-section" id="scoreSection"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explainability tab -->
+      <div class="tab-panel" id="tab-explainability">
+        <div class="explain-grid" id="explainGrid"></div>
+      </div>
+
+      <!-- Showrunner tab -->
+      <div class="tab-panel" id="tab-showrunner">
+        <div id="showrunnerBody"></div>
+      </div>
+
+      <!-- Iter log tab -->
+      <div class="tab-panel" id="tab-iterlog">
+        <div class="timeline-wrap">
+          <div class="panel-header">
+            <span class="panel-title">Iteration Audit Log</span>
+          </div>
+          <div id="iterLogBody"></div>
+        </div>
+      </div>
+
+      <!-- Outputs tab (post-pipeline video + report) -->
+      <div class="tab-panel" id="tab-outputs">
+        <div class="explain-grid" id="postOutputsGrid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-label" id="toastLabel"></div>
+  <div id="toastMsg"></div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let caseData = null;
+let obsData  = null;
+let currentResult = null;
+let cases = [];
+
+// ── Mock DB — persists across page interactions in sessionStorage ──────────
+function loadCases() {
+  try { cases = JSON.parse(sessionStorage.getItem('forensynth_cases') || '[]'); }
+  catch { cases = []; }
+  renderSidebar();
+}
+function saveCases() {
+  sessionStorage.setItem('forensynth_cases', JSON.stringify(cases));
+}
+
+// ── File drop logic ────────────────────────────────────────────────────────
+function handleDragOver(e, cardId) {
+  e.preventDefault();
+  document.getElementById(cardId).classList.add('drag-over');
+}
+function handleDragLeave(cardId) {
+  document.getElementById(cardId).classList.remove('drag-over');
+}
+function handleDrop(e, cardId, inputId) {
+  e.preventDefault();
+  document.getElementById(cardId).classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const fakeEvt = { target: { files: [file] } };
+  const nameKey = cardId === 'dropCase' ? 'caseName' : 'obsName';
+  const dataKey = cardId === 'dropCase' ? 'caseData' : 'obsData';
+  loadFile(fakeEvt, cardId, nameKey, dataKey);
+}
+
+function loadFile(event, cardId, nameId, dataKey) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (dataKey === 'caseData') caseData = data;
+      else obsData = data;
+      document.getElementById(nameId).textContent = file.name;
+      document.getElementById(cardId).classList.add('has-file');
+      document.getElementById(cardId).classList.remove('drag-over');
+      const id = (caseData||obsData||{}).case_id || '';
+      if (id) {
+        document.getElementById('topbarTitle').textContent = id;
+        document.getElementById('topbarSub').textContent = ' — ' + ((caseData||obsData||{}).template || '');
+      }
+      showToast('File Loaded', file.name + ' ready for pipeline.');
+    } catch {
+      showToast('Parse Error', 'File is not valid JSON.', true);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── Human input toggle ─────────────────────────────────────────────────────
+function toggleHumanInput() {
+  const body = document.getElementById('humanInputBody');
+  const toggle = document.getElementById('hiToggle');
+  body.classList.toggle('open');
+  toggle.textContent = body.classList.contains('open') ? '▾' : '▸';
+}
+
+// ── Tab switching ──────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.output-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Status helpers ─────────────────────────────────────────────────────────
+function setStatus(state, label) {
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot ' + state;
+  document.getElementById('statusLabel').textContent = label;
+}
+
+function setProgress(pct, label) {
+  document.getElementById('progressWrap').classList.add('visible');
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function showToast(label, msg, isErr) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastLabel').textContent = label;
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.borderColor = isErr ? 'rgba(75,30,35,0.6)' : 'var(--border-strong)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Simulate pipeline run ──────────────────────────────────────────────────
+// In production: replace fetch calls with real API calls to your FastAPI backend
+// e.g. fetch('/api/run-pipeline', { method:'POST', body: JSON.stringify({...}) })
+
+async function runPipeline() {
+  if (!obsData && !caseData) {
+    showToast('Missing Input', 'Drop at least an observations file to run.', true);
+    return;
+  }
+  const btn = document.getElementById('runBtn');
+  btn.classList.add('running');
+  btn.disabled = true;
+  document.getElementById('emptyState').style.display = 'none';
+  setStatus('running', 'Running…');
+
+  const stages = [
+    [10, 'Entity Resolution…'],
+    [30, 'Timeline Agent…'],
+    [55, 'Critique Agent…'],
+    [75, 'Showrunner…'],
+    [90, 'Saving to forensynth.db…'],
+    [100, 'Complete'],
+  ];
+
+  for (const [pct, label] of stages) {
+    setProgress(pct, label);
+    await sleep(420 + Math.random() * 300);
+  }
+
+  // Simulate result (in production: real API response)
+  const input = obsData || caseData;
+  currentResult = buildMockResult(input);
+
+  renderOutput(currentResult);
+  saveToHistory(currentResult);
+  renderSidebar();
+
+  btn.classList.remove('running');
+  btn.disabled = false;
+  setStatus('ready', 'Complete');
+  showToast('Pipeline Complete', currentResult.case_id + ' — ' + currentResult.verdict);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Build a realistic mock result from the uploaded case ──────────────────
+function buildMockResult(input) {
+  const cid     = input.case_id || 'CASE_UNKNOWN';
+  const obs     = input.observations || [];
+  const fir     = input.fir || {};
+  const template= input.template || '';
+  const gt      = (caseData||{}).ground_truth || {};
+  const entities= (gt.entities || []);
+  const gtEvents= (gt.events || []);
+
+  // Derive entities from obs if no GT
+  const aliasMap = {};
+  const roleMap  = {};
+  obs.forEach(o => { aliasMap[o.entity] = o.entity; roleMap[o.entity] = o.role; });
+
+  // Build mock timeline events from obs (grouped by entity + timestamp)
+  const timelineEvents = obs.map((o, i) => ({
+    event_id:      'EVT_' + o.entity + '_' + o.obs_id,
+    entity_id:     o.entity,
+    primary_alias: o.entity,
+    role:          o.role,
+    modality:      o.modality,
+    timestamp:     o.timestamp,
+    content:       o.content,
+    action_tags:   guessActionTags(o.content, o.role),
+    confidence:    parseFloat((o.confidence * (0.85 + Math.random()*0.14)).toFixed(2)),
+    conflict_flag: (o.noise_tags||[]).includes('contradiction'),
+    obs_ids:       [o.obs_id],
+  })).sort((a,b) => a.timestamp.localeCompare(b.timestamp));
+
+  // Mock issues
+  const issues = [];
+  const hasConflict = obs.some(o=>(o.noise_tags||[]).includes('contradiction'));
+  if (hasConflict) issues.push({
+    check:'llm_coherence', severity:'warning',
+    detail:'Contradiction detected: one or more observations conflict with physical evidence. Timestamps verified — downgraded from blocking.',
+    showrunner_action:'re_run_timeline'
+  });
+  const avgConf = obs.reduce((a,o)=>a+o.confidence,0)/Math.max(obs.length,1);
+  if (avgConf < 0.72) issues.push({
+    check:'low_confidence_event', severity:'info',
+    detail:`Average observation confidence ${avgConf.toFixed(2)} — ${obs.filter(o=>o.confidence<0.6).length} event(s) below 0.60 threshold. Informational.`,
+    showrunner_action:''
+  });
+  const roles = {suspect:0, witness:0};
+  obs.forEach(o=>{ if(roles[o.role]!==undefined) roles[o.role]++; });
+  const firSuspects = (fir.roles||{}).suspect || 1;
+  const erSuspects  = [...new Set(obs.filter(o=>o.role==='suspect').map(o=>o.entity))].length;
+  if (erSuspects !== firSuspects) issues.push({
+    check:'role_count_mismatch', severity:'warning',
+    detail:`FIR reports ${firSuspects} suspect(s), ER resolved ${erSuspects}. Entity over-merging or missing observations likely.`,
+    showrunner_action:'re_run_er'
+  });
+
+  const score = Math.max(0.5, 1.0 - issues.filter(i=>i.severity==='blocking').length*0.30 - issues.filter(i=>i.severity==='warning').length*0.10 - issues.filter(i=>i.severity==='info').length*0.02);
+  const verdict = issues.some(i=>i.severity==='blocking') ? 'REVISE' : (issues.some(i=>i.severity==='warning') ? 'REVISE' : 'ACCEPT');
+  const action  = verdict === 'ACCEPT' ? 'no_action' : (issues.some(i=>i.showrunner_action==='re_run_er') ? 're_run_er' : 're_run_timeline');
+
+  // Causal links
+  const causal = [];
+  for (let i=0; i<timelineEvents.length-1; i++) {
+    if (timelineEvents[i].role==='suspect' && timelineEvents[i+1].role==='suspect') {
+      causal.push({
+        source:timelineEvents[i].event_id, target:timelineEvents[i+1].event_id,
+        relation:'BEFORE', edge_type:'CAUSAL',
+        confidence:parseFloat((0.65+Math.random()*0.3).toFixed(2)),
+        label:Math.random()>0.5?'local LLM: action dependency':'deterministic rule'
+      });
+    }
+  }
+
+  // ER entities
+  const uniqueEntities = [...new Map(obs.map(o=>[o.entity,{
+    entity_id:o.entity, primary_alias:o.entity, role:o.role,
+    confidence_score:parseFloat((o.confidence*(0.85+Math.random()*0.14)).toFixed(2)),
+    aliases:[o.entity], modalities:[o.modality],
+  }])).values()];
+
+  // Iter log
+  const iter_log = [{
+    iteration:1, timeline_version:'V1', critique_version:'C1',
+    gaps_detected:issues.length, resolvable_gaps:issues.filter(i=>i.severity!=='info').length,
+    recommended_action: verdict==='ACCEPT'?'FINALIZE':'REBUILD_WITH_BELIEF_UPDATE',
+    overall_score:parseFloat(score.toFixed(2)),
+  }];
+  if (verdict !== 'ACCEPT') iter_log.push({
+    iteration:2, timeline_version:'V2', critique_version:'C2',
+    gaps_detected:Math.max(0,issues.length-1), resolvable_gaps:0,
+    recommended_action:'FINALIZE',
+    overall_score:parseFloat(Math.min(1.0,score+0.08).toFixed(2)),
+  });
+
+  const output_case = score >= 0.85 ? 'CLEAR_WINNER' : (score >= 0.6 ? 'PARTIAL' : 'AMBIGUOUS');
+
+  return {
+    case_id:cid, template, fir,
+    timeline_events: timelineEvents,
+    causal_links: causal,
+    er_entities: uniqueEntities,
+    issues, score:parseFloat(score.toFixed(2)), verdict, action,
+    output_case,
+    iter_log,
+    loops: iter_log.length,
+    reasoning: action==='no_action'
+      ? `Timeline accepted after ${iter_log.length} pass(es). No blocking issues detected. Output classification: ${output_case}.`
+      : `${issues.length} issue(s) detected. Highest severity: ${issues[0]?.check} (${issues[0]?.severity}). Action: ${action}.`,
+    llm_used: document.getElementById('llmToggle').checked,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+function guessActionTags(content, role) {
+  if (!content) return [];
+  const c = content.toLowerCase();
+  const tags = [];
+  if (c.includes('approach')||c.includes('nearing')||c.includes('walking toward')||c.includes('arrives')) tags.push('APPROACH');
+  if (c.includes('enter')||c.includes('inside')||c.includes('booth')||c.includes('enclosure')) tags.push('ENTER');
+  if (c.includes('tamper')||c.includes('fiddle')||c.includes('card slot')||c.includes('reader')) tags.push('TAMPER');
+  if (c.includes('withdraw')||c.includes('cash')||c.includes('transaction')) tags.push('WITHDRAW');
+  if (c.includes('exit')||c.includes('leave')||c.includes('depart')||c.includes('leaving')) tags.push('EXIT');
+  if (c.includes('flee')||c.includes('run')||c.includes('rush')) tags.push('FLEE');
+  if (role==='witness' && (c.includes('saw')||c.includes('notices')||c.includes('observed')||c.includes('eyewitness'))) tags.push('OBSERVE');
+  if (role==='witness' && (c.includes('report')||c.includes('complaint')||c.includes('filing'))) tags.push('REPORT');
+  return tags.length ? tags : [role==='suspect'?'ACTION':'OBSERVE'];
+}
+
+// ── Render output ──────────────────────────────────────────────────────────
+function renderOutput(r) {
+  document.getElementById('outputSection').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+  renderSummary(r);
+  renderTimeline(r);
+  renderCritique(r);
+  renderExplainability(r);
+  renderShowrunner(r);
+  renderIterLog(r);
+  renderPostOutputs(r);
+  renderOutputCaseBadge(r);
+}
+
+function renderSummary(r) {
+  const verdictClass = r.verdict==='ACCEPT'?'val-accept':(r.action==='human_review'?'val-human':'val-revise');
+  const actionLabel  = {no_action:'Accepted',re_run_er:'Re-run ER',re_run_timeline:'Re-run TL',human_review:'Human Review'}[r.action]||r.action;
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="summary-card">
+      <div class="summary-card-label">Events</div>
+      <div class="summary-card-value val-bone">${r.timeline_events.length}</div>
+      <div class="summary-card-sub">${r.causal_links.length} causal links</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Critique Score</div>
+      <div class="summary-card-value ${verdictClass}">${(r.score*100).toFixed(0)}<span style="font-size:14px">%</span></div>
+      <div class="summary-card-sub">${r.issues.length} issue(s) detected</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Decision</div>
+      <div class="summary-card-value ${verdictClass}" style="font-size:18px;padding-top:4px;">${actionLabel}</div>
+      <div class="summary-card-sub">${r.loops} loop(s) · ${r.llm_used?'LLM enabled':'Heuristic only'}</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Entities Found</div>
+      <div class="summary-card-value val-bone">${r.er_entities.length}</div>
+      <div class="summary-card-sub">${r.er_entities.filter(e=>e.role==='suspect').length} suspect · ${r.er_entities.filter(e=>e.role==='witness').length} witness</div>
+    </div>`;
+}
+
+function renderTimeline(r) {
+  document.getElementById('tlCount').textContent = r.timeline_events.length + ' events · ' + r.causal_links.length + ' causal links';
+  document.getElementById('timelineBody').innerHTML = r.timeline_events.map(ev => {
+    const ts = (ev.timestamp||'').replace('T',' ').substring(11,19)||'—';
+    const conf = ev.confidence || 0;
+    const confColor = conf>=0.85?'var(--olive)':conf>=0.70?'var(--tobacco)':'var(--merlot)';
+    const tags = (ev.action_tags||[]).map(t=>`<span class="action-tag ${ev.role}">${t}</span>`).join(' ');
+    const conflict = ev.conflict_flag ? '<div class="conflict-flag" title="Conflict flagged"></div>' : '';
+    return `
+    <div class="event-row">
+      <div class="event-time">${ts}</div>
+      <div class="event-entity">
+        <div class="entity-alias">${ev.primary_alias||ev.entity_id}</div>
+        <div class="entity-role">${ev.role}</div>
+      </div>
+      <div class="event-action">
+        ${conflict}${tags}
+        <div class="event-content">${(ev.content||'').substring(0,60)}${(ev.content||'').length>60?'…':''}</div>
+      </div>
+      <div class="event-conf">
+        <div style="text-align:right;">
+          <div class="conf-label">${(conf*100).toFixed(0)}%</div>
+          <div class="conf-bar" style="margin-top:3px;">
+            <div class="conf-fill" style="width:${conf*100}%;background:${confColor};"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCritique(r) {
+  document.getElementById('issueCount').textContent = r.issues.length + ' issue(s)';
+  document.getElementById('issueBody').innerHTML = r.issues.length ? r.issues.map(issue => {
+    const sevClass = {blocking:'sev-blocking',warning:'sev-warning',info:'sev-info'}[issue.severity]||'sev-info';
+    return `
+    <div class="issue-row">
+      <span class="severity-pill ${sevClass}">${issue.severity}</span>
+      <div>
+        <div class="issue-check">${issue.check.replace(/_/g,' ')}</div>
+        <div class="issue-detail">${issue.detail}</div>
+        ${issue.showrunner_action?`<div style="margin-top:4px;font-size:9px;color:var(--tobacco);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">→ ${issue.showrunner_action}</div>`:''}
+      </div>
+    </div>`;
+  }).join('') : '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:12px;">No issues detected — timeline accepted.</div>';
+
+  // Score ring
+  const score = r.score;
+  const pct = score * 100;
+  const circum = 2 * Math.PI * 40;
+  const offset = circum * (1 - score);
+  const col = score>=0.85?'var(--olive)':score>=0.6?'var(--tobacco)':'#C97B82';
+  const verdictLabel = r.verdict==='ACCEPT'?'ACCEPTED':'REVISION';
+  const verdClass = r.verdict==='ACCEPT'?'val-accept':'val-revise';
+  document.getElementById('scoreSection').innerHTML = `
+    <div class="score-ring">
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        <circle class="score-ring-bg" cx="50" cy="50" r="40"/>
+        <circle class="score-ring-fill" cx="50" cy="50" r="40"
+          stroke="${col}"
+          stroke-dasharray="${circum}"
+          stroke-dashoffset="${offset}"/>
+      </svg>
+      <div class="score-number">
+        <div class="score-big">${pct.toFixed(0)}</div>
+        <div class="score-unit">/ 100</div>
+      </div>
+    </div>
+    <div class="score-verdict ${verdClass}">${verdictLabel}</div>
+    <div class="score-loops">${r.loops} pipeline loop(s)</div>
+    <div style="margin-top:12px;font-size:10px;color:var(--text-dim);text-align:center;line-height:1.7;max-width:200px;">
+      Score = 1.0 − 0.30×blocking − 0.10×warning − 0.02×info
+    </div>`;
+}
+
+function renderExplainability(r) {
+  // Causal chain
+  const chainColors = {'APPROACH':'var(--olive)','ENTER':'var(--olive)','TAMPER':'var(--merlot)','WITHDRAW':'var(--merlot)','EXIT':'var(--midnight)','FLEE':'#4A4070','OBSERVE':'var(--midnight)','REPORT':'var(--midnight)','ACTION':'var(--graphite-3)'};
+  const allTags = [...new Set(r.timeline_events.flatMap(e=>e.action_tags||[]))];
+  const chainHtml = allTags.map((t,i) => {
+    const col = chainColors[t]||'var(--graphite-3)';
+    return `<span class="chain-node" style="background:${col}33;color:${col};border:1px solid ${col}66;">${t}</span>${i<allTags.length-1?'<span class="chain-arrow">→</span>':''}`;
+  }).join('');
+
+  // Entity clusters
+  const entityHtml = r.er_entities.map(e => {
+    const chipColor = e.role==='suspect'?'merlot':'midnight';
+    return `
+    <div style="margin-bottom:12px;">
+      <div class="entity-label">${e.entity_id} <span style="font-size:9px;color:var(--text-dim);font-weight:400;">(${e.role})</span></div>
+      <div class="entity-cluster">
+        ${(e.aliases||[e.primary_alias]).map(a=>`<span class="alias-chip">${a}</span>`).join('')}
+      </div>
+      <div class="entity-conf-bar">
+        <div class="entity-conf-fill" style="width:${(e.confidence_score*100).toFixed(0)}%;background:${e.role==='suspect'?'var(--merlot)':'var(--midnight)'};"></div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);">conf ${(e.confidence_score*100).toFixed(0)}%</div>
+    </div>`;
+  }).join('');
+
+  // Causal links detail
+  const causalHtml = r.causal_links.slice(0,8).map(c=>`
+    <div class="causal-row">
+      <span class="causal-src">${c.source.replace('EVT_','').substring(0,14)}</span>
+      <span style="color:var(--text-dim);font-size:12px;">→</span>
+      <span class="causal-tgt">${c.target.replace('EVT_','').substring(0,14)}</span>
+      <span class="causal-type">${c.label.startsWith('local LLM:')?'LLM':'RULE'}</span>
+      <span class="causal-conf">${(c.confidence*100).toFixed(0)}%</span>
+    </div>`).join('');
+
+  document.getElementById('explainGrid').innerHTML = `
+    <div class="explain-card">
+      <div class="explain-title">Causal Action Chain</div>
+      <div class="chain-row" style="margin-bottom:16px;">${chainHtml||'<span style="color:var(--text-dim);font-size:11px;">No action chain detected</span>'}</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Causal Links (${r.causal_links.length})</div>
+      ${causalHtml||'<div style="font-size:11px;color:var(--text-dim);">No causal links established.</div>'}
+    </div>
+    <div class="explain-card">
+      <div class="explain-title">Entity Resolution</div>
+      ${entityHtml||'<div style="font-size:11px;color:var(--text-dim);">No entities resolved.</div>'}
+    </div>`;
+}
+
+function renderShowrunner(r) {
+  const actionColor = {no_action:'val-accept',re_run_er:'val-revise',re_run_timeline:'val-revise',human_review:'val-human'}[r.action]||'val-bone';
+  const ocClass = {CLEAR_WINNER:'oc-clear',PARTIAL:'oc-partial',AMBIGUOUS:'oc-ambiguous'}[r.output_case]||'oc-partial';
+  document.getElementById('showrunnerBody').innerHTML = `
+    <div class="decision-card">
+      <div class="decision-action">
+        <div>
+          <div class="action-label">Final Action</div>
+          <div class="action-value ${actionColor}">${r.action.replace(/_/g,' ')}</div>
+        </div>
+        <div style="margin-left:24px;">
+          <div class="action-label">Output Classification</div>
+          <div class="output-case-badge ${ocClass}" style="margin-top:4px;">${r.output_case.replace(/_/g,' ')}</div>
+        </div>
+      </div>
+      <div class="reasoning-text">${r.reasoning}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;">
+        <div style="text-align:center;">
+          <div class="action-label">Loops</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--bone);">${r.loops}</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="action-label">Score</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--bone);">${(r.score*100).toFixed(0)}%</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="action-label">LLM</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--bone);">${r.llm_used?'On':'Off'}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderIterLog(r) {
+  document.getElementById('iterLogBody').innerHTML = `
+    <table class="iter-table">
+      <thead>
+        <tr>
+          <th>Pass</th><th>Timeline</th><th>Critique</th><th>Gaps</th><th>Resolvable</th><th>Recommendation</th><th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${r.iter_log.map(row=>`
+        <tr>
+          <td>${row.iteration}</td>
+          <td>${row.timeline_version}</td>
+          <td>${row.critique_version}</td>
+          <td>${row.gaps_detected}</td>
+          <td>${row.resolvable_gaps}</td>
+          <td>${row.recommended_action}</td>
+          <td style="font-family:'JetBrains Mono',monospace;color:${row.overall_score>=0.85?'var(--olive)':row.overall_score>=0.6?'var(--tobacco)':'#C97B82'};">${(row.overall_score*100).toFixed(0)}%</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function renderPostOutputs(r) {
+  // These are produced by the real run_case.py pipeline (scene_reconstruction_v3.py
+  // and explainability_report_v2.py) after the final Showrunner round — not by this
+  // in-browser mock. Paths mirror run_case.py's output/videos and output/reports dirs.
+  const videoName  = `${r.case_id}_scene_reconstruction_v3.mp4`;
+  const reportName = `${r.case_id}_explainability_report_v2.pdf`;
+  const videoPath  = `output/videos/${videoName}`;
+  const reportPath = `output/reports/${reportName}`;
+  document.getElementById('postOutputsGrid').innerHTML = `
+    <div class="explain-card">
+      <div class="explain-title">Scene Reconstruction Video</div>
+      <div class="output-file-row">
+        <div class="output-file-icon">🎬</div>
+        <div class="output-file-info">
+          <div class="output-file-name">${videoName}</div>
+          <div class="output-file-path">${videoPath}</div>
+        </div>
+        <a class="output-file-link" href="${videoPath}" target="_blank" rel="noopener">Open</a>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.6;">
+        Rendered by scene_reconstruction_v3.py once the pipeline finalizes. Run <span style="color:var(--tobacco);">pipeline\\run_case.py</span> to generate it — this demo does not produce it.
+      </div>
+    </div>
+    <div class="explain-card">
+      <div class="explain-title">Explainability Report (PDF)</div>
+      <div class="output-file-row">
+        <div class="output-file-icon">📄</div>
+        <div class="output-file-info">
+          <div class="output-file-name">${reportName}</div>
+          <div class="output-file-path">${reportPath}</div>
+        </div>
+        <a class="output-file-link" href="${reportPath}" target="_blank" rel="noopener">Open</a>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.6;">
+        Dual-layer human + technical report covering ER, Timeline, Critique (C1→C3), and Showrunner rounds.
+      </div>
+    </div>`;
+}
+
+function renderOutputCaseBadge(r) {
+  const cls = {CLEAR_WINNER:'oc-clear',PARTIAL:'oc-partial',AMBIGUOUS:'oc-ambiguous'}[r.output_case]||'oc-partial';
+  document.getElementById('outputCaseBadge').innerHTML = `<span class="output-case-badge ${cls}">${r.output_case.replace(/_/g,' ')}</span>`;
+}
+
+// ── Sidebar ────────────────────────────────────────────────────────────────
+function saveToHistory(r) {
+  const existing = cases.findIndex(c=>c.case_id===r.case_id);
+  const entry = {
+    case_id:r.case_id, template:r.template,
+    score:r.score, verdict:r.verdict, action:r.action,
+    loops:r.loops, timestamp:r.timestamp,
+    fir:r.fir, output_case:r.output_case,
+    result:r,
+  };
+  if (existing >= 0) cases[existing] = entry;
+  else cases.unshift(entry);
+  saveCases();
+}
+
+function renderSidebar() {
+  const list = document.getElementById('caseList');
+  if (!cases.length) {
+    list.innerHTML = '<div style="padding:10px 10px;font-size:10px;color:var(--text-dim);">No cases yet. Run a pipeline to begin.</div>';
+    return;
+  }
+  list.innerHTML = cases.map(c=>{
+    const verdClass = c.action==='no_action'?'badge-accept':(c.action==='human_review'?'badge-human':'badge-revise');
+    const verdLabel = {no_action:'Accepted',re_run_er:'Re-run ER',re_run_timeline:'Re-run TL',human_review:'Human Review'}[c.action]||c.action;
+    const active = currentResult && currentResult.case_id === c.case_id ? 'active' : '';
+    return `
+    <div class="case-item ${active}" onclick="loadCase('${c.case_id}')">
+      <div class="case-id">${c.case_id}</div>
+      <div class="case-meta">${c.fir?.location||c.template||'—'}</div>
+      <div class="case-badges">
+        <span class="badge ${verdClass}">${verdLabel}</span>
+        <span class="badge badge-loops">${c.loops}×</span>
+        <span class="score-pill">${(c.score*100).toFixed(0)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadCase(caseId) {
+  const entry = cases.find(c=>c.case_id===caseId);
+  if (!entry) return;
+  currentResult = entry.result;
+  document.getElementById('topbarTitle').textContent = entry.case_id;
+  document.getElementById('topbarSub').textContent = ' — ' + (entry.template||'');
+  document.getElementById('outputSection').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+  renderOutput(entry.result);
+  renderSidebar();
+}
+
+function startNewCase() {
+  clearAll();
+  document.getElementById('topbarTitle').textContent = 'New Analysis';
+  document.getElementById('topbarSub').textContent = '';
+}
+
+function clearAll() {
+  caseData = null; obsData = null; currentResult = null;
+  ['dropCase','dropObs'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.classList.remove('has-file','drag-over');
+  });
+  document.getElementById('caseName').textContent = '—';
+  document.getElementById('obsName').textContent = '—';
+  document.getElementById('outputSection').classList.remove('visible');
+  document.getElementById('emptyState').style.display = '';
+  document.getElementById('progressWrap').classList.remove('visible');
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressLabel').textContent = '';
+  setStatus('ready','Ready');
+  renderSidebar();
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadCases();
+</script>
+</body>
+</html>

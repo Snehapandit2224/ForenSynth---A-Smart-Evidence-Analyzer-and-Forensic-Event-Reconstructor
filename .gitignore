@@ -1,0 +1,41 @@
+# Secrets
+.env
+.env.local
+
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+
+
+# Database files
+*.db
+*.sqlite
+*.db-shm
+*.db-wal
+
+# Generated pipeline outputs (video/PDF/evaluation artifacts, not source)
+output/videos/
+output/reports/
+output/evaluation/
+*.mp4
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/

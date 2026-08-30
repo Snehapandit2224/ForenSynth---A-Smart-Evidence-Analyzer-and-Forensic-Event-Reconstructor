@@ -1,9 +1,27 @@
 """
-ForenSynth-X+ Observations
+ForenSynth-X+ Observations  (improved V2)
 Expands ground truth events into clean, modality-aware observations
 (before noise injection).
 
-Modality content rules:
+Fixes vs V1:
+  1. _build_audio_content was ignoring the entity parameter entirely —
+     a witness performing observe_exit got the same phrase pool as a suspect.
+     Now selects from role-specific phrase pools (suspect vs witness).
+
+  2. observe_exit audio phrases contained "I saw them leave the office."
+     in an ATM domain. Phrases are now domain-aware: ATM phrases say "ATM"
+     or "booth", Office phrases say "office" or "building".
+
+  3. Contradiction injection in noise.py was assigning video modality to
+     spoken denial content. The audio content pool now strictly contains
+     spoken dialogue only; video description_templates in templates.py
+     contain camera-capture language only. The modality of a contradiction
+     observation is preserved (audio stays audio, video stays video).
+
+  4. Minor: _build_audio_content now accepts domain as a parameter so
+     future domain-specific phrase expansion is straightforward.
+
+Modality content rules (unchanged):
     video  — Raw visual description of what a camera physically captures.
               No inferences about intent, encryption, digital channels, etc.
               Third-person, present-tense camera-observation language.
@@ -17,7 +35,7 @@ import random
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
-from config import SOURCE_LABELS, get_observation_location
+from config import SOURCE_LABELS, get_observation_location, ROLE_MODALITY_WEIGHTS
 from entities import CanonicalEntity
 from templates import Template, EventSlot
 from timeline import GroundTruthEvent
@@ -28,19 +46,6 @@ class CleanObservation:
     """
     A single observation derived from a ground truth event.
     Contains canonical_entity — this is stripped before final output.
-
-    Attributes:
-        obs_id: Sequential observation label ("O1", "O2", …).
-        event_ref: The event_id this observation corresponds to.
-        entity: Alias label (visible in final output).
-        canonical_entity: True entity_id (HIDDEN — ground truth only).
-        role: Role of the observing/observed entity.
-        modality: "video" | "audio" | "text".
-        source: Source device/channel label.
-        content: Raw evidence content, modality-appropriate.
-        timestamp: ISO 8601 datetime string.
-        time_offset: Seconds from time-window start.
-        confidence: Simulated detection confidence [0.0, 1.0].
     """
     obs_id: str
     event_ref: str
@@ -58,24 +63,22 @@ class CleanObservation:
     def to_final_dict(self, noise_tags: list[str] | None = None) -> dict:
         """Return public-facing dict (no canonical_entity)."""
         return {
-            "obs_id": self.obs_id,
-            "event_ref": self.event_ref,
-            "entity": self.entity,
-            "role": self.role,
-            "modality": self.modality,
-            "source": self.source,
-            "location": self.location,
-            "content": self.content,
-            "timestamp": self.timestamp,
+            "obs_id":      self.obs_id,
+            "event_ref":   self.event_ref,
+            "entity":      self.entity,
+            "role":        self.role,
+            "modality":    self.modality,
+            "source":      self.source,
+            "location":    self.location,
+            "content":     self.content,
+            "timestamp":   self.timestamp,
             "time_offset": self.time_offset,
-            "confidence": round(self.confidence, 3),
-            "noise_tags": noise_tags or [],
+            "confidence":  round(self.confidence, 3),
+            "noise_tags":  noise_tags or [],
         }
 
 
-def _get_slot_for_event(
-    template: Template, slot_id: str
-) -> EventSlot | None:
+def _get_slot_for_event(template: Template, slot_id: str) -> EventSlot | None:
     for slot in template.slots:
         if slot.slot_id == slot_id:
             return slot
@@ -84,248 +87,417 @@ def _get_slot_for_event(
 
 # ---------------------------------------------------------------------------
 # Audio content — spoken dialogue transcripts
+# FIX: split into role-specific pools (suspect vs witness)
+#      and domain-aware pools (ATM vs Office vs Communication)
 # ---------------------------------------------------------------------------
 
-def _build_audio_content(entity: CanonicalEntity, action: str, rng: random.Random) -> str:
-    """Return a realistic spoken/call-record transcript for the action."""
-    suspect_phrases = {
-        "approach_atm": [
-            "Yeah I'm almost at the machine.",
-            "I can see the ATM now.",
-            "Heading to the kiosk, nearly there.",
-            "I'm close, give me two minutes.",
-            "ATM is just ahead, I can see it.",
-            "On my way to the machine now.",
-            "Almost at the spot, stay on the line.",
-            "I can see the booth from here.",
-        ],
-        "enter_atm": [
-            "Yeah I just got inside the ATM.",
-            "I'm in, it's clear.",
-            "Inside now, no one else here.",
-            "Stepped in, booth is empty.",
-            "I'm inside the booth, door's shut.",
-            "In the enclosure now, all good.",
-            "Just entered, it's quiet in here.",
-            "I'm inside, give me a moment.",
-        ],
-        "withdraw_cash": [
-            "It's working, getting the money.",
-            "Machine's responding fine.",
-            "Transaction going through now.",
-            "Card's in, processing.",
-            "It accepted it, cash is coming out.",
-            "Machine is dispensing, stand by.",
-            "Got it, the money's out.",
-            "Transaction complete, I have the cash.",
-        ],
-        "exit_atm": [
-            "Done, I'm coming out.",
-            "Let's move, quick.",
-            "Leaving now, walk fast.",
-            "I'm out, don't wait up.",
-            "Exiting the booth, meet me outside.",
-            "Out of the ATM, heading your way.",
-            "Done in here, moving now.",
-            "I've left the booth, where are you?",
-        ],
-        "wait_outside": [
-            "I'm outside, watching the entrance.",
-            "No one around, keep going.",
-            "All clear out here, take your time.",
-            "Standing by the entrance, no one nearby.",
-            "I'm at the door, nothing suspicious.",
-            "Outside and watching, you're good.",
-            "No one's coming, carry on.",
-            "I've got eyes on the entrance.",
-        ],
-        "flee_scene": [
-            "Move move move, go!",
-            "Let's get out of here.",
-            "Someone's coming, run!",
-            "Go now, don't look back.",
-            "Leave everything, just walk fast.",
-            "We need to leave right now.",
-            "Security's nearby, get out!",
-            "Split up, meet at the spot.",
-        ],
-        "loiter_near_atm": [
-            "Just standing around, nothing yet.",
-            "Waiting for the right moment.",
-            "I'm near the machine, no one here yet.",
-            "Still waiting, be patient.",
-            "Hanging around, keeping an eye out.",
-            "No one's come yet, still waiting.",
-            "I'm nearby, timing it.",
-            "Almost ready, just watching.",
-        ],
-        "tamper_atm": [
-            "Device is attached.",
-            "Skimmer's in place.",
-            "It's fitted, looks normal from outside.",
-            "Done, you can't tell it's there.",
-            "Card reader's set, let's go.",
-            "Attachment's secure, no one noticed.",
-            "It's on there, looks factory.",
-            "All set, the reader's rigged.",
-        ],
-        "enter_office": [
-            "I'm inside the building.",
-            "Access card worked fine.",
-            "In the lobby now, no one at the desk.",
-            "Badge scanned okay, I'm through.",
-            "Inside the office, lights are off.",
-            "Got in without any issue.",
-            "Entry done, heading up now.",
-            "I'm in the building, going to the floor.",
-        ],
-        "navigate_to_target": [
-            "Heading to the accounts floor now.",
-            "Almost at the server room.",
-            "On my way to the restricted section.",
-            "Taking the stairs to avoid cameras.",
-            "Nearly at the target floor.",
-            "Walking through the corridor now.",
-            "Passing the main hall, almost there.",
-            "I can see the door to the server room.",
-        ],
-        "steal_items": [
-            "Got the files.",
-            "Transferring now.",
-            "Documents are in the bag.",
-            "I have what we need.",
-            "Grabbed everything on the list.",
-            "Items secured, heading out.",
-            "I've got the folders, let's go.",
-            "Everything's packed, moving out.",
-        ],
-        "steal_data": [
-            "USB is in, copying.",
-            "Data's transferring to the drive.",
-            "Transfer at sixty percent.",
-            "Almost done copying, stay on the line.",
-            "Files are on the drive, pulling it out.",
-            "Copy complete, removing the device.",
-            "Data's secure on the USB, leaving now.",
-            "Transfer finished, wiping the logs.",
-        ],
-        "exit_office": [
-            "Leaving now, see you outside.",
-            "I'm out, no one saw me.",
-            "Exiting via the stairwell.",
-            "Out of the building, heading to the car.",
-            "Left the floor, walking to the exit.",
-            "I'm through the lobby, nearly out.",
-            "Out now, everything went clean.",
-            "Leaving the premises, no alarms.",
-        ],
-        "perform_legit_work": [
-            "Just finishing up the report.",
-            "In the meeting right now.",
-            "Sending the last few emails.",
-            "Wrapping up for the day.",
-            "Still at my desk, almost done.",
-            "On a call with the client.",
-            "Filing the last document.",
-            "Just catching up on some backlog.",
-        ],
-        "initiate_communication": [
-            "Hey, it's me. You ready?",
-            "We need to talk. Call me back.",
-            "It's set for tonight, you know what to do.",
-            "Are you in position? Let me know.",
-            "I'm reaching out as planned.",
-            "Check in when you get this.",
-            "We're good to move, confirm when ready.",
-            "This is the call you were expecting.",
-        ],
-        "exchange_information": [
-            "The timing is confirmed.",
-            "You know where to be.",
-            "Details are as discussed, nothing has changed.",
-            "Location is the same, stick to the plan.",
-            "I'm sending you the address now.",
-            "Time is fixed, don't be late.",
-            "The package is ready on your end.",
-            "Everything is confirmed, we proceed tonight.",
-        ],
-        "confirm_plan": [
-            "We're good to go.",
-            "Everything is set.",
-            "Confirmed, I'll be there.",
-            "All parties are ready.",
-            "Plan is locked, no changes.",
-            "Understood, proceeding as agreed.",
-            "I'm ready on my end.",
-            "We're aligned, let's move.",
-        ],
-        "respond_to_communication": [
-            "Got your message. Understood.",
-            "I'm ready on my end.",
-            "Received, I'll follow through.",
-            "Message got through, I'm on it.",
-            "Confirmed, I'll be in position.",
-            "Copy that, standing by.",
-            "Understood, no questions.",
-            "All clear, proceeding as told.",
-        ],
-        "coordinate_activity": [
-            "Meet at the spot in 20.",
-            "Stick to the plan.",
-            "You handle your part, I'll handle mine.",
-            "Timings are as agreed, don't deviate.",
-            "I'll signal when it's clear.",
-            "Coordinate with the others, everyone needs to know.",
-            "We move together, no one breaks early.",
-            "Keep your phone on, I'll update you.",
-        ],
-        "observe_exit": [
-            "Two people just rushed out of the ATM.",
-            "I saw them leave the office.",
-            "They came out fast and walked off quickly.",
-            "A couple of individuals just left the building.",
-            "Someone just ran out of the booth.",
-            "I noticed them leave in a hurry.",
-            "They exited and separated immediately.",
-            "Both of them left at once through the side door.",
-        ],
-        "report_incident": [
-            "I need to report something suspicious.",
-            "I want to file a complaint.",
-            "I witnessed something that didn't look right.",
-            "Something happened near the ATM I should report.",
-            "I'd like to speak to an officer about what I saw.",
-            "I saw something unusual and wanted to let you know.",
-            "There was an incident here and I think you should know.",
-            "I'm calling to report a suspicious person near the ATM.",
-        ],
-        "flag_suspicious_comm": [
-            "I received a strange message.",
-            "Someone sent me something odd.",
-            "A message came through that felt off.",
-            "I got a communication that seemed suspicious.",
-            "This message doesn't look like it was meant for me.",
-            "Someone forwarded me something I think you should see.",
-            "I received a text that may be related to criminal activity.",
-            "A message arrived on my phone I can't explain.",
-        ],
-        "intercept_communication": [
-            "This message doesn't look right.",
-            "I think this was meant for someone else.",
-            "I intercepted something that looked suspicious.",
-            "A communication came through I believe was misdirected.",
-            "I received a message I was clearly not meant to see.",
-            "This exchange looks like it's planning something illegal.",
-            "I've picked up a communication that concerns me.",
-            "Something came through our system that shouldn't have.",
-        ],
-    }
-    phrases = suspect_phrases.get(action, [f"Regarding the {action.replace('_', ' ')}."])
+# ── SUSPECT audio phrases ──────────────────────────────────────────────────
+
+_SUSPECT_AUDIO_ATM: dict[str, list[str]] = {
+    "approach_atm": [
+        "Yeah I'm almost at the machine.",
+        "I can see the ATM now.",
+        "Heading to the kiosk, nearly there.",
+        "I'm close, give me two minutes.",
+        "ATM is just ahead, I can see it.",
+        "On my way to the machine now.",
+        "Almost at the spot, stay on the line.",
+        "I can see the booth from here.",
+    ],
+    "enter_atm": [
+        "Yeah I just got inside the ATM.",
+        "I'm in, it's clear.",
+        "Inside now, no one else here.",
+        "Stepped in, booth is empty.",
+        "I'm inside the booth, door's shut.",
+        "In the enclosure now, all good.",
+        "Just entered, it's quiet in here.",
+        "I'm inside, give me a moment.",
+    ],
+    "withdraw_cash": [
+        "It's working, getting the money.",
+        "Machine's responding fine.",
+        "Transaction going through now.",
+        "Card's in, processing.",
+        "It accepted it, cash is coming out.",
+        "Machine is dispensing, stand by.",
+        "Got it, the money's out.",
+        "Transaction complete, I have the cash.",
+    ],
+    "exit_atm": [
+        "Done, I'm coming out of the booth.",
+        "Let's move, quick.",
+        "Leaving the ATM now, walk fast.",
+        "I'm out of the kiosk, don't wait up.",
+        "Exiting the booth, meet me outside.",
+        "Out of the ATM, heading your way.",
+        "Done in here, moving now.",
+        "I've left the booth, where are you?",
+    ],
+    "wait_outside": [
+        "I'm outside the booth, watching the entrance.",
+        "No one around, keep going.",
+        "All clear out here, take your time.",
+        "Standing by the ATM door, no one nearby.",
+        "I'm at the kiosk entrance, nothing suspicious.",
+        "Outside and watching, you're good.",
+        "No one's coming, carry on.",
+        "I've got eyes on the ATM entrance.",
+    ],
+    "flee_scene": [
+        "Move move move, go!",
+        "Let's get out of here.",
+        "Someone's coming, run!",
+        "Go now, don't look back.",
+        "Leave everything, just walk fast.",
+        "We need to leave right now.",
+        "Security's nearby, get out!",
+        "Split up, meet at the spot.",
+    ],
+    "loiter_near_atm": [
+        "Just standing around near the machine, nothing yet.",
+        "Waiting for the right moment.",
+        "I'm near the ATM, no one here yet.",
+        "Still waiting, be patient.",
+        "Hanging around the kiosk, keeping an eye out.",
+        "No one's come yet, still waiting.",
+        "I'm nearby, timing it.",
+        "Almost ready, just watching the booth.",
+    ],
+    "tamper_atm": [
+        "Device is attached to the card slot.",
+        "Skimmer's in place.",
+        "It's fitted, looks normal from outside.",
+        "Done, you can't tell it's there.",
+        "Card reader's set, let's go.",
+        "Attachment's secure, no one noticed.",
+        "It's on the reader, looks factory.",
+        "All set, the slot's rigged.",
+    ],
+}
+
+_SUSPECT_AUDIO_OFFICE: dict[str, list[str]] = {
+    "approach_office": [
+        "I'm outside the building now.",
+        "Can see the office entrance from here.",
+        "Nearly at the lobby, almost there.",
+        "Approaching the building now.",
+        "I'm at the entrance, give me a second.",
+        "On my way to the office block.",
+        "I can see the building from here.",
+        "Almost at the premises, stay on the line.",
+    ],
+    "enter_office": [
+        "I'm inside the building.",
+        "Access card worked fine.",
+        "In the lobby now, no one at the desk.",
+        "Badge scanned okay, I'm through.",
+        "Inside the office, lights are off.",
+        "Got in without any issue.",
+        "Entry done, heading up now.",
+        "I'm in the building, going to the floor.",
+    ],
+    "navigate_to_target": [
+        "Heading to the accounts floor now.",
+        "Almost at the server room.",
+        "On my way to the restricted section.",
+        "Taking the stairs to avoid cameras.",
+        "Nearly at the target floor.",
+        "Walking through the corridor now.",
+        "Passing the main hall, almost there.",
+        "I can see the door to the server room.",
+    ],
+    "steal_items": [
+        "Got the files.",
+        "Documents are in the bag.",
+        "I have what we need.",
+        "Grabbed everything on the list.",
+        "Items secured, heading out.",
+        "I've got the folders, let's go.",
+        "Everything's packed, moving out.",
+        "Got it all, leaving the office now.",
+    ],
+    "steal_data": [
+        "USB is in, copying.",
+        "Data's transferring to the drive.",
+        "Transfer at sixty percent.",
+        "Almost done copying, stay on the line.",
+        "Files are on the drive, pulling it out.",
+        "Copy complete, removing the device.",
+        "Data's secure on the USB, leaving now.",
+        "Transfer finished, wiping the logs.",
+    ],
+    "exit_office": [
+        "Leaving the building now, see you outside.",
+        "I'm out, no one saw me.",
+        "Exiting via the stairwell.",
+        "Out of the building, heading to the car.",
+        "Left the floor, walking to the exit.",
+        "I'm through the lobby, nearly out.",
+        "Out now, everything went clean.",
+        "Leaving the premises, no alarms.",
+    ],
+    "perform_legit_work": [
+        "Just finishing up the report.",
+        "In the meeting right now.",
+        "Sending the last few emails.",
+        "Wrapping up for the day.",
+        "Still at my desk, almost done.",
+        "On a call with the client.",
+        "Filing the last document.",
+        "Just catching up on some backlog.",
+    ],
+}
+
+_SUSPECT_AUDIO_COMM: dict[str, list[str]] = {
+    "initiate_communication": [
+        "Hey, it's me. You ready?",
+        "We need to talk. Call me back.",
+        "It's set for tonight, you know what to do.",
+        "Are you in position? Let me know.",
+        "I'm reaching out as planned.",
+        "Check in when you get this.",
+        "We're good to move, confirm when ready.",
+        "This is the call you were expecting.",
+    ],
+    "exchange_information": [
+        "The timing is confirmed.",
+        "You know where to be.",
+        "Details are as discussed, nothing has changed.",
+        "Location is the same, stick to the plan.",
+        "I'm sending you the address now.",
+        "Time is fixed, don't be late.",
+        "The package is ready on your end.",
+        "Everything is confirmed, we proceed tonight.",
+    ],
+    "confirm_plan": [
+        "We're good to go.",
+        "Everything is set.",
+        "Confirmed, I'll be there.",
+        "All parties are ready.",
+        "Plan is locked, no changes.",
+        "Understood, proceeding as agreed.",
+        "I'm ready on my end.",
+        "We're aligned, let's move.",
+    ],
+    "respond_to_communication": [
+        "Got your message. Understood.",
+        "I'm ready on my end.",
+        "Received, I'll follow through.",
+        "Message got through, I'm on it.",
+        "Confirmed, I'll be in position.",
+        "Copy that, standing by.",
+        "Understood, no questions.",
+        "All clear, proceeding as told.",
+    ],
+    "coordinate_activity": [
+        "Meet at the spot in 20.",
+        "Stick to the plan.",
+        "You handle your part, I'll handle mine.",
+        "Timings are as agreed, don't deviate.",
+        "I'll signal when it's clear.",
+        "Coordinate with the others, everyone needs to know.",
+        "We move together, no one breaks early.",
+        "Keep your phone on, I'll update you.",
+    ],
+}
+
+# ── WITNESS audio phrases — domain-aware ────────────────────────────────────
+
+_WITNESS_AUDIO_ATM: dict[str, list[str]] = {
+    "observe_exit": [
+        "Two people just rushed out of the ATM booth.",
+        "I saw them leave the ATM kiosk.",
+        "They came out of the booth fast and walked off quickly.",
+        "A couple of individuals just left the ATM enclosure.",
+        "Someone just ran out of the booth.",
+        "I noticed them leave the ATM in a hurry.",
+        "They exited the kiosk and separated immediately.",
+        "Both of them left the ATM area at once through the side door.",
+    ],
+    "report_incident": [
+        "I need to report something suspicious near the ATM.",
+        "I want to file a complaint about the ATM.",
+        "I witnessed something that didn't look right at the cash machine.",
+        "Something happened near the ATM I should report.",
+        "I'd like to speak to an officer about what I saw at the kiosk.",
+        "I saw something unusual at the ATM and wanted to let you know.",
+        "There was an incident at the ATM here and I think you should know.",
+        "I'm calling to report a suspicious person near the ATM.",
+    ],
+    "flag_suspicious_comm": [
+        "I received a strange message.",
+        "Someone sent me something odd.",
+        "A message came through that felt off.",
+        "I got a communication that seemed suspicious.",
+        "This message doesn't look like it was meant for me.",
+        "Someone forwarded me something I think you should see.",
+        "I received a text that may be related to criminal activity.",
+        "A message arrived on my phone I can't explain.",
+    ],
+    "intercept_communication": [
+        "This message doesn't look right.",
+        "I think this was meant for someone else.",
+        "I intercepted something that looked suspicious.",
+        "A communication came through I believe was misdirected.",
+        "I received a message I was clearly not meant to see.",
+        "This exchange looks like it's planning something illegal.",
+        "I've picked up a communication that concerns me.",
+        "Something came through our system that shouldn't have.",
+    ],
+}
+
+_WITNESS_AUDIO_OFFICE: dict[str, list[str]] = {
+    "observe_exit": [
+        "I saw someone leave the office floor carrying a bag.",
+        "They left the building in a hurry, looked back twice.",
+        "Someone walked out of the office quickly and didn't sign out.",
+        "A couple of people just left the building — one had a large bag.",
+        "Someone rushed out of the office and didn't say a word.",
+        "I noticed a person leave the restricted area in a hurry.",
+        "They exited the office block and split up.",
+        "Both of them left the office at once and walked off fast.",
+    ],
+    "report_incident": [
+        "I need to report something suspicious in the office.",
+        "I want to file a complaint about someone I saw on the restricted floor.",
+        "I witnessed unusual behaviour by an employee after hours.",
+        "Something happened in the server room I should report.",
+        "I'd like to speak to security about what I saw in the office.",
+        "I saw something unusual in the building and wanted to let you know.",
+        "There was an incident here and I think management should know.",
+        "I'm calling to report a suspicious person I saw in a restricted area.",
+    ],
+    "flag_suspicious_comm": [
+        "I received a message that wasn't meant for me.",
+        "Someone sent me something that looks suspicious.",
+        "A forwarded message came through that felt off.",
+        "I got a communication about a meeting I wasn't invited to.",
+        "This message doesn't look like it was intended for me.",
+        "Someone CC'd me on something I think you should see.",
+        "I received an email that may be related to criminal activity.",
+        "A message arrived in my inbox that I can't explain.",
+    ],
+    "intercept_communication": [
+        "I came across a message I wasn't meant to see.",
+        "Someone misdirected an email to my address.",
+        "I intercepted something in the shared inbox that looked suspicious.",
+        "A communication came through I believe was misdirected.",
+        "I received a forwarded message I was clearly not meant to see.",
+        "This email chain looks like it's planning something irregular.",
+        "I've seen a communication that concerns me.",
+        "Something came through the office system that shouldn't have.",
+    ],
+}
+
+_WITNESS_AUDIO_COMM: dict[str, list[str]] = {
+    "flag_suspicious_comm": [
+        "I received a strange message.",
+        "Someone sent me something odd.",
+        "A message came through that felt off.",
+        "I got a communication that seemed suspicious.",
+        "This message doesn't look like it was meant for me.",
+        "Someone forwarded me something I think you should see.",
+        "I received a text that may be related to criminal activity.",
+        "A message arrived on my phone I can't explain.",
+    ],
+    "intercept_communication": [
+        "This message doesn't look right.",
+        "I think this was meant for someone else.",
+        "I intercepted something that looked suspicious.",
+        "A communication came through I believe was misdirected.",
+        "I received a message I was clearly not meant to see.",
+        "This exchange looks like it's planning something illegal.",
+        "I've picked up a communication that concerns me.",
+        "Something came through our system that shouldn't have.",
+    ],
+    "report_incident": [
+        "I need to report something suspicious.",
+        "I want to file a complaint.",
+        "I witnessed something that didn't look right.",
+        "Something happened that I should report.",
+        "I'd like to speak to an officer about what I received.",
+        "I saw something unusual and wanted to let you know.",
+        "There was an incident here and I think you should know.",
+        "I'm calling to report suspicious communications I received.",
+    ],
+}
+
+# ── Domain routing maps ───────────────────────────────────────────────────
+
+_SUSPECT_AUDIO_BY_DOMAIN: dict[str, dict[str, list[str]]] = {
+    "ATM_Robbery":  _SUSPECT_AUDIO_ATM,
+    "Office_Theft": _SUSPECT_AUDIO_OFFICE,
+    "Communication": _SUSPECT_AUDIO_COMM,
+}
+
+_WITNESS_AUDIO_BY_DOMAIN: dict[str, dict[str, list[str]]] = {
+    "ATM_Robbery":  _WITNESS_AUDIO_ATM,
+    "Office_Theft": _WITNESS_AUDIO_OFFICE,
+    "Communication": _WITNESS_AUDIO_COMM,
+}
+
+
+def _build_audio_content(
+    entity: CanonicalEntity,
+    action: str,
+    rng: random.Random,
+    domain: str = "ATM_Robbery",
+) -> str:
+    """
+    Return a realistic spoken/call-record transcript for the action.
+
+    FIX v2:
+    - Uses entity.role to select the correct phrase pool (suspect vs witness).
+    - Uses domain to select domain-specific phrases (ATM vs Office vs Communication).
+      Prevents "I saw them leave the office." appearing in ATM cases.
+    - Falls back gracefully if action is not in the pool.
+    """
+    if entity.role == "witness":
+        pool_map = _WITNESS_AUDIO_BY_DOMAIN.get(domain, _WITNESS_AUDIO_ATM)
+    else:
+        pool_map = _SUSPECT_AUDIO_BY_DOMAIN.get(domain, _SUSPECT_AUDIO_ATM)
+
+    phrases = pool_map.get(action)
+
+    # Fallback: try the other domain map if action not found
+    if not phrases:
+        for domain_pool in _SUSPECT_AUDIO_BY_DOMAIN.values():
+            phrases = domain_pool.get(action)
+            if phrases:
+                break
+
+    if not phrases:
+        return f"Regarding the {action.replace('_', ' ')}."
+
     return rng.choice(phrases)
 
 
 # ---------------------------------------------------------------------------
-# Text content — raw message / SMS / email / log body
+# Role-aware source label pools
+# FIX v2 issue 3+4: suspects and witnesses use different source pools
+# Prevents suspects getting 'witness_statement' and witnesses getting 'intercepted_call'
+# or witnesses getting 'cctv_atm' (ATM booth interior they were never inside)
+# ---------------------------------------------------------------------------
+
+_ROLE_SOURCE_LABELS: dict[str, dict[str, list[str]]] = {
+    "suspect": {
+        "video": ["camera_1", "camera_2", "camera_3", "cctv_entrance", "cctv_atm"],
+        "audio": ["mic_booth", "phone_record", "intercepted_call"],
+        # suspects: email, sms, and incident_report (for report_/log_ aliases)
+        "text":  ["email_log", "sms_record", "incident_report"],
+    },
+    "witness": {
+        "video": ["camera_1", "camera_2", "camera_3", "cctv_entrance"],
+        # witnesses are never seen inside the ATM booth (cctv_atm excluded)
+        "audio": ["witness_statement", "phone_record"],
+        # witnesses give statements and make calls; they don't have intercepted calls
+        "text":  ["complaint_register", "incident_report", "email_log", "sms_record"],
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Text content — raw message / SMS / email / log body (unchanged from V1)
 # ---------------------------------------------------------------------------
 
 _TEXT_CONTENT: dict[str, list[str]] = {
@@ -384,6 +556,13 @@ _TEXT_CONTENT: dict[str, list[str]] = {
         "Done. Collecting tomorrow.",
         "Skimmer set. Walk away normal.",
         "All fitted. Head out casual.",
+    ],
+    "approach_office": [
+        "Outside the building. Ready.",
+        "Can see the entrance. Moving in.",
+        "At the lobby. Anyone inside?",
+        "Heading in now. Clear?",
+        "At the door. Give me a sec.",
     ],
     "enter_office": [
         "Badge worked. I'm in.",
@@ -524,6 +703,7 @@ def expand_events_to_observations(
         video  — uses description_templates from the template slot (camera-capture language).
                  Templates must describe only what is physically visible.
         audio  — uses _build_audio_content (spoken dialogue transcript).
+                 Now role-aware and domain-aware (FIX v2).
         text   — uses _build_text_content (raw message/SMS/email/log body).
 
     Args:
@@ -531,7 +711,7 @@ def expand_events_to_observations(
         entities: All canonical entities for this case.
         template: The template used (for slot content templates).
         rng: Seeded random instance.
-        domain: Domain string used for location lookup (e.g. "ATM_Robbery").
+        domain: Domain string used for location + audio phrase lookup.
 
     Returns:
         Ordered list of CleanObservation objects.
@@ -550,15 +730,41 @@ def expand_events_to_observations(
 
         for modality in available_modalities:
             alias = entity.aliases[modality]
-            source = rng.choice(SOURCE_LABELS[modality])
+            # FIX v2: role-aware AND action-aware source selection
+            # cctv_atm (ATM booth interior camera) only fires when entity is INSIDE the ATM
+            _INSIDE_ATM_ACTIONS = {'enter_atm', 'withdraw_cash', 'tamper_atm', 'steal_items',
+                                   'perform_legit_work', 'navigate_to_target', 'steal_data'}
+            role_sources = list(_ROLE_SOURCE_LABELS.get(entity.role, {}).get(modality, []))
+            if not role_sources:
+                role_sources = list(SOURCE_LABELS[modality])
+            # Remove cctv_atm when entity is NOT inside the ATM/building
+            if modality == "video" and event.action not in _INSIDE_ATM_ACTIONS:
+                role_sources = [s for s in role_sources if s != "cctv_atm"] or role_sources
+            # FIX v2: alias-aware text source selection
+            # sms_ aliases should come from sms_record
+            # email_ aliases should come from email_log
+            # report_/log_ aliases should come from incident_report or complaint_register
+            if modality == "text" and "_" in alias:
+                alias_prefix = alias.split("_")[0].lower()
+                _ALIAS_TEXT_SOURCES = {
+                    "email":  ["email_log"],
+                    "sms":    ["sms_record"],
+                    "report": ["incident_report", "complaint_register", "email_log"],
+                    "log":    ["email_log", "incident_report"],
+                }
+                preferred = _ALIAS_TEXT_SOURCES.get(alias_prefix)
+                if preferred:
+                    filtered = [s for s in role_sources if s in preferred]
+                    if filtered:
+                        role_sources = filtered
+            source = rng.choice(role_sources)
 
             # --- Content by modality ---
             if modality == "audio":
-                # Actual spoken dialogue / call transcript
-                content = _build_audio_content(entity, event.action, rng)
+                # FIX v2: pass entity (for role) and domain
+                content = _build_audio_content(entity, event.action, rng, domain=domain)
 
             elif modality == "text":
-                # Literal raw message, SMS, email, or log body
                 content = _build_text_content(event.action, rng)
 
             elif modality == "video":
@@ -568,7 +774,6 @@ def expand_events_to_observations(
                 else:
                     content = f"{event.action.replace('_', ' ').capitalize()}."
             else:
-                # Fallback for any future modality
                 if slot and slot.description_templates:
                     content = rng.choice(slot.description_templates)
                 else:
@@ -591,7 +796,6 @@ def expand_events_to_observations(
             event_dt = datetime.fromisoformat(event.timestamp)
             obs_dt = event_dt + timedelta(seconds=clean_jitter)
 
-            # Resolve spatial location from domain + modality + source
             location = get_observation_location(domain, modality, source)
 
             observations.append(CleanObservation(

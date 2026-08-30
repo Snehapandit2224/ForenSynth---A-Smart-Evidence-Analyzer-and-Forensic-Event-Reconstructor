@@ -44,7 +44,7 @@ def validate_case_schema(case: dict) -> list[str]:
 
     if "observations" in case:
         for i, obs in enumerate(case["observations"]):
-            for field in ("obs_id", "entity", "role", "modality", "location", "content", "timestamp"):
+            for field in ("obs_id", "entity", "role", "modality", "source", "location", "content", "timestamp", "confidence"):
                 if field not in obs:
                     errors.append(f"Observation {i} missing field: '{field}'")
             if "canonical_entity" in obs:
