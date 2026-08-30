@@ -21,7 +21,7 @@ import time
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 # ── third-party ──────────────────────────────────────────────────────────
 import networkx as nx
@@ -91,6 +91,18 @@ MERGE_COMPOSITE_MIN:      float = 0.55
 # Only real LLM/embedding scores (which discriminate content semantics)
 # should be trusted at the standard 0.58 threshold.
 CROSS_MODAL_MERGE_MIN_HEURISTIC: float = 0.88
+
+# Same rationale as CROSS_MODAL_MERGE_MIN_HEURISTIC, but for stage 9's
+# singleton attachment: without real LLM/embedding scores, a lone-observation
+# entity in a multi-actor scene (same role, same time window, same generic
+# location keywords) can score above the default 0.70 attachment bar against
+# the WRONG neighboring cluster while its true match falls just short - see
+# CASE_ATM_003 (Person_15 attached to Speaker_J's cluster instead of
+# Speaker_Y's, 0.7642 vs 0.6773, neither of which reflects real identity
+# evidence). Reuse the same 0.88 near-certainty bar in heuristic-only mode so
+# an ambiguous singleton is left unattached (flagged for human review)
+# instead of confidently merged into the wrong entity.
+ATTACHMENT_THRESHOLD_HEURISTIC: float = 0.88
 
 OVERSIZED_CLUSTER_FACTOR: float = 3.0
 TEMPORAL_WINDOW_SEC:      int   = 300
@@ -688,7 +700,7 @@ class EntityResolutionPipeline:
   def __init__(
     self,
     config: Optional[Dict[str, Any]] = None,
-    human_constraints: Optional[HumanConstraints] = None,
+    human_constraints: Optional[Union[HumanConstraints, Dict[str, Any]]] = None,
     llm_enabled: bool = True,
     max_llm_calls: int = MAX_LLM_CALLS_PER_RUN,
   ):
@@ -709,7 +721,19 @@ class EntityResolutionPipeline:
         and bool(os.environ.get('GROQ_API_KEY', ''))
     )
 
-    self.constraints = human_constraints or HumanConstraints()
+    if human_constraints is None:
+      self.constraints = HumanConstraints()
+    elif isinstance(human_constraints, HumanConstraints):
+      self.constraints = human_constraints
+    else:
+      # Callers (pipeline/run_case.py, pipeline/run_er.py) build this as a
+      # plain dict pulled from stored er_constraints JSON, not a HumanConstraints
+      # instance.
+      self.constraints = HumanConstraints(
+        must_merge=human_constraints.get("must_merge", []),
+        must_not_merge=human_constraints.get("must_not_merge", []),
+        soft_hints=human_constraints.get("soft_hints", {}),
+      )
     # FIX: previously one shared LLMCallBudget across both agents meant
     # whichever agent ran first (context-scoring) could consume the ENTIRE
     # budget, leaving entity-coreference - arguably the more consequential
@@ -1146,6 +1170,11 @@ class EntityResolutionPipeline:
   def _stage_9_guarded_attachment(self) -> None:
     obs_to_cluster = {oid: cid for cid, members in self.clusters.items() for oid in members}
     self._candidate_data = defaultdict(list)
+    attach_min = (
+        ATTACHMENT_THRESHOLD
+        if self._llm_actually_active
+        else ATTACHMENT_THRESHOLD_HEURISTIC
+    )
 
     def is_singleton(obs_id: str) -> bool:
       cid = obs_to_cluster.get(obs_id)
@@ -1163,7 +1192,7 @@ class EntityResolutionPipeline:
         partner_cid = obs_to_cluster.get(partner_id)
         if not partner_cid:
           continue
-        if edge.weight >= ATTACHMENT_THRESHOLD:
+        if edge.weight >= attach_min:
           old_cid = obs_to_cluster[singleton_id]
           self.clusters[partner_cid].append(singleton_id)
           self.clusters[old_cid].remove(singleton_id)
@@ -1546,7 +1575,7 @@ class EntityResolutionPipeline:
 def resolve_entities(
   observations_payload: Dict[str, Any],
   config: Optional[Dict[str, Any]] = None,
-  human_constraints: Optional[HumanConstraints] = None,
+  human_constraints: Optional[Union[HumanConstraints, Dict[str, Any]]] = None,
   llm_enabled: bool = True,
   max_llm_calls: int = MAX_LLM_CALLS_PER_RUN,
 ) -> Dict[str, Any]:

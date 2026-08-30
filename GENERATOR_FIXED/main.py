@@ -20,6 +20,12 @@ import os
 import sys
 from pathlib import Path
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass  # non-standard stdout (e.g. some test runners) - fall back silently
+
 # Ensure the package root is on sys.path when run directly
 sys.path.insert(0, str(Path(__file__).parent))
 

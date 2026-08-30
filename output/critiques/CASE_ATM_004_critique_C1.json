@@ -3,8 +3,8 @@
   "timeline_version": "V1",
   "critique_version": "C1",
   "revision_number": 0,
-  "verdict": "ACCEPT",
-  "reason": "no blocking issues",
+  "verdict": "REVISE",
+  "reason": "3 warning(s) on first pass",
   "checks_run": [
     "causal_cycle",
     "orphaned_high_confidence_event",
@@ -16,86 +16,126 @@
     "low_confidence_event",
     "llm_coherence"
   ],
-  "llm_used": true,
-  "overall_score": 0.96,
-  "requires_revision": false,
-  "revision_target": "",
-  "narrative_summary": "Case CASE_ATM_004 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 2 info. Top: low_confidence_event \u2014 Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution confl",
+  "llm_used": false,
+  "overall_score": 0.7,
+  "requires_revision": true,
+  "revision_target": "er",
+  "narrative_summary": "Case CASE_ATM_004 (pass 1): REVISE. 0 blocking, 3 warning(s), 0 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o5 and EVT",
   "belief_updates": {},
   "issues": [
     {
-      "check": "low_confidence_event",
-      "severity": "info",
-      "detail": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "",
+      "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_2_o16"
+        "EVT_entity_1_o5",
+        "EVT_entity_1_o10_o11_o9"
       ],
-      "issue_type": "low_confidence_event",
-      "description": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
-      "recommendation": "Informational.",
-      "event_id": "EVT_entity_2_o16",
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o5",
       "affected_obs": [
-        "O16"
+        "O5",
+        "O10",
+        "O11",
+        "O9"
       ]
     },
     {
-      "check": "low_confidence_event",
-      "severity": "info",
-      "detail": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_3: 'FLEE' missing between EVT_entity_3_o13 and EVT_entity_3_o12 (22s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "",
+      "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_2_o17"
+        "EVT_entity_3_o13",
+        "EVT_entity_3_o12"
       ],
-      "issue_type": "low_confidence_event",
-      "description": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
-      "recommendation": "Informational.",
-      "event_id": "EVT_entity_2_o17",
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_3: 'FLEE' missing between EVT_entity_3_o13 and EVT_entity_3_o12 (22s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_3_o13",
       "affected_obs": [
-        "O17"
+        "O13",
+        "O12"
       ]
+    },
+    {
+      "check": "role_count_mismatch",
+      "severity": "warning",
+      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_er",
+      "affected_events": [],
+      "issue_type": "role_count_mismatch",
+      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "recommendation": "re_run_er",
+      "event_id": "",
+      "affected_obs": []
     }
   ],
   "gaps": [
     {
-      "check": "low_confidence_event",
-      "severity": "info",
-      "detail": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "",
+      "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_2_o16"
+        "EVT_entity_1_o5",
+        "EVT_entity_1_o10_o11_o9"
       ],
-      "issue_type": "low_confidence_event",
-      "description": "Event EVT_entity_2_o16 confidence=0.46. Reasons: low observation confidence; entity resolution conflict present",
-      "recommendation": "Informational.",
-      "event_id": "EVT_entity_2_o16",
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o5",
       "affected_obs": [
-        "O16"
+        "O5",
+        "O10",
+        "O11",
+        "O9"
       ]
     },
     {
-      "check": "low_confidence_event",
-      "severity": "info",
-      "detail": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_3: 'FLEE' missing between EVT_entity_3_o13 and EVT_entity_3_o12 (22s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "",
+      "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_2_o17"
+        "EVT_entity_3_o13",
+        "EVT_entity_3_o12"
       ],
-      "issue_type": "low_confidence_event",
-      "description": "Event EVT_entity_2_o17 confidence=0.47. Reasons: low observation confidence; entity resolution conflict present",
-      "recommendation": "Informational.",
-      "event_id": "EVT_entity_2_o17",
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_3: 'FLEE' missing between EVT_entity_3_o13 and EVT_entity_3_o12 (22s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_3_o13",
       "affected_obs": [
-        "O17"
+        "O13",
+        "O12"
       ]
+    },
+    {
+      "check": "role_count_mismatch",
+      "severity": "warning",
+      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_er",
+      "affected_events": [],
+      "issue_type": "role_count_mismatch",
+      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "recommendation": "re_run_er",
+      "event_id": "",
+      "affected_obs": []
     }
   ],
   "edges_to_exclude": [],
@@ -104,9 +144,6 @@
     "must_merge": [],
     "soft_hints": {}
   },
-  "unresolvable_gaps": [
-    "low_confidence_event",
-    "low_confidence_event"
-  ],
-  "recommended_action": "FINALIZE"
+  "unresolvable_gaps": [],
+  "recommended_action": "RECHECK_OBSERVATIONS"
 }

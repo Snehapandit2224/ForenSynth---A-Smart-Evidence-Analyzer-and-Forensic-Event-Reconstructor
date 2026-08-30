@@ -1,0 +1,519 @@
+{
+  "cases": [
+    {
+      "case_id": "CASE_ATM_001",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 3,
+          "fp": 0,
+          "fn": 0
+        },
+        "b_cubed": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "calibration": {
+          "brier_score": 0.051787090000000015,
+          "n": 2
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 1.0,
+          "events_scored": 7,
+          "obs_scored": 6
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 3
+        },
+        "output_classification": "PARTIAL"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "verdict": null,
+        "overall_score": 0.63
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": null,
+        "loops": 0
+      }
+    },
+    {
+      "case_id": "CASE_ATM_002",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.888888888888889,
+          "tp": 4,
+          "fp": 0,
+          "fn": 1
+        },
+        "b_cubed": {
+          "precision": 1.0,
+          "recall": 0.8888888888888888,
+          "f1": 0.9411764705882353
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "calibration": {
+          "brier_score": 0.09603465000000001,
+          "n": 5
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 1.0,
+          "events_scored": 17,
+          "obs_scored": 17
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 27
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "verdict": "REVISE",
+        "overall_score": 0.88
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": "PARTIAL",
+        "loops": 1
+      }
+    },
+    {
+      "case_id": "CASE_ATM_003",
+      "er_run_status": "success",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 0.3333333333333333,
+          "recall": 0.25,
+          "f1": 0.28571428571428575,
+          "tp": 1,
+          "fp": 2,
+          "fn": 3
+        },
+        "b_cubed": {
+          "precision": 0.8095238095238095,
+          "recall": 0.6666666666666667,
+          "f1": 0.7311827956989247
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": false,
+          "correct": false
+        },
+        "calibration": {
+          "brier_score": 0.15867951799999996,
+          "n": 5
+        },
+        "output_classification": "PARTIAL"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 1.0,
+          "events_scored": 9,
+          "obs_scored": 7
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 7
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": false,
+          "correct": false
+        },
+        "verdict": "ACCEPT",
+        "overall_score": 1.0
+      },
+      "showrunner": {
+        "action": "no_action",
+        "output_case": "PARTIAL",
+        "loops": 1
+      }
+    },
+    {
+      "case_id": "CASE_ATM_004",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "tp": 2,
+          "fp": 2,
+          "fn": 2
+        },
+        "b_cubed": {
+          "precision": 0.8333333333333334,
+          "recall": 0.8333333333333334,
+          "f1": 0.8333333333333334
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "calibration": {
+          "brier_score": 0.25410522999999996,
+          "n": 3
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 1.0,
+          "events_scored": 14,
+          "obs_scored": 9
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 0.9444444444444444,
+          "edges_scored": 18
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "verdict": null,
+        "overall_score": 0.39
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": null,
+        "loops": 0
+      }
+    },
+    {
+      "case_id": "CASE_ATM_005",
+      "er_run_status": "success",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 3,
+          "fp": 0,
+          "fn": 0
+        },
+        "b_cubed": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": false,
+          "correct": false
+        },
+        "calibration": {
+          "brier_score": 0.08291876499999999,
+          "n": 2
+        },
+        "output_classification": "PARTIAL"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 1.0,
+          "events_scored": 7,
+          "obs_scored": 7
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 6
+        },
+        "output_classification": "PARTIAL"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "verdict": "REVISE",
+        "overall_score": 0.9
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": "CLEAR_WINNER",
+        "loops": 1
+      }
+    },
+    {
+      "case_id": "CASE_ATM_006",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 0.45454545454545453,
+          "recall": 1.0,
+          "f1": 0.625,
+          "tp": 5,
+          "fp": 6,
+          "fn": 0
+        },
+        "b_cubed": {
+          "precision": 0.7333333333333333,
+          "recall": 1.0,
+          "f1": 0.846153846153846
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "calibration": {
+          "brier_score": 0.25092247,
+          "n": 3
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 0.8823529411764706,
+          "events_scored": 12,
+          "obs_scored": 17
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 13
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "verdict": "REVISE",
+        "overall_score": 0.9
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": "CLEAR_WINNER",
+        "loops": 1
+      }
+    },
+    {
+      "case_id": "CASE_ATM_007",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285715,
+          "tp": 4,
+          "fp": 6,
+          "fn": 0
+        },
+        "b_cubed": {
+          "precision": 0.6571428571428571,
+          "recall": 1.0,
+          "f1": 0.7931034482758621
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "calibration": {
+          "brier_score": 0.21541921333333333,
+          "n": 3
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 1.0,
+          "events_scored": 16,
+          "obs_scored": 16
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 24
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": false,
+          "correct": false
+        },
+        "verdict": "ACCEPT",
+        "overall_score": 1.0
+      },
+      "showrunner": {
+        "action": "no_action",
+        "output_case": "PARTIAL",
+        "loops": 1
+      }
+    },
+    {
+      "case_id": "CASE_ATM_008",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "tp": 4,
+          "fp": 2,
+          "fn": 0
+        },
+        "b_cubed": {
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091
+        },
+        "conflict_signal": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "calibration": {
+          "brier_score": 0.33855449,
+          "n": 2
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 0.9166666666666666,
+          "events_scored": 10,
+          "obs_scored": 12
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 0.875,
+          "edges_scored": 8
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": true,
+          "flagged": true,
+          "correct": true
+        },
+        "verdict": "REVISE",
+        "overall_score": 0.6
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": "CLEAR_WINNER",
+        "loops": 1
+      }
+    },
+    {
+      "case_id": "CASE_DEMO_001",
+      "er_run_status": "awaiting_human_validation",
+      "er": {
+        "alias_overlap_ratio": 1.0,
+        "pairwise": {
+          "precision": 0.2777777777777778,
+          "recall": 1.0,
+          "f1": 0.4347826086956522,
+          "tp": 5,
+          "fp": 13,
+          "fn": 0
+        },
+        "b_cubed": {
+          "precision": 0.4444444444444444,
+          "recall": 1.0,
+          "f1": 0.6153846153846153
+        },
+        "conflict_signal": {
+          "noise_injected": false,
+          "flagged": true,
+          "correct": false
+        },
+        "calibration": {
+          "brier_score": 0.66565064,
+          "n": 2
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "timeline": {
+        "segmentation_purity": {
+          "purity": 0.9166666666666666,
+          "events_scored": 15,
+          "obs_scored": 24
+        },
+        "temporal_edge_accuracy": {
+          "accuracy": 1.0,
+          "edges_scored": 17
+        },
+        "output_classification": "AMBIGUOUS"
+      },
+      "critique": {
+        "gap_detection": {
+          "noise_injected": false,
+          "flagged": true,
+          "correct": false
+        },
+        "verdict": "REVISE",
+        "overall_score": 0.7
+      },
+      "showrunner": {
+        "action": "human_review",
+        "output_case": "CLEAR_WINNER",
+        "loops": 1
+      }
+    }
+  ],
+  "aggregate": {
+    "er_pairwise_f1_mean": 0.6784238171919331,
+    "er_b_cubed_f1_mean": 0.8521583798361917,
+    "er_conflict_signal_accuracy": 0.6666666666666666,
+    "er_run_failure_rate": 0.0,
+    "timeline_segmentation_purity_mean": 0.9684095860566448,
+    "timeline_temporal_edge_accuracy_mean": 0.9799382716049383,
+    "critique_gap_detection_accuracy": 0.6666666666666666,
+    "showrunner_mean_loops_to_convergence": 0.7777777777777778,
+    "showrunner_escalation_rate": 0.7777777777777778
+  }
+}
