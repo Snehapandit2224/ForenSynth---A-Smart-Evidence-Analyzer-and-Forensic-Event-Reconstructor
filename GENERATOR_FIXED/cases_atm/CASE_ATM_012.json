@@ -3,13 +3,13 @@
   "domain": "ATM_Robbery",
   "template": "MultiActor_Entry_Action_Exit",
   "fir": {
-    "crime_type": "cash machine theft",
-    "location": "Koramangala SBI ATM",
+    "crime_type": "ATM robbery",
+    "location": "MG Road ATM Booth",
     "time_window": [
       0,
-      746
+      375
     ],
-    "description": "A coordinated ATM robbery was reported involving 3 accused individuals. Division of roles was evident from CCTV footage, with one party operating the terminal and another standing guard. 2 eyewitness(es) are on record.",
+    "description": "Complainant reports being coerced at an ATM by 3 unknown assailant(s) who acted in concert. One suspect operated the machine while the other blocked the entrance. 2 independent witness(es) observed the incident.",
     "roles": {
       "suspect": 3,
       "witness": 2
@@ -19,49 +19,65 @@
     {
       "obs_id": "O2",
       "event_ref": "E1",
-      "entity": "Speaker_X",
+      "entity": "Speaker_C",
       "role": "suspect",
       "modality": "audio",
-      "source": "mic_booth",
-      "location": "ATM booth interior",
-      "content": "Yeah I'm almost at the machine (per call log transcript).",
-      "timestamp": "2024-01-15T10:00:39",
-      "time_offset": 39,
-      "confidence": 0.755,
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "I can see the ATM now.",
+      "timestamp": "2024-01-15T10:00:55",
+      "time_offset": 55,
+      "confidence": 0.631,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Person_92",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "First actor arrives at the ATM location (wide-angle view).",
+      "timestamp": "2024-01-15T10:00:58",
+      "time_offset": 58,
+      "confidence": 0.855,
       "noise_tags": [
         "temporal_noise",
         "semantic_variation"
       ]
     },
     {
-      "obs_id": "O1",
-      "event_ref": "E1",
-      "entity": "Person_50",
+      "obs_id": "O3",
+      "event_ref": "E2",
+      "entity": "Person_91",
       "role": "suspect",
       "modality": "video",
       "source": "camera_1",
       "location": "ATM booth entrance, exterior facing",
-      "content": "My movements that day did not take me anywhere near that kiosk.",
-      "timestamp": "2024-01-15T10:01:10",
-      "time_offset": 70,
-      "confidence": 0.541,
+      "content": "Footage inconclusive due to lighting conditions.",
+      "timestamp": "2024-01-15T10:00:59",
+      "time_offset": 59,
+      "confidence": 0.579,
       "noise_tags": [
         "contradiction",
         "temporal_noise"
       ]
     },
     {
-      "obs_id": "O3",
-      "event_ref": "E2",
-      "entity": "Person_80",
+      "obs_id": "O5",
+      "event_ref": "E3",
+      "entity": "Speaker_C",
       "role": "suspect",
-      "modality": "video",
-      "source": "camera_2",
-      "location": "ATM kiosk exterior, street-side view",
-      "content": "The second actor arrives at the ATM vicinity.",
-      "timestamp": "2024-01-15T10:01:16",
-      "time_offset": 76,
-      "confidence": 0.884,
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "Yeah I just got inside the ATM.",
+      "timestamp": "2024-01-15T10:01:17",
+      "time_offset": 77,
+      "confidence": 0.808,
       "noise_tags": [
         "temporal_noise"
       ]
@@ -69,147 +85,95 @@
     {
       "obs_id": "O4",
       "event_ref": "E3",
-      "entity": "Person_50",
+      "entity": "Person_92",
       "role": "suspect",
       "modality": "video",
-      "source": "cctv_entrance",
-      "location": "ATM lobby doorway, entry/exit point",
-      "content": "First individual steps through the ATM booth door (poor image quality).",
-      "timestamp": "2024-01-15T10:01:21",
-      "time_offset": 81,
-      "confidence": 0.903,
-      "noise_tags": [
-        "temporal_noise",
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O5",
-      "event_ref": "E3",
-      "entity": "Speaker_X",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "intercepted_call",
-      "location": "ATM vicinity, intercepted channel",
-      "content": "I'm in, it's clear (reconstructed from partial recording).",
-      "timestamp": "2024-01-15T10:01:24",
-      "time_offset": 84,
-      "confidence": 0.794,
-      "noise_tags": [
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O11",
-      "event_ref": "E7",
-      "entity": "Person_80",
-      "role": "suspect",
-      "modality": "video",
-      "source": "camera_1",
-      "location": "ATM booth entrance, exterior facing",
-      "content": "Both persons leave the ATM location at pace (poor image quality).",
-      "timestamp": "2024-01-15T10:02:56",
-      "time_offset": 176,
-      "confidence": 0.914,
-      "noise_tags": [
-        "temporal_noise",
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O10",
-      "event_ref": "E6",
-      "entity": "Speaker_X",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "intercepted_call",
-      "location": "ATM vicinity, intercepted channel",
-      "content": "Out of the ATM, heading your way (statement recorded under caution).",
-      "timestamp": "2024-01-15T10:03:01",
-      "time_offset": 181,
-      "confidence": 0.617,
-      "noise_tags": [
-        "temporal_noise",
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O9",
-      "event_ref": "E6",
-      "entity": "Person_50",
-      "role": "suspect",
-      "modality": "video",
-      "source": "camera_1",
-      "location": "ATM booth entrance, exterior facing",
-      "content": "First suspect exits ATM booth (poor image quality).",
-      "timestamp": "2024-01-15T10:03:13",
-      "time_offset": 193,
-      "confidence": 0.819,
-      "noise_tags": [
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O8",
-      "event_ref": "E5",
-      "entity": "Speaker_X",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "mic_booth",
-      "location": "ATM booth interior",
-      "content": "Card's in, processing.",
-      "timestamp": "2024-01-15T10:03:22",
-      "time_offset": 202,
-      "confidence": 0.625,
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "First actor enters the ATM cabin.",
+      "timestamp": "2024-01-15T10:01:19",
+      "time_offset": 79,
+      "confidence": 0.904,
       "noise_tags": [
         "temporal_noise"
       ]
     },
     {
-      "obs_id": "O14",
-      "event_ref": "E8",
-      "entity": "log_43",
-      "role": "witness",
-      "modality": "text",
-      "source": "email_log",
-      "location": "remote — email server log",
-      "content": "Two individuals left together quickly. One carrying a bag. (forwarded)",
-      "timestamp": "2024-01-15T10:03:31",
-      "time_offset": 211,
-      "confidence": 0.737,
-      "noise_tags": [
-        "temporal_noise",
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O13",
-      "event_ref": "E8",
-      "entity": "Speaker_Q",
-      "role": "witness",
-      "modality": "audio",
-      "source": "witness_statement",
-      "location": "ATM vicinity, bystander position",
-      "content": "They exited the kiosk and separated immediately (per call log transcript).",
-      "timestamp": "2024-01-15T10:03:34",
-      "time_offset": 214,
-      "confidence": 0.735,
-      "noise_tags": [
-        "semantic_variation"
-      ]
-    },
-    {
-      "obs_id": "O12",
-      "event_ref": "E8",
-      "entity": "Person_55",
-      "role": "witness",
+      "obs_id": "O6",
+      "event_ref": "E4",
+      "entity": "Person_91",
+      "role": "suspect",
       "modality": "video",
-      "source": "cctv_entrance",
-      "location": "ATM lobby doorway, entry/exit point",
-      "content": "Person at bus stop observed watching two individuals walk away quickly.",
-      "timestamp": "2024-01-15T10:03:56",
-      "time_offset": 236,
-      "confidence": 0.591,
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Second suspect positions themselves at the ATM entrance (observed from distance).",
+      "timestamp": "2024-01-15T10:01:28",
+      "time_offset": 88,
+      "confidence": 0.782,
+      "noise_tags": [
+        "semantic_variation"
+      ]
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E5",
+      "entity": "Person_92",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Person inside the cabin is seen pressing ATM keys.",
+      "timestamp": "2024-01-15T10:03:09",
+      "time_offset": 189,
+      "confidence": 0.919,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E6",
+      "entity": "Speaker_C",
+      "role": "suspect",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "Out of the ATM, heading your way.",
+      "timestamp": "2024-01-15T10:03:17",
+      "time_offset": 197,
+      "confidence": 0.811,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E6",
+      "entity": "Person_92",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Lead suspect departs the ATM cabin.",
+      "timestamp": "2024-01-15T10:03:21",
+      "time_offset": 201,
+      "confidence": 0.868,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E7",
+      "entity": "Person_91",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Two persons seen walking away rapidly.",
+      "timestamp": "2024-01-15T10:03:41",
+      "time_offset": 221,
+      "confidence": 0.759,
       "noise_tags": [
         "temporal_noise"
       ]
@@ -221,38 +185,37 @@
         "entity_id": "suspect_1",
         "role": "suspect",
         "aliases": {
-          "video": "Person_50",
-          "audio": "Speaker_X"
+          "video": "Person_92",
+          "audio": "Speaker_C"
         }
       },
       {
         "entity_id": "suspect_2",
         "role": "suspect",
         "aliases": {
-          "video": "Person_80"
+          "video": "Person_91"
         }
       },
       {
         "entity_id": "suspect_3",
         "role": "suspect",
         "aliases": {
-          "video": "Person_51"
+          "video": "Person_70",
+          "audio": "Speaker_K"
         }
       },
       {
         "entity_id": "witness_1",
         "role": "witness",
         "aliases": {
-          "video": "Person_55",
-          "audio": "Speaker_Q",
-          "text": "log_43"
+          "audio": "Speaker_M"
         }
       },
       {
         "entity_id": "witness_2",
         "role": "witness",
         "aliases": {
-          "audio": "Speaker_L"
+          "audio": "Speaker_G"
         }
       }
     ],
@@ -262,75 +225,74 @@
         "entity_id": "suspect_1",
         "role": "suspect",
         "action": "approach_atm",
-        "timestamp": "2024-01-15T10:00:47",
-        "time_offset": 47
+        "timestamp": "2024-01-15T10:00:45",
+        "time_offset": 45
       },
       {
         "event_id": "E2",
         "entity_id": "suspect_2",
         "role": "suspect",
         "action": "approach_atm",
-        "timestamp": "2024-01-15T10:01:05",
-        "time_offset": 65
+        "timestamp": "2024-01-15T10:00:50",
+        "time_offset": 50
       },
       {
         "event_id": "E3",
         "entity_id": "suspect_1",
         "role": "suspect",
         "action": "enter_atm",
-        "timestamp": "2024-01-15T10:01:23",
-        "time_offset": 83
+        "timestamp": "2024-01-15T10:01:11",
+        "time_offset": 71
       },
       {
         "event_id": "E4",
         "entity_id": "suspect_2",
         "role": "suspect",
         "action": "wait_outside",
-        "timestamp": "2024-01-15T10:01:30",
-        "time_offset": 90
+        "timestamp": "2024-01-15T10:01:27",
+        "time_offset": 87
       },
       {
         "event_id": "E5",
         "entity_id": "suspect_1",
         "role": "suspect",
         "action": "withdraw_cash",
-        "timestamp": "2024-01-15T10:03:00",
-        "time_offset": 180
+        "timestamp": "2024-01-15T10:02:56",
+        "time_offset": 176
       },
       {
         "event_id": "E6",
         "entity_id": "suspect_1",
         "role": "suspect",
         "action": "exit_atm",
-        "timestamp": "2024-01-15T10:03:10",
-        "time_offset": 190
+        "timestamp": "2024-01-15T10:03:23",
+        "time_offset": 203
       },
       {
         "event_id": "E7",
         "entity_id": "suspect_2",
         "role": "suspect",
         "action": "flee_scene",
-        "timestamp": "2024-01-15T10:03:16",
-        "time_offset": 196
+        "timestamp": "2024-01-15T10:03:32",
+        "time_offset": 212
       },
       {
         "event_id": "E8",
         "entity_id": "witness_1",
         "role": "witness",
         "action": "observe_exit",
-        "timestamp": "2024-01-15T10:03:32",
-        "time_offset": 212
+        "timestamp": "2024-01-15T10:03:39",
+        "time_offset": 219
       }
     ],
     "entity_mapping": {
-      "Person_50": "suspect_1",
-      "Speaker_X": "suspect_1",
-      "Person_80": "suspect_2",
-      "Person_51": "suspect_3",
-      "Person_55": "witness_1",
-      "Speaker_Q": "witness_1",
-      "log_43": "witness_1",
-      "Speaker_L": "witness_2"
+      "Person_92": "suspect_1",
+      "Speaker_C": "suspect_1",
+      "Person_91": "suspect_2",
+      "Person_70": "suspect_3",
+      "Speaker_K": "suspect_3",
+      "Speaker_M": "witness_1",
+      "Speaker_G": "witness_2"
     }
   }
 }

@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_001",
   "timeline_version": "V2",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T06:08:54Z",
+  "generated_at": "2026-08-30T14:52:44Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -130,12 +130,11 @@
       "primary_alias": "Person_55",
       "aliases": [
         "Person_55",
-        "Speaker_C",
-        "email_74"
+        "Speaker_C"
       ],
       "modality": "audio",
       "content": "I was not paying attention to anyone leaving the area.",
-      "confidence": 0.7194,
+      "confidence": 0.71,
       "role": "witness",
       "action_tags": [
         "EXIT"
@@ -161,12 +160,11 @@
       "primary_alias": "Person_55",
       "aliases": [
         "Person_55",
-        "Speaker_C",
-        "email_74"
+        "Speaker_C"
       ],
       "modality": "video",
       "content": "Eyewitness notices a person leaving the ATM enclosure in a rush (poor image quality).",
-      "confidence": 0.7181,
+      "confidence": 0.7087,
       "role": "witness",
       "action_tags": [
         "OBSERVE"
@@ -181,23 +179,21 @@
       "version": "V1"
     },
     {
-      "event_id": "EVT_entity_2_o8",
+      "event_id": "EVT_entity_3_o8",
       "obs_ids": [
         "O8"
       ],
       "timestamp": "2024-01-15T10:05:54Z",
       "location": "remote \u2014 email server log",
       "location_key": "remote \u2014 email server log",
-      "entity_id": "entity_2",
-      "primary_alias": "Person_55",
+      "entity_id": "entity_3",
+      "primary_alias": "email_74",
       "aliases": [
-        "Person_55",
-        "Speaker_C",
         "email_74"
       ],
       "modality": "text",
       "content": "Two individuals left together quickly. One carrying a bag.",
-      "confidence": 0.7608,
+      "confidence": 0.7795,
       "role": "witness",
       "action_tags": [],
       "conflict_flag": false,
@@ -247,7 +243,7 @@
       "source": "EVT_entity_2_o7",
       "target": "EVT_entity_2_o6",
       "edge_type": "CAUSAL",
-      "confidence": 0.6325,
+      "confidence": 0.6242,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     }
@@ -317,10 +313,10 @@
       {
         "id": "EVT_entity_2_o7",
         "timestamp": "2024-01-15T10:05:39Z",
-        "ts_epoch": 1705313139.0,
+        "ts_epoch": 1705313138.9999998,
         "entity_id": "entity_2",
         "primary_alias": "Person_55",
-        "confidence": 0.7194,
+        "confidence": 0.71,
         "location": "ATM vicinity, bystander position",
         "modality": "audio",
         "content": "I was not paying attention to anyone leaving the area.",
@@ -335,7 +331,7 @@
         "ts_epoch": 1705313150.0,
         "entity_id": "entity_2",
         "primary_alias": "Person_55",
-        "confidence": 0.7181,
+        "confidence": 0.7087,
         "location": "ATM street frontage, wide-angle coverage",
         "modality": "video",
         "content": "Eyewitness notices a person leaving the ATM enclosure in a rush (poor image quality).",
@@ -345,12 +341,12 @@
         ]
       },
       {
-        "id": "EVT_entity_2_o8",
+        "id": "EVT_entity_3_o8",
         "timestamp": "2024-01-15T10:05:54Z",
         "ts_epoch": 1705313154.0,
-        "entity_id": "entity_2",
-        "primary_alias": "Person_55",
-        "confidence": 0.7608,
+        "entity_id": "entity_3",
+        "primary_alias": "email_74",
+        "confidence": 0.7795,
         "location": "remote \u2014 email server log",
         "modality": "text",
         "content": "Two individuals left together quickly. One carrying a bag.",
@@ -421,13 +417,13 @@
         "source": "EVT_entity_2_o7",
         "target": "EVT_entity_2_o6",
         "edge_type": "CAUSAL",
-        "confidence": 0.6325,
+        "confidence": 0.6242,
         "relation": "BEFORE",
         "label": "action dependency: EXIT->OBSERVE"
       },
       {
         "source": "EVT_entity_2_o6",
-        "target": "EVT_entity_2_o8",
+        "target": "EVT_entity_3_o8",
         "edge_type": "TEMPORAL",
         "confidence": 0.9,
         "relation": "SIMULTANEOUS",
@@ -471,7 +467,7 @@
         "source": "EVT_entity_2_o7",
         "target": "EVT_entity_2_o6",
         "edge_type": "CAUSAL",
-        "confidence": 0.6325,
+        "confidence": 0.6242,
         "relation": "BEFORE",
         "label": "action dependency: EXIT->OBSERVE"
       }
@@ -502,7 +498,7 @@
     },
     {
       "event_id": "EVT_entity_2_o7",
-      "uncertainty_score": 0.2806,
+      "uncertainty_score": 0.29,
       "sources": [
         "O7"
       ],
@@ -512,7 +508,7 @@
     },
     {
       "event_id": "EVT_entity_2_o6",
-      "uncertainty_score": 0.2819,
+      "uncertainty_score": 0.2913,
       "sources": [
         "O6"
       ],
@@ -521,8 +517,8 @@
       ]
     },
     {
-      "event_id": "EVT_entity_2_o8",
-      "uncertainty_score": 0.2392,
+      "event_id": "EVT_entity_3_o8",
+      "uncertainty_score": 0.2205,
       "sources": [
         "O8"
       ],
@@ -585,7 +581,7 @@
       "evidence": [
         "O7"
       ],
-      "confidence": 0.7194
+      "confidence": 0.71
     },
     {
       "event_id": "EVT_entity_2_o6",
@@ -596,18 +592,18 @@
       "evidence": [
         "O6"
       ],
-      "confidence": 0.7181
+      "confidence": 0.7087
     },
     {
-      "event_id": "EVT_entity_2_o8",
+      "event_id": "EVT_entity_3_o8",
       "timestamp": "2024-01-15T10:05:54Z",
-      "actor": "Person_55",
+      "actor": "email_74",
       "action": "Two individuals left together quickly. One carrying a bag.",
       "location": "remote \u2014 email server log",
       "evidence": [
         "O8"
       ],
-      "confidence": 0.7608
+      "confidence": 0.7795
     }
   ],
   "explainability": [
@@ -674,7 +670,7 @@
         "canonical entity match",
         "valid timestamp"
       ],
-      "confidence": 0.7194
+      "confidence": 0.71
     },
     {
       "event_id": "EVT_entity_2_o6",
@@ -687,20 +683,20 @@
         "canonical entity match",
         "valid timestamp"
       ],
-      "confidence": 0.7181
+      "confidence": 0.7087
     },
     {
-      "event_id": "EVT_entity_2_o8",
+      "event_id": "EVT_entity_3_o8",
       "derived_from": [
         "O8"
       ],
-      "entity_used": "entity_2",
+      "entity_used": "entity_3",
       "reasoning": [
         "timestamp ordering",
         "canonical entity match",
         "valid timestamp"
       ],
-      "confidence": 0.7608
+      "confidence": 0.7795
     }
   ],
   "conflicts_summary": [],
@@ -710,42 +706,42 @@
     {
       "event_a": "EVT_entity_1_o1",
       "event_b": "EVT_entity_1_o2",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o2",
       "event_b": "EVT_entity_1_o3",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_2_o6",
-      "event_b": "EVT_entity_2_o8",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_2_o7",
-      "event_b": "EVT_entity_2_o8",
-      "reason": "local LLM returned no result for this pair"
+      "event_b": "EVT_entity_3_o8",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_2_o6",
+      "event_b": "EVT_entity_3_o8",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
     "stage_1_validation": 0.0,
-    "stage_2_enrichment": 0.0007,
+    "stage_2_enrichment": 0.0005,
     "stage_3_ordering": 0.0,
     "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 0.0857,
+    "stage_6_causal": 0.0014,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0001,
-    "stage_11_narrative": 0.0001,
-    "stage_12_versioning": 0.0027,
-    "stage_13_export": 0.0048
+    "stage_10_explainability": 0.0,
+    "stage_11_narrative": 0.0,
+    "stage_12_versioning": 0.0004,
+    "stage_13_export": 0.0027
   },
-  "total_time_sec": 0.0948,
+  "total_time_sec": 0.0055,
   "validation_warnings": [],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
   "output_classification": "AMBIGUOUS",
   "output_classification_reason": "avg_confidence=0.81, conflict_fraction=0.00, unresolved_ratio=0.57 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

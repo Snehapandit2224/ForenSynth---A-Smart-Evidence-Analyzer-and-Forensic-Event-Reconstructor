@@ -440,12 +440,46 @@ class EntityCoreferenceAgent:
   def _pair_key(id_a: str, id_b: str) -> Tuple[str, str]:
     return (id_a, id_b) if id_a <= id_b else (id_b, id_a)
 
-  @staticmethod
-  def heuristic_coreference(oa: Observation, ob: Observation, temporal_window: int, max_gap: int) -> float:
+  # FIX: two DIFFERENT-alias suspects coordinating at the same robbery
+  # naturally share location/time/topical vocabulary by construction (see
+  # heuristic_coreference below) - the additive heuristic below has no way
+  # to distinguish that from "same person, cross-modal" using only
+  # role/modality/time/location/keyword-overlap features, all of which
+  # score identically high for both scenarios. The LLM system prompt
+  # handles this explicitly ("COORDINATING SUSPECTS ARE DIFFERENT PEOPLE"),
+  # but the heuristic fallback (used whenever the LLM path is unavailable
+  # or rate-limited) had no equivalent check. Content narrating multiple
+  # distinct actors ("the second actor arrives", "both persons leave") is
+  # a direct, unambiguous signal the observation is NOT describing one
+  # lone individual - confirmed against real CASE_ATM_004 data, where
+  # exactly these two phrases on the second suspect's own observations
+  # were driving a false merge with the first suspect's audio mentions.
+  _MULTI_ACTOR_MARKERS: Tuple[str, ...] = (
+      "second actor", "both persons", "both suspects", "two individuals",
+      "two suspects", "two people", "another suspect", "another person",
+      "second individual", "second subject", "other actor", "second suspect",
+  )
+
+  @classmethod
+  def _mentions_multiple_actors(cls, text: Optional[str]) -> bool:
+    t = (text or "").lower()
+    return any(marker in t for marker in cls._MULTI_ACTOR_MARKERS)
+
+  @classmethod
+  def heuristic_coreference(cls, oa: Observation, ob: Observation, temporal_window: int, max_gap: int) -> float:
     if oa.entity_norm == ob.entity_norm:
       return 1.0
-    if oa.role.strip().lower() != ob.role.strip().lower():
+    role_a, role_b = oa.role.strip().lower(), ob.role.strip().lower()
+    if role_a != role_b:
       return 0.12
+    # Scoped to suspect/suspect pairs only: a WITNESS observation
+    # routinely describes "two individuals"/"both persons" *doing the
+    # crime* (that's the suspects, not the witness), so applying this
+    # check role-agnostically wrongly suppressed legitimate same-witness
+    # merges (e.g. one witness's video + audio mentions) whose own content
+    # happened to reference the plural suspects they were describing.
+    if role_a == "suspect" and (cls._mentions_multiple_actors(oa.content) or cls._mentions_multiple_actors(ob.content)):
+      return 0.15
 
     dt = abs(oa.time_offset_sec - ob.time_offset_sec)
     if dt > max_gap:

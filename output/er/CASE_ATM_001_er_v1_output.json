@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_001",
   "status": "success",
   "error_message": "",
-  "entity_count": 2,
+  "entity_count": 3,
   "canonical_entities": [
     {
       "entity_id": "entity_1",
@@ -43,37 +43,107 @@
       "entity_id": "entity_2",
       "aliases": [
         "Person_55",
-        "Speaker_C",
-        "email_74"
+        "Speaker_C"
       ],
       "primary_alias": "Person_55",
-      "total_mentions": 3,
+      "total_mentions": 2,
       "confirmed_mentions": [],
-      "candidate_mentions": [],
-      "confidence_score": 0.6437,
+      "candidate_mentions": [
+        {
+          "candidate_alias": "email_74",
+          "score": 0.6418,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "candidate_alias": "email_74",
+          "score": 0.6282,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "interaction",
+            "modality"
+          ]
+        }
+      ],
+      "confidence_score": 0.6125,
       "confirmed_edges": 0,
       "candidate_edges": 3,
       "modalities": [
         "audio",
-        "text",
         "video"
       ],
       "locations": [
         "ATM street frontage, wide-angle coverage",
-        "ATM vicinity, bystander position",
-        "remote \u2014 email server log"
+        "ATM vicinity, bystander position"
       ],
       "roles": [
         "witness"
       ],
       "sources": [
         "O6",
-        "O7",
-        "O8"
+        "O7"
       ],
       "earliest_timestamp": "2024-01-15T10:05:39Z",
+      "latest_timestamp": "2024-01-15T10:05:50Z",
+      "time_span_seconds": 11
+    },
+    {
+      "entity_id": "entity_3",
+      "aliases": [
+        "email_74"
+      ],
+      "primary_alias": "email_74",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [
+        {
+          "candidate_alias": "person_55",
+          "score": 0.6418,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "candidate_alias": "speaker_c",
+          "score": 0.6282,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "interaction",
+            "modality"
+          ]
+        }
+      ],
+      "confidence_score": 0.706,
+      "confirmed_edges": 0,
+      "candidate_edges": 2,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "remote \u2014 email server log"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "O8"
+      ],
+      "earliest_timestamp": "2024-01-15T10:05:54Z",
       "latest_timestamp": "2024-01-15T10:05:54Z",
-      "time_span_seconds": 15
+      "time_span_seconds": 0
     }
   ],
   "clusters": [
@@ -92,6 +162,97 @@
       "edges": [
         {
           "alias_1": "person_14",
+          "alias_2": "person_14",
+          "weight": 0.8028,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "speaker_c",
+          "weight": 0.4833,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "email_74",
+          "weight": 0.2703,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "person_14",
+          "weight": 0.6891,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "email_74",
+          "weight": 0.3918,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "person_55",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
           "alias_2": "person_55",
           "weight": 0.0,
           "support": 1,
@@ -106,20 +267,7 @@
         {
           "alias_1": "person_14",
           "alias_2": "speaker_c",
-          "weight": 0.357,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "email_74",
-          "weight": 0.2703,
+          "weight": 0.4395,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -150,7 +298,7 @@
         {
           "alias_1": "person_14",
           "alias_2": "person_14",
-          "weight": 0.7087,
+          "weight": 0.6911,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -164,77 +312,6 @@
             "location",
             "lexical"
           ]
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_55",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_14",
-          "weight": 0.6891,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "location",
-            "context",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "speaker_c",
-          "weight": 0.4258,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_55",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "email_74",
-          "weight": 0.336,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
         },
         {
           "alias_1": "person_14",
@@ -256,78 +333,6 @@
         },
         {
           "alias_1": "person_14",
-          "alias_2": "speaker_c",
-          "weight": 0.4833,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_14",
-          "weight": 0.8028,
-          "support": 1,
-          "classifications": {
-            "confirmed": 1,
-            "candidate": 0,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "context",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_55",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "email_74",
-          "weight": 0.3918,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "speaker_c",
-          "weight": 0.4395,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
           "alias_2": "email_74",
           "weight": 0.3513,
           "support": 1,
@@ -337,92 +342,6 @@
             "rejected": 1
           },
           "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_14",
-          "weight": 0.6911,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "location",
-            "lexical"
-          ]
-        }
-      ]
-    },
-    {
-      "cluster_id": "C2",
-      "size": 3,
-      "aliases": [
-        "Person_55",
-        "Speaker_C",
-        "email_74"
-      ],
-      "obs_ids": [
-        "O6",
-        "O7",
-        "O8"
-      ],
-      "edges": [
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_55",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "speaker_c",
-          "weight": 0.357,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "email_74",
-          "weight": 0.2703,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "person_55",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
           "reasons": []
         },
         {
@@ -455,6 +374,148 @@
           "alias_1": "person_14",
           "alias_2": "email_74",
           "weight": 0.336,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "person_55",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "person_14",
+          "weight": 0.7087,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "speaker_c",
+          "weight": 0.357,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C2",
+      "size": 2,
+      "aliases": [
+        "Person_55",
+        "Speaker_C"
+      ],
+      "obs_ids": [
+        "O6",
+        "O7"
+      ],
+      "edges": [
+        {
+          "alias_1": "person_14",
+          "alias_2": "speaker_c",
+          "weight": 0.4833,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_55",
+          "alias_2": "email_74",
+          "weight": 0.6418,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "person_55",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "person_55",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "speaker_c",
+          "weight": 0.4395,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "speaker_c",
+          "weight": 0.4258,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -485,15 +546,15 @@
         },
         {
           "alias_1": "person_14",
-          "alias_2": "speaker_c",
-          "weight": 0.4833,
+          "alias_2": "person_55",
+          "weight": 0.0,
           "support": 1,
           "classifications": {
             "confirmed": 0,
             "candidate": 0,
             "rejected": 1
           },
-          "hard_negative": false,
+          "hard_negative": true,
           "reasons": []
         },
         {
@@ -511,34 +572,8 @@
         },
         {
           "alias_1": "person_14",
-          "alias_2": "email_74",
-          "weight": 0.3918,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
           "alias_2": "speaker_c",
-          "weight": 0.4395,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_14",
-          "alias_2": "email_74",
-          "weight": 0.3513,
+          "weight": 0.357,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -568,6 +603,31 @@
             "interaction",
             "modality"
           ]
+        }
+      ]
+    },
+    {
+      "cluster_id": "C3",
+      "size": 1,
+      "aliases": [
+        "email_74"
+      ],
+      "obs_ids": [
+        "O8"
+      ],
+      "edges": [
+        {
+          "alias_1": "person_14",
+          "alias_2": "email_74",
+          "weight": 0.2703,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
         },
         {
           "alias_1": "person_55",
@@ -587,6 +647,64 @@
             "interaction",
             "modality"
           ]
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "email_74",
+          "weight": 0.3918,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "email_74",
+          "weight": 0.3513,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "email_74",
+          "weight": 0.6282,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_14",
+          "alias_2": "email_74",
+          "weight": 0.336,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
         }
       ]
     }
@@ -594,8 +712,8 @@
   "conflicts_detected": 0,
   "conflicts": [],
   "output_classification": "PARTIAL",
-  "output_classification_reason": "avg_confidence=0.72, conflict_fraction=0.00, low_confidence_fraction=0.00 - resolution is usable but has some flagged or low-confidence clusters worth investigator attention.",
-  "llm_calls_made": 1,
+  "output_classification_reason": "avg_confidence=0.71, conflict_fraction=0.00, low_confidence_fraction=0.00 - resolution is usable but has some flagged or low-confidence clusters worth investigator attention.",
+  "llm_calls_made": 0,
   "llm_calls_budget": 14,
   "location_similarity_backend": "embedding",
   "resplit_log": [],
@@ -608,26 +726,26 @@
     "confirmed_threshold": 0.8,
     "candidate_threshold_low": 0.5,
     "candidate_threshold_high": 0.65,
-    "llm_enabled": true,
+    "llm_enabled": false,
     "groq_model": "openai/gpt-oss-20b",
     "cross_modal_merge_min": 0.58,
     "merge_composite_min": 0.55
   },
-  "total_processing_time_sec": 12.641743,
+  "total_processing_time_sec": 11.302654,
   "stage_timings": {
-    "stage_1_intake": 11.659795,
+    "stage_1_intake": 11.273288,
     "stage_2_normalization": 1e-06,
-    "stage_3_blocking": 4.7e-05,
-    "stage_4_features": 0.980833,
-    "stage_5_scoring": 7.8e-05,
+    "stage_3_blocking": 4.1e-05,
+    "stage_4_features": 0.028218,
+    "stage_5_scoring": 7.7e-05,
     "stage_6_classification": 3e-05,
-    "stage_7_graph_building": 3.2e-05,
-    "stage_8_clustering": 0.000242,
-    "stage_9_attachment": 1.7e-05,
-    "stage_10_conflict_detection": 4.4e-05,
-    "stage_10b_constrained_resplit": 1.1e-05,
-    "stage_11_labeling": 0.000104,
+    "stage_7_graph_building": 3.3e-05,
+    "stage_8_clustering": 0.000248,
+    "stage_9_attachment": 2.6e-05,
+    "stage_10_conflict_detection": 4.8e-05,
+    "stage_10b_constrained_resplit": 1.3e-05,
+    "stage_11_labeling": 0.000133,
     "stage_12_packaging": 0.0
   },
-  "created_at": "2026-08-30T06:08:53Z"
+  "created_at": "2026-08-30T14:52:44Z"
 }

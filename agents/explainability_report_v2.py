@@ -9,7 +9,7 @@ STRUCTURE:
   Page 2   : How to Read This Report (guide for non-technical readers)
   Pages 3-4: Section 2 — Who Was Involved (Entity Resolution)
   Pages 5-8: Section 3 — What Happened (Timeline of Events)
-  Pages 9-11: Section 4 — Evidence Gaps (Critique rounds C1→C3)
+  Pages 9-11: Section 4 — Evidence Gaps (Critique rounds C1->C3)
   Pages 12-13: Section 5 — System Decisions (Showrunner rounds)
   Page 14  : Section 6 — What Still Needs Human Review
   Page 15  : Section 7 — Final Verdict
@@ -473,7 +473,7 @@ def build_cover(pdf: ExplainabilityPDF, case_id: str, er: dict, tl: dict):
         ("5", "System Decisions — How the AI Revised Its Analysis"),
         ("6", "What Still Needs Human Review"),
         ("7", "Final Verdict"),
-        ("8", "Case Narrative — The Full Picture in Plain English  ★ Start here"),
+        ("8", "Case Narrative — The Full Picture in Plain English  (Start Here)"),
     ]
     for num, title in contents:
         pdf.set_font(FONT_NAME, "B", 9)
@@ -503,7 +503,7 @@ def build_guide(pdf: ExplainabilityPDF):
         "in straightforward language. Grey boxes that follow contain the technical "
         "information for analysts — you can skip these.\n\n"
         "IMPORTANT: This report is a tool to help investigators, not a final verdict. "
-        "Every finding marked with a warning symbol (⚠) still requires a human investigator "
+        "Every finding marked with a warning symbol ([!]) still requires a human investigator "
         "to confirm before any action is taken.",
     )
 
@@ -646,7 +646,7 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
                 f"may belong to the same witness, recorded via {', '.join(mods)}. "
                 f"All three are timestamped at exactly {time_str(t0_raw)}.\n\n"
                 f"Locations reported: {'; '.join(locs)}\n\n"
-                f"⚠ CAUTION: The evidence shows this person at conflicting locations at "
+                f"[!] CAUTION: The evidence shows this person at conflicting locations at "
                 f"the same time. The 'email_74' item is likely a text message filed with "
                 f"police — it may represent the witness's report, not their physical "
                 f"location. This needs human confirmation.\n\n"
@@ -656,7 +656,7 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
 
         if len(aliases) > 1:
             pdf.warn_box(
-                f"⚠  This person appears under multiple names in the evidence: "
+                f"[!]  This person appears under multiple names in the evidence: "
                 f"{', '.join(aliases)}. "
                 f"The system grouped them as one entity based on timing, location, and context. "
                 f"An investigator should verify this grouping."
@@ -672,7 +672,7 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
             f"obs_ids (sources)  : {', '.join(srcs)}",
             f"modalities         : {', '.join(mods)}",
             f"locations          : {'; '.join(locs)}",
-            f"time window        : {t0_raw} → {t1_raw}  ({span}s)",
+            f"time window        : {t0_raw} -> {t1_raw}  ({span}s)",
         ])
         pdf.divider()
 
@@ -685,7 +685,7 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
             cclust = c.get("cluster_id", "?")
             cdesc  = c.get("detail", "")
             pdf.warn_box(
-                f"⚠  CONFLICT TYPE: {ctype}   (Cluster: {cclust})\n\n"
+                f"[!]  CONFLICT TYPE: {ctype}   (Cluster: {cclust})\n\n"
                 f"Technical detail: {cdesc}\n\n"
                 f"What this means in plain English: The evidence for the witness cluster "
                 f"places the same person at two different physical locations at exactly "
@@ -715,7 +715,7 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
         f"These are shown in the order they happened. Each event is rated HIGH, MEDIUM, "
         f"or LOW confidence depending on how much supporting evidence exists.\n\n"
         f"Average confidence across all events: {avg_conf:.0%}. "
-        f"{n_conf} event(s) were flagged with conflicting information and are marked ⚠. "
+        f"{n_conf} event(s) were flagged with conflicting information and are marked [!]. "
         f"Events rated LOW confidence should be treated as unconfirmed leads, not facts.",
     )
 
@@ -770,7 +770,7 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
             plain += f"\n\nEvidence note: \"{safe(content, 220)}\""
         if conflict:
             plain += (
-                "\n\n⚠  This event has conflicting information across evidence sources. "
+                "\n\n[!]  This event has conflicting information across evidence sources. "
                 "See the warning box below."
             )
         pdf.plain_box(f"Event {i} — What happened", plain)
@@ -780,7 +780,7 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
             f"event_id      : {event_id}",
             f"obs_ids       : {', '.join(obs_ids)}",
             f"action_tags   : {', '.join(tags) if tags else 'none detected'}",
-            f"confidence    : {conf:.4f}  →  {label}",
+            f"confidence    : {conf:.4f}  ->  {label}",
             f"modality      : {modality}   role: {role}",
             f"conflict_flag : {conflict}",
         ]
@@ -792,7 +792,7 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
 
         if conflict:
             pdf.warn_box(
-                f"⚠  The system detected a conflict for this event. "
+                f"[!]  The system detected a conflict for this event. "
                 + (f"{cnote}  " if cnote else "")
                 + "The confidence score has been reduced. "
                 "An investigator should verify the details of this event before "
@@ -978,7 +978,7 @@ def build_showrunner_section(
         )
         pdf.tech_box(f"{round_label} — Showrunner detail", [
             f"action           : {action}",
-            f"input_tl_version : {sr.get('input_tl_version', '?')}  →  output_tl_version: {sr.get('output_tl_version', '?')}",
+            f"input_tl_version : {sr.get('input_tl_version', '?')}  ->  output_tl_version: {sr.get('output_tl_version', '?')}",
             f"output_case      : {out_case}",
             f"converged        : {converged}",
             f"issues_addressed : {', '.join(addressed) if addressed else 'none'}",
@@ -1086,7 +1086,7 @@ def build_human_review(
             pdf.set_xy(MARGIN + 7, y0 + 2)
             pdf.set_font(FONT_NAME, "B", 9)
             pdf.set_text_color(*pcolor)
-            pdf.cell(0, 5, f"⚠  {title}")
+            pdf.cell(0, 5, f"[!]  {title}")
 
             pdf.set_xy(MARGIN + 7, y0 + 8)
             pdf.set_font(FONT_NAME, "", 8.5)
@@ -1095,7 +1095,7 @@ def build_human_review(
 
             pdf.set_font(FONT_NAME, "B", 7.5)
             pdf.set_text_color(*pcolor)
-            pdf.cell(0, 4, f"  → {priority}")
+            pdf.cell(0, 4, f"  -> {priority}")
             pdf.set_text_color(*C_TEXT)
             pdf.ln(6)
             pdf.divider()
@@ -1296,9 +1296,26 @@ def build_narrative_summary(
             pdf.add_page()
             y0 = pdf.get_y()
 
+        # FIX: the left accent stripe was a fixed 14mm tall regardless of
+        # how much text sits next to it. evidence_map (a comma-joined
+        # obs_id list) and the quoted content routinely wrap to 2-3 lines
+        # each, so the stripe visually stopped partway through its own
+        # entry's text instead of spanning it. Measure the real wrapped
+        # line counts first (split_only=True renders nothing, just
+        # returns the wrapped lines) so the stripe height matches.
+        evidence_lines = pdf.multi_cell(CONTENT_W - 13, 5, evidence_map, dry_run=True, output="LINES")
+        content_lines = (
+            pdf.multi_cell(CONTENT_W - 13, 4.5, f"\"{safe(content, 180)}\"", dry_run=True, output="LINES")
+            if content else []
+        )
+        header_h   = 8  # "entity — action" line + top padding
+        body_h     = len(evidence_lines) * 5 + len(content_lines) * 4.5
+        conflict_h = 5 if conflict else 0
+        stripe_h   = max(14, header_h + body_h + conflict_h + 2)
+
         # Event number + time in left margin stripe
         pdf.set_fill_color(*C_ACCENT)
-        pdf.rect(MARGIN, y0, 10, 14, "F")
+        pdf.rect(MARGIN, y0, 10, stripe_h, "F")
         pdf.set_xy(MARGIN, y0 + 1)
         pdf.set_font(FONT_NAME, "B", 8)
         pdf.set_text_color(*C_WHITE)
@@ -1324,15 +1341,26 @@ def build_narrative_summary(
                            new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.set_text_color(*C_TEXT)
 
+        body_bottom_y = pdf.get_y()
+
         # Confidence badge for this event
         pdf.conf_badge(conf, PAGE_W - MARGIN - 28, y0, w=28, h=6)
 
         if conflict:
+            pdf.set_xy(MARGIN + 13, body_bottom_y)
             pdf.set_font(FONT_NAME, "B", 7.5)
             pdf.set_text_color(*C_RED)
-            pdf.cell(0, 4, "  ⚠ Conflicting evidence — needs investigator review")
+            pdf.cell(0, 4, "  [!] Conflicting evidence — needs investigator review")
             pdf.set_text_color(*C_TEXT)
-        pdf.ln(6)
+            body_bottom_y += 4
+
+        # FIX: conf_badge()'s internal cell() call leaves the running cursor
+        # near y0 (its own row), not at the bottom of this event's wrapped
+        # text. Advancing with a flat ln(6) from there made row N+1 start
+        # before row N's multi-line evidence/quote text had finished, so
+        # rows visually overlapped. Advance past whichever is taller: the
+        # actual wrapped body text or the left accent stripe.
+        pdf.set_y(max(body_bottom_y, y0 + stripe_h) + 3)
 
     pdf.divider()
 
@@ -1405,7 +1433,7 @@ def build_narrative_summary(
 
     if investigation_items:
         text = "\n\n".join(f"  {chr(9679)}  {item}" for item in investigation_items)
-        pdf.warn_box("⚠  Items requiring human investigation:\n\n" + text)
+        pdf.warn_box("[!]  Items requiring human investigation:\n\n" + text)
     else:
         pdf.body("No outstanding investigation items. The system reached a complete result.")
 

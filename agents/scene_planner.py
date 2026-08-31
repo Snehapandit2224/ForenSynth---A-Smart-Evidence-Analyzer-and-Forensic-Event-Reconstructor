@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 scene_planner.py  —  Visual Scene Planner for ForenSynth
-Transforms Timeline Agent V3 JSON + Critique C3 JSON into render-safe scene specs.
+Transforms the latest Timeline + Critique rows in forensynth.db into
+render-safe scene specs.
 
 Rules applied:
   1. Group events with identical timestamps into a single simultaneous scene
@@ -12,15 +13,83 @@ Rules applied:
   6. Mark unresolved entities with uncertainty
   7. Attach critique gaps to affected scenes
 """
+import argparse
 import json
+import sqlite3
 from pathlib import Path
 from collections import defaultdict
 
-BASE = Path("/sessions/gallant-practical-heisenberg/mnt/outputs")
+# Matches the project-wide convention (run_case.py, scene_reconstruction_v3.py,
+# explainability_report_v2.py, evaluate.py all default to "output", not "outputs";
+# memory_store.py's ForenSynthMemory defaults forensynth.db to the project root).
+DEFAULT_DB_PATH    = Path(__file__).resolve().parent.parent / "forensynth.db"
+DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent.parent / "output"
 
-# ── Loaders ───────────────────────────────────────────────────────────────────
-def load(name):
-    return json.loads((BASE / name).read_text())
+# ── DB loaders ───────────────────────────────────────────────────────────────
+def load_latest_timeline(db_path: Path, case_id: str) -> tuple[dict, str]:
+    """
+    Return (timeline_dict, version) for the most recently inserted
+    timeline_runs row for this case_id. "Most recent" is by DB row id (a
+    monotonic autoincrement primary key) rather than parsing/comparing the
+    version string -- the same class of bug already found and fixed in
+    evaluate_all.py's _find_final_timeline (picking by version-number
+    priority let a stale higher-version row silently outrank a fresh
+    lower-version one). id DESC is unambiguous: it's insertion order.
+    """
+    conn = sqlite3.connect(str(db_path))
+    conn.row_factory = sqlite3.Row
+    try:
+        row = conn.execute(
+            "SELECT full_json, version FROM timeline_runs WHERE case_id=? ORDER BY id DESC LIMIT 1",
+            (case_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+    if row is None:
+        raise FileNotFoundError(f"No timeline_runs row found for case_id={case_id!r} in {db_path}")
+    return json.loads(row["full_json"]), row["version"]
+
+
+def load_latest_critique(db_path: Path, case_id: str) -> tuple[dict, str]:
+    """Return (critique_dict, version) for the most recently inserted
+    critique_runs row for this case_id (same id-DESC freshness rule as
+    load_latest_timeline)."""
+    conn = sqlite3.connect(str(db_path))
+    conn.row_factory = sqlite3.Row
+    try:
+        row = conn.execute(
+            "SELECT full_json, critique_version FROM critique_runs WHERE case_id=? ORDER BY id DESC LIMIT 1",
+            (case_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+    if row is None:
+        raise FileNotFoundError(f"No critique_runs row found for case_id={case_id!r} in {db_path}")
+    return json.loads(row["full_json"]), row["critique_version"]
+
+
+def get_case_context(case_id: str, db_path: Path = DEFAULT_DB_PATH) -> str:
+    """
+    Resolve whether this is an ATM case. Prefers the real `domain` column
+    on the `cases` table (e.g. "ATM_Robbery") when available, falling back
+    to a case_id substring check. Deliberately ATM-only, not a general
+    multi-domain keyword table: checked against real project data, no
+    case_id or domain string ever contains "ROBBERY" or "FRAUD" (Office
+    cases are domain="Office_Theft", case_id="CASE_OFF_XXX") -- a table
+    keyed on those words would be false precision, matching nothing real.
+    """
+    domain = ""
+    try:
+        conn = sqlite3.connect(str(db_path))
+        row = conn.execute("SELECT domain FROM cases WHERE case_id=?", (case_id,)).fetchone()
+        conn.close()
+        domain = (row[0] if row else "") or ""
+    except sqlite3.Error:
+        pass
+    if "ATM" in domain.upper() or "ATM" in case_id.upper():
+        return "ATM"
+    return "UNKNOWN"
+
 
 # ── Heuristics ────────────────────────────────────────────────────────────────
 STATEMENT_KEYWORDS = [
@@ -28,8 +97,11 @@ STATEMENT_KEYWORDS = [
     "never", "i never", "denied", "deny", "claim", "alleged",
     "said that", "stated that", "testified"
 ]
+# ATM-specific: vocabulary that's a red flag in an ATM case but is the
+# normal/expected setting in e.g. an Office_Theft case (see
+# get_case_context and detect_location_conflict) -- deliberately not
+# applied outside an ATM context.
 CONFLICT_KEYWORDS = ["office", "workplace", "building", "corridor", "hallway"]
-CASE_CONTEXT = "ATM"  # for conflict detection
 
 TAMPER_KEYWORDS = ["fiddle", "fiddling", "tamper", "tampering", "manipulat",
                    "insert", "card slot", "card reader", "skimm", "device"]
@@ -81,16 +153,23 @@ def detect_action_issues(ev):
     return issues
 
 
-def detect_location_conflict(ev):
-    """Return conflict dict if content references wrong context location."""
+def detect_location_conflict(ev, case_context):
+    """Return conflict dict if content references wrong context location.
+    Scoped to ATM cases: CONFLICT_KEYWORDS ("office", "corridor", ...) are
+    ATM-specific red flags, not a general-purpose check -- outside an ATM
+    context they'd self-contradictorily flag normal, expected vocabulary
+    (e.g. "office" in a genuine Office_Theft case), so the check is
+    skipped entirely rather than firing false positives."""
+    if case_context != "ATM":
+        return {"conflict": False}
     content = (ev.get("content") or "").lower()
     for kw in CONFLICT_KEYWORDS:
         if kw in content:
             return {
                 "conflict": True,
                 "content_mentions": kw,
-                "case_context": CASE_CONTEXT,
-                "note": f"Content mentions '{kw}' but case context is {CASE_CONTEXT}. Human review required."
+                "case_context": case_context,
+                "note": f"Content mentions '{kw}' but case context is {case_context}. Human review required."
             }
     return {"conflict": False}
 
@@ -142,9 +221,11 @@ def resolve_participants(ev, event_class, source_only):
 
 
 # ── Main Planner ──────────────────────────────────────────────────────────────
-def build_scene_specs(tl_path, cr_path):
-    tl = load(tl_path)
-    cr = load(cr_path)
+def build_scene_specs(case_id: str, db_path: Path = DEFAULT_DB_PATH) -> dict:
+    tl, tl_version = load_latest_timeline(db_path, case_id)
+    cr, cr_version = load_latest_critique(db_path, case_id)
+    case_context = get_case_context(case_id, db_path)
+
     events   = tl["events"]
     causal   = tl.get("causal_links", [])
     gaps     = cr.get("gaps", [])
@@ -200,7 +281,7 @@ def build_scene_specs(tl_path, cr_path):
                 event_ids.append(ev.get("event_id","?"))
                 ec, vis, src_only = classify_event(ev)
                 parts, srcs       = resolve_participants(ev, ec, src_only)
-                loc_conflict      = detect_location_conflict(ev)
+                loc_conflict      = detect_location_conflict(ev, case_context)
                 act_issues        = detect_action_issues(ev)
                 ev_gaps           = gap_map.get(ev.get("event_id",""), [])
 
@@ -243,7 +324,7 @@ def build_scene_specs(tl_path, cr_path):
             ev_id       = ev.get("event_id","?")
             ec, vis, src_only = classify_event(ev)
             parts, srcs = resolve_participants(ev, ec, src_only)
-            loc_conflict= detect_location_conflict(ev)
+            loc_conflict= detect_location_conflict(ev, case_context)
             act_issues  = detect_action_issues(ev)
             ev_gaps     = gap_map.get(ev_id, [])
 
@@ -277,8 +358,8 @@ def build_scene_specs(tl_path, cr_path):
 
     return {
         "case_id":         tl["case_id"],
-        "tl_version":      "V3",
-        "critique_version":"C3",
+        "tl_version":      tl_version,
+        "critique_version":cr_version,
         "total_scenes":    len(scenes),
         "avg_confidence":  sum(s["confidence"] for s in scenes)/max(len(scenes),1),
         "classification":  tl.get("output_classification","?"),
@@ -289,11 +370,19 @@ def build_scene_specs(tl_path, cr_path):
 
 
 if __name__ == "__main__":
-    spec = build_scene_specs(
-        "CASE_ATM_001_timeline_V3.json",
-        "CASE_ATM_001_critique_C3.json"
-    )
-    out = BASE / "CASE_ATM_001_scene_spec.json"
+    parser = argparse.ArgumentParser(description="Build render-safe scene specs from forensynth.db.")
+    parser.add_argument("--case", required=True, help="Case ID, e.g. CASE_ATM_004")
+    parser.add_argument("--db-path", default=None, help="Override the forensynth.db path")
+    parser.add_argument("--output-dir", default=None, help="Override the output directory")
+    args = parser.parse_args()
+
+    db_path = Path(args.db_path) if args.db_path else DEFAULT_DB_PATH
+    output_dir = Path(args.output_dir) if args.output_dir else DEFAULT_OUTPUT_DIR
+
+    spec = build_scene_specs(args.case, db_path)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    out = output_dir / f"{args.case}_scene_spec.json"
     out.write_text(json.dumps(spec, indent=2))
     print(f"Scene spec written: {len(spec['scenes'])} scenes -> {out}")
     for s in spec["scenes"]:

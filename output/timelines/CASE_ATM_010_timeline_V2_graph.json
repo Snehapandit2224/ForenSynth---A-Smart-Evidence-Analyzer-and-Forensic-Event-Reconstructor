@@ -1,0 +1,221 @@
+{
+  "nodes": [
+    {
+      "id": "EVT_entity_1_o1",
+      "timestamp": "2024-01-15T10:00:43Z",
+      "ts_epoch": 1705312843.0,
+      "entity_id": "entity_1",
+      "primary_alias": "report_90",
+      "confidence": 0.794,
+      "location": "remote \u2014 email server log",
+      "modality": "text",
+      "content": "At the corner, about to move. (forwarded)",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O1"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o2",
+      "timestamp": "2024-01-15T10:01:31Z",
+      "ts_epoch": 1705312890.9999998,
+      "entity_id": "entity_1",
+      "primary_alias": "report_90",
+      "confidence": 0.8246,
+      "location": "bank security office, incident registry",
+      "modality": "text",
+      "content": "Still waiting. Not yet.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O2"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o3",
+      "timestamp": "2024-01-15T10:02:31Z",
+      "ts_epoch": 1705312951.0,
+      "entity_id": "entity_1",
+      "primary_alias": "report_90",
+      "confidence": 0.8903,
+      "location": "remote \u2014 email server log",
+      "modality": "text",
+      "content": "Entered. Starting now.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O3"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o4_o5",
+      "timestamp": "2024-01-15T10:02:48Z",
+      "ts_epoch": 1705312968.5049446,
+      "entity_id": "entity_1",
+      "primary_alias": "report_90",
+      "confidence": 0.8874,
+      "location": "remote \u2014 email server log",
+      "modality": "text",
+      "content": "Reader fitted. No one saw.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "id": "EVT_entity_2_o6_o7",
+      "timestamp": "2024-01-15T10:03:26Z",
+      "ts_epoch": 1705313006.4701278,
+      "entity_id": "entity_2",
+      "primary_alias": "Speaker_N",
+      "confidence": 0.8099,
+      "location": "near ATM location, mobile network",
+      "modality": "multimodal",
+      "content": "They came out of the booth fast and walked off quickly.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O6",
+        "O7"
+      ]
+    },
+    {
+      "id": "EVT_entity_3_o11",
+      "timestamp": "2024-01-15T10:10:00Z",
+      "ts_epoch": 1705313400.0,
+      "entity_id": "entity_3",
+      "primary_alias": "sms_94",
+      "confidence": 0.4915,
+      "location": "remote \u2014 mobile network SMS",
+      "modality": "text",
+      "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+      "conflict_flag": true,
+      "obs_ids": [
+        "O11"
+      ]
+    },
+    {
+      "id": "EVT_entity_2_o10",
+      "timestamp": "2024-01-15T10:10:03Z",
+      "ts_epoch": 1705313402.9999998,
+      "entity_id": "entity_2",
+      "primary_alias": "Speaker_N",
+      "confidence": 0.8086,
+      "location": "ATM vicinity, bystander position",
+      "modality": "audio",
+      "content": "Something happened near the ATM I should report (per call log transcript).",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O10"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o2",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7747,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o4_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7734,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o2",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o4_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8177,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_2_o6_o7",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_2_o6_o7",
+      "target": "EVT_entity_3_o11",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
+      "relation": "BEFORE",
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_2_o6_o7",
+      "target": "EVT_entity_2_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5665,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    },
+    {
+      "source": "EVT_entity_3_o11",
+      "target": "EVT_entity_2_o10",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
+    }
+  ],
+  "causal_links": [
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7747,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->ENTER"
+    },
+    {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o4_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7734,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o4_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8177,
+      "relation": "BEFORE",
+      "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_entity_2_o6_o7",
+      "target": "EVT_entity_2_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5665,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    }
+  ],
+  "node_count": 7,
+  "edge_count": 9
+}

@@ -20,19 +20,19 @@
   "overall_score": 0.9,
   "requires_revision": true,
   "revision_target": "er",
-  "narrative_summary": "Case CASE_ATM_006 (pass 1): REVISE. 0 blocking, 1 warning(s), 0 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can",
+  "narrative_summary": "Case CASE_ATM_006 (pass 1): REVISE. 0 blocking, 1 warning(s), 0 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can",
   "belief_updates": {},
   "issues": [
     {
       "check": "role_count_mismatch",
       "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "detail": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_er",
       "affected_events": [],
       "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "description": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
       "recommendation": "re_run_er",
       "event_id": "",
       "affected_obs": []
@@ -42,13 +42,13 @@
     {
       "check": "role_count_mismatch",
       "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "detail": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_er",
       "affected_events": [],
       "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "description": "FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
       "recommendation": "re_run_er",
       "event_id": "",
       "affected_obs": []

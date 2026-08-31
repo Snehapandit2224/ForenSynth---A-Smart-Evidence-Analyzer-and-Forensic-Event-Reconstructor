@@ -1,0 +1,1580 @@
+{
+  "case_id": "CASE_ATM_010",
+  "action": "no_action",
+  "input_tl_version": "V2",
+  "input_crit_version": "C2",
+  "output_tl_version": "V2",
+  "er_constraints": {},
+  "belief_updates": {},
+  "reasoning": "Timeline confidence flatlined (delta=0.0000 < 0.03) \u2014 further revision won't improve the result. Output case: PARTIAL. Best score 0.79 exceeds threshold. Has conflict-flagged events.",
+  "issues_addressed": [],
+  "issues_deferred": [],
+  "output_case": "PARTIAL",
+  "iter_log": [
+    {
+      "iteration": 1,
+      "timeline_version": "V1",
+      "critique_version": "C1",
+      "gaps_detected": 3,
+      "resolvable_gaps": 2,
+      "unresolvable_gaps": 1,
+      "recommended_action": "REBUILD_WITH_BELIEF_UPDATE",
+      "overall_score": 0.78,
+      "narrative_summary": "Case CASE_ATM_010 (pass 1): REVISE. 0 blocking, 2 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o3 and EVT"
+    },
+    {
+      "iteration": 2,
+      "timeline_version": "V2",
+      "critique_version": "C2",
+      "gaps_detected": 3,
+      "resolvable_gaps": 2,
+      "unresolvable_gaps": 1,
+      "recommended_action": "REBUILD_WITH_BELIEF_UPDATE",
+      "overall_score": 0.78,
+      "narrative_summary": "Case CASE_ATM_010 (pass 1): REVISE. 0 blocking, 2 warning(s), 1 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o3 and EVT"
+    }
+  ],
+  "investigator_flags": [
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_3_o11",
+      "detail": "Event EVT_entity_3_o11 confidence=0.49. Reasons: low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    }
+  ],
+  "all_timelines": [
+    {
+      "case_id": "CASE_ATM_010",
+      "timeline_version": "V1",
+      "schema_version": "1.1.0",
+      "generated_at": "2026-08-30T14:15:51Z",
+      "events": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "obs_ids": [
+            "O1"
+          ],
+          "timestamp": "2024-01-15T10:00:43Z",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "At the corner, about to move. (forwarded)",
+          "confidence": 0.794,
+          "role": "suspect",
+          "action_tags": [
+            "APPROACH"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "obs_ids": [
+            "O2"
+          ],
+          "timestamp": "2024-01-15T10:01:31Z",
+          "location": "bank security office, incident registry",
+          "location_key": "bank security office",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "Still waiting. Not yet.",
+          "confidence": 0.8246,
+          "role": "suspect",
+          "action_tags": [
+            "LOITER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o3",
+          "obs_ids": [
+            "O3"
+          ],
+          "timestamp": "2024-01-15T10:02:31Z",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "Entered. Starting now.",
+          "confidence": 0.8903,
+          "role": "suspect",
+          "action_tags": [
+            "ENTER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o4_o5",
+          "obs_ids": [
+            "O4",
+            "O5"
+          ],
+          "timestamp": "2024-01-15T10:02:48Z",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "Reader fitted. No one saw.",
+          "confidence": 0.8874,
+          "role": "suspect",
+          "action_tags": [
+            "EXIT",
+            "TAMPER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "obs_ids": [
+            "O6",
+            "O7"
+          ],
+          "timestamp": "2024-01-15T10:03:26Z",
+          "location": "near ATM location, mobile network",
+          "location_key": "atm booth entrance",
+          "entity_id": "entity_2",
+          "primary_alias": "Speaker_N",
+          "aliases": [
+            "Speaker_N",
+            "Person_13"
+          ],
+          "modality": "multimodal",
+          "content": "They came out of the booth fast and walked off quickly.",
+          "confidence": 0.8099,
+          "role": "witness",
+          "action_tags": [
+            "EXIT",
+            "OBSERVE"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: audio, video",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "obs_ids": [
+            "O11"
+          ],
+          "timestamp": "2024-01-15T10:10:00Z",
+          "location": "remote \u2014 mobile network SMS",
+          "location_key": "remote \u2014 mobile network sms",
+          "entity_id": "entity_3",
+          "primary_alias": "sms_94",
+          "aliases": [
+            "sms_94"
+          ],
+          "modality": "text",
+          "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+          "confidence": 0.4915,
+          "role": "witness",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "obs_ids": [
+            "O10"
+          ],
+          "timestamp": "2024-01-15T10:10:03Z",
+          "location": "ATM vicinity, bystander position",
+          "location_key": "atm vicinity",
+          "entity_id": "entity_2",
+          "primary_alias": "Speaker_N",
+          "aliases": [
+            "Speaker_N",
+            "Person_13"
+          ],
+          "modality": "audio",
+          "content": "Something happened near the ATM I should report (per call log transcript).",
+          "confidence": 0.8086,
+          "role": "witness",
+          "action_tags": [
+            "REPORT"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        }
+      ],
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o3",
+          "edge_type": "CAUSAL",
+          "confidence": 0.7747,
+          "relation": "BEFORE",
+          "label": "action dependency: APPROACH->ENTER"
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o4_o5",
+          "edge_type": "CAUSAL",
+          "confidence": 0.7734,
+          "relation": "BEFORE",
+          "label": "action dependency: APPROACH->TAMPER"
+        },
+        {
+          "source": "EVT_entity_1_o3",
+          "target": "EVT_entity_1_o4_o5",
+          "edge_type": "CAUSAL",
+          "confidence": 0.8177,
+          "relation": "BEFORE",
+          "label": "action dependency: ENTER->TAMPER"
+        },
+        {
+          "source": "EVT_entity_2_o6_o7",
+          "target": "EVT_entity_2_o10",
+          "edge_type": "CAUSAL",
+          "confidence": 0.5665,
+          "relation": "BEFORE",
+          "label": "same entity, semantically same location (sim=0.73), sequential"
+        }
+      ],
+      "timeline_graph": {
+        "nodes": [
+          {
+            "id": "EVT_entity_1_o1",
+            "timestamp": "2024-01-15T10:00:43Z",
+            "ts_epoch": 1705312843.0,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.794,
+            "location": "remote \u2014 email server log",
+            "modality": "text",
+            "content": "At the corner, about to move. (forwarded)",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O1"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o2",
+            "timestamp": "2024-01-15T10:01:31Z",
+            "ts_epoch": 1705312890.9999998,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.8246,
+            "location": "bank security office, incident registry",
+            "modality": "text",
+            "content": "Still waiting. Not yet.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O2"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o3",
+            "timestamp": "2024-01-15T10:02:31Z",
+            "ts_epoch": 1705312951.0,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.8903,
+            "location": "remote \u2014 email server log",
+            "modality": "text",
+            "content": "Entered. Starting now.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O3"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o4_o5",
+            "timestamp": "2024-01-15T10:02:48Z",
+            "ts_epoch": 1705312968.5049446,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.8874,
+            "location": "remote \u2014 email server log",
+            "modality": "text",
+            "content": "Reader fitted. No one saw.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O4",
+              "O5"
+            ]
+          },
+          {
+            "id": "EVT_entity_2_o6_o7",
+            "timestamp": "2024-01-15T10:03:26Z",
+            "ts_epoch": 1705313006.4701278,
+            "entity_id": "entity_2",
+            "primary_alias": "Speaker_N",
+            "confidence": 0.8099,
+            "location": "near ATM location, mobile network",
+            "modality": "multimodal",
+            "content": "They came out of the booth fast and walked off quickly.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O6",
+              "O7"
+            ]
+          },
+          {
+            "id": "EVT_entity_3_o11",
+            "timestamp": "2024-01-15T10:10:00Z",
+            "ts_epoch": 1705313400.0,
+            "entity_id": "entity_3",
+            "primary_alias": "sms_94",
+            "confidence": 0.4915,
+            "location": "remote \u2014 mobile network SMS",
+            "modality": "text",
+            "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O11"
+            ]
+          },
+          {
+            "id": "EVT_entity_2_o10",
+            "timestamp": "2024-01-15T10:10:03Z",
+            "ts_epoch": 1705313402.9999998,
+            "entity_id": "entity_2",
+            "primary_alias": "Speaker_N",
+            "confidence": 0.8086,
+            "location": "ATM vicinity, bystander position",
+            "modality": "audio",
+            "content": "Something happened near the ATM I should report (per call log transcript).",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O10"
+            ]
+          }
+        ],
+        "edges": [
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o2",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7747,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->ENTER"
+          },
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7734,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->TAMPER"
+          },
+          {
+            "source": "EVT_entity_1_o2",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_1_o3",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.8177,
+            "relation": "BEFORE",
+            "label": "action dependency: ENTER->TAMPER"
+          },
+          {
+            "source": "EVT_entity_1_o4_o5",
+            "target": "EVT_entity_2_o6_o7",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_2_o6_o7",
+            "target": "EVT_entity_3_o11",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_2_o6_o7",
+            "target": "EVT_entity_2_o10",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5665,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.73), sequential"
+          },
+          {
+            "source": "EVT_entity_3_o11",
+            "target": "EVT_entity_2_o10",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          }
+        ],
+        "causal_links": [
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7747,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->ENTER"
+          },
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7734,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->TAMPER"
+          },
+          {
+            "source": "EVT_entity_1_o3",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.8177,
+            "relation": "BEFORE",
+            "label": "action dependency: ENTER->TAMPER"
+          },
+          {
+            "source": "EVT_entity_2_o6_o7",
+            "target": "EVT_entity_2_o10",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5665,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.73), sequential"
+          }
+        ],
+        "node_count": 7,
+        "edge_count": 9
+      },
+      "uncertainties": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "uncertainty_score": 0.206,
+          "sources": [
+            "O1"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "uncertainty_score": 0.1754,
+          "sources": [
+            "O2"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "uncertainty_score": 0.1901,
+          "sources": [
+            "O6",
+            "O7"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "uncertainty_score": 0.5085,
+          "sources": [
+            "O11"
+          ],
+          "reasons": [
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "uncertainty_score": 0.1914,
+          "sources": [
+            "O10"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        }
+      ],
+      "narrative": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "timestamp": "2024-01-15T10:00:43Z",
+          "actor": "report_90",
+          "action": "At the corner, about to move. (forwarded)",
+          "location": "remote \u2014 email server log",
+          "evidence": [
+            "O1"
+          ],
+          "confidence": 0.794
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "timestamp": "2024-01-15T10:01:31Z",
+          "actor": "report_90",
+          "action": "Still waiting. Not yet.",
+          "location": "bank security office, incident registry",
+          "evidence": [
+            "O2"
+          ],
+          "confidence": 0.8246
+        },
+        {
+          "event_id": "EVT_entity_1_o3",
+          "timestamp": "2024-01-15T10:02:31Z",
+          "actor": "report_90",
+          "action": "Entered. Starting now.  [-> action dependency: APPROACH->ENTER]",
+          "location": "remote \u2014 email server log",
+          "evidence": [
+            "O3"
+          ],
+          "confidence": 0.8903
+        },
+        {
+          "event_id": "EVT_entity_1_o4_o5",
+          "timestamp": "2024-01-15T10:02:48Z",
+          "actor": "report_90",
+          "action": "Reader fitted. No one saw.  [-> action dependency: ENTER->TAMPER]",
+          "location": "remote \u2014 email server log",
+          "evidence": [
+            "O4",
+            "O5"
+          ],
+          "confidence": 0.8874
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "timestamp": "2024-01-15T10:03:26Z",
+          "actor": "Speaker_N",
+          "action": "They came out of the booth fast and walked off quickly.",
+          "location": "near ATM location, mobile network",
+          "evidence": [
+            "O6",
+            "O7"
+          ],
+          "confidence": 0.8099
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "timestamp": "2024-01-15T10:10:00Z",
+          "actor": "sms_94",
+          "action": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+          "location": "remote \u2014 mobile network SMS",
+          "evidence": [
+            "O11"
+          ],
+          "confidence": 0.4915
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "timestamp": "2024-01-15T10:10:03Z",
+          "actor": "Speaker_N",
+          "action": "Something happened near the ATM I should report (per call log transcript).  [-> same entity, semantically same location (sim=0.73), sequential]",
+          "location": "ATM vicinity, bystander position",
+          "evidence": [
+            "O10"
+          ],
+          "confidence": 0.8086
+        }
+      ],
+      "explainability": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "derived_from": [
+            "O1"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.794
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "derived_from": [
+            "O2"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.8246
+        },
+        {
+          "event_id": "EVT_entity_1_o3",
+          "derived_from": [
+            "O3"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.8903
+        },
+        {
+          "event_id": "EVT_entity_1_o4_o5",
+          "derived_from": [
+            "O4",
+            "O5"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "confidence": 0.8874
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "derived_from": [
+            "O6",
+            "O7"
+          ],
+          "entity_used": "entity_2",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: audio, video",
+            "valid timestamp"
+          ],
+          "confidence": 0.8099
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "derived_from": [
+            "O11"
+          ],
+          "entity_used": "entity_3",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.4915
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "derived_from": [
+            "O10"
+          ],
+          "entity_used": "entity_2",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.8086
+        }
+      ],
+      "conflicts_summary": [
+        {
+          "conflict_type": "low_confidence",
+          "cluster_id": "C4",
+          "detail": "Cluster C4 confidence 0.522 below floor.",
+          "affected_events": [
+            "EVT_entity_3_o11"
+          ]
+        }
+      ],
+      "conflicts_unlocalized_count": 0,
+      "unresolved_temporal_pairs": [],
+      "unresolved_causal_pairs": [
+        {
+          "event_a": "EVT_entity_1_o1",
+          "event_b": "EVT_entity_1_o2",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_1_o2",
+          "event_b": "EVT_entity_1_o3",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_1_o2",
+          "event_b": "EVT_entity_1_o4_o5",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_2_o6_o7",
+          "event_b": "EVT_entity_3_o11",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_3_o11",
+          "event_b": "EVT_entity_2_o10",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        }
+      ],
+      "unresolved_entities": [],
+      "stage_timings": {
+        "stage_1_validation": 0.0001,
+        "stage_2_enrichment": 0.0026,
+        "stage_3_ordering": 0.0,
+        "stage_4_5_temporal": 0.0001,
+        "stage_6_causal": 0.0038,
+        "stage_7_uncertainty": 0.0,
+        "stage_8_conflicts": 0.0,
+        "stage_10_explainability": 0.0001,
+        "stage_11_narrative": 0.0001,
+        "stage_12_versioning": 0.0012,
+        "stage_13_export": 0.0091
+      },
+      "total_time_sec": 0.0185,
+      "validation_warnings": [],
+      "llm_backend_used": "NoOpLLMFallback",
+      "llm_calls_made": 0,
+      "output_classification": "AMBIGUOUS",
+      "output_classification_reason": "avg_confidence=0.79, conflict_fraction=0.14, unresolved_ratio=0.71 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+    },
+    {
+      "case_id": "CASE_ATM_010",
+      "timeline_version": "V2",
+      "schema_version": "1.1.0",
+      "generated_at": "2026-08-30T14:15:52Z",
+      "events": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "obs_ids": [
+            "O1"
+          ],
+          "timestamp": "2024-01-15T10:00:43Z",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "At the corner, about to move. (forwarded)",
+          "confidence": 0.794,
+          "role": "suspect",
+          "action_tags": [
+            "APPROACH"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "obs_ids": [
+            "O2"
+          ],
+          "timestamp": "2024-01-15T10:01:31Z",
+          "location": "bank security office, incident registry",
+          "location_key": "bank security office",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "Still waiting. Not yet.",
+          "confidence": 0.8246,
+          "role": "suspect",
+          "action_tags": [
+            "LOITER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o3",
+          "obs_ids": [
+            "O3"
+          ],
+          "timestamp": "2024-01-15T10:02:31Z",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "Entered. Starting now.",
+          "confidence": 0.8903,
+          "role": "suspect",
+          "action_tags": [
+            "ENTER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o4_o5",
+          "obs_ids": [
+            "O4",
+            "O5"
+          ],
+          "timestamp": "2024-01-15T10:02:48Z",
+          "location": "remote \u2014 email server log",
+          "location_key": "remote \u2014 email server log",
+          "entity_id": "entity_1",
+          "primary_alias": "report_90",
+          "aliases": [
+            "report_90"
+          ],
+          "modality": "text",
+          "content": "Reader fitted. No one saw.",
+          "confidence": 0.8874,
+          "role": "suspect",
+          "action_tags": [
+            "EXIT",
+            "TAMPER"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "obs_ids": [
+            "O6",
+            "O7"
+          ],
+          "timestamp": "2024-01-15T10:03:26Z",
+          "location": "near ATM location, mobile network",
+          "location_key": "atm booth entrance",
+          "entity_id": "entity_2",
+          "primary_alias": "Speaker_N",
+          "aliases": [
+            "Speaker_N",
+            "Person_13"
+          ],
+          "modality": "multimodal",
+          "content": "They came out of the booth fast and walked off quickly.",
+          "confidence": 0.8099,
+          "role": "witness",
+          "action_tags": [
+            "EXIT",
+            "OBSERVE"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: audio, video",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "obs_ids": [
+            "O11"
+          ],
+          "timestamp": "2024-01-15T10:10:00Z",
+          "location": "remote \u2014 mobile network SMS",
+          "location_key": "remote \u2014 mobile network sms",
+          "entity_id": "entity_3",
+          "primary_alias": "sms_94",
+          "aliases": [
+            "sms_94"
+          ],
+          "modality": "text",
+          "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+          "confidence": 0.4915,
+          "role": "witness",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "obs_ids": [
+            "O10"
+          ],
+          "timestamp": "2024-01-15T10:10:03Z",
+          "location": "ATM vicinity, bystander position",
+          "location_key": "atm vicinity",
+          "entity_id": "entity_2",
+          "primary_alias": "Speaker_N",
+          "aliases": [
+            "Speaker_N",
+            "Person_13"
+          ],
+          "modality": "audio",
+          "content": "Something happened near the ATM I should report (per call log transcript).",
+          "confidence": 0.8086,
+          "role": "witness",
+          "action_tags": [
+            "REPORT"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        }
+      ],
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o3",
+          "edge_type": "CAUSAL",
+          "confidence": 0.7747,
+          "relation": "BEFORE",
+          "label": "action dependency: APPROACH->ENTER"
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o4_o5",
+          "edge_type": "CAUSAL",
+          "confidence": 0.7734,
+          "relation": "BEFORE",
+          "label": "action dependency: APPROACH->TAMPER"
+        },
+        {
+          "source": "EVT_entity_1_o3",
+          "target": "EVT_entity_1_o4_o5",
+          "edge_type": "CAUSAL",
+          "confidence": 0.8177,
+          "relation": "BEFORE",
+          "label": "action dependency: ENTER->TAMPER"
+        },
+        {
+          "source": "EVT_entity_2_o6_o7",
+          "target": "EVT_entity_2_o10",
+          "edge_type": "CAUSAL",
+          "confidence": 0.5665,
+          "relation": "BEFORE",
+          "label": "same entity, semantically same location (sim=0.73), sequential"
+        }
+      ],
+      "timeline_graph": {
+        "nodes": [
+          {
+            "id": "EVT_entity_1_o1",
+            "timestamp": "2024-01-15T10:00:43Z",
+            "ts_epoch": 1705312843.0,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.794,
+            "location": "remote \u2014 email server log",
+            "modality": "text",
+            "content": "At the corner, about to move. (forwarded)",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O1"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o2",
+            "timestamp": "2024-01-15T10:01:31Z",
+            "ts_epoch": 1705312890.9999998,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.8246,
+            "location": "bank security office, incident registry",
+            "modality": "text",
+            "content": "Still waiting. Not yet.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O2"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o3",
+            "timestamp": "2024-01-15T10:02:31Z",
+            "ts_epoch": 1705312951.0,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.8903,
+            "location": "remote \u2014 email server log",
+            "modality": "text",
+            "content": "Entered. Starting now.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O3"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o4_o5",
+            "timestamp": "2024-01-15T10:02:48Z",
+            "ts_epoch": 1705312968.5049446,
+            "entity_id": "entity_1",
+            "primary_alias": "report_90",
+            "confidence": 0.8874,
+            "location": "remote \u2014 email server log",
+            "modality": "text",
+            "content": "Reader fitted. No one saw.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O4",
+              "O5"
+            ]
+          },
+          {
+            "id": "EVT_entity_2_o6_o7",
+            "timestamp": "2024-01-15T10:03:26Z",
+            "ts_epoch": 1705313006.4701278,
+            "entity_id": "entity_2",
+            "primary_alias": "Speaker_N",
+            "confidence": 0.8099,
+            "location": "near ATM location, mobile network",
+            "modality": "multimodal",
+            "content": "They came out of the booth fast and walked off quickly.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O6",
+              "O7"
+            ]
+          },
+          {
+            "id": "EVT_entity_3_o11",
+            "timestamp": "2024-01-15T10:10:00Z",
+            "ts_epoch": 1705313400.0,
+            "entity_id": "entity_3",
+            "primary_alias": "sms_94",
+            "confidence": 0.4915,
+            "location": "remote \u2014 mobile network SMS",
+            "modality": "text",
+            "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O11"
+            ]
+          },
+          {
+            "id": "EVT_entity_2_o10",
+            "timestamp": "2024-01-15T10:10:03Z",
+            "ts_epoch": 1705313402.9999998,
+            "entity_id": "entity_2",
+            "primary_alias": "Speaker_N",
+            "confidence": 0.8086,
+            "location": "ATM vicinity, bystander position",
+            "modality": "audio",
+            "content": "Something happened near the ATM I should report (per call log transcript).",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O10"
+            ]
+          }
+        ],
+        "edges": [
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o2",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7747,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->ENTER"
+          },
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7734,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->TAMPER"
+          },
+          {
+            "source": "EVT_entity_1_o2",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_1_o3",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.8177,
+            "relation": "BEFORE",
+            "label": "action dependency: ENTER->TAMPER"
+          },
+          {
+            "source": "EVT_entity_1_o4_o5",
+            "target": "EVT_entity_2_o6_o7",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_2_o6_o7",
+            "target": "EVT_entity_3_o11",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_2_o6_o7",
+            "target": "EVT_entity_2_o10",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5665,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.73), sequential"
+          },
+          {
+            "source": "EVT_entity_3_o11",
+            "target": "EVT_entity_2_o10",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          }
+        ],
+        "causal_links": [
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o3",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7747,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->ENTER"
+          },
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.7734,
+            "relation": "BEFORE",
+            "label": "action dependency: APPROACH->TAMPER"
+          },
+          {
+            "source": "EVT_entity_1_o3",
+            "target": "EVT_entity_1_o4_o5",
+            "edge_type": "CAUSAL",
+            "confidence": 0.8177,
+            "relation": "BEFORE",
+            "label": "action dependency: ENTER->TAMPER"
+          },
+          {
+            "source": "EVT_entity_2_o6_o7",
+            "target": "EVT_entity_2_o10",
+            "edge_type": "CAUSAL",
+            "confidence": 0.5665,
+            "relation": "BEFORE",
+            "label": "same entity, semantically same location (sim=0.73), sequential"
+          }
+        ],
+        "node_count": 7,
+        "edge_count": 9
+      },
+      "uncertainties": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "uncertainty_score": 0.206,
+          "sources": [
+            "O1"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "uncertainty_score": 0.1754,
+          "sources": [
+            "O2"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "uncertainty_score": 0.1901,
+          "sources": [
+            "O6",
+            "O7"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "uncertainty_score": 0.5085,
+          "sources": [
+            "O11"
+          ],
+          "reasons": [
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "uncertainty_score": 0.1914,
+          "sources": [
+            "O10"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        }
+      ],
+      "narrative": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "timestamp": "2024-01-15T10:00:43Z",
+          "actor": "report_90",
+          "action": "At the corner, about to move. (forwarded)",
+          "location": "remote \u2014 email server log",
+          "evidence": [
+            "O1"
+          ],
+          "confidence": 0.794
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "timestamp": "2024-01-15T10:01:31Z",
+          "actor": "report_90",
+          "action": "Still waiting. Not yet.",
+          "location": "bank security office, incident registry",
+          "evidence": [
+            "O2"
+          ],
+          "confidence": 0.8246
+        },
+        {
+          "event_id": "EVT_entity_1_o3",
+          "timestamp": "2024-01-15T10:02:31Z",
+          "actor": "report_90",
+          "action": "Entered. Starting now.  [-> action dependency: APPROACH->ENTER]",
+          "location": "remote \u2014 email server log",
+          "evidence": [
+            "O3"
+          ],
+          "confidence": 0.8903
+        },
+        {
+          "event_id": "EVT_entity_1_o4_o5",
+          "timestamp": "2024-01-15T10:02:48Z",
+          "actor": "report_90",
+          "action": "Reader fitted. No one saw.  [-> action dependency: ENTER->TAMPER]",
+          "location": "remote \u2014 email server log",
+          "evidence": [
+            "O4",
+            "O5"
+          ],
+          "confidence": 0.8874
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "timestamp": "2024-01-15T10:03:26Z",
+          "actor": "Speaker_N",
+          "action": "They came out of the booth fast and walked off quickly.",
+          "location": "near ATM location, mobile network",
+          "evidence": [
+            "O6",
+            "O7"
+          ],
+          "confidence": 0.8099
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "timestamp": "2024-01-15T10:10:00Z",
+          "actor": "sms_94",
+          "action": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+          "location": "remote \u2014 mobile network SMS",
+          "evidence": [
+            "O11"
+          ],
+          "confidence": 0.4915
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "timestamp": "2024-01-15T10:10:03Z",
+          "actor": "Speaker_N",
+          "action": "Something happened near the ATM I should report (per call log transcript).  [-> same entity, semantically same location (sim=0.73), sequential]",
+          "location": "ATM vicinity, bystander position",
+          "evidence": [
+            "O10"
+          ],
+          "confidence": 0.8086
+        }
+      ],
+      "explainability": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "derived_from": [
+            "O1"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.794
+        },
+        {
+          "event_id": "EVT_entity_1_o2",
+          "derived_from": [
+            "O2"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.8246
+        },
+        {
+          "event_id": "EVT_entity_1_o3",
+          "derived_from": [
+            "O3"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.8903
+        },
+        {
+          "event_id": "EVT_entity_1_o4_o5",
+          "derived_from": [
+            "O4",
+            "O5"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "confidence": 0.8874
+        },
+        {
+          "event_id": "EVT_entity_2_o6_o7",
+          "derived_from": [
+            "O6",
+            "O7"
+          ],
+          "entity_used": "entity_2",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: audio, video",
+            "valid timestamp"
+          ],
+          "confidence": 0.8099
+        },
+        {
+          "event_id": "EVT_entity_3_o11",
+          "derived_from": [
+            "O11"
+          ],
+          "entity_used": "entity_3",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.4915
+        },
+        {
+          "event_id": "EVT_entity_2_o10",
+          "derived_from": [
+            "O10"
+          ],
+          "entity_used": "entity_2",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.8086
+        }
+      ],
+      "conflicts_summary": [
+        {
+          "conflict_type": "low_confidence",
+          "cluster_id": "C4",
+          "detail": "Cluster C4 confidence 0.522 below floor.",
+          "affected_events": [
+            "EVT_entity_3_o11"
+          ]
+        }
+      ],
+      "conflicts_unlocalized_count": 0,
+      "unresolved_temporal_pairs": [],
+      "unresolved_causal_pairs": [
+        {
+          "event_a": "EVT_entity_1_o1",
+          "event_b": "EVT_entity_1_o2",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_1_o2",
+          "event_b": "EVT_entity_1_o3",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_1_o2",
+          "event_b": "EVT_entity_1_o4_o5",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_2_o6_o7",
+          "event_b": "EVT_entity_3_o11",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_3_o11",
+          "event_b": "EVT_entity_2_o10",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        }
+      ],
+      "unresolved_entities": [],
+      "stage_timings": {
+        "stage_1_validation": 0.0001,
+        "stage_2_enrichment": 0.0024,
+        "stage_3_ordering": 0.0,
+        "stage_4_5_temporal": 0.0001,
+        "stage_6_causal": 0.0037,
+        "stage_7_uncertainty": 0.0,
+        "stage_8_conflicts": 0.0,
+        "stage_10_explainability": 0.0001,
+        "stage_11_narrative": 0.0,
+        "stage_12_versioning": 0.0005,
+        "stage_13_export": 0.0084
+      },
+      "total_time_sec": 0.0164,
+      "validation_warnings": [],
+      "llm_backend_used": "NoOpLLMFallback",
+      "llm_calls_made": 0,
+      "output_classification": "AMBIGUOUS",
+      "output_classification_reason": "avg_confidence=0.79, conflict_fraction=0.14, unresolved_ratio=0.71 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+    }
+  ],
+  "generated_at": "2026-08-30T14:15:52.266750+00:00",
+  "status": "complete"
+}
