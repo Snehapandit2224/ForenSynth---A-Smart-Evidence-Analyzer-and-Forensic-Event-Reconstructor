@@ -1,0 +1,462 @@
+{
+  "case_id": "CASE_ATM_013",
+  "status": "awaiting_human_validation",
+  "error_message": "",
+  "entity_count": 2,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Person_34"
+      ],
+      "primary_alias": "Person_34",
+      "total_mentions": 4,
+      "confirmed_mentions": [
+        "O3",
+        "O4"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.806,
+      "confirmed_edges": 1,
+      "candidate_edges": 5,
+      "modalities": [
+        "video"
+      ],
+      "locations": [
+        "ATM booth interior, card reader and keypad area",
+        "ATM lobby doorway, entry/exit point",
+        "ATM street frontage, wide-angle coverage"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O1",
+        "O3",
+        "O4",
+        "O5"
+      ],
+      "earliest_timestamp": "2024-01-15T10:00:40Z",
+      "latest_timestamp": "2024-01-15T10:04:04Z",
+      "time_span_seconds": 204
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "Speaker_E"
+      ],
+      "primary_alias": "Speaker_E",
+      "total_mentions": 2,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.7275,
+      "confirmed_edges": 0,
+      "candidate_edges": 1,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "ATM vicinity, bystander position",
+        "near ATM location, mobile network"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "O6",
+        "O7"
+      ],
+      "earliest_timestamp": "2024-01-15T10:04:20Z",
+      "latest_timestamp": "2024-01-15T10:06:46Z",
+      "time_span_seconds": 146
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "size": 4,
+      "aliases": [
+        "Person_34"
+      ],
+      "obs_ids": [
+        "O1",
+        "O3",
+        "O4",
+        "O5"
+      ],
+      "edges": [
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.3738,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "person_34",
+          "weight": 0.6332,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4674,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.3862,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4704,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "person_34",
+          "weight": 0.6854,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "person_34",
+          "weight": 0.6994,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "person_34",
+          "weight": 0.6689,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "person_34",
+          "weight": 0.6228,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "person_34",
+          "weight": 0.806,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4606,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.3961,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4108,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C2",
+      "size": 2,
+      "aliases": [
+        "Speaker_E"
+      ],
+      "obs_ids": [
+        "O6",
+        "O7"
+      ],
+      "edges": [
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.3738,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4674,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.3862,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4704,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "speaker_e",
+          "alias_2": "speaker_e",
+          "weight": 0.6691,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4606,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.3961,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_34",
+          "alias_2": "speaker_e",
+          "weight": 0.4108,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    }
+  ],
+  "conflicts_detected": 2,
+  "conflicts": [
+    {
+      "type": "role_count_mismatch",
+      "role": "suspect",
+      "expected_count": 3,
+      "resolved_count": 1,
+      "detail": "FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually."
+    },
+    {
+      "type": "role_count_mismatch",
+      "role": "witness",
+      "expected_count": 2,
+      "resolved_count": 1,
+      "detail": "FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually."
+    }
+  ],
+  "output_classification": "AMBIGUOUS",
+  "output_classification_reason": "avg_confidence=0.77, conflict_fraction=1.00, low_confidence_fraction=0.00 - at least one signal crossed the ambiguity threshold; treat these entity mappings as low-trust and prioritise investigator review before downstream use.",
+  "llm_calls_made": 0,
+  "llm_calls_budget": 14,
+  "location_similarity_backend": "embedding",
+  "resplit_log": [],
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.8,
+    "candidate_threshold_low": 0.5,
+    "candidate_threshold_high": 0.65,
+    "llm_enabled": true,
+    "groq_model": "openai/gpt-oss-20b",
+    "cross_modal_merge_min": 0.58,
+    "merge_composite_min": 0.55
+  },
+  "total_processing_time_sec": 11.400929,
+  "stage_timings": {
+    "stage_1_intake": 11.367309,
+    "stage_2_normalization": 1e-06,
+    "stage_3_blocking": 4.5e-05,
+    "stage_4_features": 0.031284,
+    "stage_5_scoring": 6.1e-05,
+    "stage_6_classification": 2.7e-05,
+    "stage_7_graph_building": 3.5e-05,
+    "stage_8_clustering": 0.000259,
+    "stage_9_attachment": 1.8e-05,
+    "stage_10_conflict_detection": 5.4e-05,
+    "stage_10b_constrained_resplit": 0.000972,
+    "stage_11_labeling": 0.00015,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-08-30T14:42:56Z"
+}

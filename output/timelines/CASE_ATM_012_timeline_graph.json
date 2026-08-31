@@ -2,14 +2,14 @@
   "nodes": [
     {
       "id": "EVT_entity_1_o2",
-      "timestamp": "2024-01-15T10:00:39Z",
-      "ts_epoch": 1705312839.0,
+      "timestamp": "2024-01-15T10:00:55Z",
+      "ts_epoch": 1705312855.0,
       "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.8181,
-      "location": "ATM booth interior",
+      "primary_alias": "Person_92",
+      "confidence": 0.7799,
+      "location": "ATM vicinity, intercepted channel",
       "modality": "audio",
-      "content": "Yeah I'm almost at the machine (per call log transcript).",
+      "content": "I can see the ATM now.",
       "conflict_flag": false,
       "obs_ids": [
         "O2"
@@ -17,14 +17,14 @@
     },
     {
       "id": "EVT_entity_1_o1",
-      "timestamp": "2024-01-15T10:01:10Z",
-      "ts_epoch": 1705312870.0,
+      "timestamp": "2024-01-15T10:00:58Z",
+      "ts_epoch": 1705312858.0,
       "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.7218,
-      "location": "ATM booth entrance, exterior facing",
+      "primary_alias": "Person_92",
+      "confidence": 0.8807,
+      "location": "ATM lobby doorway, entry/exit point",
       "modality": "video",
-      "content": "My movements that day did not take me anywhere near that kiosk.",
+      "content": "First actor arrives at the ATM location (wide-angle view).",
       "conflict_flag": false,
       "obs_ids": [
         "O1"
@@ -32,124 +32,94 @@
     },
     {
       "id": "EVT_entity_1_o3",
-      "timestamp": "2024-01-15T10:01:16Z",
-      "ts_epoch": 1705312876.0000002,
+      "timestamp": "2024-01-15T10:00:59Z",
+      "ts_epoch": 1705312859.0,
       "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.8762,
-      "location": "ATM kiosk exterior, street-side view",
+      "primary_alias": "Person_92",
+      "confidence": 0.7565,
+      "location": "ATM booth entrance, exterior facing",
       "modality": "video",
-      "content": "The second actor arrives at the ATM vicinity.",
+      "content": "Footage inconclusive due to lighting conditions.",
       "conflict_flag": false,
       "obs_ids": [
         "O3"
       ]
     },
     {
-      "id": "EVT_entity_1_o4",
-      "timestamp": "2024-01-15T10:01:21Z",
-      "ts_epoch": 1705312881.0,
+      "id": "EVT_entity_1_o4_o5",
+      "timestamp": "2024-01-15T10:01:18Z",
+      "ts_epoch": 1705312878.0245128,
       "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.8847,
-      "location": "ATM lobby doorway, entry/exit point",
-      "modality": "video",
-      "content": "First individual steps through the ATM booth door (poor image quality).",
+      "primary_alias": "Person_92",
+      "confidence": 0.9117,
+      "location": "ATM kiosk exterior, street-side view",
+      "modality": "multimodal",
+      "content": "First actor enters the ATM cabin.",
       "conflict_flag": false,
       "obs_ids": [
-        "O4"
-      ]
-    },
-    {
-      "id": "EVT_entity_1_o5",
-      "timestamp": "2024-01-15T10:01:24Z",
-      "ts_epoch": 1705312884.0,
-      "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.8357,
-      "location": "ATM vicinity, intercepted channel",
-      "modality": "audio",
-      "content": "I'm in, it's clear (reconstructed from partial recording).",
-      "conflict_flag": false,
-      "obs_ids": [
+        "O4",
         "O5"
       ]
     },
     {
-      "id": "EVT_entity_1_o10_o11_o9",
-      "timestamp": "2024-01-15T10:03:03Z",
-      "ts_epoch": 1705312983.2926543,
+      "id": "EVT_entity_1_o6",
+      "timestamp": "2024-01-15T10:01:28Z",
+      "ts_epoch": 1705312888.0,
       "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.8646,
+      "primary_alias": "Person_92",
+      "confidence": 0.8479,
+      "location": "ATM street frontage, wide-angle coverage",
+      "modality": "video",
+      "content": "Second suspect positions themselves at the ATM entrance (observed from distance).",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O6"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o7",
+      "timestamp": "2024-01-15T10:03:09Z",
+      "ts_epoch": 1705312989.0,
+      "entity_id": "entity_1",
+      "primary_alias": "Person_92",
+      "confidence": 0.9095,
+      "location": "ATM street frontage, wide-angle coverage",
+      "modality": "video",
+      "content": "Person inside the cabin is seen pressing ATM keys.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O7"
+      ]
+    },
+    {
+      "id": "EVT_entity_1_o10_o9",
+      "timestamp": "2024-01-15T10:03:19Z",
+      "ts_epoch": 1705312999.0293565,
+      "entity_id": "entity_1",
+      "primary_alias": "Person_92",
+      "confidence": 0.9039,
       "location": "ATM booth entrance, exterior facing",
       "modality": "multimodal",
-      "content": "Both persons leave the ATM location at pace (poor image quality).",
+      "content": "Lead suspect departs the ATM cabin.",
       "conflict_flag": false,
       "obs_ids": [
         "O10",
-        "O11",
         "O9"
       ]
     },
     {
-      "id": "EVT_entity_1_o8",
-      "timestamp": "2024-01-15T10:03:22Z",
-      "ts_epoch": 1705313002.0,
+      "id": "EVT_entity_1_o11",
+      "timestamp": "2024-01-15T10:03:41Z",
+      "ts_epoch": 1705313021.0000002,
       "entity_id": "entity_1",
-      "primary_alias": "Speaker_X",
-      "confidence": 0.7596,
-      "location": "ATM booth interior",
-      "modality": "audio",
-      "content": "Card's in, processing.",
-      "conflict_flag": false,
-      "obs_ids": [
-        "O8"
-      ]
-    },
-    {
-      "id": "EVT_entity_2_o14",
-      "timestamp": "2024-01-15T10:03:31Z",
-      "ts_epoch": 1705313010.9999998,
-      "entity_id": "entity_2",
-      "primary_alias": "Person_55",
-      "confidence": 0.788,
-      "location": "remote — email server log",
-      "modality": "text",
-      "content": "Two individuals left together quickly. One carrying a bag. (forwarded)",
-      "conflict_flag": false,
-      "obs_ids": [
-        "O14"
-      ]
-    },
-    {
-      "id": "EVT_entity_2_o13",
-      "timestamp": "2024-01-15T10:03:34Z",
-      "ts_epoch": 1705313014.0,
-      "entity_id": "entity_2",
-      "primary_alias": "Person_55",
-      "confidence": 0.7871,
-      "location": "ATM vicinity, bystander position",
-      "modality": "audio",
-      "content": "They exited the kiosk and separated immediately (per call log transcript).",
-      "conflict_flag": false,
-      "obs_ids": [
-        "O13"
-      ]
-    },
-    {
-      "id": "EVT_entity_2_o12",
-      "timestamp": "2024-01-15T10:03:56Z",
-      "ts_epoch": 1705313036.0,
-      "entity_id": "entity_2",
-      "primary_alias": "Person_55",
-      "confidence": 0.7223,
-      "location": "ATM lobby doorway, entry/exit point",
+      "primary_alias": "Person_92",
+      "confidence": 0.8375,
+      "location": "ATM booth entrance, exterior facing",
       "modality": "video",
-      "content": "Person at bus stop observed watching two individuals walk away quickly.",
+      "content": "Two persons seen walking away rapidly.",
       "conflict_flag": false,
       "obs_ids": [
-        "O12"
+        "O11"
       ]
     }
   ],
@@ -157,342 +127,278 @@
     {
       "source": "EVT_entity_1_o2",
       "target": "EVT_entity_1_o1",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6006,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
     },
     {
       "source": "EVT_entity_1_o2",
       "target": "EVT_entity_1_o3",
       "edge_type": "CAUSAL",
-      "confidence": 0.6608,
+      "confidence": 0.5992,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.60), sequential"
+      "label": "same entity, semantically same location (sim=0.62), sequential"
     },
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o4_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.6641,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.68), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o5",
-      "edge_type": "CAUSAL",
-      "confidence": 0.7277,
+      "confidence": 0.7443,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->ENTER"
     },
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.6563,
+      "confidence": 0.6567,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
+      "label": "same entity, semantically same location (sim=0.62), sequential"
     },
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o8",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6153,
+      "confidence": 0.6308,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=1.00), sequential"
+      "label": "same entity, semantically same location (sim=0.62), sequential"
     },
     {
       "source": "EVT_entity_1_o1",
       "target": "EVT_entity_1_o3",
       "edge_type": "CAUSAL",
-      "confidence": 0.6232,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.65), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o4",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6266,
+      "confidence": 0.6385,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o5",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.6074,
+      "confidence": 0.696,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.62), sequential"
+      "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6187,
+      "confidence": 0.6701,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o4_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6506,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o10_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6476,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o8",
-      "edge_type": "CAUSAL",
-      "confidence": 0.5778,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
-    },
-    {
       "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o4",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.9,
-      "relation": "SIMULTANEOUS",
-      "label": "SIMULTANEOUS (0.90)"
-    },
-    {
-      "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6789,
+      "confidence": 0.6217,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.65), sequential"
+      "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o8",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o6",
       "edge_type": "CAUSAL",
-      "confidence": 0.638,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.60), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o4",
-      "target": "EVT_entity_1_o5",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.9,
-      "relation": "SIMULTANEOUS",
-      "label": "SIMULTANEOUS (0.90)"
-    },
-    {
-      "source": "EVT_entity_1_o4",
-      "target": "EVT_entity_1_o10_o11_o9",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6823,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.73), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o4",
-      "target": "EVT_entity_1_o8",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6413,
+      "confidence": 0.6862,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
-      "source": "EVT_entity_1_o5",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o7",
       "edge_type": "CAUSAL",
-      "confidence": 0.6631,
+      "confidence": 0.7103,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.62), sequential"
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
-      "source": "EVT_entity_1_o5",
-      "target": "EVT_entity_1_o8",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.7019,
+      "confidence": 0.7081,
       "relation": "BEFORE",
-      "label": "action dependency: ENTER->WITHDRAW"
+      "label": "same entity, semantically same location (sim=0.65), sequential"
     },
     {
-      "source": "EVT_entity_1_o10_o11_o9",
-      "target": "EVT_entity_1_o8",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6335,
+      "confidence": 0.6822,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
+      "label": "same entity, semantically same location (sim=0.65), sequential"
     },
     {
-      "source": "EVT_entity_1_o8",
-      "target": "EVT_entity_2_o14",
+      "source": "EVT_entity_1_o6",
+      "target": "EVT_entity_1_o7",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6854,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o7",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "TEMPORAL",
       "confidence": 0.9,
       "relation": "SIMULTANEOUS",
       "label": "SIMULTANEOUS (0.90)"
     },
     {
-      "source": "EVT_entity_2_o14",
-      "target": "EVT_entity_2_o13",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.9,
-      "relation": "SIMULTANEOUS",
-      "label": "SIMULTANEOUS (0.90)"
-    },
-    {
-      "source": "EVT_entity_2_o13",
-      "target": "EVT_entity_2_o12",
+      "source": "EVT_entity_1_o10_o9",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6943,
+      "confidence": 0.6792,
       "relation": "BEFORE",
-      "label": "action dependency: EXIT->OBSERVE"
+      "label": "same entity, semantically same location (sim=1.00), sequential"
     }
   ],
   "causal_links": [
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o1",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6006,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o2",
       "target": "EVT_entity_1_o3",
       "edge_type": "CAUSAL",
-      "confidence": 0.6608,
+      "confidence": 0.5992,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.60), sequential"
+      "label": "same entity, semantically same location (sim=0.62), sequential"
     },
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o4_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.6641,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.68), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o5",
-      "edge_type": "CAUSAL",
-      "confidence": 0.7277,
+      "confidence": 0.7443,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->ENTER"
     },
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.6563,
+      "confidence": 0.6567,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
+      "label": "same entity, semantically same location (sim=0.62), sequential"
     },
     {
       "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o8",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6153,
+      "confidence": 0.6308,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=1.00), sequential"
+      "label": "same entity, semantically same location (sim=0.62), sequential"
     },
     {
       "source": "EVT_entity_1_o1",
       "target": "EVT_entity_1_o3",
       "edge_type": "CAUSAL",
-      "confidence": 0.6232,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.65), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o4",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6266,
+      "confidence": 0.6385,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o5",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.6074,
+      "confidence": 0.696,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.62), sequential"
+      "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6187,
+      "confidence": 0.6701,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o4_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6506,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o10_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6476,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o1",
-      "target": "EVT_entity_1_o8",
-      "edge_type": "CAUSAL",
-      "confidence": 0.5778,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
-    },
-    {
       "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6789,
+      "confidence": 0.6217,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.65), sequential"
+      "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o8",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o6",
       "edge_type": "CAUSAL",
-      "confidence": 0.638,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.60), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o4",
-      "target": "EVT_entity_1_o10_o11_o9",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6823,
-      "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.73), sequential"
-    },
-    {
-      "source": "EVT_entity_1_o4",
-      "target": "EVT_entity_1_o8",
-      "edge_type": "CAUSAL",
-      "confidence": 0.6413,
+      "confidence": 0.6862,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
-      "source": "EVT_entity_1_o5",
-      "target": "EVT_entity_1_o10_o11_o9",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o7",
       "edge_type": "CAUSAL",
-      "confidence": 0.6631,
+      "confidence": 0.7103,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.62), sequential"
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
-      "source": "EVT_entity_1_o5",
-      "target": "EVT_entity_1_o8",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.7019,
+      "confidence": 0.7081,
       "relation": "BEFORE",
-      "label": "action dependency: ENTER->WITHDRAW"
+      "label": "same entity, semantically same location (sim=0.65), sequential"
     },
     {
-      "source": "EVT_entity_1_o10_o11_o9",
-      "target": "EVT_entity_1_o8",
+      "source": "EVT_entity_1_o4_o5",
+      "target": "EVT_entity_1_o11",
       "edge_type": "CAUSAL",
-      "confidence": 0.6335,
+      "confidence": 0.6822,
       "relation": "BEFORE",
-      "label": "same entity, semantically same location (sim=0.86), sequential"
+      "label": "same entity, semantically same location (sim=0.65), sequential"
     },
     {
-      "source": "EVT_entity_2_o13",
-      "target": "EVT_entity_2_o12",
+      "source": "EVT_entity_1_o6",
+      "target": "EVT_entity_1_o7",
       "edge_type": "CAUSAL",
-      "confidence": 0.6943,
+      "confidence": 0.6854,
       "relation": "BEFORE",
-      "label": "action dependency: EXIT->OBSERVE"
+      "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o10_o9",
+      "target": "EVT_entity_1_o11",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6792,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=1.00), sequential"
     }
   ],
-  "node_count": 10,
-  "edge_count": 23
+  "node_count": 8,
+  "edge_count": 18
 }

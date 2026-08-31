@@ -63,10 +63,10 @@
     {
       "id": "EVT_entity_2_o7",
       "timestamp": "2024-01-15T10:05:39Z",
-      "ts_epoch": 1705313139.0,
+      "ts_epoch": 1705313138.9999998,
       "entity_id": "entity_2",
       "primary_alias": "Person_55",
-      "confidence": 0.7194,
+      "confidence": 0.71,
       "location": "ATM vicinity, bystander position",
       "modality": "audio",
       "content": "I was not paying attention to anyone leaving the area.",
@@ -81,7 +81,7 @@
       "ts_epoch": 1705313150.0,
       "entity_id": "entity_2",
       "primary_alias": "Person_55",
-      "confidence": 0.7181,
+      "confidence": 0.7087,
       "location": "ATM street frontage, wide-angle coverage",
       "modality": "video",
       "content": "Eyewitness notices a person leaving the ATM enclosure in a rush (poor image quality).",
@@ -91,12 +91,12 @@
       ]
     },
     {
-      "id": "EVT_entity_2_o8",
+      "id": "EVT_entity_3_o8",
       "timestamp": "2024-01-15T10:05:54Z",
       "ts_epoch": 1705313154.0,
-      "entity_id": "entity_2",
-      "primary_alias": "Person_55",
-      "confidence": 0.7608,
+      "entity_id": "entity_3",
+      "primary_alias": "email_74",
+      "confidence": 0.7795,
       "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "Two individuals left together quickly. One carrying a bag.",
@@ -167,13 +167,13 @@
       "source": "EVT_entity_2_o7",
       "target": "EVT_entity_2_o6",
       "edge_type": "CAUSAL",
-      "confidence": 0.6325,
+      "confidence": 0.6242,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     },
     {
       "source": "EVT_entity_2_o6",
-      "target": "EVT_entity_2_o8",
+      "target": "EVT_entity_3_o8",
       "edge_type": "TEMPORAL",
       "confidence": 0.9,
       "relation": "SIMULTANEOUS",
@@ -217,7 +217,7 @@
       "source": "EVT_entity_2_o7",
       "target": "EVT_entity_2_o6",
       "edge_type": "CAUSAL",
-      "confidence": 0.6325,
+      "confidence": 0.6242,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     }

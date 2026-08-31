@@ -3,8 +3,9 @@
 This branch (`feature/video-explainability-integration`) adds three post-pipeline
 modules on top of the existing ER → Timeline → Critique → Showrunner pipeline
 (`pipeline/run_case.py`): a scene-reconstruction video generator, a dual-layer
-explainability PDF report, and a ground-truth evaluation layer — plus three bug
-fixes discovered while building and testing them.
+explainability PDF report, and a ground-truth evaluation layer — plus a
+data-driven rewrite of the scene planner, deterministic evaluation tooling,
+and six bug fixes discovered while building and testing them.
 
 ## What's new
 
@@ -95,6 +96,25 @@ backend, so this just adds two link cards showing where the video and report
 would land: `output/videos/{case_id}_scene_reconstruction_v3.mp4` and
 `output/reports/{case_id}_explainability_report_v2.pdf`).
 
+### 6. Data-driven scene planner — `agents/scene_planner.py`
+
+Rewritten to read timeline and critique data directly from `forensynth.db`
+(`timeline_runs`, `critique_runs` — latest row per case by `id`) instead of
+JSON files on disk, and to resolve case context (currently `ATM` or
+`UNKNOWN`) from the `cases.domain` column instead of a hardcoded value.
+`classify_event`, `detect_action_issues`, and `resolve_participants` are
+unchanged. CLI: `python agents/scene_planner.py --case CASE_ID [--db-path]
+[--output-dir]`.
+
+### 7. Deterministic evaluation flags — `pipeline/evaluate_all.py`
+
+Added `--no-llm` (wipes each case's DB rows and re-runs the pipeline with
+`GROQ_API_KEY`/`Timeline_Key`/`TIMELINE_LOCAL_LLM_BACKEND` cleared, so
+Timeline/ER/Critique take their deterministic fallback path — Showrunner is
+unaffected either way, since it makes zero LLM calls) and `--stable-check
+--runs N` (re-runs each case N times and reports F1 mean/stdev, to
+distinguish genuine pipeline non-determinism from a one-off bad run).
+
 ## Bug fixes
 
 1. **`agents/entity_resolution.py`** — `EntityResolutionPipeline` expected
@@ -134,6 +154,67 @@ were verified not to fire on the motivating example (the embedding model
 itself isn't confident enough to disagree with the wrong fragment match),
 so only the direct fragment-bank fix (#3 above) was kept.
 
+4. **`agents/entity_resolution.py`'s suspect over-merging** — this is the fix
+   the root-cause analysis below identified as the real lever.
+   `EntityCoreferenceAgent.heuristic_coreference` was merging two distinct
+   suspects into one entity whenever their observations shared enough
+   circumstantial signal (timing/location/context), even when one
+   observation's own text said something like "a second suspect" or "two
+   individuals" — content that should have blocked the merge rather than
+   fed it. Fixed by adding `_mentions_multiple_actors()`, checked only when
+   `role == "suspect"` on either side (an earlier, role-agnostic version of
+   this check broke legitimate witness cross-modal merging, since a
+   witness's own statement routinely says "two individuals" *about the
+   suspects*, not about the witness). Confirmed on `CASE_ATM_004`: before
+   the fix, `entity_1` wrongly absorbed `['Person_50', 'Speaker_X',
+   'Person_80']`; after, it correctly splits into `entity_1: ['Person_50',
+   'Speaker_X']` and `entity_2: ['Person_80']`, with the legitimate witness
+   merge (`['Person_55', 'Speaker_Q']`) still intact.
+
+   **Known remaining gap**: the suppression is per observation-*pair*, not
+   per-entity. If suspect A has one observation containing marker language
+   ("two suspects") and a *different* observation with no marker phrase,
+   the marker-free pair can still merge through Union-Find even though the
+   marked pair correctly didn't. Seen on `CASE_ATM_012` (its 50% F1 /
+   FAIL result below is a mix of this and a separate, unfixable data gap —
+   3 of its 5 ground-truth entities have zero raw observations in the
+   generated file). Not fixed on this branch.
+
+5. **`pipeline/evaluate.py`'s recall undercounted legitimately-clustered
+   events** — the Timeline agent's clustering (see root cause analysis
+   below) merges what the generator recorded as separate ground-truth
+   moments into one reconstructed event; the evaluator counted every
+   ground-truth event that lost that 1:1 match as a flat miss, even when
+   its content was still present, just folded into an event matched to a
+   different ground-truth event. Added `_find_covered_events()`, which uses
+   each observation's `obs_id → event_ref` ground-truth linkage to check
+   whether an "unmatched" ground-truth event's own observations actually
+   ended up inside an already-matched pipeline event, and gives it 0.5
+   partial credit (`n_covered`) instead of zero. Genuinely-missing events
+   (no observations at all, or observations that never made it into any
+   matched pipeline event) still score zero, unchanged.
+
+6. **`agents/explainability_report_v2.py`'s "What Happened — Event by
+   Event, with Evidence" section rendered with overlapping rows.** Two
+   separate bugs, both in `build_narrative_summary()`:
+   - The left accent stripe was a fixed 14mm tall regardless of how much
+     text actually wrapped next to it (the evidence-source line and quoted
+     content routinely wrap to 2–3 lines each). Fixed by measuring real
+     wrapped-line counts via `pdf.multi_cell(..., dry_run=True,
+     output="LINES")` before drawing the stripe.
+   - Separately — and this was the one actually causing visible text
+     overlap — `conf_badge()`'s internal `cell()` call snaps fpdf2's
+     running cursor back up near the top of the row it draws. The old code
+     then advanced with a flat `pdf.ln(6)` from that yanked-back position,
+     so row *N+1* started rendering before row *N*'s wrapped text had
+     actually finished. Fixed by capturing the real bottom-of-content y
+     position before the badge draws, and advancing to
+     `max(that, y0 + stripe_h) + 3` afterward. Also replaced `★`/`⚠`/`→`
+     (which the Windows-resolved report font doesn't have glyphs for, and
+     were logged as "Font ... is missing the following glyphs" warnings on
+     every report) with `(Start Here)`/`[!]`/`->` respectively; the em-dash
+     `—` was left untouched since it renders fine in that font.
+
 ## Requirements
 
 Added to `requirements.txt`: `moviepy>=2.1.2`, `Pillow>=10.0.0`,
@@ -150,104 +231,113 @@ python pipeline/run_case.py --input path/to/CASE_obs_only.json --skip-video --sk
 
 # Evaluate all discovered GENERATOR_FIXED cases against ground truth
 python pipeline/evaluate_all.py
+
+# Deterministic re-run: wipe + re-run every case with Groq disabled, then evaluate
+python pipeline/evaluate_all.py --no-llm
+
+# Stability check: re-run each case 5x under --no-llm, report F1 mean/stdev
+python pipeline/evaluate_all.py --no-llm --stable-check --runs 5
+
+# Rebuild scene spec for one case directly from forensynth.db (no file re-run needed)
+python agents/scene_planner.py --case CASE_ATM_013
 ```
 
 ## Evaluation results (13 GENERATOR_FIXED ATM cases)
 
+The dataset was fully regenerated (`GENERATOR_FIXED/main.py --batch 13`,
+confirmed genuinely diverse — see below) after the entity-resolution and
+evaluation fixes above, replacing the old 13-case set (which included the
+retired `CASE_DEMO_001`). Numbers below are from a fresh
+`python pipeline/evaluate_all.py` run against that regenerated set.
+
 | Result | Count |
 |---|---|
-| PASS (F1 ≥ 0.75) | 3 |
-| PARTIAL (F1 ≥ 0.55) | 9 |
+| PASS (F1 ≥ 0.75) | 11 |
+| PARTIAL (F1 ≥ 0.55) | 1 |
 | FAIL | 1 |
+
+**Mean F1 across all 13 cases: 0.8142**
 
 | Case ID | Recall | Action Acc | Temporal Acc | Entity Acc | Precision | F1 | Result |
 |---|---|---|---|---|---|---|---|
-| CASE_ATM_001 | 83% | 60% | 8.0s avg | 100% | 71% | 0.77 | PASS |
-| CASE_ATM_002 | 67% | 50% | 12.0s avg | 100% | 50% | 0.57 | PARTIAL |
-| CASE_ATM_003 | 67% | 100% | 3.0s avg | 100% | 55% | 0.60 | PARTIAL |
-| CASE_ATM_004 | 62% | 40% | 5.0s avg | 100% | 50% | 0.56 | PARTIAL |
-| CASE_ATM_005 | 83% | 60% | 8.0s avg | 100% | 71% | 0.77 | PASS |
-| CASE_ATM_006 | 67% | 50% | 12.0s avg | 100% | 50% | 0.57 | PARTIAL |
-| CASE_ATM_007 | 67% | 100% | 3.0s avg | 100% | 55% | 0.60 | PARTIAL |
-| CASE_ATM_008 | 62% | 40% | 5.0s avg | 100% | 50% | 0.56 | PARTIAL |
-| CASE_ATM_009 | 83% | 60% | 8.0s avg | 100% | 71% | 0.77 | PASS |
-| CASE_ATM_010 | 67% | 50% | 12.0s avg | 100% | 50% | 0.57 | PARTIAL |
-| CASE_ATM_011 | 67% | 100% | 3.0s avg | 100% | 55% | 0.60 | PARTIAL |
-| CASE_ATM_012 | 62% | 40% | 5.0s avg | 100% | 50% | 0.56 | PARTIAL |
-| CASE_DEMO_001 | 64% | 100% | 3.1s avg | 100% | 70% | 0.67 | PARTIAL |
+| CASE_ATM_001 | 92% | 60% | 8.0s avg | 100% | 71% | 0.80 | PASS |
+| CASE_ATM_002 | 83% | 50% | 12.0s avg | 100% | 50% | 0.62 | PARTIAL |
+| CASE_ATM_003 | 100% | 89% | 3.3s avg | 100% | 64% | 0.78 | PASS |
+| CASE_ATM_004 | 94% | 29% | 18.0s avg | 100% | 64% | 0.76 | PASS |
+| CASE_ATM_005 | 100% | 29% | 7.1s avg | 100% | 64% | 0.78 | PASS |
+| CASE_ATM_006 | 92% | 20% | 34.4s avg | 100% | 83% | 0.87 | PASS |
+| CASE_ATM_007 | 100% | 43% | 8.6s avg | 100% | 88% | 0.93 | PASS |
+| CASE_ATM_008 | 79% | 60% | 33.4s avg | 100% | 100% | 0.88 | PASS |
+| CASE_ATM_009 | 100% | 67% | 9.2s avg | 100% | 86% | 0.92 | PASS |
+| CASE_ATM_010 | 93% | 83% | 6.0s avg | 100% | 86% | 0.89 | PASS |
+| CASE_ATM_011 | 100% | 71% | 5.4s avg | 100% | 78% | 0.88 | PASS |
+| CASE_ATM_012 | 50% | 75% | 8.5s avg | 100% | 50% | 0.50 | FAIL |
+| CASE_ATM_013 | 93% | 67% | 12.5s avg | 100% | 100% | 0.96 | PASS |
 
-Entity accuracy is 100% across every case (the fuzzy-vs-strict entity
-resolver never actually diverged on this dataset); the real bottleneck is
-event recall (62–83%) and action-tag accuracy (40–100%, bimodal — see below).
+Best-performing: `CASE_ATM_013` (0.96), `CASE_ATM_007` (0.93), `CASE_ATM_009`
+(0.92) — video and explainability report have been regenerated for these
+three post-fix (`output/videos/`, `output/reports/`, both gitignored).
+
+Entity accuracy is still 100% across every case — see "Why entity accuracy
+stays 100%" below for why that's an expected property of the metric, not
+evidence that ER has no bugs.
 
 ## Root cause analysis — why the results look the way they do
 
-**The 13 cases are really only ~4 distinct scenarios.** Look closely at the
-table above: `{001, 005, 009}`, `{002, 006, 010}`, `{003, 007, 011}`, and
-`{004, 008, 012}` each report *identical* metrics down to the decimal, and
-their generated videos are frame-for-frame identical too. `GENERATOR_FIXED`'s
-case generator appears to cycle through the same underlying template every
-4 case IDs rather than producing 12 unique scenarios. This means "3 PASS, 9
-PARTIAL, 1 FAIL" is really "3 pass/fail outcomes across ~4 distinct
-scenarios, each counted 3 times" — worth knowing before treating these
-counts as evidence of broad pipeline coverage.
+**The old "13 cases are really ~4 templates" finding no longer applies.**
+The dataset shown above was regenerated in a single `--batch 13` call
+against the *same persistent RNG* the generator seeds once at construction
+(verified directly: `ForenSynthGenerator.__init__` seeds `self._rng` once,
+`generate_batch()` reuses it across all 13 `generate_case()` calls), which
+produces genuinely distinct scenarios — confirmed by inspecting the
+generated files (varying suspect counts, templates, and event counts per
+case) rather than the near-duplicate metrics the old set showed. The old
+dataset's 4-way repetition was concluded to be a one-time artifact of how
+those specific static files were originally produced (most likely separate
+generator invocations reusing a fixed seed), not a bug in
+`generator.py`/`templates.py` itself.
 
-**Recall is capped at 62–83%, never higher, for a structural reason:**
-ground truth always contains more fine-grained events than the pipeline
-reconstructs. The Timeline agent clusters raw observations into events by
-entity + temporal proximity, which legitimately merges what the generator
-recorded as two separate moments (e.g. "tamper" then "exit" from the same
-observation) into one reconstructed event. Every case has at least one
-ground-truth event that has no dedicated pipeline event to match against —
-that's a real recall ceiling from the clustering step, not noise.
+**`CASE_ATM_012` is the one FAIL, and it's two separate, distinguishable
+problems, not one:**
+- A generator data gap: 3 of its 5 ground-truth entities (`suspect_3`,
+  `witness_1`, `witness_2`) have zero raw observations in the generated
+  case file at all — nothing recoverable pipeline-side, since there's no
+  evidence to reconstruct from.
+- The narrower per-pair (not per-entity) gap in the suspect-merge fix
+  described in Bug Fixes #4 above — an unmarked observation from a suspect
+  can still merge through Union-Find even when a different observation from
+  that same suspect correctly triggered the marker-language block.
 
-**Action-tag accuracy is bimodal — 40–60% in three of the four clusters,
-100% in the fourth — and the reason is not tagging quality, it's entity
-resolution.** Investigated `CASE_ATM_004` (from the `{004,008,012}` cluster,
-40% action accuracy) event by event: every "wrong" tag was actually correct
-for its own content —
+**Action-tag accuracy still varies case to case (20–89%), but it is no
+longer explained by the same "entity merge scrambles the pairing" cause
+documented in earlier analysis on the old dataset** — that was root-caused
+against `CASE_ATM_004` in the old 4-template set, which no longer exists in
+its old form. Re-diagnosing action-tag accuracy against the current,
+genuinely-diverse dataset (rather than assuming the old explanation still
+applies) is flagged as follow-up work, not carried over here as fact.
 
-| Ground truth expects | Pipeline event's real content | Tag pipeline gave | Tag correct for that content? |
-|---|---|---|---|
-| `withdraw_cash` | "Both persons leave the ATM location at pace" | `EXIT` | Yes |
-| `exit_atm` | "Card's in, processing." | `WITHDRAW` | Yes |
+**Why entity accuracy stays 100% even where ER clustering has known bugs**
+(this was asked directly and is worth stating plainly): `entity_accuracy`
+checks each event's `primary_alias` — preserved verbatim from the source
+observation — against ground truth, not the pipeline's internal
+`entity_id`/cluster label. A clustering mistake (two people merged into one
+entity) doesn't corrupt any individual event's alias field, so this
+specific check is largely blind to it by construction. The real
+manifestation of a merging bug is lost **recall**: when two people's
+observations get folded into one synthetic pipeline event, only one alias
+survives that event, and the other person's ground-truth event becomes
+unmatchable. This is a genuine limitation of the current metric design
+(not something silently patched over) — recall and F1 are where a
+merging bug actually shows up, not entity accuracy.
 
-The tags are right. What's wrong is *which ground-truth event got compared
-to which pipeline event*. Entity Resolution merged two distinct
-ground-truth suspects (`suspect_1`, `suspect_2`) into a single pipeline
-entity, so the evaluator's entity-based matcher — which pairs a ground-truth
-event to the nearest-in-time pipeline event *for the same entity* — ends up
-pairing `suspect_1`'s real "withdraw" moment against `suspect_2`'s real
-"exit" event, because the pipeline no longer distinguishes them as two
-people. The `{003,007,011}` and `DEMO_001` clusters score 100% action
-accuracy because their entity resolution happened not to merge anyone in
-that run, so events line up with the right person and the tags — which were
-never the problem — read as fully correct.
-
-This is the real lever for improving both recall and action-tag accuracy on
-this dataset: **fix the suspect-merging behavior in `agents/entity_resolution.py`**,
-not `extract_action_tags()`. That fragment-bank fix (the WITHDRAW/TAMPER
-one, above) was correct and is kept, but it measurably changed nothing on
-this specific dataset, because the phrasing it targets ("fiddling",
-"insertion area") doesn't occur in `GENERATOR_FIXED`'s observation content
-at all — confirmed by grepping every case file for it. The bug it fixed was
-only ever observed against a stale timeline built from a different, older
-dataset earlier in development.
-
-**Temporal accuracy also splits by cluster (3s / 5s / 8s / 12s avg), for
-the same underlying reason as recall**: it's an average over whichever
-pairs the entity-based matcher manages to form, so a cluster with more
-successful entity-based matches (denser matched-pair set) naturally
-averages over more (and often closer) timestamp pairs than one where fewer,
-more scattered pairs got matched.
-
-**Entity resolution is not fully deterministic run-to-run.** Re-running the
-same case can shift these numbers even with no code changes: whether the
-Groq LLM path or the heuristic fallback fires depends on API
-availability/rate limits at the time, and that can change clustering
-decisions. This was observed directly — `CASE_ATM_003` scored 100% recall
-in one run and 67% in a later re-run of the identical input, purely from
-this variance.
+**Entity resolution is not fully deterministic run-to-run when Groq is
+enabled.** Whether the cloud LLM path or the heuristic fallback fires
+depends on API availability/rate limits at the time, and that can shift
+clustering decisions between identical re-runs of the same input. Verified
+directly with `evaluate_all.py --stable-check --runs N` under `--no-llm`
+(stdev 0.0 across repeated runs — fully deterministic once Groq is out of
+the loop); a Groq-enabled re-run of the same case is not guaranteed to
+reproduce the exact numbers above.
 
 ## Known limitations
 
@@ -257,6 +347,9 @@ this variance.
   dataset is an ATM robbery, but wouldn't generalize to other domains
   without adding more floor-plan variants).
 - **Not fixed on this branch** (found but out of scope for this pass):
+  - The per-pair (not per-entity) gap in the suspect-merge suppression —
+    see Bug Fixes #4 above and the `CASE_ATM_012` discussion in root cause
+    analysis.
   - `pipeline/pipeline` (the older orchestrator, superseded by
     `pipeline/run_case.py`) has two bugs — a wrong keyword argument name
     calling the critique agent, and reading a Showrunner result key

@@ -1,286 +1,162 @@
 {
   "case_id": "CASE_ATM_010",
   "domain": "ATM_Robbery",
-  "template": "MultiActor_Entry_Action_Exit",
+  "template": "Entry_Suspicious_Exit",
   "fir": {
     "crime_type": "cash machine theft",
-    "location": "Koramangala SBI ATM",
+    "location": "Indiranagar HDFC ATM",
     "time_window": [
       0,
-      821
+      718
     ],
-    "description": "Complainant reports being coerced at an ATM by 3 unknown assailant(s) who acted in concert. One suspect operated the machine while the other blocked the entrance. 2 independent witness(es) observed the incident.",
+    "description": "The complainant alleges that 1 accused individual(s) loitered near the ATM for an abnormal duration and were observed manipulating the machine before departing. 2 independent witness(es) support this account.",
     "roles": {
-      "suspect": 3,
+      "suspect": 1,
       "witness": 2
     }
   },
   "observations": [
     {
-      "obs_id": "O2",
+      "obs_id": "O1",
       "event_ref": "E1",
-      "entity": "Speaker_D",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "phone_record",
-      "location": "near ATM location, mobile network",
-      "content": "I'm close, give me two minutes.",
-      "timestamp": "2024-01-15T10:00:30",
-      "time_offset": 30,
-      "confidence": 0.614,
-      "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O3",
-      "event_ref": "E1",
-      "entity": "log_30",
+      "entity": "report_90",
       "role": "suspect",
       "modality": "text",
       "source": "email_log",
       "location": "remote — email server log",
-      "content": "Heading there. Any activity?",
-      "timestamp": "2024-01-15T10:00:45",
-      "time_offset": 45,
-      "confidence": 0.854,
-      "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O5",
-      "event_ref": "E2",
-      "entity": "Speaker_Q",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "phone_record",
-      "location": "near ATM location, mobile network",
-      "content": "Almost at the spot, stay on the line.",
-      "timestamp": "2024-01-15T10:01:00",
-      "time_offset": 60,
-      "confidence": 0.841,
-      "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O4",
-      "event_ref": "E2",
-      "entity": "Person_50",
-      "role": "suspect",
-      "modality": "video",
-      "source": "camera_2",
-      "location": "ATM kiosk exterior, street-side view",
-      "content": "The second actor arrives at the ATM vicinity.",
-      "timestamp": "2024-01-15T10:01:05",
-      "time_offset": 65,
-      "confidence": 0.939,
-      "noise_tags": []
-    },
-    {
-      "obs_id": "O10",
-      "event_ref": "E4",
-      "entity": "Speaker_Q",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "mic_booth",
-      "location": "ATM booth interior",
-      "content": "No one around, keep going (statement recorded under caution).",
-      "timestamp": "2024-01-15T10:01:24",
-      "time_offset": 84,
-      "confidence": 0.826,
+      "content": "At the corner, about to move. (forwarded)",
+      "timestamp": "2024-01-15T10:00:43",
+      "time_offset": 43,
+      "confidence": 0.673,
       "noise_tags": [
         "temporal_noise",
         "semantic_variation"
       ]
     },
     {
-      "obs_id": "O8",
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "report_90",
+      "role": "suspect",
+      "modality": "text",
+      "source": "incident_report",
+      "location": "bank security office, incident registry",
+      "content": "Still waiting. Not yet.",
+      "timestamp": "2024-01-15T10:01:31",
+      "time_offset": 91,
+      "confidence": 0.741,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O3",
       "event_ref": "E3",
-      "entity": "log_30",
+      "entity": "report_90",
       "role": "suspect",
       "modality": "text",
       "source": "email_log",
       "location": "remote — email server log",
       "content": "Entered. Starting now.",
-      "timestamp": "2024-01-15T10:01:35",
-      "time_offset": 95,
-      "confidence": 0.655,
-      "noise_tags": []
-    },
-    {
-      "obs_id": "O9",
-      "event_ref": "E4",
-      "entity": "Person_50",
-      "role": "suspect",
-      "modality": "video",
-      "source": "camera_2",
-      "location": "ATM kiosk exterior, street-side view",
-      "content": "Second person loiters near ATM entrance.",
-      "timestamp": "2024-01-15T10:01:45",
-      "time_offset": 105,
-      "confidence": 0.764,
-      "noise_tags": []
-    },
-    {
-      "obs_id": "O7",
-      "event_ref": "E3",
-      "entity": "Speaker_D",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "phone_record",
-      "location": "near ATM location, mobile network",
-      "content": "I did not go inside that booth at any point.",
-      "timestamp": "2024-01-15T10:01:47",
-      "time_offset": 107,
-      "confidence": 0.38,
-      "noise_tags": [
-        "contradiction",
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O6",
-      "event_ref": "E3",
-      "entity": "Person_97",
-      "role": "suspect",
-      "modality": "video",
-      "source": "camera_3",
-      "location": "ATM street frontage, wide-angle coverage",
-      "content": "First person proceeds into the ATM kiosk.",
-      "timestamp": "2024-01-15T10:01:56",
-      "time_offset": 116,
-      "confidence": 0.949,
+      "timestamp": "2024-01-15T10:02:31",
+      "time_offset": 151,
+      "confidence": 0.887,
       "noise_tags": [
         "temporal_noise"
       ]
     },
     {
-      "obs_id": "O12",
+      "obs_id": "O5",
       "event_ref": "E5",
-      "entity": "Speaker_D",
+      "entity": "report_90",
       "role": "suspect",
-      "modality": "audio",
-      "source": "mic_booth",
-      "location": "ATM booth interior",
-      "content": "Transaction going through now.",
-      "timestamp": "2024-01-15T10:02:45",
-      "time_offset": 165,
-      "confidence": 0.781,
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Done here. Moving. (forwarded)",
+      "timestamp": "2024-01-15T10:02:48",
+      "time_offset": 168,
+      "confidence": 0.861,
       "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O15",
-      "event_ref": "E6",
-      "entity": "Speaker_D",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "phone_record",
-      "location": "near ATM location, mobile network",
-      "content": "Done in here, moving now (statement recorded under caution).",
-      "timestamp": "2024-01-15T10:02:55",
-      "time_offset": 175,
-      "confidence": 0.717,
-      "noise_tags": [
+        "temporal_noise",
         "semantic_variation"
       ]
     },
     {
-      "obs_id": "O17",
-      "event_ref": "E7",
-      "entity": "Person_50",
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "report_90",
       "role": "suspect",
-      "modality": "video",
-      "source": "camera_1",
-      "location": "ATM booth entrance, exterior facing",
-      "content": "Two individuals are recorded leaving the scene side by side.",
-      "timestamp": "2024-01-15T10:03:08",
-      "time_offset": 188,
-      "confidence": 0.788,
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Reader fitted. No one saw.",
+      "timestamp": "2024-01-15T10:02:49",
+      "time_offset": 169,
+      "confidence": 0.9,
       "noise_tags": []
     },
     {
-      "obs_id": "O20",
-      "event_ref": "E8",
-      "entity": "email_68",
-      "role": "witness",
-      "modality": "text",
-      "source": "email_log",
-      "location": "remote — email server log",
-      "content": "Saw a man rush out and walk away fast. Seemed nervous.",
-      "timestamp": "2024-01-15T10:03:13",
-      "time_offset": 193,
-      "confidence": 0.817,
-      "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O16",
+      "obs_id": "O7",
       "event_ref": "E6",
-      "entity": "log_30",
-      "role": "suspect",
-      "modality": "text",
-      "source": "email_log",
-      "location": "remote — email server log",
-      "content": "Out now. Walk.",
-      "timestamp": "2024-01-15T10:03:18",
-      "time_offset": 198,
-      "confidence": 0.751,
-      "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O19",
-      "event_ref": "E8",
-      "entity": "Speaker_K",
+      "entity": "Speaker_N",
       "role": "witness",
       "modality": "audio",
-      "source": "witness_statement",
-      "location": "ATM vicinity, bystander position",
-      "content": "I did not see anyone leave the area during that time.",
-      "timestamp": "2024-01-15T10:03:19",
-      "time_offset": 199,
-      "confidence": 0.498,
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "They came out of the booth fast and walked off quickly.",
+      "timestamp": "2024-01-15T10:03:25",
+      "time_offset": 205,
+      "confidence": 0.732,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "Person_13",
+      "role": "witness",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Witness spots individual departing the cash machine area suddenly.",
+      "timestamp": "2024-01-15T10:03:28",
+      "time_offset": 208,
+      "confidence": 0.663,
+      "noise_tags": [
+        "temporal_noise"
+      ]
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E7",
+      "entity": "sms_94",
+      "role": "witness",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "remote — mobile network SMS",
+      "content": "[CORRUPTED] — File hash mismatch; content integrity unverified.",
+      "timestamp": "2024-01-15T10:10:00",
+      "time_offset": 600,
+      "confidence": 0.522,
       "noise_tags": [
         "contradiction",
         "temporal_noise"
       ]
     },
     {
-      "obs_id": "O18",
+      "obs_id": "O10",
       "event_ref": "E7",
-      "entity": "Speaker_Q",
-      "role": "suspect",
-      "modality": "audio",
-      "source": "mic_booth",
-      "location": "ATM booth interior",
-      "content": "Security's nearby, get out!",
-      "timestamp": "2024-01-15T10:03:29",
-      "time_offset": 209,
-      "confidence": 0.646,
-      "noise_tags": [
-        "temporal_noise"
-      ]
-    },
-    {
-      "obs_id": "O21",
-      "event_ref": "E9",
-      "entity": "sms_74",
+      "entity": "Speaker_N",
       "role": "witness",
-      "modality": "text",
-      "source": "sms_record",
-      "location": "remote — mobile network SMS",
-      "content": "Filing complaint: saw someone tamper with the card slot at the ATM near Koramangala.",
-      "timestamp": "2024-01-15T10:07:08",
-      "time_offset": 428,
-      "confidence": 0.731,
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "Something happened near the ATM I should report (per call log transcript).",
+      "timestamp": "2024-01-15T10:10:03",
+      "time_offset": 603,
+      "confidence": 0.762,
       "noise_tags": [
-        "temporal_noise"
+        "semantic_variation"
       ]
     }
   ],
@@ -290,39 +166,23 @@
         "entity_id": "suspect_1",
         "role": "suspect",
         "aliases": {
-          "video": "Person_97",
-          "audio": "Speaker_D",
-          "text": "log_30"
-        }
-      },
-      {
-        "entity_id": "suspect_2",
-        "role": "suspect",
-        "aliases": {
-          "video": "Person_50",
-          "audio": "Speaker_Q"
-        }
-      },
-      {
-        "entity_id": "suspect_3",
-        "role": "suspect",
-        "aliases": {
-          "text": "report_24"
+          "text": "report_90"
         }
       },
       {
         "entity_id": "witness_1",
         "role": "witness",
         "aliases": {
-          "audio": "Speaker_K",
-          "text": "email_68"
+          "video": "Person_13",
+          "audio": "Speaker_N",
+          "text": "sms_94"
         }
       },
       {
         "entity_id": "witness_2",
         "role": "witness",
         "aliases": {
-          "text": "sms_74"
+          "audio": "Speaker_E"
         }
       }
     ],
@@ -332,84 +192,64 @@
         "entity_id": "suspect_1",
         "role": "suspect",
         "action": "approach_atm",
-        "timestamp": "2024-01-15T10:00:50",
-        "time_offset": 50
+        "timestamp": "2024-01-15T10:00:46",
+        "time_offset": 46
       },
       {
         "event_id": "E2",
-        "entity_id": "suspect_2",
+        "entity_id": "suspect_1",
         "role": "suspect",
-        "action": "approach_atm",
-        "timestamp": "2024-01-15T10:01:04",
-        "time_offset": 64
+        "action": "loiter_near_atm",
+        "timestamp": "2024-01-15T10:01:49",
+        "time_offset": 109
       },
       {
         "event_id": "E3",
         "entity_id": "suspect_1",
         "role": "suspect",
         "action": "enter_atm",
-        "timestamp": "2024-01-15T10:01:34",
-        "time_offset": 94
+        "timestamp": "2024-01-15T10:02:18",
+        "time_offset": 138
       },
       {
         "event_id": "E4",
-        "entity_id": "suspect_2",
+        "entity_id": "suspect_1",
         "role": "suspect",
-        "action": "wait_outside",
-        "timestamp": "2024-01-15T10:01:45",
-        "time_offset": 105
+        "action": "tamper_atm",
+        "timestamp": "2024-01-15T10:02:48",
+        "time_offset": 168
       },
       {
         "event_id": "E5",
         "entity_id": "suspect_1",
         "role": "suspect",
-        "action": "withdraw_cash",
-        "timestamp": "2024-01-15T10:02:34",
-        "time_offset": 154
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:03:02",
+        "time_offset": 182
       },
       {
         "event_id": "E6",
-        "entity_id": "suspect_1",
-        "role": "suspect",
-        "action": "exit_atm",
-        "timestamp": "2024-01-15T10:02:55",
-        "time_offset": 175
-      },
-      {
-        "event_id": "E7",
-        "entity_id": "suspect_2",
-        "role": "suspect",
-        "action": "flee_scene",
-        "timestamp": "2024-01-15T10:03:05",
-        "time_offset": 185
-      },
-      {
-        "event_id": "E8",
         "entity_id": "witness_1",
         "role": "witness",
         "action": "observe_exit",
-        "timestamp": "2024-01-15T10:03:26",
-        "time_offset": 206
+        "timestamp": "2024-01-15T10:03:24",
+        "time_offset": 204
       },
       {
-        "event_id": "E9",
-        "entity_id": "witness_2",
+        "event_id": "E7",
+        "entity_id": "witness_1",
         "role": "witness",
         "action": "report_incident",
-        "timestamp": "2024-01-15T10:06:41",
-        "time_offset": 401
+        "timestamp": "2024-01-15T10:10:00",
+        "time_offset": 600
       }
     ],
     "entity_mapping": {
-      "Person_97": "suspect_1",
-      "Speaker_D": "suspect_1",
-      "log_30": "suspect_1",
-      "Person_50": "suspect_2",
-      "Speaker_Q": "suspect_2",
-      "report_24": "suspect_3",
-      "Speaker_K": "witness_1",
-      "email_68": "witness_1",
-      "sms_74": "witness_2"
+      "report_90": "suspect_1",
+      "Person_13": "witness_1",
+      "Speaker_N": "witness_1",
+      "sms_94": "witness_1",
+      "Speaker_E": "witness_2"
     }
   }
 }

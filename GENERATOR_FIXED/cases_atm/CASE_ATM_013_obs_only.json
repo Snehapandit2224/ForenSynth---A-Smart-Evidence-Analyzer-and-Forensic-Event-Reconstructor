@@ -1,0 +1,92 @@
+{
+  "case_id": "CASE_ATM_013",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "cash machine theft",
+    "location": "Jayanagar ATM Lobby",
+    "time_window": [
+      0,
+      410
+    ],
+    "description": "An individual was seen loitering near an ATM for an extended period before entering the booth. Witnesses reported the person appeared to tamper with the card slot area before leaving hastily. 2 witness(es) have provided statements.",
+    "roles": {
+      "suspect": 3,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "entity": "Person_34",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "Subject is seen nearing the ATM from the main road (partially obscured).",
+      "timestamp": "2024-01-15T10:00:40",
+      "time_offset": 40,
+      "confidence": 0.871
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Person_34",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "ATM booth interior, card reader and keypad area",
+      "content": "Subject enters the ATM enclosure after surveying the area.",
+      "timestamp": "2024-01-15T10:03:22",
+      "time_offset": 202,
+      "confidence": 0.851
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Person_34",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Suspect leaves the cash machine booth abruptly (observed from distance).",
+      "timestamp": "2024-01-15T10:04:02",
+      "time_offset": 242,
+      "confidence": 0.885
+    },
+    {
+      "obs_id": "O4",
+      "entity": "Person_34",
+      "role": "suspect",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "ATM booth interior, card reader and keypad area",
+      "content": "Individual seen fiddling with the ATM card insertion area.",
+      "timestamp": "2024-01-15T10:04:04",
+      "time_offset": 244,
+      "confidence": 0.845
+    },
+    {
+      "obs_id": "O6",
+      "entity": "Speaker_E",
+      "role": "witness",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I deny witnessing the departures described.",
+      "timestamp": "2024-01-15T10:04:20",
+      "time_offset": 260,
+      "confidence": 0.638
+    },
+    {
+      "obs_id": "O7",
+      "entity": "Speaker_E",
+      "role": "witness",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I need to report something suspicious near the ATM.",
+      "timestamp": "2024-01-15T10:06:46",
+      "time_offset": 406,
+      "confidence": 0.817
+    }
+  ]
+}

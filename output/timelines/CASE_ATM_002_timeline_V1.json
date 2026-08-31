@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_002",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T06:10:19Z",
+  "generated_at": "2026-08-30T14:30:52Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o2_o3_o5",
@@ -1633,19 +1633,19 @@
   ],
   "unresolved_entities": [],
   "stage_timings": {
-    "stage_1_validation": 0.0001,
-    "stage_2_enrichment": 0.0037,
+    "stage_1_validation": 0.0003,
+    "stage_2_enrichment": 0.0096,
     "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 0.0887,
+    "stage_4_5_temporal": 0.0001,
+    "stage_6_causal": 1.8002,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
     "stage_10_explainability": 0.0001,
     "stage_11_narrative": 0.0001,
-    "stage_12_versioning": 0.001,
-    "stage_13_export": 0.0073
+    "stage_12_versioning": 0.0012,
+    "stage_13_export": 0.0119
   },
-  "total_time_sec": 0.1015,
+  "total_time_sec": 1.8244,
   "validation_warnings": [
     "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
   ],

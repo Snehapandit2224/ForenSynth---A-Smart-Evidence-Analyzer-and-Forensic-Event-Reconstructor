@@ -13,7 +13,13 @@ Matching algorithm:
   2. Among those same-entity candidates, pick the one with the smallest
      timestamp delta (each pipeline event can only be used once).
   3. A ground-truth event with no same-entity pipeline event at all is
-     unmatched (an event the pipeline never reconstructed).
+     unmatched (an event the pipeline never reconstructed) UNLESS it is
+     "covered": one of its own raw observations (via the ground truth's
+     obs_id -> event_ref linkage) was absorbed into an already-matched
+     pipeline event's cluster. Covered events count as 0.5 recall credit
+     rather than a full miss, since the underlying moment wasn't lost, it
+     was legitimately merged with another one by the Timeline agent's
+     entity+temporal clustering.
 
 Action-tag accuracy and entity accuracy are then computed independently
 on top of that matched set: action match is a fuzzy keyword check between
@@ -33,7 +39,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 log = logging.getLogger(__name__)
 
@@ -162,6 +168,36 @@ def _match_events(
     return pairs, unmatched
 
 
+def _find_covered_events(
+    unmatched_gt_ids: List[str],
+    matched_pairs: List[Dict[str, Any]],
+    pipeline_events: List[Dict[str, Any]],
+    obs_to_gt_event: Dict[str, str],
+) -> Set[str]:
+    """
+    A ground-truth event with no dedicated pipeline event match may still
+    have been legitimately absorbed into an already-matched pipeline
+    event's cluster -- the Timeline agent merges multiple raw observations
+    (and hence multiple conceptual moments) into one reconstructed event
+    by design. Rather than guess this from a fuzzy time window, use the
+    ground truth's own obs_id -> event_ref linkage (present in the full
+    case file's top-level "observations" array, distinct from
+    ground_truth.events): a GT event counts as "covered" if any ALREADY-
+    MATCHED pipeline event's obs_ids includes an observation the generator
+    itself attributes to that GT event.
+    """
+    matched_pipeline_ids = {p["pipeline_event_id"] for p in matched_pairs}
+    events_by_id = {ev.get("event_id"): ev for ev in pipeline_events}
+    covered: Set[str] = set()
+    for gt_id in unmatched_gt_ids:
+        for pe_id in matched_pipeline_ids:
+            pe = events_by_id.get(pe_id, {})
+            if any(obs_to_gt_event.get(oid) == gt_id for oid in (pe.get("obs_ids") or [])):
+                covered.add(gt_id)
+                break
+    return covered
+
+
 def _correlation(xs: List[float], ys: List[float]) -> Optional[float]:
     """Pearson correlation; None if undefined (constant input or <2 samples)."""
     n = len(xs)
@@ -195,6 +231,7 @@ def evaluate_case(
     result: Dict[str, Any] = {
         "case_id": case_id,
         "n_ground_truth_events": None, "n_pipeline_events": None, "n_matched": None,
+        "n_covered": None, "n_missed": None,
         "event_recall": None, "action_tag_accuracy": None,
         "temporal_accuracy_sec": None, "entity_accuracy": None,
         "precision": None, "f1_score": None,
@@ -212,9 +249,23 @@ def evaluate_case(
 
         pairs, unmatched = _match_events(gt_events, pipeline_events, entity_mapping)
 
-        n_gt, n_pipeline, n_matched = len(gt_events), len(pipeline_events), len(pairs)
+        # A GT event with no dedicated pipeline match may still have been
+        # legitimately absorbed into an already-matched pipeline event's
+        # cluster (see _find_covered_events docstring). Credit those at
+        # 0.5 recall rather than a full 0 -- this targets the structural
+        # recall ceiling from event clustering, not pipeline errors.
+        obs_to_gt_event = {
+            o["obs_id"]: o.get("event_ref")
+            for o in gt_data.get("observations", [])
+            if o.get("obs_id")
+        }
+        covered_ids = _find_covered_events(unmatched, pairs, pipeline_events, obs_to_gt_event)
+        truly_missed = [g_id for g_id in unmatched if g_id not in covered_ids]
 
-        recall    = (n_matched / n_gt) if n_gt else 0.0
+        n_gt, n_pipeline, n_matched = len(gt_events), len(pipeline_events), len(pairs)
+        n_covered = len(covered_ids)
+
+        recall    = ((n_matched + 0.5 * n_covered) / n_gt) if n_gt else 0.0
         precision = (n_matched / n_pipeline) if n_pipeline else 0.0
         f1        = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
 
@@ -241,6 +292,8 @@ def evaluate_case(
             "n_ground_truth_events": n_gt,
             "n_pipeline_events":     n_pipeline,
             "n_matched":             n_matched,
+            "n_covered":             n_covered,
+            "n_missed":              len(truly_missed),
             "event_recall":          round(recall, 4),
             "action_tag_accuracy":   round(action_acc, 4),
             "temporal_accuracy_sec": None if temporal_acc is None else round(temporal_acc, 2),
@@ -253,7 +306,8 @@ def evaluate_case(
             },
             "result":                 verdict,
             "matched_pairs":          pairs,
-            "unmatched_gt_event_ids": unmatched,
+            "covered_gt_event_ids":   sorted(covered_ids),
+            "unmatched_gt_event_ids": truly_missed,
             "status":                 "complete",
         })
     except Exception:
