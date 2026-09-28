@@ -113,10 +113,10 @@
     {
       "id": "EVT_entity_2_o16",
       "timestamp": "2024-01-15T10:03:46Z",
-      "ts_epoch": 1705313026.0000002,
+      "ts_epoch": 1705313026.0,
       "entity_id": "entity_2",
       "primary_alias": "Person_81",
-      "confidence": 0.6315,
+      "confidence": 0.6289,
       "location": "ATM street frontage, wide-angle coverage",
       "modality": "video",
       "content": "I did not notice anyone exit at the time mentioned.",
@@ -131,7 +131,7 @@
       "ts_epoch": 1705313027.0,
       "entity_id": "entity_2",
       "primary_alias": "Person_81",
-      "confidence": 0.8493,
+      "confidence": 0.8467,
       "location": "near ATM location, mobile network",
       "modality": "audio",
       "content": "Both of them left the ATM area at once through the side door.",
@@ -141,19 +141,18 @@
       ]
     },
     {
-      "id": "EVT_entity_2_o19_o21",
-      "timestamp": "2024-01-15T10:04:54Z",
-      "ts_epoch": 1705313094.3166997,
+      "id": "EVT_entity_2_o19",
+      "timestamp": "2024-01-15T10:04:49Z",
+      "ts_epoch": 1705313089.0,
       "entity_id": "entity_2",
       "primary_alias": "Person_81",
-      "confidence": 0.7576,
-      "location": "bank security office, incident registry",
-      "modality": "multimodal",
-      "content": "Complaint submitted: witnessed unauthorised access to the server room after hours.",
+      "confidence": 0.6762,
+      "location": "ATM booth entrance, exterior facing",
+      "modality": "video",
+      "content": "Person observed writing in a notebook while looking toward the ATM (poor image quality).",
       "conflict_flag": false,
       "obs_ids": [
-        "O19",
-        "O21"
+        "O19"
       ]
     },
     {
@@ -162,13 +161,28 @@
       "ts_epoch": 1705313098.0,
       "entity_id": "entity_2",
       "primary_alias": "Person_81",
-      "confidence": 0.8444,
+      "confidence": 0.8417,
       "location": "near ATM location, mobile network",
       "modality": "audio",
       "content": "I want to file a complaint about the ATM (reconstructed from partial recording).",
       "conflict_flag": false,
       "obs_ids": [
         "O20"
+      ]
+    },
+    {
+      "id": "EVT_entity_3_o21",
+      "timestamp": "2024-01-15T10:04:59Z",
+      "ts_epoch": 1705313099.0,
+      "entity_id": "entity_3",
+      "primary_alias": "report_82",
+      "confidence": 0.781,
+      "location": "bank security office, incident registry",
+      "modality": "text",
+      "content": "Complaint submitted: witnessed unauthorised access to the server room after hours.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O21"
       ]
     }
   ],
@@ -279,9 +293,9 @@
     },
     {
       "source": "EVT_entity_2_o17",
-      "target": "EVT_entity_2_o19_o21",
+      "target": "EVT_entity_2_o19",
       "edge_type": "CAUSAL",
-      "confidence": 0.707,
+      "confidence": 0.6701,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     },
@@ -289,17 +303,33 @@
       "source": "EVT_entity_2_o17",
       "target": "EVT_entity_2_o20",
       "edge_type": "CAUSAL",
-      "confidence": 0.6605,
+      "confidence": 0.6585,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_2_o19_o21",
+      "source": "EVT_entity_2_o17",
+      "target": "EVT_entity_3_o21",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6674,
+      "relation": "BEFORE",
+      "label": "action dependency: EXIT->OBSERVE"
+    },
+    {
+      "source": "EVT_entity_2_o19",
       "target": "EVT_entity_2_o20",
       "edge_type": "CAUSAL",
-      "confidence": 0.7048,
+      "confidence": 0.6679,
       "relation": "BEFORE",
       "label": "action dependency: OBSERVE->REPORT"
+    },
+    {
+      "source": "EVT_entity_2_o20",
+      "target": "EVT_entity_3_o21",
+      "edge_type": "TEMPORAL",
+      "confidence": 0.9,
+      "relation": "SIMULTANEOUS",
+      "label": "SIMULTANEOUS (0.90)"
     }
   ],
   "causal_links": [
@@ -353,9 +383,9 @@
     },
     {
       "source": "EVT_entity_2_o17",
-      "target": "EVT_entity_2_o19_o21",
+      "target": "EVT_entity_2_o19",
       "edge_type": "CAUSAL",
-      "confidence": 0.707,
+      "confidence": 0.6701,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     },
@@ -363,19 +393,27 @@
       "source": "EVT_entity_2_o17",
       "target": "EVT_entity_2_o20",
       "edge_type": "CAUSAL",
-      "confidence": 0.6605,
+      "confidence": 0.6585,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_2_o19_o21",
+      "source": "EVT_entity_2_o17",
+      "target": "EVT_entity_3_o21",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6674,
+      "relation": "BEFORE",
+      "label": "action dependency: EXIT->OBSERVE"
+    },
+    {
+      "source": "EVT_entity_2_o19",
       "target": "EVT_entity_2_o20",
       "edge_type": "CAUSAL",
-      "confidence": 0.7048,
+      "confidence": 0.6679,
       "relation": "BEFORE",
       "label": "action dependency: OBSERVE->REPORT"
     }
   ],
-  "node_count": 11,
-  "edge_count": 16
+  "node_count": 12,
+  "edge_count": 18
 }

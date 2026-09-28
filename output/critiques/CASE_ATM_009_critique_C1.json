@@ -16,26 +16,33 @@
     "low_confidence_event",
     "llm_coherence"
   ],
-  "llm_used": true,
+  "llm_used": false,
   "overall_score": 0.8,
   "requires_revision": true,
   "revision_target": "er",
-  "narrative_summary": "Case CASE_ATM_009 (pass 1): REVISE. 0 blocking, 2 warning(s), 0 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can",
+  "narrative_summary": "Case CASE_ATM_009 (pass 1): REVISE. 0 blocking, 2 warning(s), 0 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o4 and EVT",
   "belief_updates": {},
   "issues": [
     {
-      "check": "role_count_mismatch",
+      "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "detail": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o4 and EVT_entity_1_o10_o6 (66s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "re_run_er",
-      "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
-      "event_id": "",
-      "affected_obs": []
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_1_o4",
+        "EVT_entity_1_o10_o6"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o4 and EVT_entity_1_o10_o6 (66s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o4",
+      "affected_obs": [
+        "O4",
+        "O10",
+        "O6"
+      ]
     },
     {
       "check": "role_count_mismatch",
@@ -54,18 +61,25 @@
   ],
   "gaps": [
     {
-      "check": "role_count_mismatch",
+      "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "detail": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o4 and EVT_entity_1_o10_o6 (66s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "re_run_er",
-      "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 2 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
-      "event_id": "",
-      "affected_obs": []
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_1_o4",
+        "EVT_entity_1_o10_o6"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'ENTER->STEAL->EXIT' broken for entity_1: 'STEAL' missing between EVT_entity_1_o4 and EVT_entity_1_o10_o6 (66s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o4",
+      "affected_obs": [
+        "O4",
+        "O10",
+        "O6"
+      ]
     },
     {
       "check": "role_count_mismatch",

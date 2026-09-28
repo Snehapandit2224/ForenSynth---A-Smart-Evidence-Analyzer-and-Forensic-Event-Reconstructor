@@ -126,8 +126,13 @@ def classify_event(ev):
     if mod == "text" or "email" in alias or "doc" in alias:
         return "text_report", False, True
 
-    # Audio source
-    if mod == "audio" or "speaker" in alias:
+    # Audio source. Keyed on THIS event's own modality, not the entity's
+    # canonical alias -- ER assigns names like "Speaker_G" to an entity
+    # regardless of which modality any single one of its events has, so an
+    # alias check here would misclassify a genuinely multimodal,
+    # CCTV-corroborated event just because its entity happens to be named
+    # "Speaker_*" (confirmed on CASE_ATM_007's EVT_entity_1_o5_o6).
+    if mod == "audio":
         return "audio_report", False, True
 
     # Denial / statement check on any modality
@@ -184,17 +189,27 @@ def resolve_participants(ev, event_class, source_only):
     role    = ev.get("role", "unknown")
     content = (ev.get("content") or "").lower()
 
+    # Best-effort placement for anyone this event puts on the floor plan:
+    # the reporting entity's own location is the only location signal a
+    # report carries, so it's used as the subjects' placement too --
+    # clearly marked resolved=False, since it's a proxy, not a confirmed
+    # sighting location.
+    location = ev.get("location") or ev.get("location_key") or "?"
+
     if source_only:
         # Entity is a witness/document — extract implied subjects from content
         subjects = []
         if "two men" in content or "two people" in content:
             subjects = [
-                {"entity_id": "UNKNOWN_SUBJECT_1", "role": "subject", "action": "flee", "resolved": False},
-                {"entity_id": "UNKNOWN_SUBJECT_2", "role": "subject", "action": "flee", "resolved": False},
+                {"entity_id": "UNKNOWN_SUBJECT_1", "role": "subject", "action": "flee",
+                 "resolved": False, "location": location},
+                {"entity_id": "UNKNOWN_SUBJECT_2", "role": "subject", "action": "flee",
+                 "resolved": False, "location": location},
             ]
         elif "someone" in content or "individual" in content or "person" in content:
             subjects = [
-                {"entity_id": "UNKNOWN_SUBJECT_1", "role": "subject", "action": "flee", "resolved": False}
+                {"entity_id": "UNKNOWN_SUBJECT_1", "role": "subject", "action": "flee",
+                 "resolved": False, "location": location}
             ]
         evidence = [{
             "source_id": alias,
@@ -213,9 +228,13 @@ def resolve_participants(ev, event_class, source_only):
         "entity_id": eid,
         "primary_alias": alias,
         "role": participant_role,
+        "entity_role": role,  # original suspect/witness role, kept alongside
+                              # participant_role's subject/observer framing --
+                              # a display label needs the former, not the latter.
         "action": (ev.get("action_tags") or ["UNKNOWN"])[0],
         "resolved": False,  # all entities unresolved per timeline warning
         "confidence": ev.get("confidence", 0),
+        "location": location,
     }
     return [participant], []
 
@@ -305,6 +324,12 @@ def build_scene_specs(case_id: str, db_path: Path = DEFAULT_DB_PATH) -> dict:
                 "scene_type":     "simultaneous_group",
                 "event_ids":      event_ids,
                 "timestamp":      ts,
+                # Summary/display location only (e.g. for a caption) -- NOT
+                # authoritative for placing individual participants, since
+                # different people in the same timestamp bucket can be at
+                # different real locations. Each entry in "participants"
+                # carries its own "location" for that (see
+                # resolve_participants); a renderer must use that, not this.
                 "location":       group[0].get("location","?"),
                 "participants":   deduped,
                 "evidence_sources": all_sources,

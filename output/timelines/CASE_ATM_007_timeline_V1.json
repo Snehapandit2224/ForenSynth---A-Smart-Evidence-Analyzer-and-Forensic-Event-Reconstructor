@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_007",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:39:07Z",
+  "generated_at": "2026-08-31T08:01:59Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o2",
@@ -157,23 +157,21 @@
       "version": "V1"
     },
     {
-      "event_id": "EVT_entity_2_o11_o12",
+      "event_id": "EVT_entity_2_o12",
       "obs_ids": [
-        "O11",
         "O12"
       ],
-      "timestamp": "2024-01-15T10:04:21Z",
-      "location": "ATM vicinity, bystander position",
-      "location_key": "atm vicinity",
+      "timestamp": "2024-01-15T10:04:17Z",
+      "location": "remote \u2014 email server log",
+      "location_key": "remote \u2014 email server log",
       "entity_id": "entity_2",
-      "primary_alias": "Speaker_U",
+      "primary_alias": "email_26",
       "aliases": [
-        "Speaker_U",
         "email_26"
       ],
-      "modality": "multimodal",
-      "content": "Two people just rushed out of the ATM booth (per call log transcript).",
-      "confidence": 0.8669,
+      "modality": "text",
+      "content": "Two men just ran out of the ATM. Looked suspicious.",
+      "confidence": 0.7686,
       "role": "witness",
       "action_tags": [
         "EXIT",
@@ -184,7 +182,36 @@
       "reasoning": [
         "timestamp ordering",
         "canonical entity match",
-        "reconstructed from 2 supporting observations across modalities: audio, text",
+        "valid timestamp"
+      ],
+      "version": "V1"
+    },
+    {
+      "event_id": "EVT_entity_3_o11",
+      "obs_ids": [
+        "O11"
+      ],
+      "timestamp": "2024-01-15T10:04:25Z",
+      "location": "ATM vicinity, bystander position",
+      "location_key": "atm vicinity",
+      "entity_id": "entity_3",
+      "primary_alias": "Speaker_U",
+      "aliases": [
+        "Speaker_U"
+      ],
+      "modality": "audio",
+      "content": "Two people just rushed out of the ATM booth (per call log transcript).",
+      "confidence": 0.8995,
+      "role": "witness",
+      "action_tags": [
+        "EXIT",
+        "FLEE"
+      ],
+      "conflict_flag": false,
+      "conflict_note": "",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
         "valid timestamp"
       ],
       "version": "V1"
@@ -198,14 +225,13 @@
       "location": "remote \u2014 email server log",
       "location_key": "remote \u2014 email server log",
       "entity_id": "entity_2",
-      "primary_alias": "Speaker_U",
+      "primary_alias": "email_26",
       "aliases": [
-        "Speaker_U",
         "email_26"
       ],
       "modality": "text",
       "content": "Complaint submitted: witnessed unauthorised access to the server room after hours.",
-      "confidence": 0.8349,
+      "confidence": 0.819,
       "role": "witness",
       "action_tags": [
         "NAVIGATE",
@@ -221,22 +247,21 @@
       "version": "V1"
     },
     {
-      "event_id": "EVT_entity_2_o13",
+      "event_id": "EVT_entity_3_o13",
       "obs_ids": [
         "O13"
       ],
       "timestamp": "2024-01-15T10:08:18Z",
       "location": "near ATM location, mobile network",
       "location_key": "near atm location",
-      "entity_id": "entity_2",
+      "entity_id": "entity_3",
       "primary_alias": "Speaker_U",
       "aliases": [
-        "Speaker_U",
-        "email_26"
+        "Speaker_U"
       ],
       "modality": "audio",
       "content": "I'm calling to report a suspicious person near the ATM.",
-      "confidence": 0.8318,
+      "confidence": 0.8478,
       "role": "witness",
       "action_tags": [
         "REPORT"
@@ -277,26 +302,42 @@
       "label": "action dependency: LOITER->EXIT"
     },
     {
-      "source": "EVT_entity_2_o11_o12",
+      "source": "EVT_entity_2_o12",
+      "target": "EVT_entity_3_o11",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6839,
+      "relation": "BEFORE",
+      "label": "action dependency: EXIT->FLEE"
+    },
+    {
+      "source": "EVT_entity_2_o12",
       "target": "EVT_entity_2_o14",
       "edge_type": "CAUSAL",
-      "confidence": 0.7488,
+      "confidence": 0.7303,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     },
     {
-      "source": "EVT_entity_2_o11_o12",
-      "target": "EVT_entity_2_o13",
+      "source": "EVT_entity_3_o11",
+      "target": "EVT_entity_2_o14",
       "edge_type": "CAUSAL",
-      "confidence": 0.6625,
+      "confidence": 0.7046,
+      "relation": "BEFORE",
+      "label": "action dependency: EXIT->OBSERVE"
+    },
+    {
+      "source": "EVT_entity_3_o11",
+      "target": "EVT_entity_3_o13",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6814,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_2_o14",
-      "target": "EVT_entity_2_o13",
+      "target": "EVT_entity_3_o13",
       "edge_type": "CAUSAL",
-      "confidence": 0.7333,
+      "confidence": 0.6833,
       "relation": "BEFORE",
       "label": "action dependency: OBSERVE->REPORT"
     }
@@ -382,19 +423,33 @@
         ]
       },
       {
-        "id": "EVT_entity_2_o11_o12",
-        "timestamp": "2024-01-15T10:04:21Z",
-        "ts_epoch": 1705313061.2374072,
+        "id": "EVT_entity_2_o12",
+        "timestamp": "2024-01-15T10:04:17Z",
+        "ts_epoch": 1705313056.9999998,
         "entity_id": "entity_2",
+        "primary_alias": "email_26",
+        "confidence": 0.7686,
+        "location": "remote \u2014 email server log",
+        "modality": "text",
+        "content": "Two men just ran out of the ATM. Looked suspicious.",
+        "conflict_flag": false,
+        "obs_ids": [
+          "O12"
+        ]
+      },
+      {
+        "id": "EVT_entity_3_o11",
+        "timestamp": "2024-01-15T10:04:25Z",
+        "ts_epoch": 1705313065.0,
+        "entity_id": "entity_3",
         "primary_alias": "Speaker_U",
-        "confidence": 0.8669,
+        "confidence": 0.8995,
         "location": "ATM vicinity, bystander position",
-        "modality": "multimodal",
+        "modality": "audio",
         "content": "Two people just rushed out of the ATM booth (per call log transcript).",
         "conflict_flag": false,
         "obs_ids": [
-          "O11",
-          "O12"
+          "O11"
         ]
       },
       {
@@ -402,8 +457,8 @@
         "timestamp": "2024-01-15T10:08:07Z",
         "ts_epoch": 1705313287.0,
         "entity_id": "entity_2",
-        "primary_alias": "Speaker_U",
-        "confidence": 0.8349,
+        "primary_alias": "email_26",
+        "confidence": 0.819,
         "location": "remote \u2014 email server log",
         "modality": "text",
         "content": "Complaint submitted: witnessed unauthorised access to the server room after hours.",
@@ -413,12 +468,12 @@
         ]
       },
       {
-        "id": "EVT_entity_2_o13",
+        "id": "EVT_entity_3_o13",
         "timestamp": "2024-01-15T10:08:18Z",
         "ts_epoch": 1705313298.0,
-        "entity_id": "entity_2",
+        "entity_id": "entity_3",
         "primary_alias": "Speaker_U",
-        "confidence": 0.8318,
+        "confidence": 0.8478,
         "location": "near ATM location, mobile network",
         "modality": "audio",
         "content": "I'm calling to report a suspicious person near the ATM.",
@@ -487,33 +542,49 @@
       },
       {
         "source": "EVT_entity_1_o10_o9",
-        "target": "EVT_entity_2_o11_o12",
+        "target": "EVT_entity_2_o12",
         "edge_type": "TEMPORAL",
         "confidence": 0.9,
         "relation": "SIMULTANEOUS",
         "label": "SIMULTANEOUS (0.90)"
       },
       {
-        "source": "EVT_entity_2_o11_o12",
+        "source": "EVT_entity_2_o12",
+        "target": "EVT_entity_3_o11",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6839,
+        "relation": "BEFORE",
+        "label": "action dependency: EXIT->FLEE"
+      },
+      {
+        "source": "EVT_entity_2_o12",
         "target": "EVT_entity_2_o14",
         "edge_type": "CAUSAL",
-        "confidence": 0.7488,
+        "confidence": 0.7303,
         "relation": "BEFORE",
         "label": "action dependency: EXIT->OBSERVE"
       },
       {
-        "source": "EVT_entity_2_o11_o12",
-        "target": "EVT_entity_2_o13",
+        "source": "EVT_entity_3_o11",
+        "target": "EVT_entity_2_o14",
         "edge_type": "CAUSAL",
-        "confidence": 0.6625,
+        "confidence": 0.7046,
+        "relation": "BEFORE",
+        "label": "action dependency: EXIT->OBSERVE"
+      },
+      {
+        "source": "EVT_entity_3_o11",
+        "target": "EVT_entity_3_o13",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6814,
         "relation": "BEFORE",
         "label": "same entity, semantically same location (sim=0.73), sequential"
       },
       {
         "source": "EVT_entity_2_o14",
-        "target": "EVT_entity_2_o13",
+        "target": "EVT_entity_3_o13",
         "edge_type": "CAUSAL",
-        "confidence": 0.7333,
+        "confidence": 0.6833,
         "relation": "BEFORE",
         "label": "action dependency: OBSERVE->REPORT"
       }
@@ -544,32 +615,48 @@
         "label": "action dependency: LOITER->EXIT"
       },
       {
-        "source": "EVT_entity_2_o11_o12",
+        "source": "EVT_entity_2_o12",
+        "target": "EVT_entity_3_o11",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6839,
+        "relation": "BEFORE",
+        "label": "action dependency: EXIT->FLEE"
+      },
+      {
+        "source": "EVT_entity_2_o12",
         "target": "EVT_entity_2_o14",
         "edge_type": "CAUSAL",
-        "confidence": 0.7488,
+        "confidence": 0.7303,
         "relation": "BEFORE",
         "label": "action dependency: EXIT->OBSERVE"
       },
       {
-        "source": "EVT_entity_2_o11_o12",
-        "target": "EVT_entity_2_o13",
+        "source": "EVT_entity_3_o11",
+        "target": "EVT_entity_2_o14",
         "edge_type": "CAUSAL",
-        "confidence": 0.6625,
+        "confidence": 0.7046,
+        "relation": "BEFORE",
+        "label": "action dependency: EXIT->OBSERVE"
+      },
+      {
+        "source": "EVT_entity_3_o11",
+        "target": "EVT_entity_3_o13",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6814,
         "relation": "BEFORE",
         "label": "same entity, semantically same location (sim=0.73), sequential"
       },
       {
         "source": "EVT_entity_2_o14",
-        "target": "EVT_entity_2_o13",
+        "target": "EVT_entity_3_o13",
         "edge_type": "CAUSAL",
-        "confidence": 0.7333,
+        "confidence": 0.6833,
         "relation": "BEFORE",
         "label": "action dependency: OBSERVE->REPORT"
       }
     ],
-    "node_count": 8,
-    "edge_count": 11
+    "node_count": 9,
+    "edge_count": 13
   },
   "uncertainties": [
     {
@@ -583,8 +670,18 @@
       ]
     },
     {
+      "event_id": "EVT_entity_2_o12",
+      "uncertainty_score": 0.2314,
+      "sources": [
+        "O12"
+      ],
+      "reasons": [
+        "moderate confidence"
+      ]
+    },
+    {
       "event_id": "EVT_entity_2_o14",
-      "uncertainty_score": 0.1651,
+      "uncertainty_score": 0.181,
       "sources": [
         "O14"
       ],
@@ -593,8 +690,8 @@
       ]
     },
     {
-      "event_id": "EVT_entity_2_o13",
-      "uncertainty_score": 0.1682,
+      "event_id": "EVT_entity_3_o13",
+      "uncertainty_score": 0.1522,
       "sources": [
         "O13"
       ],
@@ -663,30 +760,40 @@
       "confidence": 0.8925
     },
     {
-      "event_id": "EVT_entity_2_o11_o12",
-      "timestamp": "2024-01-15T10:04:21Z",
-      "actor": "Speaker_U",
-      "action": "Two people just rushed out of the ATM booth (per call log transcript).",
-      "location": "ATM vicinity, bystander position",
+      "event_id": "EVT_entity_2_o12",
+      "timestamp": "2024-01-15T10:04:17Z",
+      "actor": "email_26",
+      "action": "Two men just ran out of the ATM. Looked suspicious.",
+      "location": "remote \u2014 email server log",
       "evidence": [
-        "O11",
         "O12"
       ],
-      "confidence": 0.8669
+      "confidence": 0.7686
+    },
+    {
+      "event_id": "EVT_entity_3_o11",
+      "timestamp": "2024-01-15T10:04:25Z",
+      "actor": "Speaker_U",
+      "action": "Two people just rushed out of the ATM booth (per call log transcript).  [-> action dependency: EXIT->FLEE]",
+      "location": "ATM vicinity, bystander position",
+      "evidence": [
+        "O11"
+      ],
+      "confidence": 0.8995
     },
     {
       "event_id": "EVT_entity_2_o14",
       "timestamp": "2024-01-15T10:08:07Z",
-      "actor": "Speaker_U",
+      "actor": "email_26",
       "action": "Complaint submitted: witnessed unauthorised access to the server room after hours.  [-> action dependency: EXIT->OBSERVE]",
       "location": "remote \u2014 email server log",
       "evidence": [
         "O14"
       ],
-      "confidence": 0.8349
+      "confidence": 0.819
     },
     {
-      "event_id": "EVT_entity_2_o13",
+      "event_id": "EVT_entity_3_o13",
       "timestamp": "2024-01-15T10:08:18Z",
       "actor": "Speaker_U",
       "action": "I'm calling to report a suspicious person near the ATM.  [-> action dependency: OBSERVE->REPORT]",
@@ -694,7 +801,7 @@
       "evidence": [
         "O13"
       ],
-      "confidence": 0.8318
+      "confidence": 0.8478
     }
   ],
   "explainability": [
@@ -770,19 +877,30 @@
       "confidence": 0.8925
     },
     {
-      "event_id": "EVT_entity_2_o11_o12",
+      "event_id": "EVT_entity_2_o12",
       "derived_from": [
-        "O11",
         "O12"
       ],
       "entity_used": "entity_2",
       "reasoning": [
         "timestamp ordering",
         "canonical entity match",
-        "reconstructed from 2 supporting observations across modalities: audio, text",
         "valid timestamp"
       ],
-      "confidence": 0.8669
+      "confidence": 0.7686
+    },
+    {
+      "event_id": "EVT_entity_3_o11",
+      "derived_from": [
+        "O11"
+      ],
+      "entity_used": "entity_3",
+      "reasoning": [
+        "timestamp ordering",
+        "canonical entity match",
+        "valid timestamp"
+      ],
+      "confidence": 0.8995
     },
     {
       "event_id": "EVT_entity_2_o14",
@@ -795,20 +913,20 @@
         "canonical entity match",
         "valid timestamp"
       ],
-      "confidence": 0.8349
+      "confidence": 0.819
     },
     {
-      "event_id": "EVT_entity_2_o13",
+      "event_id": "EVT_entity_3_o13",
       "derived_from": [
         "O13"
       ],
-      "entity_used": "entity_2",
+      "entity_used": "entity_3",
       "reasoning": [
         "timestamp ordering",
         "canonical entity match",
         "valid timestamp"
       ],
-      "confidence": 0.8318
+      "confidence": 0.8478
     }
   ],
   "conflicts_summary": [
@@ -823,61 +941,66 @@
   "unresolved_temporal_pairs": [],
   "unresolved_causal_pairs": [
     {
+      "event_a": "EVT_entity_1_o2",
+      "event_b": "EVT_entity_1_o3",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o2",
+      "event_b": "EVT_entity_1_o7_o8",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o2",
+      "event_b": "EVT_entity_1_o10_o9",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
       "event_a": "EVT_entity_1_o3",
       "event_b": "EVT_entity_1_o5_o6",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o5_o6",
+      "event_b": "EVT_entity_1_o7_o8",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o5_o6",
       "event_b": "EVT_entity_1_o10_o9",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o7_o8",
       "event_b": "EVT_entity_1_o10_o9",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
-      "event_a": "EVT_entity_1_o2",
-      "event_b": "EVT_entity_1_o3",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o5_o6",
-      "event_b": "EVT_entity_1_o7_o8",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o2",
-      "event_b": "EVT_entity_1_o10_o9",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o2",
-      "event_b": "EVT_entity_1_o7_o8",
-      "reason": "local LLM returned no result for this pair"
+      "event_a": "EVT_entity_2_o12",
+      "event_b": "EVT_entity_3_o13",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
-    "stage_1_validation": 0.0002,
-    "stage_2_enrichment": 0.0025,
+    "stage_1_validation": 0.0003,
+    "stage_2_enrichment": 0.0043,
     "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 0.0814,
+    "stage_4_5_temporal": 0.0001,
+    "stage_6_causal": 0.0041,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0001,
+    "stage_10_explainability": 0.0,
     "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0009,
-    "stage_13_export": 0.0044
+    "stage_12_versioning": 0.0006,
+    "stage_13_export": 0.0041
   },
-  "total_time_sec": 0.0901,
+  "total_time_sec": 0.0143,
   "validation_warnings": [
     "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
   ],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
   "output_classification": "AMBIGUOUS",
-  "output_classification_reason": "avg_confidence=0.86, conflict_fraction=0.00, unresolved_ratio=0.88 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+  "output_classification_reason": "avg_confidence=0.85, conflict_fraction=0.00, unresolved_ratio=0.89 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

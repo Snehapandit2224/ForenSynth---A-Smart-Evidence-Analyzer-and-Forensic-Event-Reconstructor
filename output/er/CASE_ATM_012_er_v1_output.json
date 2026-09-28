@@ -59,8 +59,8 @@
       "cluster_id": "C1",
       "size": 10,
       "aliases": [
-        "Person_92",
         "Person_91",
+        "Person_92",
         "Speaker_C"
       ],
       "obs_ids": [
@@ -76,46 +76,6 @@
         "O9"
       ],
       "edges": [
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_91",
-          "weight": 0.724,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_91",
-          "weight": 0.6782,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
         {
           "alias_1": "person_92",
           "alias_2": "speaker_c",
@@ -134,283 +94,6 @@
             "location",
             "interaction",
             "modality"
-          ]
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_92",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_92",
-          "weight": 0.7362,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "context",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_91",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_92",
-          "weight": 0.8199,
-          "support": 1,
-          "classifications": {
-            "confirmed": 1,
-            "candidate": 0,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_92",
-          "weight": 0.7631,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "location",
-            "context",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "speaker_c",
-          "weight": 0.7655,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "speaker_c",
-          "weight": 0.6811,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "location",
-            "context",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_91",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_92",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_92",
-          "weight": 0.6535,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_91",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "speaker_c",
-          "weight": 0.7122,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_91",
-          "weight": 0.723,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "location",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "speaker_c",
-          "weight": 0.7215,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_92",
-          "weight": 0.6976,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "location",
-            "context",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "speaker_c",
-          "weight": 0.7543,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "location",
-            "context",
-            "lexical"
           ]
         },
         {
@@ -434,138 +117,6 @@
         {
           "alias_1": "speaker_c",
           "alias_2": "person_91",
-          "weight": 0.7421,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_92",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_92",
-          "weight": 0.7177,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "context",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "speaker_c",
-          "weight": 0.68,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "location",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_92",
-          "weight": 0.7638,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "context",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_91",
-          "weight": 0.7011,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "temporal",
-            "location",
-            "lexical"
-          ]
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_92",
-          "weight": 0.7153,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 1,
-            "rejected": 0
-          },
-          "hard_negative": false,
-          "reasons": [
-            "entity_coreference",
-            "mention_consistency",
-            "temporal",
-            "location",
-            "context",
-            "interaction",
-            "modality"
-          ]
-        },
-        {
-          "alias_1": "speaker_c",
-          "alias_2": "person_91",
           "weight": 0.5348,
           "support": 1,
           "classifications": {
@@ -583,43 +134,37 @@
           ]
         },
         {
+          "alias_1": "person_92",
+          "alias_2": "person_91",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
           "alias_1": "speaker_c",
           "alias_2": "person_91",
-          "weight": 0.4631,
+          "weight": 0.6782,
           "support": 1,
           "classifications": {
             "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
+            "candidate": 1,
+            "rejected": 0
           },
           "hard_negative": false,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_92",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_91",
-          "alias_2": "person_92",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "interaction",
+            "modality"
+          ]
         },
         {
           "alias_1": "speaker_c",
@@ -643,9 +188,9 @@
           ]
         },
         {
-          "alias_1": "speaker_c",
-          "alias_2": "person_92",
-          "weight": 0.7728,
+          "alias_1": "person_92",
+          "alias_2": "speaker_c",
+          "weight": 0.7122,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -665,7 +210,7 @@
         {
           "alias_1": "person_91",
           "alias_2": "speaker_c",
-          "weight": 0.6303,
+          "weight": 0.7215,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -697,21 +242,8 @@
         },
         {
           "alias_1": "person_92",
-          "alias_2": "person_91",
-          "weight": 0.0,
-          "support": 1,
-          "classifications": {
-            "confirmed": 0,
-            "candidate": 0,
-            "rejected": 1
-          },
-          "hard_negative": true,
-          "reasons": []
-        },
-        {
-          "alias_1": "person_92",
-          "alias_2": "person_92",
-          "weight": 0.6677,
+          "alias_2": "speaker_c",
+          "weight": 0.7655,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -721,9 +253,32 @@
           "hard_negative": false,
           "reasons": [
             "entity_coreference",
+            "mention_consistency",
             "temporal",
             "location",
-            "lexical"
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.7177,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "interaction",
+            "modality"
           ]
         },
         {
@@ -778,8 +333,174 @@
         },
         {
           "alias_1": "person_92",
-          "alias_2": "speaker_c",
-          "weight": 0.7599,
+          "alias_2": "person_92",
+          "weight": 0.6677,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.8199,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.7638,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "context",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.7407,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_91",
+          "weight": 0.4631,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "person_92",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "person_92",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "person_91",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "person_91",
+          "weight": 0.7011,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "person_92",
+          "weight": 0.6535,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.7728,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -829,9 +550,35 @@
           "reasons": []
         },
         {
-          "alias_1": "speaker_c",
+          "alias_1": "person_91",
           "alias_2": "person_92",
-          "weight": 0.7407,
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "person_91",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "speaker_c",
+          "weight": 0.7543,
           "support": 1,
           "classifications": {
             "confirmed": 0,
@@ -841,13 +588,24 @@
           "hard_negative": false,
           "reasons": [
             "entity_coreference",
-            "mention_consistency",
             "temporal",
             "location",
             "context",
-            "interaction",
-            "modality"
+            "lexical"
           ]
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "person_92",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
         },
         {
           "alias_1": "person_92",
@@ -867,6 +625,248 @@
             "context",
             "lexical"
           ]
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "person_92",
+          "weight": 0.6976,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_91",
+          "weight": 0.724,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "speaker_c",
+          "weight": 0.68,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "location",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "person_91",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_91",
+          "weight": 0.7421,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "person_92",
+          "weight": 0.7631,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.7153,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "speaker_c",
+          "weight": 0.6811,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "speaker_c",
+          "weight": 0.6303,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "person_92",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "person_92",
+          "alias_2": "speaker_c",
+          "weight": 0.7599,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "interaction",
+            "modality"
+          ]
+        },
+        {
+          "alias_1": "person_91",
+          "alias_2": "person_91",
+          "weight": 0.723,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "speaker_c",
+          "alias_2": "person_92",
+          "weight": 0.7362,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "interaction",
+            "modality"
+          ]
         }
       ]
     }
@@ -883,7 +883,7 @@
   ],
   "output_classification": "AMBIGUOUS",
   "output_classification_reason": "avg_confidence=0.82, conflict_fraction=1.00, low_confidence_fraction=0.00 - at least one signal crossed the ambiguity threshold; treat these entity mappings as low-trust and prioritise investigator review before downstream use.",
-  "llm_calls_made": 5,
+  "llm_calls_made": 0,
   "llm_calls_budget": 14,
   "location_similarity_backend": "embedding",
   "resplit_log": [],
@@ -896,26 +896,26 @@
     "confirmed_threshold": 0.8,
     "candidate_threshold_low": 0.5,
     "candidate_threshold_high": 0.65,
-    "llm_enabled": true,
+    "llm_enabled": false,
     "groq_model": "openai/gpt-oss-20b",
     "cross_modal_merge_min": 0.58,
     "merge_composite_min": 0.55
   },
-  "total_processing_time_sec": 60.769831,
+  "total_processing_time_sec": 13.858137,
   "stage_timings": {
-    "stage_1_intake": 11.254049,
-    "stage_2_normalization": 1e-06,
-    "stage_3_blocking": 8.7e-05,
-    "stage_4_features": 49.5111,
-    "stage_5_scoring": 0.000213,
-    "stage_6_classification": 0.000128,
-    "stage_7_graph_building": 9.1e-05,
-    "stage_8_clustering": 0.000773,
-    "stage_9_attachment": 7.1e-05,
-    "stage_10_conflict_detection": 0.000126,
-    "stage_10b_constrained_resplit": 0.001822,
-    "stage_11_labeling": 0.000137,
+    "stage_1_intake": 13.794,
+    "stage_2_normalization": 2e-06,
+    "stage_3_blocking": 9.8e-05,
+    "stage_4_features": 0.061294,
+    "stage_5_scoring": 0.000194,
+    "stage_6_classification": 6.6e-05,
+    "stage_7_graph_building": 5.2e-05,
+    "stage_8_clustering": 0.000355,
+    "stage_9_attachment": 3.6e-05,
+    "stage_10_conflict_detection": 6.3e-05,
+    "stage_10b_constrained_resplit": 0.001114,
+    "stage_11_labeling": 0.00011,
     "stage_12_packaging": 0.0
   },
-  "created_at": "2026-08-30T14:42:39Z"
+  "created_at": "2026-08-31T08:04:17Z"
 }

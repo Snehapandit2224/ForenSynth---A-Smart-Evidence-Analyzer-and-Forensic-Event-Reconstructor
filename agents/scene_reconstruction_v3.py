@@ -6,7 +6,7 @@ Simple layout:
   Bottom 190px: plain-English scene description
 No confidence bars, no status badges, no gap IDs, no conflict banners.
 """
-import json, logging, math, numpy as np
+import logging, math, numpy as np
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 from moviepy import ImageSequenceClip
@@ -72,6 +72,7 @@ PALETTE = [
     ((120, 170, 60),  (175, 220, 110)),   # olive-green
 ]
 FALLBACK_COL = ((90, 100, 115), (150, 165, 185))
+UNKNOWN_COL  = ((70, 78, 90), (130, 140, 155))   # unresolved subject (grey, unnamed)
 
 def build_color_map(entity_keys):
     """Assign each unique entity key (first-seen order) the next palette colour."""
@@ -217,6 +218,20 @@ def draw_name(draw, cx, cy, scale, name, hi):
     tw = bb[2]-bb[0]
     draw.text((cx-tw//2, cy+int(28*scale)), name, fill=hi, font=f)
 
+MODALITY_ICON = {"text": "TEXT", "audio": "AUDIO"}
+
+def draw_report_card(draw, x, y, alias, modality, content, hi):
+    """Distinct visual treatment for an evidence source (witness statement,
+    audio call, text/email report): a bordered card, NOT a stick figure at
+    a floor-plan location -- placing this entity as an actor would assert
+    it was directly, physically observed there, which a report is not."""
+    w, h = 300, 68
+    draw.rectangle([x, y, x + w, y + h], fill=(16, 18, 24), outline=hi, width=2)
+    icon  = MODALITY_ICON.get(modality, "RPT")
+    label = f"[{icon}] {alias.replace('_',' ')} -- REPORTED, not observed"
+    draw.text((x + 8, y + 7), label[:44], fill=hi, font=F_SM)
+    draw.text((x + 8, y + 29), f'"{(content or "").strip()[:46]}"', fill=LGRAY, font=F_SM)
+
 def draw_dashed_path(draw, start, end, col):
     dx,dy = end[0]-start[0], end[1]-start[1]
     dist  = math.hypot(dx,dy) or 1
@@ -244,32 +259,58 @@ def draw_desc(img, ev_num, total, timestamp, title_line, detail_line=""):
     if detail_line:
         draw.text((24, py+34), detail_line[:110], fill=LGRAY, font=F_SM)
 
-# ── Event descriptions ─────────────────────────────────────────────────────────
-# Built from the real timeline event(s) at each scene's timestamp, not
-# hand-written text — this is what makes the video reflect the actual case.
-def _alias_of(ev):
-    return (ev.get("primary_alias") or ev.get("entity_id") or "Unknown")
+# ── Scene descriptions ───────────────────────────────────────────────────────
+# Built from scene_planner.build_scene_specs()'s output, not raw timeline
+# events -- so a scene's participants (physically placed) and evidence
+# sources (reports, never placed) are already correctly separated by the
+# time this module sees them; it never re-derives that distinction itself.
+def _named(p):
+    """A participant is 'named' if scene_planner resolved a real alias for
+    it; an extracted-but-unidentified subject (UNKNOWN_SUBJECT_1, from a
+    report like "two men fled") has no primary_alias."""
+    return bool(p.get("primary_alias"))
 
-def _loc_of(ev):
-    return ev.get("location") or ev.get("location_key") or ""
+def _p_key(p, scene_id):
+    """Stable colour/position key. Unresolved subjects are suffixed by
+    scene_id so two unrelated anonymous people from different reports never
+    get spuriously drawn as the same person moving between scenes."""
+    base = p.get("primary_alias") or p.get("entity_id") or "Unknown"
+    return base if _named(p) else f"{base}::{scene_id}"
 
-def describe_scene(events_at_ts):
-    """Return (title_line, detail_line) for a scene from its real event(s)."""
-    if len(events_at_ts) == 1:
-        ev     = events_at_ts[0]
-        alias  = _alias_of(ev).replace("_", " ")
-        role   = ev.get("role", "unknown")
-        action = (ev.get("action_tags") or ["OBSERVED"])[0]
-        loc    = _loc_of(ev) or "an unspecified location"
-        title  = f"{alias} ({role}) — {action.title()} at {loc}."
-        detail = ev.get("content", "") or ""
-        if ev.get("conflict_flag"):
-            detail = (detail + "  [CONFLICTING ACCOUNT]").strip()
+def describe_scene_spec(sc):
+    """Return (title_line, detail_line) for one scene_planner scene."""
+    participants = sc.get("participants", [])
+    evidence     = sc.get("evidence_sources", [])
+    is_group     = len(sc.get("event_ids", [])) > 1
+
+    if not is_group:
+        if participants:
+            p      = participants[0]
+            alias  = (p.get("primary_alias") or p.get("entity_id", "?")).replace("_", " ")
+            role   = p.get("entity_role") or p.get("role", "unknown")
+            action = p.get("action", "OBSERVED")
+            loc    = p.get("location") or sc.get("location") or "an unspecified location"
+            label  = "Unknown subject" if not _named(p) else alias
+            title  = f"{label} ({role}) — {action.title()} at {loc}."
+            detail = sc.get("raw_content", "") or ""
+        elif evidence:
+            e      = evidence[0]
+            alias  = e.get("source_id", "?").replace("_", " ")
+            title  = f"{alias} ({e.get('role','reporter')}) filed a report — not directly observed."
+            detail = e.get("content", "") or ""
+        else:
+            title, detail = "Unclassified scene.", ""
+        if sc.get("location_conflicts"):
+            detail = (detail + "  [LOCATION CONFLICT FLAGGED]").strip()
         return title, detail
 
-    aliases = ", ".join(_alias_of(ev).replace("_", " ") for ev in events_at_ts)
-    title   = f"{len(events_at_ts)} simultaneous observations: {aliases}."
-    detail  = "  |  ".join((ev.get("content", "") or "")[:60] for ev in events_at_ts[:3])
+    names = [(p.get("primary_alias") or p.get("entity_id", "?")).replace("_", " ")
+             for p in participants]
+    names += [e.get("source_id", "?").replace("_", " ") for e in evidence]
+    title  = f"{len(names)} simultaneous item(s): {', '.join(names) or 'none'}."
+    detail = "  |  ".join((e.get("content", "") or "")[:60] for e in evidence[:3])
+    if not detail:
+        detail = "  |  ".join(p.get("action", "") for p in participants[:3])
     return title, detail
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -310,46 +351,62 @@ def render_summary(case_id, stats):
 # SCENE RENDERER
 # ═══════════════════════════════════════════════════════════════════════════════
 def render_event(base_fp, ev_num, total, timestamp, actors, title, detail, prev_pos,
-                  color_map, location_map):
+                  color_map, location_map, report_entries=None):
     """
     Animate actors moving from prev_pos to their new position,
     then hold for 3s.  Returns list of numpy frames.
+
+    actors: list of (key, action, loc_str, scale, unresolved) -- "key" is
+    the colour/position identity (see _p_key); "unresolved" marks a
+    subject scene_planner extracted from a report's text but could not
+    identify, drawn grey/unnamed rather than with a real assigned colour.
+
+    report_entries: list of (alias, modality, content) for this
+    timestamp's evidence sources -- entities who produced a piece of
+    evidence but were never physically placed (see draw_report_card).
     """
+    report_entries = report_entries or []
     N_MOVE = 10
     N_HOLD = int(3.5 * FPS)
     frames = []
 
     # Compute target positions
     targets = {}
-    for i,(alias, action, loc_str, scale) in enumerate(actors):
+    for i,(key, action, loc_str, scale, unresolved) in enumerate(actors):
         bx,by = loc_px(loc_str, location_map)
         # spread multiple actors sideways
         bx += (i - (len(actors)-1)/2) * 65
         by  = min(by, FP_H - 80)
-        targets[alias] = (int(bx), int(by), action, scale)
+        targets[key] = (int(bx), int(by), action, scale, unresolved)
 
     for fi in range(N_MOVE + N_HOLD):
         img  = base_fp.copy()
         draw = ImageDraw.Draw(img)
         t    = min(fi / max(N_MOVE-1,1), 1.0)
 
-        for alias,(tx,ty,action,scale) in targets.items():
-            fill, hi = ecol(alias, color_map)
+        for key,(tx,ty,action,scale,unresolved) in targets.items():
+            fill, hi = UNKNOWN_COL if unresolved else ecol(key, color_map)
             # Interpolate from previous position if we have one
-            if alias in prev_pos and fi < N_MOVE:
-                px0,py0 = prev_pos[alias]
+            if key in prev_pos and fi < N_MOVE:
+                px0,py0 = prev_pos[key]
                 cx = int(px0 + (tx-px0)*t)
                 cy = int(py0 + (ty-py0)*t)
             else:
                 cx, cy = tx, ty
 
             # Draw dotted trail on last hold frame
-            if fi == N_MOVE + N_HOLD - 1 and alias in prev_pos:
-                draw_dashed_path(draw, prev_pos[alias], (tx,ty), tuple(int(c*0.5) for c in hi))
+            if fi == N_MOVE + N_HOLD - 1 and key in prev_pos:
+                draw_dashed_path(draw, prev_pos[key], (tx,ty), tuple(int(c*0.5) for c in hi))
 
             draw_figure(draw, cx, cy, fill, hi, action, scale)
-            name = alias.replace("_"," ").title()
+            name = "Unknown (reported)" if unresolved else key.replace("_"," ").title()
             draw_name(draw, cx, cy, scale, name, hi)
+
+        # Evidence sources at this timestamp: drawn as cards, never as
+        # floor-plan actors -- a card does not assert "observed here".
+        for ci, (r_alias, r_modality, r_content) in enumerate(report_entries):
+            _, r_hi = ecol(r_alias, color_map)
+            draw_report_card(draw, 16, FP_H - 90 - ci * 78, r_alias, r_modality, r_content, r_hi)
 
         # Label the simultaneous badge for event 5
         if len(actors) > 1:
@@ -367,52 +424,60 @@ def render_event(base_fp, ev_num, total, timestamp, actors, title, detail, prev_
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
-def generate_scene_video(timeline_dict: dict, output_dir: str, case_id: str):
+def generate_scene_video(scene_spec: dict, output_dir: str, case_id: str):
     """
     Render the forensic scene-reconstruction video for one case and write
     it to `output_dir`. Returns the written path, or None if generation
     failed for any reason (never raises).
+
+    scene_spec: the dict returned by scene_planner.build_scene_specs(), NOT
+    a raw timeline dict -- physically-observed participants and
+    report-only evidence sources are already separated by that point, so
+    this module never has to re-derive the physical-vs-reported
+    distinction itself (see classify_visualizability... i.e.
+    scene_planner.classify_event).
     """
     try:
-        events = timeline_dict.get("events", [])
+        scenes = scene_spec.get("scenes", [])
 
-        # Group events by timestamp — events sharing a timestamp become one
-        # simultaneous scene, in timestamp order.
-        groups = {}
-        for ev in events:
-            ts = (ev.get("timestamp", "") or "")[:19]
-            groups.setdefault(ts, []).append(ev)
-        ordered = sorted(groups.keys())
-
-        # Dynamic colour + location maps, built from this case's real entities
-        # and locations (first-seen order), instead of hardcoded aliases.
-        entity_keys = list(dict.fromkeys(_alias_of(ev) for ev in events))
+        # Dynamic colour map: every named participant AND every evidence
+        # source gets a stable colour (first-seen order), so a witness's
+        # report card and that same witness's own resolved sighting (if
+        # any) read as the same person.
+        entity_keys = list(dict.fromkeys(
+            [_p_key(p, sc["scene_id"]) for sc in scenes for p in sc.get("participants", [])]
+            + [e.get("source_id", "?") for sc in scenes for e in sc.get("evidence_sources", [])]
+        ))
         color_map = build_color_map(entity_keys)
 
-        location_keys = list(dict.fromkeys(_loc_of(ev) for ev in events))
+        location_keys = list(dict.fromkeys(
+            p.get("location", "?") for sc in scenes for p in sc.get("participants", [])
+        ))
         location_map = build_location_map(location_keys)
 
         # Aggregate stats for the title/summary cards
-        n_obs = len({oid for ev in events for oid in (ev.get("obs_ids") or [])}) or len(events)
+        n_events = sum(len(sc.get("event_ids", [])) for sc in scenes) or len(scenes)
         roles = {}
-        for ev in events:
-            roles.setdefault(ev.get("role", "unknown"), set()).add(_alias_of(ev).replace("_", " "))
+        for sc in scenes:
+            for p in sc.get("participants", []):
+                label = "Unknown subject" if not _named(p) else (p.get("primary_alias") or "?").replace("_", " ")
+                roles.setdefault(p.get("entity_role") or p.get("role", "unknown"), set()).add(label)
         entity_line = "  |  ".join(
             f"{', '.join(sorted(names))} ({role})" for role, names in roles.items()
-        ) or "No entities resolved."
-        unresolved = timeline_dict.get("unresolved_entities", []) or []
+        ) or "No participants resolved."
+        unresolved = scene_spec.get("unresolved_entities", []) or []
         stats = {
-            "n_scenes":       len(ordered),
-            "n_obs":          n_obs,
+            "n_scenes":       len(scenes),
+            "n_obs":          n_events,
             "entity_line":    entity_line,
-            "tl_version":     timeline_dict.get("timeline_version", "V?"),
-            "classification": timeline_dict.get("output_classification", "UNKNOWN"),
+            "tl_version":     scene_spec.get("tl_version", "V?"),
+            "classification": scene_spec.get("classification", "UNKNOWN"),
             "unresolved_line": (
                 f"{len(unresolved)} entit{'y' if len(unresolved) == 1 else 'ies'} remain unresolved "
                 "pending identity verification." if unresolved
                 else "All entities resolved with high confidence."
             ),
-            "n_simultaneous": sum(1 for ts in ordered if len(groups[ts]) > 1),
+            "n_simultaneous": sum(1 for sc in scenes if sc.get("scene_type") == "simultaneous_group"),
         }
 
         base_fp  = build_floor_plan()
@@ -422,18 +487,27 @@ def generate_scene_video(timeline_dict: dict, output_dir: str, case_id: str):
         log.info("Rendering title card for %s", case_id)
         frames.extend(render_title(case_id, stats))
 
-        total = len(ordered)
-        for i, ts in enumerate(ordered):
-            group  = groups[ts]
+        total = len(scenes)
+        for i, sc in enumerate(scenes):
+            ts           = sc.get("timestamp", "")
+            participants = sc.get("participants", [])
+            evidence     = sc.get("evidence_sources", [])
+
             actors = [
-                (_alias_of(ev), (ev.get("action_tags") or ["OBSERVE"])[0], _loc_of(ev),
-                 1.0 if len(group) == 1 else 0.9)
-                for ev in group
+                (_p_key(p, sc["scene_id"]), p.get("action", "OBSERVE"), p.get("location", "?"),
+                 1.0 if len(participants) == 1 else 0.9, not _named(p))
+                for p in participants
             ]
-            title, detail = describe_scene(group)
-            log.info("Rendering scene %d/%d [%s]", i + 1, total, ts)
+            report_entries = [
+                (e.get("source_id", "?"), e.get("modality", "?"), e.get("content", ""))
+                for e in evidence
+            ]
+            title, detail = describe_scene_spec(sc)
+            log.info("Rendering scene %d/%d [%s] (%d physical, %d reported)",
+                      i + 1, total, ts, len(participants), len(evidence))
             frames.extend(render_event(base_fp, i + 1, total, ts, actors, title, detail,
-                                        prev_pos, color_map, location_map))
+                                        prev_pos, color_map, location_map,
+                                        report_entries=report_entries))
 
         log.info("Rendering summary card for %s", case_id)
         frames.extend(render_summary(case_id, stats))
@@ -457,17 +531,18 @@ def generate_scene_video(timeline_dict: dict, output_dir: str, case_id: str):
 
 if __name__ == "__main__":
     import argparse
+    from scene_planner import build_scene_specs, DEFAULT_DB_PATH
 
     logging.basicConfig(level=logging.INFO)
     ap = argparse.ArgumentParser(
-        description="Standalone test: render a scene video from a timeline JSON file."
+        description="Standalone test: render a scene video for a case in forensynth.db."
     )
-    ap.add_argument("--timeline", required=True, help="Path to a *_timeline_V3.json file")
+    ap.add_argument("--case", required=True, help="Case ID, e.g. CASE_ATM_009")
+    ap.add_argument("--db-path", default=None, help="Override the forensynth.db path")
     ap.add_argument("--output-dir", default="./output/videos")
-    ap.add_argument("--case-id", help="Overrides case_id found in the timeline file")
     args = ap.parse_args()
 
-    tl_dict = json.loads(Path(args.timeline).read_text())
-    cid = args.case_id or tl_dict.get("case_id", "UNKNOWN")
-    result = generate_scene_video(tl_dict, args.output_dir, cid)
+    db_path = Path(args.db_path) if args.db_path else DEFAULT_DB_PATH
+    spec = build_scene_specs(args.case, db_path)
+    result = generate_scene_video(spec, args.output_dir, args.case)
     print(f"Video written -> {result}" if result else "Video generation FAILED.")

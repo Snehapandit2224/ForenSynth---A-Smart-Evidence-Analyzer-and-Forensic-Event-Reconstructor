@@ -29,7 +29,7 @@
       "case_id": "CASE_ATM_003",
       "timeline_version": "V1",
       "schema_version": "1.1.0",
-      "generated_at": "2026-08-30T14:53:24Z",
+      "generated_at": "2026-09-22T04:27:29Z",
       "events": [
         {
           "event_id": "EVT_entity_1_o3",
@@ -1909,19 +1909,19 @@
       ],
       "unresolved_entities": [],
       "stage_timings": {
-        "stage_1_validation": 0.0001,
-        "stage_2_enrichment": 0.0014,
-        "stage_3_ordering": 0.0,
-        "stage_4_5_temporal": 0.0001,
-        "stage_6_causal": 0.0093,
+        "stage_1_validation": 0.0002,
+        "stage_2_enrichment": 0.0065,
+        "stage_3_ordering": 0.0001,
+        "stage_4_5_temporal": 0.0002,
+        "stage_6_causal": 0.0488,
         "stage_7_uncertainty": 0.0,
         "stage_8_conflicts": 0.0,
-        "stage_10_explainability": 0.0,
-        "stage_11_narrative": 0.0,
-        "stage_12_versioning": 0.0005,
-        "stage_13_export": 0.0059
+        "stage_10_explainability": 0.0002,
+        "stage_11_narrative": 0.0002,
+        "stage_12_versioning": 0.0025,
+        "stage_13_export": 0.0259
       },
-      "total_time_sec": 0.0178,
+      "total_time_sec": 0.087,
       "validation_warnings": [],
       "llm_backend_used": "NoOpLLMFallback",
       "llm_calls_made": 0,
@@ -1929,6 +1929,6 @@
       "output_classification_reason": "avg_confidence=0.81, conflict_fraction=0.00, unresolved_ratio=3.43 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
     }
   ],
-  "generated_at": "2026-08-30T14:53:24.525196+00:00",
+  "generated_at": "2026-09-22T04:27:30.101610+00:00",
   "status": "complete"
 }

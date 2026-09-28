@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_008",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:39:22Z",
+  "generated_at": "2026-08-31T08:02:19Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1_o2",
@@ -512,30 +512,30 @@
     {
       "event_a": "EVT_entity_1_o1_o2",
       "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
-    "stage_1_validation": 0.0001,
-    "stage_2_enrichment": 0.0006,
+    "stage_1_validation": 0.0014,
+    "stage_2_enrichment": 0.0043,
     "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 0.1393,
+    "stage_4_5_temporal": 0.0001,
+    "stage_6_causal": 0.0032,
     "stage_7_uncertainty": 0.0,
-    "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0,
-    "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0006,
-    "stage_13_export": 0.0038
+    "stage_8_conflicts": 0.0001,
+    "stage_10_explainability": 0.0001,
+    "stage_11_narrative": 0.0001,
+    "stage_12_versioning": 0.0017,
+    "stage_13_export": 0.0152
   },
-  "total_time_sec": 0.145,
+  "total_time_sec": 0.029,
   "validation_warnings": [
     "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event",
     "[entity_resolved.conflicts[1]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
   ],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
   "output_classification": "PARTIAL",
   "output_classification_reason": "avg_confidence=0.81, conflict_fraction=0.00, unresolved_ratio=0.20 - reconstruction is usable but has some flagged or unresolved items worth investigator attention."
 }

@@ -319,6 +319,14 @@ input[type=file]{display:none;}
   height:100%;width:0%;background:var(--tobacco);
   border-radius:2px;transition:width 0.4s ease;
 }
+.progress-bar.indeterminate{
+  width:40%!important;transition:none;
+  animation:progress-indeterminate 1.1s ease-in-out infinite;
+}
+@keyframes progress-indeterminate{
+  0%{margin-left:-40%;}
+  100%{margin-left:100%;}
+}
 .progress-label{font-size:10px;color:var(--text-muted);}
 
 /* ── Output Section ──────────────────────────────────── */
@@ -803,14 +811,14 @@ input[type=file]{display:none;}
             <div class="config-item">
               <label for="llmToggle">LLM Enabled</label>
               <label class="toggle-switch">
-                <input type="checkbox" id="llmToggle" checked/>
+                <input type="checkbox" id="llmToggle"/>
                 <span class="toggle-slider"></span>
               </label>
             </div>
             <div class="config-item">
               <label for="noLlmToggle">Heuristic Only</label>
               <label class="toggle-switch">
-                <input type="checkbox" id="noLlmToggle"/>
+                <input type="checkbox" id="noLlmToggle" checked/>
                 <span class="toggle-slider"></span>
               </label>
             </div>
@@ -1038,13 +1046,26 @@ function showToast(label, msg, isErr) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ── Simulate pipeline run ──────────────────────────────────────────────────
-// In production: replace fetch calls with real API calls to your FastAPI backend
-// e.g. fetch('/api/run-pipeline', { method:'POST', body: JSON.stringify({...}) })
+// ── Run pipeline (real backend — pipeline/api.py) ───────────────────────────
+
+function parseConstraintPairs(raw) {
+  // Investigator types e.g. ["Speaker_D","Speaker_Q"], ["Person_50","Person_97"]
+  // — one or more pairs, not itself wrapped in an enclosing array — so wrap
+  // it in one before parsing, unless they already wrapped it themselves.
+  const trimmed = (raw || '').trim();
+  if (!trimmed) return null;
+  const candidate = trimmed.startsWith('[[') ? trimmed : `[${trimmed}]`;
+  try {
+    const parsed = JSON.parse(candidate);
+    return Array.isArray(parsed) ? parsed : 'PARSE_ERROR';
+  } catch {
+    return 'PARSE_ERROR';
+  }
+}
 
 async function runPipeline() {
-  if (!obsData && !caseData) {
-    showToast('Missing Input', 'Drop at least an observations file to run.', true);
+  if (!obsData) {
+    showToast('Missing Input', 'Drop an observations (_obs_only.json) file to run.', true);
     return;
   }
   const btn = document.getElementById('runBtn');
@@ -1052,161 +1073,50 @@ async function runPipeline() {
   btn.disabled = true;
   document.getElementById('emptyState').style.display = 'none';
   setStatus('running', 'Running…');
+  setProgress(100, 'Running full ForenSynth pipeline (ER → Timeline → Critique → Showrunner)…');
+  document.getElementById('progressBar').classList.add('indeterminate');
 
-  const stages = [
-    [10, 'Entity Resolution…'],
-    [30, 'Timeline Agent…'],
-    [55, 'Critique Agent…'],
-    [75, 'Showrunner…'],
-    [90, 'Saving to forensynth.db…'],
-    [100, 'Complete'],
-  ];
+  const noLlm = document.getElementById('noLlmToggle').checked || !document.getElementById('llmToggle').checked;
 
-  for (const [pct, label] of stages) {
-    setProgress(pct, label);
-    await sleep(420 + Math.random() * 300);
+  const mustMerge = parseConstraintPairs(document.getElementById('mustMerge').value);
+  const mustNotMerge = parseConstraintPairs(document.getElementById('mustNotMerge').value);
+  if (mustMerge === 'PARSE_ERROR' || mustNotMerge === 'PARSE_ERROR') {
+    showToast('Constraint Parse Error', 'Must Merge / Must Not Merge must be pairs like ["A","B"], ["C","D"]. Ignoring invalid field(s).', true);
   }
 
-  // Simulate result (in production: real API response)
-  const input = obsData || caseData;
-  currentResult = buildMockResult(input);
-
-  renderOutput(currentResult);
-  saveToHistory(currentResult);
-  renderSidebar();
-
-  btn.classList.remove('running');
-  btn.disabled = false;
-  setStatus('ready', 'Complete');
-  showToast('Pipeline Complete', currentResult.case_id + ' — ' + currentResult.verdict);
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ── Build a realistic mock result from the uploaded case ──────────────────
-function buildMockResult(input) {
-  const cid     = input.case_id || 'CASE_UNKNOWN';
-  const obs     = input.observations || [];
-  const fir     = input.fir || {};
-  const template= input.template || '';
-  const gt      = (caseData||{}).ground_truth || {};
-  const entities= (gt.entities || []);
-  const gtEvents= (gt.events || []);
-
-  // Derive entities from obs if no GT
-  const aliasMap = {};
-  const roleMap  = {};
-  obs.forEach(o => { aliasMap[o.entity] = o.entity; roleMap[o.entity] = o.role; });
-
-  // Build mock timeline events from obs (grouped by entity + timestamp)
-  const timelineEvents = obs.map((o, i) => ({
-    event_id:      'EVT_' + o.entity + '_' + o.obs_id,
-    entity_id:     o.entity,
-    primary_alias: o.entity,
-    role:          o.role,
-    modality:      o.modality,
-    timestamp:     o.timestamp,
-    content:       o.content,
-    action_tags:   guessActionTags(o.content, o.role),
-    confidence:    parseFloat((o.confidence * (0.85 + Math.random()*0.14)).toFixed(2)),
-    conflict_flag: (o.noise_tags||[]).includes('contradiction'),
-    obs_ids:       [o.obs_id],
-  })).sort((a,b) => a.timestamp.localeCompare(b.timestamp));
-
-  // Mock issues
-  const issues = [];
-  const hasConflict = obs.some(o=>(o.noise_tags||[]).includes('contradiction'));
-  if (hasConflict) issues.push({
-    check:'llm_coherence', severity:'warning',
-    detail:'Contradiction detected: one or more observations conflict with physical evidence. Timestamps verified — downgraded from blocking.',
-    showrunner_action:'re_run_timeline'
-  });
-  const avgConf = obs.reduce((a,o)=>a+o.confidence,0)/Math.max(obs.length,1);
-  if (avgConf < 0.72) issues.push({
-    check:'low_confidence_event', severity:'info',
-    detail:`Average observation confidence ${avgConf.toFixed(2)} — ${obs.filter(o=>o.confidence<0.6).length} event(s) below 0.60 threshold. Informational.`,
-    showrunner_action:''
-  });
-  const roles = {suspect:0, witness:0};
-  obs.forEach(o=>{ if(roles[o.role]!==undefined) roles[o.role]++; });
-  const firSuspects = (fir.roles||{}).suspect || 1;
-  const erSuspects  = [...new Set(obs.filter(o=>o.role==='suspect').map(o=>o.entity))].length;
-  if (erSuspects !== firSuspects) issues.push({
-    check:'role_count_mismatch', severity:'warning',
-    detail:`FIR reports ${firSuspects} suspect(s), ER resolved ${erSuspects}. Entity over-merging or missing observations likely.`,
-    showrunner_action:'re_run_er'
-  });
-
-  const score = Math.max(0.5, 1.0 - issues.filter(i=>i.severity==='blocking').length*0.30 - issues.filter(i=>i.severity==='warning').length*0.10 - issues.filter(i=>i.severity==='info').length*0.02);
-  const verdict = issues.some(i=>i.severity==='blocking') ? 'REVISE' : (issues.some(i=>i.severity==='warning') ? 'REVISE' : 'ACCEPT');
-  const action  = verdict === 'ACCEPT' ? 'no_action' : (issues.some(i=>i.showrunner_action==='re_run_er') ? 're_run_er' : 're_run_timeline');
-
-  // Causal links
-  const causal = [];
-  for (let i=0; i<timelineEvents.length-1; i++) {
-    if (timelineEvents[i].role==='suspect' && timelineEvents[i+1].role==='suspect') {
-      causal.push({
-        source:timelineEvents[i].event_id, target:timelineEvents[i+1].event_id,
-        relation:'BEFORE', edge_type:'CAUSAL',
-        confidence:parseFloat((0.65+Math.random()*0.3).toFixed(2)),
-        label:Math.random()>0.5?'local LLM: action dependency':'deterministic rule'
-      });
-    }
-  }
-
-  // ER entities
-  const uniqueEntities = [...new Map(obs.map(o=>[o.entity,{
-    entity_id:o.entity, primary_alias:o.entity, role:o.role,
-    confidence_score:parseFloat((o.confidence*(0.85+Math.random()*0.14)).toFixed(2)),
-    aliases:[o.entity], modalities:[o.modality],
-  }])).values()];
-
-  // Iter log
-  const iter_log = [{
-    iteration:1, timeline_version:'V1', critique_version:'C1',
-    gaps_detected:issues.length, resolvable_gaps:issues.filter(i=>i.severity!=='info').length,
-    recommended_action: verdict==='ACCEPT'?'FINALIZE':'REBUILD_WITH_BELIEF_UPDATE',
-    overall_score:parseFloat(score.toFixed(2)),
-  }];
-  if (verdict !== 'ACCEPT') iter_log.push({
-    iteration:2, timeline_version:'V2', critique_version:'C2',
-    gaps_detected:Math.max(0,issues.length-1), resolvable_gaps:0,
-    recommended_action:'FINALIZE',
-    overall_score:parseFloat(Math.min(1.0,score+0.08).toFixed(2)),
-  });
-
-  const output_case = score >= 0.85 ? 'CLEAR_WINNER' : (score >= 0.6 ? 'PARTIAL' : 'AMBIGUOUS');
-
-  return {
-    case_id:cid, template, fir,
-    timeline_events: timelineEvents,
-    causal_links: causal,
-    er_entities: uniqueEntities,
-    issues, score:parseFloat(score.toFixed(2)), verdict, action,
-    output_case,
-    iter_log,
-    loops: iter_log.length,
-    reasoning: action==='no_action'
-      ? `Timeline accepted after ${iter_log.length} pass(es). No blocking issues detected. Output classification: ${output_case}.`
-      : `${issues.length} issue(s) detected. Highest severity: ${issues[0]?.check} (${issues[0]?.severity}). Action: ${action}.`,
-    llm_used: document.getElementById('llmToggle').checked,
-    timestamp: new Date().toISOString(),
+  const payload = {
+    obs_data: obsData,
+    no_llm: noLlm,
+    must_merge: mustMerge === 'PARSE_ERROR' ? null : mustMerge,
+    must_not_merge: mustNotMerge === 'PARSE_ERROR' ? null : mustNotMerge,
   };
-}
 
-function guessActionTags(content, role) {
-  if (!content) return [];
-  const c = content.toLowerCase();
-  const tags = [];
-  if (c.includes('approach')||c.includes('nearing')||c.includes('walking toward')||c.includes('arrives')) tags.push('APPROACH');
-  if (c.includes('enter')||c.includes('inside')||c.includes('booth')||c.includes('enclosure')) tags.push('ENTER');
-  if (c.includes('tamper')||c.includes('fiddle')||c.includes('card slot')||c.includes('reader')) tags.push('TAMPER');
-  if (c.includes('withdraw')||c.includes('cash')||c.includes('transaction')) tags.push('WITHDRAW');
-  if (c.includes('exit')||c.includes('leave')||c.includes('depart')||c.includes('leaving')) tags.push('EXIT');
-  if (c.includes('flee')||c.includes('run')||c.includes('rush')) tags.push('FLEE');
-  if (role==='witness' && (c.includes('saw')||c.includes('notices')||c.includes('observed')||c.includes('eyewitness'))) tags.push('OBSERVE');
-  if (role==='witness' && (c.includes('report')||c.includes('complaint')||c.includes('filing'))) tags.push('REPORT');
-  return tags.length ? tags : [role==='suspect'?'ACTION':'OBSERVE'];
+  try {
+    const resp = await fetch('/api/run-pipeline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      throw new Error(data.error ? `${data.error}\n${(data.stderr||'').slice(-500)}` : 'Pipeline run failed.');
+    }
+
+    currentResult = data;
+    renderOutput(currentResult);
+    saveToHistory(currentResult);
+    renderSidebar();
+    setStatus('ready', 'Complete');
+    showToast('Pipeline Complete', currentResult.case_id + ' — ' + currentResult.verdict);
+  } catch (err) {
+    setStatus('ready', 'Error');
+    showToast('Pipeline Failed', String(err.message || err).slice(0, 300), true);
+  } finally {
+    document.getElementById('progressBar').classList.remove('indeterminate');
+    btn.classList.remove('running');
+    btn.disabled = false;
+  }
 }
 
 // ── Render output ──────────────────────────────────────────────────────────
@@ -1429,9 +1339,9 @@ function renderIterLog(r) {
 }
 
 function renderPostOutputs(r) {
-  // These are produced by the real run_case.py pipeline (scene_reconstruction_v3.py
-  // and explainability_report_v2.py) after the final Showrunner round — not by this
-  // in-browser mock. Paths mirror run_case.py's output/videos and output/reports dirs.
+  // Produced for real by run_case.py (scene_reconstruction_v3.py and
+  // explainability_report_v2.py) during the /api/run-pipeline call that just
+  // completed. Served by pipeline/api.py's static mount at /output.
   const videoName  = `${r.case_id}_scene_reconstruction_v3.mp4`;
   const reportName = `${r.case_id}_explainability_report_v2.pdf`;
   const videoPath  = `output/videos/${videoName}`;
@@ -1448,7 +1358,7 @@ function renderPostOutputs(r) {
         <a class="output-file-link" href="${videoPath}" target="_blank" rel="noopener">Open</a>
       </div>
       <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.6;">
-        Rendered by scene_reconstruction_v3.py once the pipeline finalizes. Run <span style="color:var(--tobacco);">pipeline\\run_case.py</span> to generate it — this demo does not produce it.
+        Rendered by scene_reconstruction_v3.py once the pipeline finalized on this run. If the link 404s, video generation may have failed silently — check the server log.
       </div>
     </div>
     <div class="explain-card">

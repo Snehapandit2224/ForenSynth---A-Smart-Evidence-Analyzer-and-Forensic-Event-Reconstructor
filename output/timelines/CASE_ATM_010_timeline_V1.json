@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_010",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:40:44Z",
+  "generated_at": "2026-08-31T08:03:45Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -10,8 +10,8 @@
         "O1"
       ],
       "timestamp": "2024-01-15T10:00:43Z",
-      "location": "remote \u2014 email server log",
-      "location_key": "remote \u2014 email server log",
+      "location": "remote — email server log",
+      "location_key": "remote — email server log",
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "aliases": [
@@ -68,8 +68,8 @@
         "O3"
       ],
       "timestamp": "2024-01-15T10:02:31Z",
-      "location": "remote \u2014 email server log",
-      "location_key": "remote \u2014 email server log",
+      "location": "remote — email server log",
+      "location_key": "remote — email server log",
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "aliases": [
@@ -98,8 +98,8 @@
         "O5"
       ],
       "timestamp": "2024-01-15T10:02:48Z",
-      "location": "remote \u2014 email server log",
-      "location_key": "remote \u2014 email server log",
+      "location": "remote — email server log",
+      "location_key": "remote — email server log",
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "aliases": [
@@ -136,12 +136,11 @@
       "primary_alias": "Speaker_N",
       "aliases": [
         "Speaker_N",
-        "sms_94",
         "Person_13"
       ],
       "modality": "multimodal",
       "content": "They came out of the booth fast and walked off quickly.",
-      "confidence": 0.7951,
+      "confidence": 0.8099,
       "role": "witness",
       "action_tags": [
         "EXIT",
@@ -158,30 +157,29 @@
       "version": "V1"
     },
     {
-      "event_id": "EVT_entity_2_o11",
+      "event_id": "EVT_entity_3_o11",
       "obs_ids": [
         "O11"
       ],
       "timestamp": "2024-01-15T10:10:00Z",
-      "location": "remote \u2014 mobile network SMS",
-      "location_key": "remote \u2014 mobile network sms",
-      "entity_id": "entity_2",
-      "primary_alias": "Speaker_N",
+      "location": "remote — mobile network SMS",
+      "location_key": "remote — mobile network sms",
+      "entity_id": "entity_3",
+      "primary_alias": "sms_94",
       "aliases": [
-        "Speaker_N",
-        "sms_94",
-        "Person_13"
+        "sms_94"
       ],
       "modality": "text",
-      "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
-      "confidence": 0.6858,
+      "content": "[CORRUPTED] — File hash mismatch; content integrity unverified.",
+      "confidence": 0.4915,
       "role": "witness",
       "action_tags": [],
-      "conflict_flag": false,
-      "conflict_note": "",
+      "conflict_flag": true,
+      "conflict_note": "Entity resolution conflict detected; confidence reduced.",
       "reasoning": [
         "timestamp ordering",
         "canonical entity match",
+        "conflict flagged by entity resolution",
         "valid timestamp"
       ],
       "version": "V1"
@@ -198,12 +196,11 @@
       "primary_alias": "Speaker_N",
       "aliases": [
         "Speaker_N",
-        "sms_94",
         "Person_13"
       ],
       "modality": "audio",
       "content": "Something happened near the ATM I should report (per call log transcript).",
-      "confidence": 0.7938,
+      "confidence": 0.8086,
       "role": "witness",
       "action_tags": [
         "REPORT"
@@ -247,7 +244,7 @@
       "source": "EVT_entity_2_o6_o7",
       "target": "EVT_entity_2_o10",
       "edge_type": "CAUSAL",
-      "confidence": 0.5561,
+      "confidence": 0.5665,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=0.73), sequential"
     }
@@ -261,7 +258,7 @@
         "entity_id": "entity_1",
         "primary_alias": "report_90",
         "confidence": 0.794,
-        "location": "remote \u2014 email server log",
+        "location": "remote — email server log",
         "modality": "text",
         "content": "At the corner, about to move. (forwarded)",
         "conflict_flag": false,
@@ -291,7 +288,7 @@
         "entity_id": "entity_1",
         "primary_alias": "report_90",
         "confidence": 0.8903,
-        "location": "remote \u2014 email server log",
+        "location": "remote — email server log",
         "modality": "text",
         "content": "Entered. Starting now.",
         "conflict_flag": false,
@@ -306,7 +303,7 @@
         "entity_id": "entity_1",
         "primary_alias": "report_90",
         "confidence": 0.8874,
-        "location": "remote \u2014 email server log",
+        "location": "remote — email server log",
         "modality": "text",
         "content": "Reader fitted. No one saw.",
         "conflict_flag": false,
@@ -318,10 +315,10 @@
       {
         "id": "EVT_entity_2_o6_o7",
         "timestamp": "2024-01-15T10:03:26Z",
-        "ts_epoch": 1705313006.4695518,
+        "ts_epoch": 1705313006.4701278,
         "entity_id": "entity_2",
         "primary_alias": "Speaker_N",
-        "confidence": 0.7951,
+        "confidence": 0.8099,
         "location": "near ATM location, mobile network",
         "modality": "multimodal",
         "content": "They came out of the booth fast and walked off quickly.",
@@ -332,16 +329,16 @@
         ]
       },
       {
-        "id": "EVT_entity_2_o11",
+        "id": "EVT_entity_3_o11",
         "timestamp": "2024-01-15T10:10:00Z",
         "ts_epoch": 1705313400.0,
-        "entity_id": "entity_2",
-        "primary_alias": "Speaker_N",
-        "confidence": 0.6858,
-        "location": "remote \u2014 mobile network SMS",
+        "entity_id": "entity_3",
+        "primary_alias": "sms_94",
+        "confidence": 0.4915,
+        "location": "remote — mobile network SMS",
         "modality": "text",
-        "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
-        "conflict_flag": false,
+        "content": "[CORRUPTED] — File hash mismatch; content integrity unverified.",
+        "conflict_flag": true,
         "obs_ids": [
           "O11"
         ]
@@ -352,7 +349,7 @@
         "ts_epoch": 1705313402.9999998,
         "entity_id": "entity_2",
         "primary_alias": "Speaker_N",
-        "confidence": 0.7938,
+        "confidence": 0.8086,
         "location": "ATM vicinity, bystander position",
         "modality": "audio",
         "content": "Something happened near the ATM I should report (per call log transcript).",
@@ -413,7 +410,7 @@
       },
       {
         "source": "EVT_entity_2_o6_o7",
-        "target": "EVT_entity_2_o11",
+        "target": "EVT_entity_3_o11",
         "edge_type": "TEMPORAL",
         "confidence": 0.95,
         "relation": "BEFORE",
@@ -423,12 +420,12 @@
         "source": "EVT_entity_2_o6_o7",
         "target": "EVT_entity_2_o10",
         "edge_type": "CAUSAL",
-        "confidence": 0.5561,
+        "confidence": 0.5665,
         "relation": "BEFORE",
         "label": "same entity, semantically same location (sim=0.73), sequential"
       },
       {
-        "source": "EVT_entity_2_o11",
+        "source": "EVT_entity_3_o11",
         "target": "EVT_entity_2_o10",
         "edge_type": "TEMPORAL",
         "confidence": 0.9,
@@ -465,7 +462,7 @@
         "source": "EVT_entity_2_o6_o7",
         "target": "EVT_entity_2_o10",
         "edge_type": "CAUSAL",
-        "confidence": 0.5561,
+        "confidence": 0.5665,
         "relation": "BEFORE",
         "label": "same entity, semantically same location (sim=0.73), sequential"
       }
@@ -496,7 +493,7 @@
     },
     {
       "event_id": "EVT_entity_2_o6_o7",
-      "uncertainty_score": 0.2049,
+      "uncertainty_score": 0.1901,
       "sources": [
         "O6",
         "O7"
@@ -506,18 +503,19 @@
       ]
     },
     {
-      "event_id": "EVT_entity_2_o11",
-      "uncertainty_score": 0.3142,
+      "event_id": "EVT_entity_3_o11",
+      "uncertainty_score": 0.5085,
       "sources": [
         "O11"
       ],
       "reasons": [
-        "moderate confidence"
+        "low observation confidence",
+        "entity resolution conflict present"
       ]
     },
     {
       "event_id": "EVT_entity_2_o10",
-      "uncertainty_score": 0.2062,
+      "uncertainty_score": 0.1914,
       "sources": [
         "O10"
       ],
@@ -532,7 +530,7 @@
       "timestamp": "2024-01-15T10:00:43Z",
       "actor": "report_90",
       "action": "At the corner, about to move. (forwarded)",
-      "location": "remote \u2014 email server log",
+      "location": "remote — email server log",
       "evidence": [
         "O1"
       ],
@@ -554,7 +552,7 @@
       "timestamp": "2024-01-15T10:02:31Z",
       "actor": "report_90",
       "action": "Entered. Starting now.  [-> action dependency: APPROACH->ENTER]",
-      "location": "remote \u2014 email server log",
+      "location": "remote — email server log",
       "evidence": [
         "O3"
       ],
@@ -565,7 +563,7 @@
       "timestamp": "2024-01-15T10:02:48Z",
       "actor": "report_90",
       "action": "Reader fitted. No one saw.  [-> action dependency: ENTER->TAMPER]",
-      "location": "remote \u2014 email server log",
+      "location": "remote — email server log",
       "evidence": [
         "O4",
         "O5"
@@ -582,18 +580,18 @@
         "O6",
         "O7"
       ],
-      "confidence": 0.7951
+      "confidence": 0.8099
     },
     {
-      "event_id": "EVT_entity_2_o11",
+      "event_id": "EVT_entity_3_o11",
       "timestamp": "2024-01-15T10:10:00Z",
-      "actor": "Speaker_N",
-      "action": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
-      "location": "remote \u2014 mobile network SMS",
+      "actor": "sms_94",
+      "action": "[CORRUPTED] — File hash mismatch; content integrity unverified.",
+      "location": "remote — mobile network SMS",
       "evidence": [
         "O11"
       ],
-      "confidence": 0.6858
+      "confidence": 0.4915
     },
     {
       "event_id": "EVT_entity_2_o10",
@@ -604,7 +602,7 @@
       "evidence": [
         "O10"
       ],
-      "confidence": 0.7938
+      "confidence": 0.8086
     }
   ],
   "explainability": [
@@ -675,20 +673,21 @@
         "reconstructed from 2 supporting observations across modalities: audio, video",
         "valid timestamp"
       ],
-      "confidence": 0.7951
+      "confidence": 0.8099
     },
     {
-      "event_id": "EVT_entity_2_o11",
+      "event_id": "EVT_entity_3_o11",
       "derived_from": [
         "O11"
       ],
-      "entity_used": "entity_2",
+      "entity_used": "entity_3",
       "reasoning": [
         "timestamp ordering",
         "canonical entity match",
+        "conflict flagged by entity resolution",
         "valid timestamp"
       ],
-      "confidence": 0.6858
+      "confidence": 0.4915
     },
     {
       "event_id": "EVT_entity_2_o10",
@@ -701,66 +700,47 @@
         "canonical entity match",
         "valid timestamp"
       ],
-      "confidence": 0.7938
+      "confidence": 0.8086
     }
   ],
   "conflicts_summary": [
     {
-      "conflict_type": "role_count_mismatch",
-      "cluster_id": "",
-      "detail": "FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually.",
-      "affected_events": []
+      "conflict_type": "low_confidence",
+      "cluster_id": "C4",
+      "detail": "Cluster C4 confidence 0.522 below floor.",
+      "affected_events": [
+        "EVT_entity_3_o11"
+      ]
     }
   ],
-  "conflicts_unlocalized_count": 1,
+  "conflicts_unlocalized_count": 0,
   "unresolved_temporal_pairs": [],
   "unresolved_causal_pairs": [
     {
-      "event_a": "EVT_entity_1_o2",
-      "event_b": "EVT_entity_1_o3",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
       "event_a": "EVT_entity_1_o1",
       "event_b": "EVT_entity_1_o2",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o2",
+      "event_b": "EVT_entity_1_o3",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o2",
       "event_b": "EVT_entity_1_o4_o5",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_2_o11",
-      "event_b": "EVT_entity_2_o10",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_2_o6_o7",
-      "event_b": "EVT_entity_2_o11",
-      "reason": "local LLM returned no result for this pair"
+      "event_b": "EVT_entity_3_o11",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_3_o11",
+      "event_b": "EVT_entity_2_o10",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
-  "unresolved_entities": [],
-  "stage_timings": {
-    "stage_1_validation": 0.0002,
-    "stage_2_enrichment": 0.0009,
-    "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 0.0746,
-    "stage_7_uncertainty": 0.0,
-    "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0,
-    "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0005,
-    "stage_13_export": 0.0023
-  },
-  "total_time_sec": 0.0791,
-  "validation_warnings": [
-    "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
-  ],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
-  "output_classification": "AMBIGUOUS",
-  "output_classification_reason": "avg_confidence=0.81, conflict_fraction=0.00, unresolved_ratio=0.71 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+  "unresolved_entities": []
 }

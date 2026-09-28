@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_001",
   "timeline_version": "V2",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:52:44Z",
+  "generated_at": "2026-08-31T07:58:59Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -726,19 +726,19 @@
   ],
   "unresolved_entities": [],
   "stage_timings": {
-    "stage_1_validation": 0.0,
-    "stage_2_enrichment": 0.0005,
+    "stage_1_validation": 0.0001,
+    "stage_2_enrichment": 0.0016,
     "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 0.0014,
+    "stage_4_5_temporal": 0.0001,
+    "stage_6_causal": 0.0041,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0,
+    "stage_10_explainability": 0.0001,
     "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0004,
-    "stage_13_export": 0.0027
+    "stage_12_versioning": 0.001,
+    "stage_13_export": 0.006
   },
-  "total_time_sec": 0.0055,
+  "total_time_sec": 0.0141,
   "validation_warnings": [],
   "llm_backend_used": "NoOpLLMFallback",
   "llm_calls_made": 0,
