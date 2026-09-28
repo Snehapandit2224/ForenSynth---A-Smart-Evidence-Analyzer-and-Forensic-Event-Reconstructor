@@ -46,6 +46,18 @@ def _import_video():
         return None
 
 
+def _import_scene_planner():
+    """Lazily import the scene planner, which builds the render-safe scene
+    spec (physical participants vs. report-only evidence sources,
+    already separated) that generate_scene_video() renders."""
+    try:
+        from scene_planner import build_scene_specs, DEFAULT_DB_PATH
+        return build_scene_specs, DEFAULT_DB_PATH
+    except ImportError as exc:
+        log.warning("[run_case] Scene planner unavailable: %s", exc)
+        return None, None
+
+
 def _import_report():
     """Lazily import the explainability report generator; optional dep (fpdf2)."""
     try:
@@ -222,6 +234,13 @@ def main():
     group.add_argument("--input", help="Path to obs_only JSON (first run)")
     group.add_argument("--case",  help="Case ID already in DB")
     p.add_argument("--no-llm",  action="store_true")
+    p.add_argument("--must-merge", default=None,
+                   help="JSON list of alias pairs the ER agent must cluster "
+                        "into the same entity, applied on the first ER run, "
+                        "e.g. '[[\"Person_14\", \"Speaker_C\"]]'")
+    p.add_argument("--must-not-merge", default=None,
+                   help="JSON list of alias pairs the ER agent must keep as "
+                        "separate entities, applied on the first ER run")
     p.add_argument("--output",  default="./output")
     p.add_argument("--skip-video",  action="store_true", default=False,
                    help="Skip scene-reconstruction video generation")
@@ -263,9 +282,18 @@ def main():
     er_ver   = versions["er_version"] or 0
 
     # ── Step 1: ER ────────────────────────────────────────────────────────────
+    initial_constraints = None
+    if args.must_merge or args.must_not_merge:
+        initial_constraints = {
+            "must_merge":     json.loads(args.must_merge) if args.must_merge else [],
+            "must_not_merge": json.loads(args.must_not_merge) if args.must_not_merge else [],
+        }
+
     er_result = None
     if er_ver == 0:
-        er_result = run_er(mem, obs_data, llm, run_version=1, out_dir=out / "er")
+        er_result = run_er(mem, obs_data, llm, run_version=1,
+                           human_constraints=initial_constraints,
+                           out_dir=out / "er")
         er_ver = 1
 
     # ── Main loop ─────────────────────────────────────────────────────────────
@@ -357,10 +385,19 @@ def main():
 
     if not args.skip_video:
         generate_scene_video = _import_video()
-        if generate_scene_video:
+        build_scene_specs, scene_db_path = _import_scene_planner()
+        if generate_scene_video and build_scene_specs:
             _banner(f"Scene Reconstruction Video — {case_id}")
-            video_path = generate_scene_video(tl_result or {}, str(out / "videos"), case_id)
+            # build_scene_specs re-reads the timeline/critique it just saved
+            # to forensynth.db (mem.save_timeline/save_critique already ran
+            # above) -- a fresh, not stale, read -- so that the video is
+            # driven by the same physical-vs-reported classification used
+            # everywhere else, instead of re-deriving it from tl_result.
+            scene_spec = build_scene_specs(case_id, scene_db_path)
+            video_path = generate_scene_video(scene_spec, str(out / "videos"), case_id)
             print(f"  Video  → {video_path}" if video_path else "  Video generation FAILED — see log.")
+        elif generate_scene_video:
+            log.warning("[run_case] Scene planner unavailable — skipping video for %s", case_id)
 
     if not args.skip_report:
         generate_explainability_report = _import_report()

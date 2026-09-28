@@ -24,3 +24,7 @@ moviepy>=2.1.2
 Pillow>=10.0.0
 fpdf2>=2.7.0
 numpy>=1.24.0
+
+# ── Dashboard backend API (pipeline/api.py) ────────────────────────────────────
+fastapi>=0.110
+uvicorn[standard]>=0.29

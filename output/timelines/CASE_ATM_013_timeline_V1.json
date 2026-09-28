@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_013",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T16:00:34Z",
+  "generated_at": "2026-08-31T08:21:33Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -590,42 +590,42 @@
   "unresolved_temporal_pairs": [],
   "unresolved_causal_pairs": [
     {
-      "event_a": "EVT_entity_1_o5",
-      "event_b": "EVT_entity_1_o4",
-      "reason": "local LLM determined no causal link"
+      "event_a": "EVT_entity_1_o1",
+      "event_b": "EVT_entity_1_o5",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o3",
       "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
-      "event_a": "EVT_entity_1_o1",
-      "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM determined no causal link"
+      "event_a": "EVT_entity_1_o5",
+      "event_b": "EVT_entity_1_o4",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
-    "stage_1_validation": 0.0002,
-    "stage_2_enrichment": 0.001,
+    "stage_1_validation": 0.0012,
+    "stage_2_enrichment": 0.0026,
     "stage_3_ordering": 0.0,
     "stage_4_5_temporal": 0.0001,
-    "stage_6_causal": 1.2488,
+    "stage_6_causal": 0.0046,
     "stage_7_uncertainty": 0.0,
-    "stage_8_conflicts": 0.0,
-    "stage_10_explainability": 0.0,
-    "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0004,
-    "stage_13_export": 0.002
+    "stage_8_conflicts": 0.0001,
+    "stage_10_explainability": 0.0001,
+    "stage_11_narrative": 0.0001,
+    "stage_12_versioning": 0.0013,
+    "stage_13_export": 0.0103
   },
-  "total_time_sec": 32.008,
+  "total_time_sec": 0.0221,
   "validation_warnings": [
     "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event",
     "[entity_resolved.conflicts[1]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
   ],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
   "output_classification": "AMBIGUOUS",
   "output_classification_reason": "avg_confidence=0.85, conflict_fraction=0.00, unresolved_ratio=0.50 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

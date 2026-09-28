@@ -16,7 +16,7 @@
     "low_confidence_event",
     "llm_coherence"
   ],
-  "llm_used": true,
+  "llm_used": false,
   "overall_score": 0.8,
   "requires_revision": true,
   "revision_target": "er",
@@ -26,22 +26,21 @@
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19_o21 (67s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19 (62s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
       "affected_events": [
         "EVT_entity_2_o17",
-        "EVT_entity_2_o19_o21"
+        "EVT_entity_2_o19"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19_o21 (67s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19 (62s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
       "event_id": "EVT_entity_2_o17",
       "affected_obs": [
         "O17",
-        "O19",
-        "O21"
+        "O19"
       ]
     },
     {
@@ -63,22 +62,21 @@
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19_o21 (67s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19 (62s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
       "affected_events": [
         "EVT_entity_2_o17",
-        "EVT_entity_2_o19_o21"
+        "EVT_entity_2_o19"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19_o21 (67s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o17 and EVT_entity_2_o19 (62s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
       "event_id": "EVT_entity_2_o17",
       "affected_obs": [
         "O17",
-        "O19",
-        "O21"
+        "O19"
       ]
     },
     {

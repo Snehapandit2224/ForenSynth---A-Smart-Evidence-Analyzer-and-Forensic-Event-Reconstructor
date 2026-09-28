@@ -1,37 +1,43 @@
 {
   "case_id": "CASE_ATM_006",
-  "action": "human_review",
+  "action": "no_action",
   "input_tl_version": "V1",
   "input_crit_version": "C1",
   "output_tl_version": "V1",
   "er_constraints": {},
   "belief_updates": {},
-  "reasoning": "ER-level issues detected but no actionable constraints could be derived (all candidate aliases were synthetic placeholders \u2014 entity identity is genuinely ambiguous). Manual review required.",
+  "reasoning": "Critique found no actionable gaps. Output case: PARTIAL. Single timeline, moderate confidence (0.82).",
   "issues_addressed": [],
-  "issues_deferred": [
-    "role_count_mismatch"
-  ],
-  "output_case": "CLEAR_WINNER",
+  "issues_deferred": [],
+  "output_case": "PARTIAL",
   "iter_log": [
     {
       "iteration": 1,
       "timeline_version": "V1",
       "critique_version": "C1",
       "gaps_detected": 1,
-      "resolvable_gaps": 1,
-      "unresolvable_gaps": 0,
-      "recommended_action": "RECHECK_OBSERVATIONS",
-      "overall_score": 0.9,
-      "narrative_summary": "Case CASE_ATM_006 (pass 1): REVISE. 0 blocking, 1 warning(s), 0 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can"
+      "resolvable_gaps": 0,
+      "unresolvable_gaps": 1,
+      "recommended_action": "FINALIZE",
+      "overall_score": 0.98,
+      "narrative_summary": "Case CASE_ATM_006 (pass 1): ACCEPT. 0 blocking, 0 warning(s), 1 info. Top: low_confidence_event \u2014 Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution confli"
     }
   ],
-  "investigator_flags": [],
+  "investigator_flags": [
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_2_o6",
+      "detail": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    }
+  ],
   "all_timelines": [
     {
       "case_id": "CASE_ATM_006",
       "timeline_version": "V1",
       "schema_version": "1.1.0",
-      "generated_at": "2026-08-30T14:38:16Z",
+      "generated_at": "2026-08-31T08:01:43Z",
       "events": [
         {
           "event_id": "EVT_entity_1_o1",
@@ -129,21 +135,21 @@
           "entity_id": "entity_2",
           "primary_alias": "Speaker_E",
           "aliases": [
-            "Speaker_E",
-            "sms_93"
+            "Speaker_E"
           ],
           "modality": "audio",
           "content": "I deny witnessing the departures described.",
-          "confidence": 0.6822,
+          "confidence": 0.484,
           "role": "witness",
           "action_tags": [
             "OBSERVE"
           ],
-          "conflict_flag": false,
-          "conflict_note": "",
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
           "reasoning": [
             "timestamp ordering",
             "canonical entity match",
+            "conflict flagged by entity resolution",
             "valid timestamp"
           ],
           "version": "V1"
@@ -178,22 +184,21 @@
           "version": "V1"
         },
         {
-          "event_id": "EVT_entity_2_o7",
+          "event_id": "EVT_entity_3_o7",
           "obs_ids": [
             "O7"
           ],
           "timestamp": "2024-01-15T10:05:24Z",
           "location": "remote \u2014 mobile network SMS",
           "location_key": "remote \u2014 mobile network sms",
-          "entity_id": "entity_2",
-          "primary_alias": "Speaker_E",
+          "entity_id": "entity_3",
+          "primary_alias": "sms_93",
           "aliases": [
-            "Speaker_E",
             "sms_93"
           ],
           "modality": "text",
           "content": "Two individuals left together quickly. One carrying a bag.",
-          "confidence": 0.8266,
+          "confidence": 0.8748,
           "role": "witness",
           "action_tags": [],
           "conflict_flag": false,
@@ -301,11 +306,11 @@
             "ts_epoch": 1705313114.0,
             "entity_id": "entity_2",
             "primary_alias": "Speaker_E",
-            "confidence": 0.6822,
+            "confidence": 0.484,
             "location": "ATM vicinity, bystander position",
             "modality": "audio",
             "content": "I deny witnessing the departures described.",
-            "conflict_flag": false,
+            "conflict_flag": true,
             "obs_ids": [
               "O6"
             ]
@@ -326,12 +331,12 @@
             ]
           },
           {
-            "id": "EVT_entity_2_o7",
+            "id": "EVT_entity_3_o7",
             "timestamp": "2024-01-15T10:05:24Z",
             "ts_epoch": 1705313124.0,
-            "entity_id": "entity_2",
-            "primary_alias": "Speaker_E",
-            "confidence": 0.8266,
+            "entity_id": "entity_3",
+            "primary_alias": "sms_93",
+            "confidence": 0.8748,
             "location": "remote \u2014 mobile network SMS",
             "modality": "text",
             "content": "Two individuals left together quickly. One carrying a bag.",
@@ -408,7 +413,7 @@
           },
           {
             "source": "EVT_entity_1_o5",
-            "target": "EVT_entity_2_o7",
+            "target": "EVT_entity_3_o7",
             "edge_type": "TEMPORAL",
             "confidence": 0.9,
             "relation": "SIMULTANEOUS",
@@ -463,22 +468,13 @@
       "uncertainties": [
         {
           "event_id": "EVT_entity_2_o6",
-          "uncertainty_score": 0.3178,
+          "uncertainty_score": 0.516,
           "sources": [
             "O6"
           ],
           "reasons": [
-            "moderate confidence"
-          ]
-        },
-        {
-          "event_id": "EVT_entity_2_o7",
-          "uncertainty_score": 0.1734,
-          "sources": [
-            "O7"
-          ],
-          "reasons": [
-            "moderate confidence"
+            "low observation confidence",
+            "entity resolution conflict present"
           ]
         }
       ],
@@ -525,7 +521,7 @@
           "evidence": [
             "O6"
           ],
-          "confidence": 0.6822
+          "confidence": 0.484
         },
         {
           "event_id": "EVT_entity_1_o5",
@@ -539,15 +535,15 @@
           "confidence": 0.8935
         },
         {
-          "event_id": "EVT_entity_2_o7",
+          "event_id": "EVT_entity_3_o7",
           "timestamp": "2024-01-15T10:05:24Z",
-          "actor": "Speaker_E",
+          "actor": "sms_93",
           "action": "Two individuals left together quickly. One carrying a bag.",
           "location": "remote \u2014 mobile network SMS",
           "evidence": [
             "O7"
           ],
-          "confidence": 0.8266
+          "confidence": 0.8748
         }
       ],
       "explainability": [
@@ -599,9 +595,10 @@
           "reasoning": [
             "timestamp ordering",
             "canonical entity match",
+            "conflict flagged by entity resolution",
             "valid timestamp"
           ],
-          "confidence": 0.6822
+          "confidence": 0.484
         },
         {
           "event_id": "EVT_entity_1_o5",
@@ -617,70 +614,70 @@
           "confidence": 0.8935
         },
         {
-          "event_id": "EVT_entity_2_o7",
+          "event_id": "EVT_entity_3_o7",
           "derived_from": [
             "O7"
           ],
-          "entity_used": "entity_2",
+          "entity_used": "entity_3",
           "reasoning": [
             "timestamp ordering",
             "canonical entity match",
             "valid timestamp"
           ],
-          "confidence": 0.8266
+          "confidence": 0.8748
         }
       ],
       "conflicts_summary": [
         {
-          "conflict_type": "role_count_mismatch",
-          "cluster_id": "",
-          "detail": "FIR states 2 distinct 'witness' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually.",
-          "affected_events": []
+          "conflict_type": "low_confidence",
+          "cluster_id": "C2",
+          "detail": "Cluster C2 confidence 0.512 below floor.",
+          "affected_events": [
+            "EVT_entity_2_o6"
+          ]
         }
       ],
-      "conflicts_unlocalized_count": 1,
+      "conflicts_unlocalized_count": 0,
       "unresolved_temporal_pairs": [],
       "unresolved_causal_pairs": [
         {
           "event_a": "EVT_entity_1_o3",
           "event_b": "EVT_entity_1_o4",
-          "reason": "local LLM returned no result for this pair"
-        },
-        {
-          "event_a": "EVT_entity_2_o6",
-          "event_b": "EVT_entity_2_o7",
-          "reason": "local LLM returned no result for this pair"
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
         },
         {
           "event_a": "EVT_entity_2_o6",
           "event_b": "EVT_entity_1_o5",
-          "reason": "local LLM returned no result for this pair"
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+        },
+        {
+          "event_a": "EVT_entity_2_o6",
+          "event_b": "EVT_entity_3_o7",
+          "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
         }
       ],
       "unresolved_entities": [],
       "stage_timings": {
         "stage_1_validation": 0.0001,
-        "stage_2_enrichment": 0.0018,
+        "stage_2_enrichment": 0.0016,
         "stage_3_ordering": 0.0,
-        "stage_4_5_temporal": 0.0,
-        "stage_6_causal": 0.1098,
+        "stage_4_5_temporal": 0.0001,
+        "stage_6_causal": 0.0041,
         "stage_7_uncertainty": 0.0,
-        "stage_8_conflicts": 0.0,
+        "stage_8_conflicts": 0.0001,
         "stage_10_explainability": 0.0001,
-        "stage_11_narrative": 0.0,
-        "stage_12_versioning": 0.0006,
-        "stage_13_export": 0.0065
+        "stage_11_narrative": 0.0001,
+        "stage_12_versioning": 0.0023,
+        "stage_13_export": 0.0095
       },
-      "total_time_sec": 0.1193,
-      "validation_warnings": [
-        "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
-      ],
-      "llm_backend_used": "CloudLLMFallback",
-      "llm_calls_made": 1,
+      "total_time_sec": 0.0193,
+      "validation_warnings": [],
+      "llm_backend_used": "NoOpLLMFallback",
+      "llm_calls_made": 0,
       "output_classification": "AMBIGUOUS",
-      "output_classification_reason": "avg_confidence=0.84, conflict_fraction=0.00, unresolved_ratio=0.50 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+      "output_classification_reason": "avg_confidence=0.82, conflict_fraction=0.17, unresolved_ratio=0.50 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
     }
   ],
-  "generated_at": "2026-08-30T14:38:16.912187+00:00",
+  "generated_at": "2026-08-31T08:01:43.166014+00:00",
   "status": "complete"
 }

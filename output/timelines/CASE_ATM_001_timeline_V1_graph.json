@@ -46,6 +46,21 @@
       ]
     },
     {
+      "id": "EVT_unresolved_person_14_o4",
+      "timestamp": "2024-01-15T10:04:59Z",
+      "ts_epoch": 1705313099.0,
+      "entity_id": "UNRESOLVED_person_14",
+      "primary_alias": "Person_14",
+      "confidence": 0.78,
+      "location": "ATM street frontage, wide-angle coverage",
+      "modality": "video",
+      "content": "Individual seen fiddling with the ATM card insertion area.",
+      "conflict_flag": false,
+      "obs_ids": [
+        "O4"
+      ]
+    },
+    {
       "id": "EVT_entity_1_o5",
       "timestamp": "2024-01-15T10:05:20Z",
       "ts_epoch": 1705313120.0,
@@ -125,6 +140,14 @@
     },
     {
       "source": "EVT_entity_1_o1",
+      "target": "EVT_unresolved_person_14_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6852,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o1",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
       "confidence": 0.6735,
@@ -134,10 +157,10 @@
     {
       "source": "EVT_entity_1_o2",
       "target": "EVT_entity_1_o3",
-      "edge_type": "TEMPORAL",
-      "confidence": 0.95,
+      "edge_type": "CAUSAL",
+      "confidence": 0.7,
       "relation": "BEFORE",
-      "label": "BEFORE (0.95)"
+      "label": "local LLM: Lingering near the ATM likely prompted the suspect to push into the enclosure."
     },
     {
       "source": "EVT_entity_1_o2",
@@ -148,12 +171,36 @@
       "label": "action dependency: LOITER->EXIT"
     },
     {
+      "source": "EVT_entity_1_o2",
+      "target": "EVT_unresolved_person_14_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6,
+      "relation": "BEFORE",
+      "label": "local LLM: Lingering near the ATM likely led the suspect to fiddle with the card insertion area."
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_unresolved_person_14_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: Pushing into the enclosure enabled the suspect to fiddle with the card insertion area."
+    },
+    {
       "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
       "confidence": 0.6623,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_person_14_o4",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6624,
+      "relation": "BEFORE",
+      "label": "action dependency: TAMPER->EXIT"
     },
     {
       "source": "EVT_entity_1_o5",
@@ -191,11 +238,27 @@
     },
     {
       "source": "EVT_entity_1_o1",
+      "target": "EVT_unresolved_person_14_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6852,
+      "relation": "BEFORE",
+      "label": "action dependency: APPROACH->TAMPER"
+    },
+    {
+      "source": "EVT_entity_1_o1",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
       "confidence": 0.6735,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o2",
+      "target": "EVT_entity_1_o3",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7,
+      "relation": "BEFORE",
+      "label": "local LLM: Lingering near the ATM likely prompted the suspect to push into the enclosure."
     },
     {
       "source": "EVT_entity_1_o2",
@@ -206,12 +269,36 @@
       "label": "action dependency: LOITER->EXIT"
     },
     {
+      "source": "EVT_entity_1_o2",
+      "target": "EVT_unresolved_person_14_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6,
+      "relation": "BEFORE",
+      "label": "local LLM: Lingering near the ATM likely led the suspect to fiddle with the card insertion area."
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_unresolved_person_14_o4",
+      "edge_type": "CAUSAL",
+      "confidence": 0.8,
+      "relation": "BEFORE",
+      "label": "local LLM: Pushing into the enclosure enabled the suspect to fiddle with the card insertion area."
+    },
+    {
       "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
       "confidence": 0.6623,
       "relation": "BEFORE",
       "label": "same entity, semantically same location (sim=1.00), sequential"
+    },
+    {
+      "source": "EVT_unresolved_person_14_o4",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6624,
+      "relation": "BEFORE",
+      "label": "action dependency: TAMPER->EXIT"
     },
     {
       "source": "EVT_entity_2_o7",
@@ -222,6 +309,6 @@
       "label": "action dependency: EXIT->OBSERVE"
     }
   ],
-  "node_count": 7,
-  "edge_count": 9
+  "node_count": 8,
+  "edge_count": 13
 }

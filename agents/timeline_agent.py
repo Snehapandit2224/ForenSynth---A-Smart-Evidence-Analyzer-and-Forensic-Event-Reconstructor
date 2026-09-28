@@ -61,6 +61,7 @@ log = logging.getLogger("forensynth.timeline_agent")
 CLOUD_LLM_MODEL: str = os.environ.get("TIMELINE_CLOUD_LLM_MODEL", "openai/gpt-oss-20b")
 CLOUD_LLM_TIMEOUT_SEC: float = 20.0
 
+
 # Local-only fallback (opt-in via env var; talks only to localhost / in-process)
 LOCAL_LLM_BACKEND: str = os.environ.get("TIMELINE_LOCAL_LLM_BACKEND", "")  # "", "ollama", "llama_cpp_server", "transformers"
 LOCAL_LLM_MODEL: str = os.environ.get("TIMELINE_LOCAL_LLM_MODEL", "")

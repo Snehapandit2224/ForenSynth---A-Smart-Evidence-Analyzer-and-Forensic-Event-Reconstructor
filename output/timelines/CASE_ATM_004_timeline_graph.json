@@ -124,10 +124,10 @@
     {
       "id": "EVT_entity_3_o14",
       "timestamp": "2024-01-15T10:03:31Z",
-      "ts_epoch": 1705313010.9999998,
+      "ts_epoch": 1705313011.0,
       "entity_id": "entity_3",
-      "primary_alias": "Person_55",
-      "confidence": 0.788,
+      "primary_alias": "log_43",
+      "confidence": 0.8027,
       "location": "remote — email server log",
       "modality": "text",
       "content": "Two individuals left together quickly. One carrying a bag. (forwarded)",
@@ -137,12 +137,12 @@
       ]
     },
     {
-      "id": "EVT_entity_3_o13",
+      "id": "EVT_entity_4_o13",
       "timestamp": "2024-01-15T10:03:34Z",
       "ts_epoch": 1705313014.0,
-      "entity_id": "entity_3",
+      "entity_id": "entity_4",
       "primary_alias": "Person_55",
-      "confidence": 0.7871,
+      "confidence": 0.7796,
       "location": "ATM vicinity, bystander position",
       "modality": "audio",
       "content": "They exited the kiosk and separated immediately (per call log transcript).",
@@ -152,12 +152,12 @@
       ]
     },
     {
-      "id": "EVT_entity_3_o12",
+      "id": "EVT_entity_4_o12",
       "timestamp": "2024-01-15T10:03:56Z",
       "ts_epoch": 1705313036.0,
-      "entity_id": "entity_3",
+      "entity_id": "entity_4",
       "primary_alias": "Person_55",
-      "confidence": 0.7223,
+      "confidence": 0.7148,
       "location": "ATM lobby doorway, entry/exit point",
       "modality": "video",
       "content": "Person at bus stop observed watching two individuals walk away quickly.",
@@ -338,17 +338,17 @@
     },
     {
       "source": "EVT_entity_3_o14",
-      "target": "EVT_entity_3_o13",
+      "target": "EVT_entity_4_o13",
       "edge_type": "TEMPORAL",
       "confidence": 0.9,
       "relation": "SIMULTANEOUS",
       "label": "SIMULTANEOUS (0.90)"
     },
     {
-      "source": "EVT_entity_3_o13",
-      "target": "EVT_entity_3_o12",
+      "source": "EVT_entity_4_o13",
+      "target": "EVT_entity_4_o12",
       "edge_type": "CAUSAL",
-      "confidence": 0.6943,
+      "confidence": 0.6875,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     }
@@ -475,10 +475,10 @@
       "label": "same entity, semantically same location (sim=0.86), sequential"
     },
     {
-      "source": "EVT_entity_3_o13",
-      "target": "EVT_entity_3_o12",
+      "source": "EVT_entity_4_o13",
+      "target": "EVT_entity_4_o12",
       "edge_type": "CAUSAL",
-      "confidence": 0.6943,
+      "confidence": 0.6875,
       "relation": "BEFORE",
       "label": "action dependency: EXIT->OBSERVE"
     }

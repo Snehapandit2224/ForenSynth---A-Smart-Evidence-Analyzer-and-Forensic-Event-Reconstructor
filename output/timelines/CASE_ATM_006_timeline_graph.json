@@ -51,11 +51,11 @@
       "ts_epoch": 1705313114.0,
       "entity_id": "entity_2",
       "primary_alias": "Speaker_E",
-      "confidence": 0.6822,
+      "confidence": 0.484,
       "location": "ATM vicinity, bystander position",
       "modality": "audio",
       "content": "I deny witnessing the departures described.",
-      "conflict_flag": false,
+      "conflict_flag": true,
       "obs_ids": [
         "O6"
       ]
@@ -76,12 +76,12 @@
       ]
     },
     {
-      "id": "EVT_entity_2_o7",
+      "id": "EVT_entity_3_o7",
       "timestamp": "2024-01-15T10:05:24Z",
       "ts_epoch": 1705313124.0,
-      "entity_id": "entity_2",
-      "primary_alias": "Speaker_E",
-      "confidence": 0.8266,
+      "entity_id": "entity_3",
+      "primary_alias": "sms_93",
+      "confidence": 0.8748,
       "location": "remote — mobile network SMS",
       "modality": "text",
       "content": "Two individuals left together quickly. One carrying a bag.",
@@ -158,7 +158,7 @@
     },
     {
       "source": "EVT_entity_1_o5",
-      "target": "EVT_entity_2_o7",
+      "target": "EVT_entity_3_o7",
       "edge_type": "TEMPORAL",
       "confidence": 0.9,
       "relation": "SIMULTANEOUS",
