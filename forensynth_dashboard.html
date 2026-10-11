@@ -144,7 +144,7 @@ html,body{height:100%;background:var(--graphite);color:var(--text-primary);font-
 /* ── Input Zone ──────────────────────────────────────── */
 .input-zone{
   padding:24px 24px 0;
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
 }
 
 .drop-card{
@@ -184,6 +184,28 @@ html,body{height:100%;background:var(--graphite);color:var(--text-primary);font-
 .drop-card.has-file .drop-filename{display:block;}
 .drop-card.has-file .drop-hint{display:none;}
 input[type=file]{display:none;}
+
+/* ── Audio Evidence ──────────────────────────────────── */
+.audio-zone{display:none;}
+.audio-zone.visible{display:block;}
+.audio-zone .human-input-header{cursor:default;}
+.audio-zone .human-input-body{display:block;}
+.audio-clip-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.audio-clip-name{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--olive);
+  width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.audio-clip-row .constraint-input{min-width:0;}
+.audio-clip-row .audio-clip-time{flex:0 0 200px;color-scheme:dark;}
+.audio-clip-remove{
+  background:none;border:1px solid var(--border);border-radius:5px;
+  color:var(--text-muted);font-size:11px;padding:5px 8px;cursor:pointer;
+}
+.audio-clip-remove:hover{border-color:var(--merlot);color:var(--bone);}
+.audio-clip-head{
+  display:flex;gap:8px;margin:12px 0 6px;
+  font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);
+}
 
 /* ── Human Input ─────────────────────────────────────── */
 .human-input-zone{
@@ -774,6 +796,43 @@ input[type=file]{display:none;}
           <input type="file" id="fileObs" accept=".json" onchange="loadFile(event,'dropObs','obsName','obsData')"/>
         </div>
 
+        <!-- Drop: Audio evidence (Audio Field Agent builds the observations) -->
+        <div class="drop-card" id="dropAudio"
+             onclick="document.getElementById('fileAudio').click()"
+             ondragover="handleDragOver(event,'dropAudio')"
+             ondragleave="handleDragLeave('dropAudio')"
+             ondrop="handleAudioDrop(event)">
+          <div class="drop-label">Raw Evidence</div>
+          <div class="drop-icon">🎙</div>
+          <div class="drop-title">Audio Recordings</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.wav .mp3 .m4a .flac .ogg</code> or click to browse<br/>Transcribed into observations, then run</div>
+          <div class="drop-filename" id="audioName">—</div>
+          <input type="file" id="fileAudio" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*" multiple onchange="addAudioFiles(event.target.files); event.target.value='';"/>
+        </div>
+
+      </div>
+
+      <!-- Audio evidence details (shown once recordings are added) -->
+      <div class="human-input-zone audio-zone" id="audioZone">
+        <div class="human-input-header">
+          <span class="human-input-label">Audio Evidence Details</span>
+          <span class="human-input-sub">Audio alone cannot tell when or where it was recorded</span>
+        </div>
+        <div class="human-input-body">
+          <div class="constraint-row">
+            <div class="constraint-label">Case ID</div>
+            <div style="flex:1;">
+              <input class="constraint-input" id="audioCaseId" style="width:100%;" placeholder="CASE_AUD_001"/>
+            </div>
+          </div>
+          <div class="audio-clip-head">
+            <div style="width:180px;flex-shrink:0;">Recording</div>
+            <div style="flex:0 0 200px;">Recording start time</div>
+            <div style="flex:1;">Location</div>
+          </div>
+          <div id="audioClipList"></div>
+          <div class="constraint-hint" style="padding-left:0;">Speakers are labelled per recording; the ER agent links the same person across recordings by voice.</div>
+        </div>
       </div>
 
       <!-- Human Input Panel -->
@@ -857,7 +916,7 @@ input[type=file]{display:none;}
       <div class="empty-state" id="emptyState">
         <div class="empty-icon">🔍</div>
         <div class="empty-title">No reconstruction yet</div>
-        <div class="empty-sub">Drop a case file and observations file above, configure any investigator overrides, then run the pipeline.</div>
+        <div class="empty-sub">Drop a case file and observations file above — or audio recordings — configure any investigator overrides, then run the pipeline.</div>
       </div>
     </div>
 
@@ -952,6 +1011,8 @@ let caseData = null;
 let obsData  = null;
 let currentResult = null;
 let cases = [];
+let audioFiles = [];       // [{file, start, location}] — alternative to obsData
+let audioObsCache = null;  // {key, obs} — skip re-transcribing unchanged audio
 
 // ── Mock DB — persists across page interactions in sessionStorage ──────────
 function loadCases() {
@@ -990,7 +1051,11 @@ function loadFile(event, cardId, nameId, dataKey) {
     try {
       const data = JSON.parse(e.target.result);
       if (dataKey === 'caseData') caseData = data;
-      else obsData = data;
+      else {
+        obsData = data;
+        // an observations file and audio recordings are alternative inputs
+        if (audioFiles.length) { audioFiles = []; renderAudioPanel(); }
+      }
       document.getElementById(nameId).textContent = file.name;
       document.getElementById(cardId).classList.add('has-file');
       document.getElementById(cardId).classList.remove('drag-over');
@@ -1005,6 +1070,130 @@ function loadFile(event, cardId, nameId, dataKey) {
     }
   };
   reader.readAsText(file);
+}
+
+// ── Audio evidence (Audio Field Agent) ─────────────────────────────────────
+function handleAudioDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropAudio').classList.remove('drag-over');
+  addAudioFiles(e.dataTransfer.files);
+}
+
+function addAudioFiles(fileList) {
+  const picked = Array.from(fileList || []).filter(f => /\.(wav|mp3|m4a|flac|ogg)$/i.test(f.name));
+  if (!picked.length) {
+    showToast('Unsupported File', 'Audio must be .wav, .mp3, .m4a, .flac or .ogg.', true);
+    return;
+  }
+  picked.forEach(f => {
+    if (!audioFiles.some(a => a.file.name === f.name)) audioFiles.push({ file: f, start: '', location: '' });
+  });
+  // an observations file and audio recordings are alternative inputs
+  if (obsData) {
+    obsData = null;
+    document.getElementById('dropObs').classList.remove('has-file');
+    document.getElementById('obsName').textContent = '—';
+  }
+  const idInput = document.getElementById('audioCaseId');
+  if (!idInput.value.trim()) {
+    const d = new Date(), p = n => String(n).padStart(2, '0');
+    idInput.value = `CASE_AUD_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
+  }
+  renderAudioPanel();
+  showToast('Audio Added', picked.length + ' recording(s) ready — set start time and location.');
+}
+
+function removeAudioFile(idx) {
+  audioFiles.splice(idx, 1);
+  renderAudioPanel();
+}
+
+function renderAudioPanel() {
+  const has = audioFiles.length > 0;
+  document.getElementById('audioZone').classList.toggle('visible', has);
+  document.getElementById('dropAudio').classList.toggle('has-file', has);
+  document.getElementById('audioName').textContent =
+    has ? audioFiles.length + ' recording' + (audioFiles.length > 1 ? 's' : '') : '—';
+
+  const list = document.getElementById('audioClipList');
+  list.textContent = '';
+  audioFiles.forEach((clip, idx) => {
+    const row = document.createElement('div');
+    row.className = 'audio-clip-row';
+
+    const name = document.createElement('div');
+    name.className = 'audio-clip-name';
+    name.textContent = clip.file.name;
+    name.title = clip.file.name;
+
+    const time = document.createElement('input');
+    time.type = 'datetime-local';
+    time.step = '1';
+    time.className = 'constraint-input audio-clip-time';
+    time.value = clip.start;
+    time.oninput = () => { clip.start = time.value; };
+
+    const loc = document.createElement('input');
+    loc.className = 'constraint-input';
+    loc.placeholder = 'e.g. near ATM location, mobile network';
+    loc.value = clip.location;
+    loc.oninput = () => { clip.location = loc.value; };
+
+    const rm = document.createElement('button');
+    rm.className = 'audio-clip-remove';
+    rm.textContent = '✕';
+    rm.title = 'Remove recording';
+    rm.onclick = () => removeAudioFile(idx);
+
+    row.append(name, time, loc, rm);
+    list.appendChild(row);
+  });
+}
+
+// Returns an error message, or '' when the audio inputs are complete.
+function validateAudioInputs() {
+  const caseId = document.getElementById('audioCaseId').value.trim();
+  if (!/^[A-Za-z0-9_-]{1,64}$/.test(caseId)) return "Case ID may only contain letters, digits, '_' and '-'.";
+  const incomplete = audioFiles.find(c => !c.start || !c.location.trim());
+  if (incomplete) return `Set the start time and location for ${incomplete.file.name}.`;
+  return '';
+}
+
+// Upload the recordings and run the Audio Field Agent; resolves to obs_only JSON.
+async function extractAudioObservations() {
+  const caseId = document.getElementById('audioCaseId').value.trim();
+  const key = JSON.stringify([caseId, audioFiles.map(c => [c.file.name, c.file.size, c.file.lastModified, c.start, c.location.trim()])]);
+  if (audioObsCache && audioObsCache.key === key) return audioObsCache.obs;
+
+  for (let i = 0; i < audioFiles.length; i++) {
+    const f = audioFiles[i].file;
+    setProgress(100, `Uploading recording ${i + 1} of ${audioFiles.length}…`);
+    const up = await fetch(`/api/audio-upload?case_id=${encodeURIComponent(caseId)}&filename=${encodeURIComponent(f.name)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/octet-stream' },
+      body: f,
+    });
+    if (!up.ok) {
+      const err = await up.json().catch(() => ({}));
+      throw new Error(err.detail || `Upload of ${f.name} failed.`);
+    }
+  }
+
+  setProgress(100, 'Audio Field Agent: transcribing and identifying speakers (this can take a few minutes)…');
+  const resp = await fetch('/api/extract-audio', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      case_id: caseId,
+      clips: audioFiles.map(c => ({ filename: c.file.name, start_time: c.start, location: c.location.trim() })),
+    }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) {
+    throw new Error(data.error ? `${data.error}\n${(data.stderr||'').slice(-500)}` : (data.detail || 'Audio extraction failed.'));
+  }
+  audioObsCache = { key, obs: data };
+  return data;
 }
 
 // ── Human input toggle ─────────────────────────────────────────────────────
@@ -1064,9 +1253,13 @@ function parseConstraintPairs(raw) {
 }
 
 async function runPipeline() {
-  if (!obsData) {
-    showToast('Missing Input', 'Drop an observations (_obs_only.json) file to run.', true);
+  if (!obsData && !audioFiles.length) {
+    showToast('Missing Input', 'Drop an observations (_obs_only.json) file or audio recordings to run.', true);
     return;
+  }
+  if (audioFiles.length) {
+    const audioErr = validateAudioInputs();
+    if (audioErr) { showToast('Audio Details Missing', audioErr, true); return; }
   }
   const btn = document.getElementById('runBtn');
   btn.classList.add('running');
@@ -1084,14 +1277,20 @@ async function runPipeline() {
     showToast('Constraint Parse Error', 'Must Merge / Must Not Merge must be pairs like ["A","B"], ["C","D"]. Ignoring invalid field(s).', true);
   }
 
-  const payload = {
-    obs_data: obsData,
-    no_llm: noLlm,
-    must_merge: mustMerge === 'PARSE_ERROR' ? null : mustMerge,
-    must_not_merge: mustNotMerge === 'PARSE_ERROR' ? null : mustNotMerge,
-  };
-
   try {
+    const runObs = audioFiles.length ? await extractAudioObservations() : obsData;
+    if (audioFiles.length) {
+      document.getElementById('topbarTitle').textContent = runObs.case_id;
+      setProgress(100, `Audio transcribed (${runObs.observations.length} observations) — running ER → Timeline → Critique → Showrunner…`);
+    }
+
+    const payload = {
+      obs_data: runObs,
+      no_llm: noLlm,
+      must_merge: mustMerge === 'PARSE_ERROR' ? null : mustMerge,
+      must_not_merge: mustNotMerge === 'PARSE_ERROR' ? null : mustNotMerge,
+    };
+
     const resp = await fetch('/api/run-pipeline', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1440,6 +1639,9 @@ function startNewCase() {
 
 function clearAll() {
   caseData = null; obsData = null; currentResult = null;
+  audioFiles = []; audioObsCache = null;
+  document.getElementById('audioCaseId').value = '';
+  renderAudioPanel();
   ['dropCase','dropObs'].forEach(id=>{
     const el = document.getElementById(id);
     el.classList.remove('has-file','drag-over');
