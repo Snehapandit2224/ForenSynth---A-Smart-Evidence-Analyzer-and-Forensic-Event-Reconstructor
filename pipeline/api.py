@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import sqlite3
 import subprocess
 import sys
@@ -23,7 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -34,11 +33,6 @@ PYTHON    = sys.executable
 RUN_CASE  = str(_root / "pipeline" / "run_case.py")
 DB_PATH   = str(_root / "forensynth.db")
 UPLOAD_DIR = _root / "output" / "_uploads"
-AUDIO_AGENT = str(_root / "agents" / "field_agents" / "audio_agent.py")
-
-AUDIO_EXTENSIONS = {".wav", ".mp3", ".m4a", ".flac", ".ogg"}
-_SAFE_ID       = re.compile(r"[A-Za-z0-9_-]{1,64}")
-_SAFE_FILENAME = re.compile(r"[A-Za-z0-9 ._()-]{1,128}")
 
 TABLES_WITH_CASE_ID = [
     "cases", "observations", "er_runs", "er_canonical", "er_clusters",
@@ -66,19 +60,6 @@ class RunPipelineRequest(BaseModel):
     no_llm: bool = False
     must_merge: Optional[list[list[str]]] = None
     must_not_merge: Optional[list[list[str]]] = None
-
-
-class AudioClip(BaseModel):
-    filename: str
-    start_time: str          # ISO 8601 wall-clock time the recording starts
-    location: str
-    source: Optional[str] = None
-
-
-class ExtractAudioRequest(BaseModel):
-    case_id: str
-    clips: list[AudioClip]
-    language: str = "en"
 
 
 # ── DB helpers ────────────────────────────────────────────────────────────────
@@ -207,80 +188,6 @@ def run_pipeline(req: RunPipelineRequest):
 
     result = _build_result(case_id, req.obs_data, req.no_llm)
     return result
-
-
-def _audio_dir(case_id: str) -> Path:
-    if not _SAFE_ID.fullmatch(case_id or ""):
-        raise HTTPException(status_code=400, detail="case_id may only contain letters, digits, '_' and '-'")
-    return UPLOAD_DIR / "audio" / case_id
-
-
-@app.post("/api/audio-upload")
-async def audio_upload(case_id: str, filename: str, request: Request):
-    """Store one raw audio file (request body = file bytes) for a case.
-    Raw body rather than multipart so the API needs no extra dependency."""
-    name = Path(filename).name
-    if Path(name).suffix.lower() not in AUDIO_EXTENSIONS or not _SAFE_FILENAME.fullmatch(name):
-        raise HTTPException(status_code=400, detail=f"Unsupported audio file name: {filename}")
-    data = await request.body()
-    if not data:
-        raise HTTPException(status_code=400, detail="Empty upload")
-    target_dir = _audio_dir(case_id)
-    target_dir.mkdir(parents=True, exist_ok=True)
-    (target_dir / name).write_bytes(data)
-    return {"filename": name, "bytes": len(data)}
-
-
-@app.post("/api/extract-audio")
-def extract_audio(req: ExtractAudioRequest):
-    """Run the Audio Field Agent over a case's uploaded clips and return the
-    resulting obs_only JSON - the same shape /api/run-pipeline takes as
-    obs_data."""
-    audio_dir = _audio_dir(req.case_id)
-    if not req.clips:
-        raise HTTPException(status_code=400, detail="No audio clips given")
-
-    manifest = []
-    for clip in req.clips:
-        name = Path(clip.filename).name
-        if not (audio_dir / name).is_file():
-            raise HTTPException(status_code=400, detail=f"{name} has not been uploaded for {req.case_id}")
-        if not clip.start_time.strip() or not clip.location.strip():
-            raise HTTPException(status_code=400, detail=f"{name}: start time and location are required")
-        manifest.append({
-            "path": name,
-            "start_time": clip.start_time.strip(),
-            "location": clip.location.strip(),
-            "source": (clip.source or "").strip() or None,
-        })
-    manifest_path = audio_dir / "clips.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-
-    cmd = [PYTHON, AUDIO_AGENT, "--manifest", str(manifest_path),
-           "--case-id", req.case_id, "--output", str(audio_dir),
-           "--language", req.language]
-    proc = subprocess.run(
-        cmd, capture_output=True, text=True, encoding="utf-8",
-        cwd=str(_root), env=dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8"),
-    )
-    out_path = audio_dir / f"{req.case_id}_obs_only.json"
-    if proc.returncode != 0 or not out_path.is_file():
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": f"audio_agent.py exited with code {proc.returncode}",
-                "stdout": proc.stdout[-4000:],
-                "stderr": proc.stderr[-4000:],
-            },
-        )
-
-    obs_data = json.loads(out_path.read_text(encoding="utf-8"))
-    if not obs_data.get("observations"):
-        return JSONResponse(
-            status_code=422,
-            content={"error": "No speech was transcribed from the uploaded audio."},
-        )
-    return obs_data
 
 
 @app.get("/api/case/{case_id}")
