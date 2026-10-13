@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_007",
   "timeline_version": "V2",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-26T06:22:49Z",
+  "generated_at": "2026-08-29T11:23:56Z",
   "events": [
     {
       "event_id": "EVT_unresolved_log_66_o3",
@@ -2268,19 +2268,19 @@
     "Speaker_M"
   ],
   "stage_timings": {
-    "stage_1_validation": 0.0004,
-    "stage_2_enrichment": 0.0014,
+    "stage_1_validation": 0.0002,
+    "stage_2_enrichment": 0.001,
     "stage_3_ordering": 0.0,
-    "stage_4_5_temporal": 0.0001,
-    "stage_6_causal": 9.6784,
+    "stage_4_5_temporal": 0.0,
+    "stage_6_causal": 14.5873,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
     "stage_10_explainability": 0.0001,
-    "stage_11_narrative": 0.0001,
-    "stage_12_versioning": 0.0011,
-    "stage_13_export": 0.0088
+    "stage_11_narrative": 0.0,
+    "stage_12_versioning": 0.0005,
+    "stage_13_export": 0.0096
   },
-  "total_time_sec": 9.6919,
+  "total_time_sec": 14.5994,
   "validation_warnings": [
     "No canonical entities found - all observations will be treated as unresolved"
   ],

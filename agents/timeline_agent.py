@@ -724,7 +724,7 @@ class CloudLLMFallback(BaseLLMFallback):
     def __init__(
         self,
         api_key: str = "",
-        model: str = "llama-3.1-8b-instant",
+        model: str = "openai/gpt-oss-20b",
         timeout_sec: float = 20.0,
     ) -> None:
         self._model = model

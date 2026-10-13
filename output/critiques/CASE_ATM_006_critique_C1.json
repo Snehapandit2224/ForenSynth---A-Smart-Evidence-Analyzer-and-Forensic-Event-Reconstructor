@@ -17,41 +17,117 @@
     "llm_coherence"
   ],
   "llm_used": true,
-  "overall_score": 0.9,
+  "overall_score": 0.86,
   "requires_revision": true,
-  "revision_target": "er",
-  "narrative_summary": "Case CASE_ATM_006 (pass 1): REVISE. 0 blocking, 1 warning(s), 0 info. Top: role_count_mismatch \u2014 FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can",
+  "revision_target": "timeline",
+  "narrative_summary": "Case CASE_ATM_006 (pass 1): REVISE. 0 blocking, 1 warning(s), 2 info. Top: llm_edge_dependency_ratio \u2014 2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
   "belief_updates": {},
   "issues": [
     {
-      "check": "role_count_mismatch",
-      "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "check": "llm_edge_dependency_ratio",
+      "severity": "info",
+      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "re_run_er",
+      "showrunner_action": "",
       "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
+      "issue_type": "llm_edge_dependency_ratio",
+      "description": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "recommendation": "Informational.",
       "event_id": "",
       "affected_obs": []
+    },
+    {
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_1_o4",
+        "EVT_entity_1_o5"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o4",
+      "affected_obs": [
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o6"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o6",
+      "affected_obs": [
+        "O6"
+      ]
     }
   ],
   "gaps": [
     {
-      "check": "role_count_mismatch",
-      "severity": "warning",
-      "detail": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
+      "check": "llm_edge_dependency_ratio",
+      "severity": "info",
+      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
       "flagged_edges": [],
       "must_not_merge": [],
-      "showrunner_action": "re_run_er",
+      "showrunner_action": "",
       "affected_events": [],
-      "issue_type": "role_count_mismatch",
-      "description": "FIR role count mismatch: FIR states 3 distinct 'suspect' role(s), but only 1 were resolved. This can mean the clustering over-merged distinct people, OR that some FIR-claimed actors simply have no observations in this evidence set (a legitimate gap, not an error) - the pipeline cannot distinguish the two without ground truth. Review manually. Indicates ER over-merged suspects or missing observations.",
-      "recommendation": "re_run_er",
+      "issue_type": "llm_edge_dependency_ratio",
+      "description": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "recommendation": "Informational.",
       "event_id": "",
       "affected_obs": []
+    },
+    {
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_1_o4",
+        "EVT_entity_1_o5"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o4",
+      "affected_obs": [
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o6"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o6",
+      "affected_obs": [
+        "O6"
+      ]
     }
   ],
   "edges_to_exclude": [],
@@ -60,6 +136,9 @@
     "must_merge": [],
     "soft_hints": {}
   },
-  "unresolvable_gaps": [],
-  "recommended_action": "RECHECK_OBSERVATIONS"
+  "unresolvable_gaps": [
+    "llm_edge_dependency_ratio",
+    "low_confidence_event"
+  ],
+  "recommended_action": "REBUILD_WITH_BELIEF_UPDATE"
 }

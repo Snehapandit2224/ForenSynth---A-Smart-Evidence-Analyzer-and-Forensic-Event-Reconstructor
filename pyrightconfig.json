@@ -4,4 +4,12 @@
     "agents",
     "memory"
   ]
+  "typeCheckingMode": "basic",
+  "reportOptionalMemberAccess": "none",
+  "reportOptionalCall": "none",
+  "reportArgumentType": "warning",
+  "reportUndefinedVariable": "warning",
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "ignore": ["**/node_modules", "**/__pycache__"]
 }

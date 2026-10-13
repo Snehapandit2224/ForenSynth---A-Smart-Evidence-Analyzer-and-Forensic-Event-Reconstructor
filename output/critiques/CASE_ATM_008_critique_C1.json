@@ -20,49 +20,48 @@
   "overall_score": 0.6,
   "requires_revision": true,
   "revision_target": "er",
-  "narrative_summary": "Case CASE_ATM_008 (pass 1): REVISE. 0 blocking, 4 warning(s), 0 info. Top: missing_linking_event \u2014 Rule chain 'ENTER->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o5 and E",
+  "narrative_summary": "Case CASE_ATM_008 (pass 1): REVISE. 0 blocking, 4 warning(s), 0 info. Top: missing_linking_event \u2014 Rule chain 'APPROACH->ENTER->WITHDRAW' broken for entity_1: 'ENTER' missing between EVT_entity_1_o1_",
   "belief_updates": {},
   "issues": [
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'ENTER->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'APPROACH->ENTER->WITHDRAW' broken for entity_1: 'ENTER' missing between EVT_entity_1_o1_o2 and EVT_entity_1_o3 (76s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_1_o5",
-        "EVT_entity_1_o10_o11_o9"
+        "EVT_entity_1_o1_o2",
+        "EVT_entity_1_o3"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'ENTER->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'APPROACH->ENTER->WITHDRAW' broken for entity_1: 'ENTER' missing between EVT_entity_1_o1_o2 and EVT_entity_1_o3 (76s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
-      "event_id": "EVT_entity_1_o5",
+      "event_id": "EVT_entity_1_o1_o2",
       "affected_obs": [
-        "O5",
-        "O10",
-        "O11",
-        "O9"
+        "O1",
+        "O2",
+        "O3"
       ]
     },
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o13 and EVT_entity_2_o12 (22s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o6 and EVT_entity_2_o7 (92s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_2_o13",
-        "EVT_entity_2_o12"
+        "EVT_entity_2_o6",
+        "EVT_entity_2_o7"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o13 and EVT_entity_2_o12 (22s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o6 and EVT_entity_2_o7 (92s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
-      "event_id": "EVT_entity_2_o13",
+      "event_id": "EVT_entity_2_o6",
       "affected_obs": [
-        "O13",
-        "O12"
+        "O6",
+        "O7"
       ]
     },
     {
@@ -98,43 +97,42 @@
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'ENTER->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'APPROACH->ENTER->WITHDRAW' broken for entity_1: 'ENTER' missing between EVT_entity_1_o1_o2 and EVT_entity_1_o3 (76s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_1_o5",
-        "EVT_entity_1_o10_o11_o9"
+        "EVT_entity_1_o1_o2",
+        "EVT_entity_1_o3"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'ENTER->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o5 and EVT_entity_1_o10_o11_o9 (99s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'APPROACH->ENTER->WITHDRAW' broken for entity_1: 'ENTER' missing between EVT_entity_1_o1_o2 and EVT_entity_1_o3 (76s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
-      "event_id": "EVT_entity_1_o5",
+      "event_id": "EVT_entity_1_o1_o2",
       "affected_obs": [
-        "O5",
-        "O10",
-        "O11",
-        "O9"
+        "O1",
+        "O2",
+        "O3"
       ]
     },
     {
       "check": "missing_linking_event",
       "severity": "warning",
-      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o13 and EVT_entity_2_o12 (22s). ER may have missed an observation cluster.",
+      "detail": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o6 and EVT_entity_2_o7 (92s). ER may have missed an observation cluster.",
       "flagged_edges": [],
       "must_not_merge": [],
       "showrunner_action": "re_run_timeline",
       "affected_events": [
-        "EVT_entity_2_o13",
-        "EVT_entity_2_o12"
+        "EVT_entity_2_o6",
+        "EVT_entity_2_o7"
       ],
       "issue_type": "missing_linking_event",
-      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o13 and EVT_entity_2_o12 (22s). ER may have missed an observation cluster.",
+      "description": "Rule chain 'EXIT->FLEE->OBSERVE' broken for entity_2: 'FLEE' missing between EVT_entity_2_o6 and EVT_entity_2_o7 (92s). ER may have missed an observation cluster.",
       "recommendation": "re_run_timeline",
-      "event_id": "EVT_entity_2_o13",
+      "event_id": "EVT_entity_2_o6",
       "affected_obs": [
-        "O13",
-        "O12"
+        "O6",
+        "O7"
       ]
     },
     {
