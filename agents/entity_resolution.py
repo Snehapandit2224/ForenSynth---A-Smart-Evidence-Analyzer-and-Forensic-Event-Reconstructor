@@ -988,7 +988,12 @@ class EntityResolutionPipeline:
         if same_loc or dt <= self.temporal_window_sec or (cross_modal and same_role and dt <= self.max_temporal_gap_sec):
           candidate_set.add(key)
 
-    all_candidates = list(forced) + [p for p in candidate_set if p not in forced]
+    # Sorted, never in set order: set iteration order for strings changes
+    # with Python's per-process hash seed, and everything downstream
+    # (scoring, edge order, Stage 9's order-dependent attachment, which
+    # pairs survive max_pairs) followed it - CASE_ATM_002 resolved
+    # differently under PYTHONHASHSEED=3 than under 1, 2 or 4.
+    all_candidates = sorted(forced) + sorted(p for p in candidate_set if p not in forced)
     self.candidate_pairs = all_candidates[: self.max_pairs]
 
   def _feat_mention_consistency(self, oa: Observation, ob: Observation) -> Tuple[float, bool]:
@@ -1775,7 +1780,7 @@ class EntityResolutionPipeline:
       cluster_output.append({
         "cluster_id": cid,
         "size": len(members),
-        "aliases": list({self._obs_by_id[oid].entity for oid in members if oid in self._obs_by_id}),
+        "aliases": sorted({self._obs_by_id[oid].entity for oid in members if oid in self._obs_by_id}),
         "obs_ids": sorted(members),
         "edges": edge_dicts,
       })
