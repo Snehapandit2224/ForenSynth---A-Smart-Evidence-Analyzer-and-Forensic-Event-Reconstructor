@@ -47,6 +47,7 @@ import logging
 import operator
 import subprocess
 import sys
+import threading
 from pathlib import Path
 from typing import Annotated, Any, Dict, List, Optional, TypedDict
 
@@ -134,16 +135,27 @@ _VIDEO_AGENT_DIR = _FIELD_AGENTS_DIR / "video_agent"
 _orchestrator = None
 
 
+_orchestrator_lock = threading.Lock()
+
+
 def _orch():
     """The field-agent orchestrator module, loaded by path: its folder name
-    ('text agent') has a space, so it cannot be imported as a package."""
+    ('text agent') has a space, so it cannot be imported as a package.
+
+    The modality nodes run in parallel threads and can all ask for it at
+    once, so loading is locked and the module is only published once fully
+    executed - otherwise a second thread could get a half-loaded module
+    (seen: text_intake failing with "no attribute 'run_text_agent'" while
+    audio_intake was still loading it)."""
     global _orchestrator
-    if _orchestrator is None:
-        path = _FIELD_AGENTS_DIR / "text agent" / "orchestrator.py"
-        spec = importlib.util.spec_from_file_location("forensynth_field_orchestrator", path)
-        _orchestrator = importlib.util.module_from_spec(spec)
-        sys.modules[spec.name] = _orchestrator
-        spec.loader.exec_module(_orchestrator)
+    with _orchestrator_lock:
+        if _orchestrator is None:
+            path = _FIELD_AGENTS_DIR / "text agent" / "orchestrator.py"
+            spec = importlib.util.spec_from_file_location("forensynth_field_orchestrator", path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            sys.modules[spec.name] = module
+            _orchestrator = module
     return _orchestrator
 
 
