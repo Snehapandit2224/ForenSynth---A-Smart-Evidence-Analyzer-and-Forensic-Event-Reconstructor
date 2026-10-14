@@ -61,7 +61,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-_ROOT = Path(__file__).parent.parent.parent
+_ROOT = Path(__file__).parents[3]
 for _p in (_ROOT / "memory", _ROOT):
     _sp = str(_p)
     if _sp not in sys.path:
@@ -122,6 +122,25 @@ def run_text_agent(case_id: str, inputs: list[Path], staging_dir: Path,
     out = staging_dir / f"{sub_case_id}_obs_only.json"
     if rc != 0 or not out.exists():
         log.warning("text_agent.py failed (exit %s) - continuing without text evidence.", rc)
+        return None
+    return out
+
+
+AUDIO_AGENT = _ROOT / "agents" / "field_agents" / "audio_agent.py"
+
+
+def run_audio_agent(case_id: str, manifest: Path, staging_dir: Path) -> Path | None:
+    """Audio recordings listed in a manifest ([{path, start_time, location,
+    source?}], see audio_agent.py) -> one obs_only file. Like text, a
+    failure skips the modality rather than the case."""
+    staging_dir.mkdir(parents=True, exist_ok=True)
+    sub_case_id = f"{case_id}__audio"
+    log.info("Running audio_agent.py on %s ...", manifest)
+    rc = _run([sys.executable, str(AUDIO_AGENT), "--case-id", sub_case_id,
+               "--manifest", str(manifest), "--output", str(staging_dir)])
+    out = staging_dir / f"{sub_case_id}_obs_only.json"
+    if rc != 0 or not out.exists():
+        log.warning("audio_agent.py failed (exit %s) - continuing without audio evidence.", rc)
         return None
     return out
 
@@ -283,6 +302,9 @@ def main() -> None:
     ap.add_argument("--fir", type=Path, help="FIR text file - anchors the case (see fir_agent.py)")
     ap.add_argument("--text-inputs", nargs="+", type=Path,
                      help="Text evidence files for text_agent.py (instead of the Enron pilot)")
+    ap.add_argument("--audio-manifest", type=Path,
+                     help="JSON list of recordings for audio_agent.py: "
+                          '[{"path", "start_time", "location", "source"}, ...]')
     ap.add_argument("--adopt-role-hints", action="store_true",
                      help="Copy LLM role hints with confidence >= 0.7 into `role` at intake")
     ap.add_argument("--staging", default="cases/_staging",
@@ -293,8 +315,8 @@ def main() -> None:
                      help="After saving, immediately run pipeline/run_case.py --case <id>")
     args = ap.parse_args()
 
-    if not (args.from_files or args.run_agents or args.fir or args.text_inputs):
-        print("[ERROR] Provide --from-files, --run-agents, --fir and/or --text-inputs.")
+    if not (args.from_files or args.run_agents or args.fir or args.text_inputs or args.audio_manifest):
+        print("[ERROR] Provide --from-files, --run-agents, --fir, --text-inputs and/or --audio-manifest.")
         sys.exit(1)
 
     staging = Path(args.staging)
@@ -312,6 +334,10 @@ def main() -> None:
         text_out = run_text_agent(args.case_id, args.text_inputs, staging, ref)
         if text_out:
             source_paths.append(text_out)
+    if args.audio_manifest:
+        audio_out = run_audio_agent(args.case_id, args.audio_manifest, staging)
+        if audio_out:
+            source_paths.append(audio_out)
 
     missing = [p for p in source_paths if not p.exists()]
     if missing:

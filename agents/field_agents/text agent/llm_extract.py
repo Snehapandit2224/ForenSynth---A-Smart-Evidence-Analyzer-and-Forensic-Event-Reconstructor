@@ -37,7 +37,7 @@ except ImportError:
 
 try:
     from dotenv import load_dotenv
-    load_dotenv(dotenv_path=Path(__file__).parent.parent.parent / ".env")
+    load_dotenv(dotenv_path=Path(__file__).parents[3] / ".env")
 except ImportError:
     pass
 

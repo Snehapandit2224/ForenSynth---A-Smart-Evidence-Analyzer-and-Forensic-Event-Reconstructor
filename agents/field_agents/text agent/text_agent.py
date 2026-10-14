@@ -157,7 +157,68 @@ def _conversation_doc(stem: str, recs: list[dict]) -> dict:
              doc_type_hint=recs[0]["doc_type"] or "chat", source=recs[0]["source"] or "chat",
              location=recs[0]["location"])
     d["is_transcript"] = True
+    d["messages"] = [(r["sent_at"], r["author"], r["text"]) for r in recs]
     return d
+
+
+def _records_to_docs(stem: str, recs: list[dict]) -> list[dict]:
+    if _is_conversation(recs):
+        return [_conversation_doc(stem, recs)]
+    return [_doc(f"{stem}#{i}", r["text"], author=r["author"], sent_at=r["sent_at"],
+                 doc_type_hint=r["doc_type"], source=r["source"], location=r["location"])
+            for i, r in enumerate(recs, start=1)]
+
+
+# Chat exports saved as plain text: WhatsApp Android "14/03/2025, 19:58 - Name: msg",
+# WhatsApp iOS "[14/03/2025, 19:58:00] Name: msg", generic "[2025-03-14 19:58] Name: msg";
+# 12-hour times ("7:58 pm") too. Numeric dates are read day-first (Indian exports).
+_CHAT_PREFIX = re.compile(
+    r"^\[?(\d{1,4}[/.-]\d{1,2}[/.-]\d{2,4}),?\s+(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[ap]\.?m\.?)?)\]?\s*(?:-\s+)?",
+    re.IGNORECASE)
+_CHAT_DATE_FMTS = ("%d/%m/%Y", "%d/%m/%y", "%Y/%m/%d")
+_CHAT_TIME_FMTS = ("%H:%M:%S", "%H:%M", "%I:%M:%S %p", "%I:%M %p", "%I:%M:%S%p", "%I:%M%p")
+
+
+def _chat_dt(date: str, time_: str) -> datetime | None:
+    date = re.sub(r"[.-]", "/", date)
+    time_ = re.sub(r"\s+", " ", time_.replace(".", "")).strip().upper()
+    for df in _CHAT_DATE_FMTS:
+        for tf in _CHAT_TIME_FMTS:
+            try:
+                return datetime.strptime(f"{date} {time_}", f"{df} {tf}")
+            except ValueError:
+                continue
+    return None
+
+
+def parse_chat_txt(text: str) -> list[dict] | None:
+    """Plain-text chat export -> message records (same shape the .json
+    loader builds), or None if the text doesn't look like one. Lines without
+    a timestamp continue the previous message; timestamped lines without a
+    "Sender: " part are system notices and are skipped."""
+    text = text.replace("‎", "").replace(" ", " ")
+    recs: list[dict] = []
+    stamped = total = 0
+    skipping = False
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        total += 1
+        m = _CHAT_PREFIX.match(line)
+        if not m:
+            if recs and not skipping:
+                recs[-1]["text"] += "\n" + line.strip()
+            continue
+        stamped += 1
+        sender, sep, msg = line[m.end():].partition(": ")
+        skipping = not sep or not sender.strip() or len(sender) > 60
+        if skipping:
+            continue
+        recs.append({"text": msg.strip(), "author": sender.strip(), "sent_at": _chat_dt(m.group(1), m.group(2)),
+                     "doc_type": "chat", "source": "chat_export", "location": None})
+    if len(recs) >= 2 and stamped * 2 >= total:
+        return [r for r in recs if r["text"]]
+    return None
 
 
 def load_file(path: Path) -> list[dict]:
@@ -185,12 +246,12 @@ def load_file(path: Path) -> list[dict]:
                 recs.append({"text": str(text).strip(), "author": r.get("author") or r.get("from") or r.get("sender"),
                              "sent_at": _parse_dt(r.get("timestamp") or r.get("date") or r.get("sent_at")),
                              "doc_type": r.get("doc_type"), "source": r.get("source"), "location": r.get("location")})
-        if _is_conversation(recs):
-            return [_conversation_doc(path.stem, recs)]
-        return [_doc(f"{path.stem}#{i}", r["text"], author=r["author"], sent_at=r["sent_at"],
-                     doc_type_hint=r["doc_type"], source=r["source"], location=r["location"])
-                for i, r in enumerate(recs, start=1)]
-    return [_doc(path.stem, path.read_text(encoding="utf-8"))]
+        return _records_to_docs(path.stem, recs)
+    text = path.read_text(encoding="utf-8-sig")
+    recs = parse_chat_txt(text) if suffix == ".txt" else None
+    if recs:
+        return _records_to_docs(path.stem, recs)
+    return [_doc(path.stem, text)]
 
 
 # --- Enron pilot loader (kept so `orchestrator.py --run-agents` still works with no inputs) ---
@@ -437,7 +498,18 @@ def _heuristic_confidence(content: str) -> float:
     return 0.6 if n < 6 else 0.7 if n < 20 else 0.75
 
 
-_TRANSCRIPT_LINE = re.compile(r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2})\] ([^:]+): (.+)$")
+def attach_message_times(doc: dict, events: list[dict]) -> None:
+    """Chat transcript: when the LLM gives an event no time of its own (or
+    just the document date, i.e. the FIRST message's time), use the time of
+    the message its evidence quote comes from - otherwise a whole chat
+    collapses onto one timestamp."""
+    for ev in events:
+        if ev["event_time"] is not None and ev["time_basis"] != "document_date":
+            continue
+        for sent_at, _author, msg in doc["messages"]:
+            if verify_quote(ev["evidence"], msg):
+                ev["event_time"], ev["time_basis"] = sent_at, "explicit"
+                break
 
 
 def extract_fallback(doc: dict) -> list[dict]:
@@ -445,15 +517,11 @@ def extract_fallback(doc: dict) -> list[dict]:
     understanding, just structure."""
     out = []
     if doc.get("is_transcript"):
-        for line in doc["text"].splitlines():
-            m = _TRANSCRIPT_LINE.match(line)
-            if not m:
-                continue
-            msg = m.group(3)
+        for sent_at, author, msg in doc["messages"]:
             out.append({
-                "actor": m.group(2).strip(), "role_hint": "unknown", "role_hint_confidence": 0.0,
+                "actor": author, "role_hint": "unknown", "role_hint_confidence": 0.0,
                 "role_reason": "", "content": msg, "evidence": msg,
-                "event_time": _parse_dt(m.group(1).replace(" ", "T")), "time_basis": "explicit",
+                "event_time": sent_at, "time_basis": "explicit",
                 "location": None, "mentioned_people": _people_ner(msg), "tags": [],
                 "confidence": _heuristic_confidence(msg),
             })
@@ -492,6 +560,8 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                 extraction = "llm"
         if events is None:
             events = extract_fallback(doc)
+        elif doc.get("is_transcript"):
+            attach_message_times(doc, events)
         source = source_override or doc_type or doc.get("doc_type_hint") or doc["source"]
 
         for ev in events:

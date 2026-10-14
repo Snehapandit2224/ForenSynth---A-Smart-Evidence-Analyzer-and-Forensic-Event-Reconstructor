@@ -45,7 +45,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "memory"))
+sys.path.insert(0, str(Path(__file__).parents[3] / "memory"))
 from llm_extract import (GROQ_MODEL, GroqJSON, clamp_conf, strip_honorific,  # noqa: E402
                          ungrounded_words, verify_quote)
 from text_agent import _doc, _parse_dt, build_case, extract_observations  # noqa: E402
