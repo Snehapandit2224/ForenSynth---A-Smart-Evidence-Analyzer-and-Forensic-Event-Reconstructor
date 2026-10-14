@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""
-ForenSynth – run_case.py
+r"""
+ForenSynth - run_case.py
 Runs the complete pipeline loop for a single case.
 
-    ER → Timeline → Critique → Showrunner → (loop back if needed) → done
+    ER -> Timeline -> Critique -> Showrunner -> (loop back if needed) -> done
 
 Usage:
-    python pipeline\run_case.py --input cases\cases_atm\CASE_ATM_001_obs_only.json
-    python pipeline\run_case.py --case CASE_ATM_001
-    python pipeline\run_case.py --input cases\cases_atm\CASE_ATM_001_obs_only.json --no-llm
+    python pipeline/run_case.py --input cases/cases_atm/CASE_ATM_001_obs_only.json
+    python pipeline/run_case.py --case CASE_ATM_001
+    python pipeline/run_case.py --input cases/cases_atm/CASE_ATM_001_obs_only.json --no-llm
 """
 from __future__ import annotations
 
@@ -18,6 +18,13 @@ import logging
 import os
 import sys
 from pathlib import Path
+
+# Windows consoles default to a legacy codepage (cp1252) that can't encode
+# the "→" characters used throughout the pipeline's print() output, which
+# crashes every run with a UnicodeEncodeError. Force UTF-8 stdout/stderr.
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
@@ -242,6 +249,7 @@ def main():
                    help="JSON list of alias pairs the ER agent must keep as "
                         "separate entities, applied on the first ER run")
     p.add_argument("--output",  default="./output")
+    p.add_argument("--db",      default="./forensynth.db", help="Path to forensynth.db")
     p.add_argument("--skip-video",  action="store_true", default=False,
                    help="Skip scene-reconstruction video generation")
     p.add_argument("--skip-report", action="store_true", default=False,
@@ -254,7 +262,7 @@ def main():
     out = Path(args.output)
 
     from memory_store import ForenSynthMemory
-    mem = ForenSynthMemory()
+    mem = ForenSynthMemory(args.db)
 
     # ── Load / register case ──────────────────────────────────────────────────
     if args.input:

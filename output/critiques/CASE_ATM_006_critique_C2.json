@@ -1,0 +1,144 @@
+{
+  "case_id": "CASE_ATM_006",
+  "timeline_version": "V2",
+  "critique_version": "C2",
+  "revision_number": 0,
+  "verdict": "REVISE",
+  "reason": "1 warning(s) on first pass",
+  "checks_run": [
+    "causal_cycle",
+    "orphaned_high_confidence_event",
+    "llm_edge_dependency_ratio",
+    "classification_structural_sanity",
+    "missing_linking_event",
+    "narrative_break",
+    "role_count_mismatch",
+    "low_confidence_event",
+    "llm_coherence"
+  ],
+  "llm_used": true,
+  "overall_score": 0.86,
+  "requires_revision": true,
+  "revision_target": "timeline",
+  "narrative_summary": "Case CASE_ATM_006 (pass 1): REVISE. 0 blocking, 1 warning(s), 2 info. Top: llm_edge_dependency_ratio \u2014 2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+  "belief_updates": {},
+  "issues": [
+    {
+      "check": "llm_edge_dependency_ratio",
+      "severity": "info",
+      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_edge_dependency_ratio",
+      "description": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    },
+    {
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_1_o4",
+        "EVT_entity_1_o5"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o4",
+      "affected_obs": [
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o6"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o6",
+      "affected_obs": [
+        "O6"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "check": "llm_edge_dependency_ratio",
+      "severity": "info",
+      "detail": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [],
+      "issue_type": "llm_edge_dependency_ratio",
+      "description": "2/4 causal links (50%) rely on LLM inference. Transparency note \u2014 not an error.",
+      "recommendation": "Informational.",
+      "event_id": "",
+      "affected_obs": []
+    },
+    {
+      "check": "missing_linking_event",
+      "severity": "warning",
+      "detail": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "re_run_timeline",
+      "affected_events": [
+        "EVT_entity_1_o4",
+        "EVT_entity_1_o5"
+      ],
+      "issue_type": "missing_linking_event",
+      "description": "Rule chain 'APPROACH->TAMPER->EXIT' broken for entity_1: 'TAMPER' missing between EVT_entity_1_o4 and EVT_entity_1_o5 (5s). ER may have missed an observation cluster.",
+      "recommendation": "re_run_timeline",
+      "event_id": "EVT_entity_1_o4",
+      "affected_obs": [
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "check": "low_confidence_event",
+      "severity": "info",
+      "detail": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "flagged_edges": [],
+      "must_not_merge": [],
+      "showrunner_action": "",
+      "affected_events": [
+        "EVT_entity_2_o6"
+      ],
+      "issue_type": "low_confidence_event",
+      "description": "Event EVT_entity_2_o6 confidence=0.48. Reasons: low observation confidence; entity resolution conflict present",
+      "recommendation": "Informational.",
+      "event_id": "EVT_entity_2_o6",
+      "affected_obs": [
+        "O6"
+      ]
+    }
+  ],
+  "edges_to_exclude": [],
+  "er_constraints": {
+    "must_not_merge": [],
+    "must_merge": [],
+    "soft_hints": {}
+  },
+  "unresolvable_gaps": [
+    "llm_edge_dependency_ratio",
+    "low_confidence_event"
+  ],
+  "recommended_action": "REBUILD_WITH_BELIEF_UPDATE"
+}

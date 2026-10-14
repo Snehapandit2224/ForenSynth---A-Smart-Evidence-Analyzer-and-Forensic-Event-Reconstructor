@@ -209,7 +209,7 @@ class CritiqueLLM:
     def available(self) -> bool: return self._ok
 
     def check_coherence(self, lines: List[str]) -> Optional[Dict]:
-        if not self._ok or not lines: return None
+        if not self._ok or not lines or self._client is None: return None
         user = "Timeline sequence:\n" + "\n".join(f"{i+1}. {l}" for i,l in enumerate(lines))
         try:
             self.calls_made += 1
@@ -486,7 +486,7 @@ def infer_belief_state(events: List[Dict]) -> Dict[str,Dict[str,float]]:
 
 def critique_timeline(
     timeline: Dict[str,Any],
-    er_result: Dict[str,Any] = None,
+    er_result: Optional[Dict[str,Any]] = None,
     revision_number: int = 0,
     critique_version: str = "C1",
     llm: Optional[CritiqueLLM] = None,
@@ -634,9 +634,9 @@ def run_critique_agent(
 
 def run_critique_agent_from_files(
     timeline_path: str,
-    er_path: str = None,
+    er_path: Optional[str] = None,
     critique_version: str = "C1",
-    output_dir: str = None,
+    output_dir: Optional[str] = None,
 ) -> Dict[str,Any]:
     with open(timeline_path, encoding="utf-8") as f:
         timeline = json.load(f)

@@ -19,6 +19,17 @@ sentence-transformers>=2.2
 # ── HTTP client (used internally by sentence-transformers and groq) ───────────
 httpx>=0.24
 
+# ── .env loading (GROQ_API_KEY, etc.) - used by pipeline/run_case.py ──────────
+python-dotenv>=1.0
+
+# ── Field agents: pulls real evidence data from Hugging Face datasets ─────────
+# (text_agent.py streams corbt/enron-emails; no full-dataset download needed)
+datasets>=2.19
+
+# ── Text field agent: real NER extraction (CPU-friendly, ~13MB model) ─────────
+# After installing, run: python -m spacy download en_core_web_sm
+spacy>=3.7
+
 # ── Post-pipeline outputs: scene reconstruction video + explainability PDF ────
 moviepy>=2.1.2
 Pillow>=10.0.0

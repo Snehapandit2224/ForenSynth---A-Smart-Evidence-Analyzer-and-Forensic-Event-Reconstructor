@@ -291,7 +291,8 @@ class _BatchLLMScorer:
             if api_key:
                 self._client = _GroqClient(api_key=api_key)
             else:
-                log.warning("GROQ_API_KEY not set – using heuristic/fuzzy fallbacks.")
+                log.warning("GROQ_API_KEY not set - using heuristic/fuzzy fallbacks.")
+                self._client = None
                 self.enabled = False
 
     def score_batch(
@@ -384,7 +385,7 @@ class ContextScoringAgent:
   def _content_fallback(self, pair: Tuple[str, str]) -> float:
     ca, cb = pair
     penalty = self._detect_conflicting_actions(ca, cb)
-    return min(1.0, max(0.0, fuzz.token_set_ratio(ca, cb) / 100.0 * penalty))
+    return min(1.0, max(0.0, (fuzz.token_set_ratio(ca, cb) if fuzz is not None else 50) / 100.0 * penalty))
 
   def precompute_batch_scores(
     self,
@@ -511,14 +512,14 @@ class EntityCoreferenceAgent:
 
     la, lb = oa.location.strip().lower(), ob.location.strip().lower()
     if la and lb:
-      loc_sim = fuzz.token_set_ratio(la, lb) / 100.0
+      loc_sim = (fuzz.token_set_ratio(la, lb) if fuzz is not None else 50) / 100.0
       if loc_sim >= 0.45:
         score += 0.10
       shared_tokens = set(re.findall(r"[a-z0-9]+", la)) & set(re.findall(r"[a-z0-9]+", lb))
       if shared_tokens & {"atm", "server", "booth", "room", "network", "ssh", "login"}:
         score += 0.08
 
-    content_sim = fuzz.token_set_ratio(oa.content, ob.content) / 100.0
+    content_sim = (fuzz.token_set_ratio(oa.content, ob.content) if fuzz is not None else 50) / 100.0
     if content_sim >= 0.35:
       score += 0.08
 
@@ -617,17 +618,24 @@ class EntityCoreferenceAgent:
     system = (
       "You are a digital forensics entity-resolution expert. "
       "Decide if mention A and mention B refer to the SAME real-world person/device/account. "
-      "CRITICAL RULES: "
-      "(1) Different roles (suspect vs witness) must score below 0.2. "
-      "(2) COORDINATING SUSPECTS ARE DIFFERENT PEOPLE: in multi-actor crimes, suspects "
-      "communicate with each other ('I am close', 'keep going', 'security nearby'). "
-      "Two observations showing DIFFERENT ACTORS COORDINATING must score below 0.3, "
-      "even if they are at the same location and time. "
-      "Ask: are these the SAME INDIVIDUAL or TWO PEOPLE TALKING TO EACH OTHER? "
-      "(3) Same alias string in same modality = same entity (score 0.95+). "
-      "(4) Cross-modal same-suspect evidence (e.g. video Person_X + audio Speaker_Y "
-      "both describing ONE person's actions) may score high IF content describes "
-      "one person's actions, not a conversation between two people. "
+      "CRITICAL RULES — apply in order: "
+      "(1) ROLE MISMATCH: suspect vs witness must score below 0.2. Always. "
+      "(2) COUNT THE SPEAKERS: if both mentions are in first-person audio/text "
+      "and they are separated by time (different timestamps), ask yourself: "
+      "could these be two DIFFERENT people talking at different times? "
+      "If yes, score below 0.35. "
+      "(3) COORDINATING MEANS DIFFERENT PEOPLE: phrases like 'I am close', "
+      "'standing by', 'almost there', 'keep watch', 'security nearby' "
+      "in different observations indicate SEPARATE INDIVIDUALS coordinating. "
+      "Score below 0.25. "
+      "(4) SAME PERSON ACROSS MODALITIES: video Person_X and audio Speaker_Y "
+      "are the same entity ONLY IF the content describes ONE person's actions "
+      "from two different recording sources — not two people talking to each other. "
+      "(5) SAME ALIAS SAME MODALITY: score 0.95+. "
+      "(6) WITNESS CORROBORATION: two witnesses describing the same event "
+      "from different angles are DIFFERENT PEOPLE — score below 0.3. "
+      "When in doubt between merge and split, SPLIT. False splits are recoverable "
+      "via human review. False merges corrupt the entire timeline. "
       "Use role, modality, location, timestamp, and content together."
     )
     intro = "Score each mention pair from 0.0 (definitely different) to 1.0 (same entity)."
@@ -651,7 +659,17 @@ class EntityCoreferenceAgent:
       # max() means the LLM can still ADD confidence beyond the
       # heuristic, but can never subtract from it.
       heuristic_score = fallback(i)
-      self._cache[key] = max(0.0, min(1.0, max(raw, heuristic_score)))
+      # FIX: use min() when LLM scores LOWER than heuristic (LLM veto).
+      # This lets the LLM split pairs the heuristic would merge,
+      # without letting the LLM force merges the heuristic rejects.
+      # max() only when LLM is more confident than heuristic on clear same-entity pairs.
+      MERGE_THRESHOLD = 0.58
+      if raw < heuristic_score and heuristic_score >= MERGE_THRESHOLD:
+          # LLM says split, heuristic says merge — trust LLM (it read the content)
+          self._cache[key] = max(0.0, min(1.0, raw))
+      else:
+          # LLM says merge or both agree — take max for cross-modal same-entity pairs
+          self._cache[key] = max(0.0, min(1.0, max(raw, heuristic_score)))
 
   def score(self, oa: Observation, ob: Observation, temporal_window: int, max_gap: int) -> float:
     key = self._pair_key(oa.obs_id, ob.obs_id)
@@ -1014,7 +1032,7 @@ class EntityResolutionPipeline:
     return self.context_agent.score(oa.content, ob.content)
 
   def _feat_lexical(self, oa: Observation, ob: Observation) -> float:
-    return fuzz.token_sort_ratio(oa.entity_norm, ob.entity_norm) / 100.0
+    return (fuzz.token_sort_ratio(oa.entity_norm, ob.entity_norm) if fuzz is not None else 50) / 100.0
 
   def _feat_interaction(self, oa: Observation, ob: Observation) -> float:
     modality_pairs = {

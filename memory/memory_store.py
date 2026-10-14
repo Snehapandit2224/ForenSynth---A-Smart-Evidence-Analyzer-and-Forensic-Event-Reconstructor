@@ -154,7 +154,24 @@ CREATE TABLE IF NOT EXISTS pipeline_runs (
     status TEXT DEFAULT 'success', error_msg TEXT DEFAULT '',
     meta_json TEXT DEFAULT '{}', ran_at TEXT DEFAULT (datetime('now'))
 );
+-- FIR is the case's partial ground truth, kept apart from observations:
+-- anchors = facts about the report itself (number, station, date lodged,
+-- informant); claims = what the informant alleges, for the pipeline to test.
+CREATE TABLE IF NOT EXISTS fir_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    case_id TEXT NOT NULL, fir_id TEXT NOT NULL,
+    fir_number TEXT DEFAULT '', police_station TEXT DEFAULT '',
+    date_of_report TEXT DEFAULT '', informant TEXT DEFAULT '',
+    offence TEXT DEFAULT '', incident_location TEXT DEFAULT '',
+    incident_start TEXT DEFAULT '', incident_end TEXT DEFAULT '',
+    anchors_json TEXT NOT NULL, claims_json TEXT NOT NULL,
+    dropped_json TEXT DEFAULT '[]', raw_text TEXT NOT NULL,
+    extractor TEXT DEFAULT '', source_file TEXT DEFAULT '',
+    created_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(fir_id)
+);
 CREATE INDEX IF NOT EXISTS idx_obs_case      ON observations(case_id);
+CREATE INDEX IF NOT EXISTS idx_fir_case      ON fir_records(case_id);
 CREATE INDEX IF NOT EXISTS idx_er_run_case   ON er_runs(case_id);
 CREATE INDEX IF NOT EXISTS idx_er_canon_case ON er_canonical(case_id, er_run_version);
 CREATE INDEX IF NOT EXISTS idx_tl_run_case   ON timeline_runs(case_id);
@@ -249,6 +266,59 @@ class ForenSynthMemory:
                       obs.get("confidence",0.5), _j(obs.get("noise_tags",[])), _j(clean)))
         self._log_pipeline(case_id, "generator", "save_case", "")
         log.info("[Generator] Saved %s (%d obs)", case_id, len(case.get("observations",[])))
+
+    # ── FIR (agents/field_agent/fir_agent.py) ────────────────────────────────────────
+    def save_fir_record(self, record: Dict[str, Any], summary: Dict[str, Any]) -> None:
+        """Store the full FIR record in fir_records (re-extraction replaces
+        it) and point the case's fir_json at its summary, so ER's existing
+        fir.roles check reads FIR-derived role counts unchanged."""
+        case_id = record["case_id"]
+        a, c = record.get("anchors", {}), record.get("claims", {})
+        val = lambda f: (f or {}).get("value") or ""
+        it = c.get("incident_time") or {}
+        with self._conn() as con:
+            con.execute("""
+                INSERT INTO fir_records (case_id,fir_id,fir_number,police_station,date_of_report,
+                    informant,offence,incident_location,incident_start,incident_end,
+                    anchors_json,claims_json,dropped_json,raw_text,extractor,source_file)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(fir_id) DO UPDATE SET
+                    fir_number=excluded.fir_number, police_station=excluded.police_station,
+                    date_of_report=excluded.date_of_report, informant=excluded.informant,
+                    offence=excluded.offence, incident_location=excluded.incident_location,
+                    incident_start=excluded.incident_start, incident_end=excluded.incident_end,
+                    anchors_json=excluded.anchors_json, claims_json=excluded.claims_json,
+                    dropped_json=excluded.dropped_json, raw_text=excluded.raw_text,
+                    extractor=excluded.extractor, source_file=excluded.source_file,
+                    created_at=datetime('now')
+            """, (case_id, record["fir_id"], str(val(a.get("fir_number"))),
+                  str(val(a.get("police_station"))), str(val(a.get("date_of_report"))),
+                  str((a.get("informant") or {}).get("name") or ""), str(val(c.get("offence"))),
+                  str(val(c.get("incident_location"))), it.get("start") or "", it.get("end") or "",
+                  _j(a), _j(c), _j(record.get("dropped", [])), record.get("raw_text", ""),
+                  record.get("extractor", ""), record.get("source_file", "")))
+            con.execute("""
+                INSERT INTO cases (case_id,domain,template,crime_type,location,description,fir_json,pipeline_status)
+                VALUES (?,'FIR','FIR_Intake',?,?,?,?,'fir_registered')
+                ON CONFLICT(case_id) DO UPDATE SET
+                    crime_type=excluded.crime_type, location=excluded.location,
+                    description=excluded.description, fir_json=excluded.fir_json,
+                    updated_at=datetime('now')
+            """, (case_id, summary.get("crime_type", ""), summary.get("location", ""),
+                  summary.get("description", ""), _j(summary)))
+        self._log_pipeline(case_id, "fir_agent", "save_fir_record", record["fir_id"])
+        log.info("[FIR] Saved %s for %s", record["fir_id"], case_id)
+
+    def load_fir_record(self, case_id: str) -> Optional[Dict[str, Any]]:
+        """Latest FIR record for a case, with anchors/claims decoded."""
+        row = self._query_one(
+            "SELECT * FROM fir_records WHERE case_id=? ORDER BY created_at DESC, id DESC LIMIT 1",
+            (case_id,))
+        if not row:
+            return None
+        for k in ("anchors_json", "claims_json", "dropped_json"):
+            row[k[:-5]] = _load(row.pop(k))
+        return row
 
     # ── Entity Resolution ──────────────────────────────────────────────────────
     def load_observations(self, case_id: str) -> Optional[Dict[str, Any]]:

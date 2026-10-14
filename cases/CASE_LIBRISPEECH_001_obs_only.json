@@ -1,0 +1,143 @@
+{
+  "case_id": "CASE_LIBRISPEECH_001",
+  "domain": "Field_Agent_Pilot",
+  "template": "Real_LibriSpeech_Audio",
+  "fir": {
+    "crime_type": "unknown - real audio record (field-agent pilot)",
+    "location": "field audio capture",
+    "time_window": [
+      0,
+      360
+    ],
+    "description": "Reconstructed statements from 3 distinct real speakers, transcribed by the audio field agent's own ASR (faster-whisper) from the LibriSpeech corpus for field-agent pilot testing. Timestamps are synthetic pacing, not real capture times - LibriSpeech has none.",
+    "roles": {}
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "speaker_2277",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "He was in a fevered state of mind, owing to the blight his wife's action threatened to cast upon his entire future.",
+      "timestamp": "2024-01-10T09:00:00",
+      "time_offset": 0,
+      "confidence": 0.774,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "speaker_2035",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "She was four years older than I to be sure and had seen more of the world. But I was a boy and she was a girl and I resented her protecting manner.",
+      "timestamp": "2024-01-10T09:00:45",
+      "time_offset": 45,
+      "confidence": 0.793,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "speaker_2086",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "The narrative, it may be, is woven of so humble a texture as to require this advantage, and at the same time to render it the more difficult of attainment.",
+      "timestamp": "2024-01-10T09:01:30",
+      "time_offset": 90,
+      "confidence": 0.766,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "speaker_2277",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "He would have to pay her the money which she would now regularly demand or there would be trouble. It did not matter what he did.",
+      "timestamp": "2024-01-10T09:02:15",
+      "time_offset": 135,
+      "confidence": 0.805,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "speaker_2035",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "This change came about from an adventure we had together.",
+      "timestamp": "2024-01-10T09:03:00",
+      "time_offset": 180,
+      "confidence": 0.749,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "speaker_2086",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "In good faith, however, he is not sufficiently imaginative to flatter himself with the slightest hope of this kind.",
+      "timestamp": "2024-01-10T09:03:45",
+      "time_offset": 225,
+      "confidence": 0.819,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E7",
+      "entity": "speaker_2277",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "First, would walk to the floor, mentally arranging the chief points of his situation.",
+      "timestamp": "2024-01-10T09:04:30",
+      "time_offset": 270,
+      "confidence": 0.69,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E8",
+      "entity": "speaker_2035",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "One day when I rode over to the Shemerdas, I found Antonea starting off on foot for Russian Peter's house to borrow a spade and brush needed.",
+      "timestamp": "2024-01-10T09:05:15",
+      "time_offset": 315,
+      "confidence": 0.683,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E9",
+      "entity": "speaker_2086",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "remote - field audio capture",
+      "content": "The author has considered it hardly worth his while, therefore, relentlessly to impale the story with its moral as with an iron rod, or rather as by sticking a pen through a butterfly. Thus it wants to pry the good of life and causing it to stiffen in an ungainly and unnatural attitude.",
+      "timestamp": "2024-01-10T09:06:00",
+      "time_offset": 360,
+      "confidence": 0.721,
+      "noise_tags": []
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "case_id": "CASE_ENRON_001",
+  "domain": "Communication",
+  "template": "Real_Enron_Thread",
+  "fir": {
+    "crime_type": "unknown - real communication record (field-agent pilot)",
+    "location": "email server log",
+    "time_window": [
+      0,
+      149250
+    ],
+    "description": "Reconstructed email thread ('Back office issues') between 3 distinct senders, sourced from the Enron email corpus for field-agent pilot testing.",
+    "roles": {}
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "email_99f4a2",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote - email server log",
+      "content": "Fred- \n\nThere are a number of issues we need to address with back office procedures immediately.  We are losing money on avoidable problems and gaining a bad reputation in the market.  Lets get Derek and Michelle together Tuesday afternoon.\n\n2 of our counterparties are writing letters of complaint.. here's a sample of some of the quotes we have heard from the 10 counterparties we have added in the last 6 months.  \n\n\"I shouldn't have to spend my time decomposing the invoices and confirmations you send out\" \n\"It has been 10 days since we traded and we haven't received a shred of paper to give us the details of the trade\" \n\"We are being told in a confirm something different than we are being invoiced for\" \n\"We did not trade 300 contracts per day, it was per month - do you guys even think before you type\" \n\"I am a CFO and an accountant and I can't decipher what you are trying to confirm here\" \n\n\nFrom a business dinner where a client of ours was speaking casually to large industrials and endusers. One, upon the mentioning of B2B exchanges said \"they WILL NOT ever trade on EOL again because the backoffice procedure was such a nightmare.. they couldn't rely on the accuracy or timeliness of the confirm.  This was a captive client who and needs to trade... who will not show us their flow again. \n\nThe latest is the most disturbing:\n\n\"we just want to do a small trade to test your system. We have heard it is a nightmare but want to see for ourselves - I mean how difficult can it be to book the purchase of 50 lots of crude\" And still 5 days later they do not have one paper to show the details, not one phone call to confirm the trade...nothing.  We even warned the BO that this was a new customer and to make best eforts to make sure the process runs smoothly and efficiently. Well, clearly we failed\n\nWe do not understand what is going on in the back office.  Is it that they are too disconnected from our daily operations to understand how integral their accurracy is to our business?",
+      "mentioned_entities": [
+        "Michelle"
+      ],
+      "timestamp": "2001-10-08T04:21:37",
+      "time_offset": 0,
+      "confidence": 0.95,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "email_2c9622",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote - email server log",
+      "content": "If these problems are not being addressed as they should be, call me and I'll get on it.  This is unacceptable.",
+      "mentioned_entities": [],
+      "timestamp": "2001-10-08T23:49:06",
+      "time_offset": 70049,
+      "confidence": 0.95,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "email_99f4a2",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote - email server log",
+      "content": "WE ARE HAVING A MEETING WITH FRED AND MICHELLE/ DEREK TODAY..\nWILL LET YOU KNOW IF I NEED HELP\nTHANKS FOR YOUR SUPPORT",
+      "mentioned_entities": [],
+      "timestamp": "2001-10-09T17:46:00",
+      "time_offset": 134663,
+      "confidence": 0.95,
+      "noise_tags": []
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "email_911414",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote - email server log",
+      "content": "I am faxing you a copy of the procedures.  I think it would be a useful for any of the commercial people to call Errol to make sure he is aware whenever something is exercised into swaps or physical gas.  Let me know what you think.\n \nThanks\n \nJohn",
+      "mentioned_entities": [
+        "Errol"
+      ],
+      "timestamp": "2001-10-09T21:49:07",
+      "time_offset": 149250,
+      "confidence": 0.95,
+      "noise_tags": []
+    }
+  ]
+}
