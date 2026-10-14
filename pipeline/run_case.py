@@ -14,6 +14,12 @@ Usage:
     python pipeline/run_case.py --case CASE_ATM_001
     python pipeline/run_case.py --input cases/CASE_ATM_001_obs_only.json --no-llm
     python pipeline/run_case.py --input cases/CASE_ATM_001_obs_only.json --legacy
+
+    # raw evidence: field agents -> merge -> the same loop
+    python pipeline/run_case.py --case CASE_FIR_001 --fir samples/fir/FIR_001_chain_snatching.txt \\
+        --text-inputs samples/fir/FIR_001_witness_statement.txt samples/fir/FIR_001_chat.json
+    python pipeline/run_case.py --case CASE_MULTI_001 \\
+        --obs-files cases/CASE_ENRON_001_obs_only.json cases/CASE_LIBRISPEECH_001_obs_only.json
 """
 from __future__ import annotations
 
@@ -60,7 +66,16 @@ def main():
     p = argparse.ArgumentParser(description="ForenSynth Full Pipeline Loop")
     group = p.add_mutually_exclusive_group(required=True)
     group.add_argument("--input", help="Path to obs_only JSON (first run)")
-    group.add_argument("--case",  help="Case ID already in DB")
+    group.add_argument("--case",  help="Case ID already in DB - or, with raw evidence below, "
+                                       "the ID of the new case to build from it")
+    ev = p.add_argument_group("raw evidence (runs the field agents first; needs --case)")
+    ev.add_argument("--fir", help="FIR text file - anchors the case (fir_agent.py)")
+    ev.add_argument("--text-inputs", nargs="+", help="Text evidence files (text_agent.py)")
+    ev.add_argument("--audio-manifest", help="JSON list of recordings (audio_agent.py): "
+                                             '[{"path", "start_time", "location", "source"}, ...]')
+    ev.add_argument("--obs-files", nargs="+", help="Ready-made obs_only files to merge in")
+    ev.add_argument("--adopt-role-hints", action="store_true",
+                    help="Copy LLM role hints with confidence >= 0.7 into `role` at intake")
     p.add_argument("--no-llm",  action="store_true")
     p.add_argument("--must-merge", default=None,
                    help="JSON list of alias pairs the ER agent must cluster "
@@ -83,6 +98,13 @@ def main():
 
     llm = not args.no_llm and bool(os.environ.get("GROQ_API_KEY", ""))
     out = Path(args.output)
+    evidence = {"fir": args.fir, "text": args.text_inputs,
+                "audio_manifest": args.audio_manifest, "obs_files": args.obs_files}
+    if any(evidence.values()):
+        if not args.case:
+            p.error("raw evidence needs --case <new case id>")
+        if args.legacy:
+            p.error("--legacy runs the loop only; evidence intake needs the graph")
 
     if not args.legacy:
         from graph import run_pipeline
@@ -93,11 +115,13 @@ def main():
                 "must_not_merge": json.loads(args.must_not_merge) if args.must_not_merge else [],
             }
         try:
-            run_pipeline(args.input, args.case, llm=llm, output=args.output, db=args.db,
+            run_pipeline(args.input, args.case, evidence=evidence,
+                         adopt_role_hints=args.adopt_role_hints,
+                         llm=llm, output=args.output, db=args.db,
                          initial_constraints=initial_constraints,
                          skip_video=args.skip_video, skip_report=args.skip_report,
                          skip_eval=args.skip_eval)
-        except (FileNotFoundError, LookupError) as exc:
+        except (FileNotFoundError, LookupError, RuntimeError) as exc:
             print(f"[ERROR] {exc}"); sys.exit(1)
         return
 
