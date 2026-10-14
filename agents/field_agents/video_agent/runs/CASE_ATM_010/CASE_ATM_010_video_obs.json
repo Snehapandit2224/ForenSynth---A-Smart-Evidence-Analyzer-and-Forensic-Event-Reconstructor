@@ -1,0 +1,30 @@
+{
+  "case_id": "CASE_ATM_010",
+  "domain": "ATM_Robbery",
+  "observations": [
+    {
+      "obs_id": "O17",
+      "entity": "Person_03",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Individual exits through the ATM door and walks away.",
+      "timestamp": "2024-01-15T10:03:09",
+      "time_offset": 189,
+      "confidence": 0.784
+    },
+    {
+      "obs_id": "O17b",
+      "entity": "Person_94",
+      "role": "witness",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Individual on pavement observed watching a person walk away from the ATM.",
+      "timestamp": "2024-01-15T10:03:10",
+      "time_offset": 190,
+      "confidence": 0.774
+    }
+  ]
+}

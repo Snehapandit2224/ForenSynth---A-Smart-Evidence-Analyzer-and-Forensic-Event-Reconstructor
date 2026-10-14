@@ -1,6 +1,6 @@
 ﻿.env
 __pycache__/
-runs/
-runs_mislabelled/
-clips/
 cache/
+
+# root .gitignore excludes *.mp4; keep this agent's demo clips
+!clips/**/*.mp4

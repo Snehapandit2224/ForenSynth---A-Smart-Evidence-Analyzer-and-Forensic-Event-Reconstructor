@@ -1,0 +1,69 @@
+{
+  "summary": {
+    "reference_video_obs": 4,
+    "matched": 1,
+    "unrendered_or_missing": [
+      "CASE_ATM_010:O4",
+      "CASE_ATM_010:O9",
+      "CASE_ATM_010:O6"
+    ],
+    "extra_extracted_obs": 1,
+    "source_acc": 1.0,
+    "location_acc": 1.0,
+    "role_acc": 1.0,
+    "action_acc": 0.0,
+    "entity_consistency": 1.0,
+    "timestamp_mae_s": 1.0,
+    "time_offset_mae_s": 1.0,
+    "confidence_mae": 0.004
+  },
+  "cases": [
+    {
+      "case_id": "CASE_ATM_010",
+      "rows": [
+        {
+          "ref_obs": "O4",
+          "ref_content": "The second actor arrives at the ATM vicinity.",
+          "ref_action": "approach_atm",
+          "status": "missing (no clip or nothing extracted)"
+        },
+        {
+          "ref_obs": "O9",
+          "ref_content": "Second person loiters near ATM entrance.",
+          "ref_action": "wait_outside",
+          "status": "missing (no clip or nothing extracted)"
+        },
+        {
+          "ref_obs": "O6",
+          "ref_content": "First person proceeds into the ATM kiosk.",
+          "ref_action": "enter_atm",
+          "status": "missing (no clip or nothing extracted)"
+        },
+        {
+          "ref_obs": "O17",
+          "ref_content": "Two individuals are recorded leaving the scene side by side.",
+          "ref_action": "flee_scene",
+          "pred_obs": "O17",
+          "pred_content": "Person exits ATM booth.",
+          "pred_action": "exit_atm",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 1.0,
+          "time_offset_err_s": 1,
+          "confidence_ref": 0.788,
+          "confidence_pred": 0.784,
+          "action_ok": false,
+          "status": "matched"
+        }
+      ],
+      "entity_mapping": {
+        "Person_03": "Person_50"
+      },
+      "extra_pred_obs": [
+        "O17b"
+      ]
+    }
+  ]
+}

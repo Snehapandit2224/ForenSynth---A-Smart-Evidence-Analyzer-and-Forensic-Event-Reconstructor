@@ -1,0 +1,222 @@
+{
+  "case_id": "CASE_ATM_010",
+  "updated_utc": "2026-10-11T07:00:12.633065+00:00",
+  "anchor": "2024-01-15T10:00:00",
+  "model": "gemini:gemini-3.8-flash@4fps:agent-v2",
+  "clips": [
+    {
+      "clip": "clip 1.mp4",
+      "obs_ids": [
+        "O1",
+        "O1b"
+      ],
+      "model": "gemini:gemini-3.8-flash@4fps:agent-v2",
+      "cached": true,
+      "quality": {
+        "score": 0.438,
+        "usable": true,
+        "sharpness": 0.216,
+        "noise": 0.951,
+        "flicker": 0.935,
+        "brightness": 1.0,
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "duration": 10.083333
+      },
+      "footage_issue": null,
+      "verified_clock_at_first_frame": "2024-01-15T10:03:27",
+      "tool_calls": 5,
+      "unresolved_checks": [],
+      "agent_trace": [
+        {
+          "step": 0,
+          "thought": "Read the clock overlay at three different timestamps to verify consistency.",
+          "tool": "crop_overlay",
+          "args": {
+            "corner": "bottom-left",
+            "times": [
+              0.0,
+              4.0,
+              8.0
+            ]
+          },
+          "result": "Enlarged bottom-left crops (OCR not installed: read the crops yourself):\nt=0.0s\nt=4.0s\nt=8.0s"
+        },
+        {
+          "step": 1,
+          "thought": "Read camera label.",
+          "tool": "crop_overlay",
+          "args": {
+            "corner": "top-left",
+            "times": [
+              0.0
+            ]
+          },
+          "result": "Enlarged top-left crops (OCR not installed: read the crops yourself):\nt=0.0s"
+        },
+        {
+          "step": 2,
+          "thought": "Check clock consistency.",
+          "tool": "check_clock",
+          "args": {
+            "readings": [
+              {
+                "clock": "2024-01-15 10:03:28",
+                "t": 0.0
+              },
+              {
+                "clock": "2024-01-15 10:03:31",
+                "t": 4.0
+              },
+              {
+                "clock": "2024-01-15 10:03:36",
+                "t": 8.0
+              }
+            ]
+          },
+          "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:03:27 (spread 1.0s)."
+        },
+        {
+          "step": 3,
+          "thought": "Check known people database.",
+          "tool": "known_people",
+          "args": {},
+          "result": "No people seen yet in this case."
+        },
+        {
+          "step": 4,
+          "thought": "Validate draft.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "camera_view": "exterior_street_side",
+              "clock_note": "Clock reads 2024-01-15 10:03:28 at 0.0s and ticks consistently across the clip.",
+              "clock_verified": true,
+              "events": [
+                {
+                  "action": "exit_atm",
+                  "bbox": [
+                    0.44,
+                    0.28,
+                    0.12,
+                    0.58
+                  ],
+                  "certainty": 0.95,
+                  "free_content": null,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:03:29",
+                  "person": "black hooded jacket, black cap, black trousers, black sneakers, medium build",
+                  "ref_time": 2.5,
+                  "registry_match": null,
+                  "start": "00:01",
+                  "template_index": 0,
+                  "visibility": 0.9
+                },
+                {
+                  "action": "observe_exit",
+                  "bbox": [
+                    0.13,
+                    0.35,
+                    0.12,
+                    0.53
+                  ],
+                  "certainty": 0.95,
+                  "free_content": null,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:03:30",
+                  "person": "light blue button-down shirt, blue jeans, dark shoes, slim to medium build",
+                  "ref_time": 2.5,
+                  "registry_match": null,
+                  "start": "00:02",
+                  "template_index": 4,
+                  "visibility": 0.95
+                }
+              ],
+              "footage_issue": null,
+              "image_quality": 0.85,
+              "overlay_camera_label": "CAM 01",
+              "overlay_timestamp_first": "2024-01-15 10:03:28"
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 5,
+          "thought": "Final answer confirmed.",
+          "final": true,
+          "issues": []
+        }
+      ],
+      "final_answer": {
+        "camera_view": "exterior_street_side",
+        "clock_note": "Clock reads 2024-01-15 10:03:28 at 0.0s and ticks consistently across the clip.",
+        "clock_verified": true,
+        "events": [
+          {
+            "action": "exit_atm",
+            "bbox": [
+              0.44,
+              0.28,
+              0.12,
+              0.58
+            ],
+            "certainty": 0.95,
+            "free_content": null,
+            "identifiable": true,
+            "overlay_timestamp_at_start": "2024-01-15 10:03:29",
+            "person": "black hooded jacket, black cap, black trousers, black sneakers, medium build",
+            "ref_time": 2.5,
+            "registry_match": null,
+            "start": "00:01",
+            "template_index": 0,
+            "visibility": 0.9
+          },
+          {
+            "action": "observe_exit",
+            "bbox": [
+              0.13,
+              0.35,
+              0.12,
+              0.53
+            ],
+            "certainty": 0.95,
+            "free_content": null,
+            "identifiable": true,
+            "overlay_timestamp_at_start": "2024-01-15 10:03:30",
+            "person": "light blue button-down shirt, blue jeans, dark shoes, slim to medium build",
+            "ref_time": 2.5,
+            "registry_match": null,
+            "start": "00:02",
+            "template_index": 4,
+            "visibility": 0.95
+          }
+        ],
+        "footage_issue": null,
+        "image_quality": 0.85,
+        "overlay_camera_label": "CAM 01",
+        "overlay_timestamp_first": "2024-01-15 10:03:28"
+      },
+      "decisions": [
+        {
+          "obs_id": "O1",
+          "action": "exit_atm",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock+offset",
+          "flags": [],
+          "person": "black hooded jacket, black cap, black trousers, black sneakers, medium build",
+          "identifiable": true
+        },
+        {
+          "obs_id": "O1b",
+          "action": "observe_exit",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock+offset",
+          "flags": [],
+          "person": "light blue button-down shirt, blue jeans, dark shoes, slim to medium build",
+          "identifiable": true
+        }
+      ]
+    }
+  ]
+}
