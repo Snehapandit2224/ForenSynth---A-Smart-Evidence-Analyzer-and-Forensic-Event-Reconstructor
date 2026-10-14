@@ -22,6 +22,9 @@ httpx>=0.24
 # ── .env loading (GROQ_API_KEY, etc.) - used by pipeline/run_case.py ──────────
 python-dotenv>=1.0
 
+# ── Orchestration: the revision loop as a state graph (pipeline/graph.py) ─────
+langgraph>=1.2,<2
+
 # ── Field agents: pulls real evidence data from Hugging Face datasets ─────────
 # (text_agent.py streams corbt/enron-emails; no full-dataset download needed)
 datasets>=2.19
