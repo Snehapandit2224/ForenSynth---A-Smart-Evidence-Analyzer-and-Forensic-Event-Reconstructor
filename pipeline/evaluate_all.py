@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
 ForenSynth - Ground Truth Evaluation Batch Runner
-Discovers every ground-truth case file in GENERATOR_FIXED/cases_atm/
+Discovers every ground-truth case file in cases/
 (dynamically -- no case IDs are hardcoded), evaluates the pipeline's actual
 final timeline for that case_id against it, and prints + saves a summary
 table.
 
 Usage:
     python pipeline/evaluate_all.py
-    python pipeline/evaluate_all.py --generator-dir GENERATOR_FIXED/cases_atm --output-dir output/evaluation
+    python pipeline/evaluate_all.py --generator-dir cases --output-dir output/evaluation
 """
 from __future__ import annotations
 
@@ -123,7 +123,7 @@ def _find_final_timeline(case_id: str, timelines_dir: str):
 
 def main():
     ap = argparse.ArgumentParser(description="Evaluate all discovered ATM cases against ground truth.")
-    ap.add_argument("--generator-dir", default="GENERATOR_FIXED/cases_atm")
+    ap.add_argument("--generator-dir", default="cases")
     ap.add_argument("--timelines-dir", default="output/timelines")
     ap.add_argument("--output-dir",    default="output/evaluation")
     ap.add_argument("--pipeline-output-dir", default="output",

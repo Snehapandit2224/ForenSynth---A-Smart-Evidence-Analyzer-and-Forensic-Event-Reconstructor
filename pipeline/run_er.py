@@ -5,13 +5,13 @@ Entity Resolution entry point.
 
 Usage:
     # First run (from file)
-    python pipeline\run_er.py --input cases\cases_atm\CASE_ATM_001_obs_only.json --output output\er
+    python pipeline\run_er.py --input cases\CASE_ATM_001_obs_only.json --output output\er
 
     # Re-run after Showrunner (picks up constraints from DB automatically)
     python pipeline\run_er.py --case CASE_ATM_001 --rerun --output output\er
 
     # Force heuristic only
-    python pipeline\run_er.py --input cases\cases_atm\CASE_ATM_001_obs_only.json --no-llm --output output\er
+    python pipeline\run_er.py --input cases\CASE_ATM_001_obs_only.json --no-llm --output output\er
 
 Environment (.env):
     GROQ_API_KEY    enables LLM coreference scoring

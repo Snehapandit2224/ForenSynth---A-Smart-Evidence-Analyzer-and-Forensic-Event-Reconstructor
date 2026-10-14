@@ -335,12 +335,17 @@ class _BatchLLMScorer:
             prompt = (
                 f"{system_prompt}\n\n{user_intro}\n"
                 + json.dumps(chunk, ensure_ascii=False)
-                + '\n\nReturn ONLY JSON: {"0": 0.85, "1": 0.12, ...} with one float 0.0-1.0 per id.'
+                # Placeholders, not sample numbers: given sample values the
+                # model was seen echoing them back as its scores.
+                + '\n\nReturn ONLY JSON mapping each id to its score: {"0": <float 0.0-1.0>, "1": <float 0.0-1.0>, ...}'
             )
-            # FIX: was len(chunk)*16+128 which gave only 288 tokens for 10 pairs
-            # — not enough for the JSON response, causing truncation and parse errors.
-            # 10 pairs need ~200 output tokens; 300 gives safe headroom.
-            max_tok = min(4096, max(300, len(chunk) * 30))
+            # gpt-oss-20b is a reasoning model and its hidden reasoning counts
+            # against max_tokens. At the old 300 a 5-pair call spent 298 of
+            # them reasoning and returned an empty answer (finish_reason
+            # "length"), so every chunk silently fell back to heuristics.
+            # Low effort + 1024 tokens + JSON mode returns the scores
+            # (verified on Groq: ~170 reasoning tokens, complete JSON).
+            max_tok = min(4096, max(1024, len(chunk) * 30))
             raw_scores: Dict[str, float] = {}
             try:
                 resp = self._client.chat.completions.create(
@@ -348,6 +353,8 @@ class _BatchLLMScorer:
                     messages=[{"role": "user", "content": prompt}],
                     max_tokens=max_tok,
                     temperature=0.0,
+                    reasoning_effort="low",
+                    response_format={"type": "json_object"},
                 )
                 raw_scores = _parse_llm_json_map(resp.choices[0].message.content or "")
             except Exception as exc:
@@ -813,6 +820,7 @@ class EntityResolutionPipeline:
     self.conflicts: List[Dict[str, Any]] = []
     self.fir_role_counts: Dict[str, int] = {}
     self._resplit_log: List[Dict[str, Any]] = []
+    self._must_merge_log: List[Dict[str, Any]] = []
     self.status = "success"
     self.error_message = ""
     self.stage_timings: Dict[str, float] = {}
@@ -987,7 +995,12 @@ class EntityResolutionPipeline:
         if same_loc or dt <= self.temporal_window_sec or (cross_modal and same_role and dt <= self.max_temporal_gap_sec):
           candidate_set.add(key)
 
-    all_candidates = list(forced) + [p for p in candidate_set if p not in forced]
+    # Sorted, never in set order: set iteration order for strings changes
+    # with Python's per-process hash seed, and everything downstream
+    # (scoring, edge order, Stage 9's order-dependent attachment, which
+    # pairs survive max_pairs) followed it - CASE_ATM_002 resolved
+    # differently under PYTHONHASHSEED=3 than under 1, 2 or 4.
+    all_candidates = sorted(forced) + sorted(p for p in candidate_set if p not in forced)
     self.candidate_pairs = all_candidates[: self.max_pairs]
 
   def _feat_mention_consistency(self, oa: Observation, ob: Observation) -> Tuple[float, bool]:
@@ -1360,7 +1373,62 @@ class EntityResolutionPipeline:
         if entity_corr >= coref_min:
           uf.union(edge.obs_id_1, edge.obs_id_2)
 
+    self._apply_must_merge(uf)
     self.clusters = {f"C{i+1}": sorted(m) for i, (_, m) in enumerate(uf.groups().items())}
+
+  def _apply_must_merge(self, uf: UnionFind) -> None:
+    """
+    An investigator's must_merge is a decision, not a hint: until now it
+    only forced the pair into the candidate list (Stage 3), where it was
+    scored like any other pair and silently rejected whenever the score was
+    low - e.g. a witness's video and text aliases, which share no features.
+    Verified on CASE_ATM_004/007/009: supplying the ground-truth must_merge
+    pairs changed nothing.
+
+    Applied last, after every scored merge, so it sees the final clusters.
+    The one thing it will not do is put a must_not_merge pair into the same
+    cluster (directly, or through the other members of either cluster):
+    when two human constraints contradict, the pair is refused and recorded
+    rather than one constraint silently overriding the other.
+    """
+    self._must_merge_log = []
+    if not self.constraints.must_merge:
+      return
+    obs_ids_by_alias: Dict[str, List[str]] = defaultdict(list)
+    for obs in self.observations:
+      obs_ids_by_alias[obs.entity_norm].append(obs.obs_id)
+    blocked = {
+      self._canonical_pair(normalize_alias(a), normalize_alias(b))
+      for a, b in self.constraints.must_not_merge
+    }
+
+    def aliases_with(root: str) -> Set[str]:
+      return {o.entity_norm for o in self.observations if uf.find(o.obs_id) == root}
+
+    for a_alias, b_alias in self.constraints.must_merge:
+      a_norm, b_norm = normalize_alias(a_alias), normalize_alias(b_alias)
+      entry = {"pair": [a_alias, b_alias]}
+      missing = [x for x, n in ((a_alias, a_norm), (b_alias, b_norm)) if n not in obs_ids_by_alias]
+      if missing:
+        self._must_merge_log.append({**entry, "applied": False,
+                                     "reason": f"alias not in this case: {', '.join(missing)}"})
+        continue
+      root_a, root_b = uf.find(obs_ids_by_alias[a_norm][0]), uf.find(obs_ids_by_alias[b_norm][0])
+      if root_a == root_b:
+        self._must_merge_log.append({**entry, "applied": True, "reason": "already in the same cluster"})
+        continue
+      side_a, side_b = aliases_with(root_a), aliases_with(root_b)
+      clash = sorted(
+        "/".join(p) for p in (self._canonical_pair(x, y) for x in side_a for y in side_b) if p in blocked
+      )
+      if clash:
+        self._must_merge_log.append({**entry, "applied": False,
+                                     "reason": f"would join must_not_merge pair(s): {', '.join(clash)}"})
+        log.warning("must_merge %s/%s refused: contradicts must_not_merge %s", a_alias, b_alias, clash)
+        continue
+      for oid in obs_ids_by_alias[a_norm] + obs_ids_by_alias[b_norm]:
+        uf.union(obs_ids_by_alias[a_norm][0], oid)
+      self._must_merge_log.append({**entry, "applied": True, "reason": "investigator constraint"})
 
   def _stage_9_guarded_attachment(self) -> None:
     obs_to_cluster = {oid: cid for cid, members in self.clusters.items() for oid in members}
@@ -1369,6 +1437,20 @@ class EntityResolutionPipeline:
     def is_singleton(obs_id: str) -> bool:
       cid = obs_to_cluster.get(obs_id)
       return cid is not None and len(self.clusters.get(cid, [])) == 1
+
+    # Attaching a singleton must not put it in a cluster holding an alias an
+    # investigator said is a different entity: the singleton-partner edge
+    # itself can be fine while the partner's cluster already contains the
+    # blocked alias (e.g. after a must_merge in Stage 8).
+    blocked = {
+      self._canonical_pair(normalize_alias(a), normalize_alias(b))
+      for a, b in self.constraints.must_not_merge
+    }
+
+    def clashes(obs_id: str, cid: str) -> bool:
+      alias = self._obs_by_id[obs_id].entity_norm
+      return any(self._canonical_pair(alias, self._obs_by_id[m].entity_norm) in blocked
+                 for m in self.clusters.get(cid, []))
 
     for edge in self.edges:
       if edge.classification not in ("likely", "possible") or edge.hard_negative:
@@ -1381,6 +1463,8 @@ class EntityResolutionPipeline:
           continue
         partner_cid = obs_to_cluster.get(partner_id)
         if not partner_cid:
+          continue
+        if blocked and clashes(singleton_id, partner_cid):
           continue
         if edge.weight >= ATTACHMENT_THRESHOLD:
           old_cid = obs_to_cluster[singleton_id]
@@ -1585,6 +1669,14 @@ class EntityResolutionPipeline:
     by_alias: Dict[str, List[str]] = defaultdict(list)
     for oid in obs_ids:
       by_alias[self._obs_by_id[oid].entity_norm].append(oid)
+    # An investigator's must_merge pair is as certain as a shared alias:
+    # weight 1.0 means the split below can never cut it apart.
+    merged_by_investigator = [e["pair"] for e in self._must_merge_log if e["applied"]]
+    for a_alias, b_alias in merged_by_investigator:
+      a_ids = by_alias.get(normalize_alias(a_alias), [])
+      b_ids = by_alias.get(normalize_alias(b_alias), [])
+      for a, b in itertools.product(a_ids, b_ids):
+        G.add_edge(a, b, weight=1.0)
     for alias_group in by_alias.values():
       for i in range(len(alias_group)):
         for j in range(i + 1, len(alias_group)):
@@ -1695,7 +1787,7 @@ class EntityResolutionPipeline:
       cluster_output.append({
         "cluster_id": cid,
         "size": len(members),
-        "aliases": list({self._obs_by_id[oid].entity for oid in members if oid in self._obs_by_id}),
+        "aliases": sorted({self._obs_by_id[oid].entity for oid in members if oid in self._obs_by_id}),
         "obs_ids": sorted(members),
         "edges": edge_dicts,
       })
@@ -1742,6 +1834,7 @@ class EntityResolutionPipeline:
       # overlap, used if the model could not be loaded).
       "location_similarity_backend": get_semantic_scorer().backend_used(),
       "resplit_log": self._resplit_log,
+      "must_merge_log": self._must_merge_log,
       # Every same-modality alias pair compared by identity embedding (voice
       # print), with its cosine similarity and the decision taken.
       "identity_links": self._identity_links,

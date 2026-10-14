@@ -30,7 +30,7 @@ via a loose substring alias overlap can still be marked entity-incorrect.
 
 Usage:
     python pipeline/evaluate.py --case CASE_ATM_001 \\
-        --ground-truth GENERATOR_FIXED/cases_atm/CASE_ATM_001.json \\
+        --ground-truth cases/CASE_ATM_001.json \\
         --timeline output/timelines/CASE_ATM_001_timeline_V2.json
 """
 from __future__ import annotations
