@@ -440,9 +440,12 @@ class ShowrunnerAgent:
                 return _make_decision(
                     case_id, "human_review", tl_version, crit_version, tl_version,
                     reasoning=(
-                        "ER-level issues detected but no actionable constraints could be "
-                        "derived (all candidate aliases were synthetic placeholders — "
-                        "entity identity is genuinely ambiguous). Manual review required."
+                        "ER-level issues detected ("
+                        + ", ".join(sorted({_gap_type(g) for g in er_gaps}))
+                        + ") but none of them yields a must_merge / must_not_merge / "
+                        "soft-hint constraint, so re-running ER would reproduce the same "
+                        "result. An investigator must decide which evidence items belong "
+                        "to the same person. Manual review required."
                     ),
                     output_case=output_case, iter_log=iter_log,
                     investigator_flags=investigator_flags, all_timelines=all_timelines,
