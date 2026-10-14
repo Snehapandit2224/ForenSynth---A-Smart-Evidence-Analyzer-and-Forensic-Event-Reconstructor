@@ -74,6 +74,9 @@ def main():
     ev.add_argument("--audio-manifest", help="JSON list of recordings (audio_agent.py): "
                                              '[{"path", "start_time", "location", "source"}, ...]')
     ev.add_argument("--obs-files", nargs="+", help="Ready-made obs_only files to merge in")
+    ev.add_argument("--video", help="A video clip, or a folder of a case's clips (video agent)")
+    ev.add_argument("--enable-video", action="store_true",
+                    help="Actually run the video agent on --video (unverified; off by default)")
     ev.add_argument("--adopt-role-hints", action="store_true",
                     help="Copy LLM role hints with confidence >= 0.7 into `role` at intake")
     p.add_argument("--no-llm",  action="store_true")
@@ -99,7 +102,8 @@ def main():
     llm = not args.no_llm and bool(os.environ.get("GROQ_API_KEY", ""))
     out = Path(args.output)
     evidence = {"fir": args.fir, "text": args.text_inputs,
-                "audio_manifest": args.audio_manifest, "obs_files": args.obs_files}
+                "audio_manifest": args.audio_manifest, "obs_files": args.obs_files,
+                "video": args.video}
     if any(evidence.values()):
         if not args.case:
             p.error("raw evidence needs --case <new case id>")
@@ -116,6 +120,7 @@ def main():
             }
         try:
             run_pipeline(args.input, args.case, evidence=evidence,
+                         enable_video=args.enable_video,
                          adopt_role_hints=args.adopt_role_hints,
                          llm=llm, output=args.output, db=args.db,
                          initial_constraints=initial_constraints,

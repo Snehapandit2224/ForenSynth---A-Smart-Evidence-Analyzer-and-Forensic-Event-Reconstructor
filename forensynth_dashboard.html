@@ -144,8 +144,14 @@ html,body{height:100%;background:var(--graphite);color:var(--text-primary);font-
 /* ── Input Zone ──────────────────────────────────────── */
 .input-zone{
   padding:24px 24px 0;
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
 }
+@media (max-width:1200px){.input-zone{grid-template-columns:1fr 1fr;}}
+.ev-group:empty{display:none;}
+.ev-group{margin-top:12px;}
+.ev-group-title{font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.ev-file-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
+.ev-file-row .audio-clip-name{flex:1;width:auto;}
 
 .drop-card{
   border:1px solid var(--border-strong);
@@ -768,70 +774,96 @@ input[type=file]{display:none;}
     <div id="inputSection">
       <div class="input-zone">
 
-        <!-- Drop: Case file -->
-        <div class="drop-card" id="dropCase"
-             onclick="document.getElementById('fileCase').click()"
-             ondragover="handleDragOver(event,'dropCase')"
-             ondragleave="handleDragLeave('dropCase')"
-             ondrop="handleDrop(event,'dropCase','fileCase')">
-          <div class="drop-label">Evidence File</div>
-          <div class="drop-icon">🗂</div>
-          <div class="drop-title">Full Case JSON</div>
-          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.json</code> or click to browse<br/>Includes ground truth + observations</div>
-          <div class="drop-filename" id="caseName">—</div>
-          <input type="file" id="fileCase" accept=".json" onchange="loadFile(event,'dropCase','caseName','caseData')"/>
-        </div>
-
-        <!-- Drop: Obs only file -->
-        <div class="drop-card" id="dropObs"
-             onclick="document.getElementById('fileObs').click()"
-             ondragover="handleDragOver(event,'dropObs')"
-             ondragleave="handleDragLeave('dropObs')"
-             ondrop="handleDrop(event,'dropObs','fileObs')">
+        <div class="drop-card" id="drop_obs"
+             onclick="document.getElementById('file_obs').click()"
+             ondragover="handleDragOver(event,'drop_obs')"
+             ondragleave="handleDragLeave('drop_obs')"
+             ondrop="handleEvidenceDrop(event,'obs')">
           <div class="drop-label">Pipeline Input</div>
           <div class="drop-icon">📋</div>
-          <div class="drop-title">Observations Only</div>
-          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">_obs_only.json</code> or click to browse<br/>No ground truth — used by ER agent</div>
-          <div class="drop-filename" id="obsName">—</div>
-          <input type="file" id="fileObs" accept=".json" onchange="loadFile(event,'dropObs','obsName','obsData')"/>
+          <div class="drop-title">Observations (obs_only)</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">_obs_only.json</code> or click to browse<br/>Ready-made observations, straight to ER</div>
+          <div class="drop-filename" id="name_obs">—</div>
+          <input type="file" id="file_obs" accept=".json" multiple onchange="addEvidence('obs', event.target.files); event.target.value='';"/>
         </div>
-
-        <!-- Drop: Audio evidence (Audio Field Agent builds the observations) -->
-        <div class="drop-card" id="dropAudio"
-             onclick="document.getElementById('fileAudio').click()"
-             ondragover="handleDragOver(event,'dropAudio')"
-             ondragleave="handleDragLeave('dropAudio')"
-             ondrop="handleAudioDrop(event)">
+        <div class="drop-card" id="drop_text"
+             onclick="document.getElementById('file_text').click()"
+             ondragover="handleDragOver(event,'drop_text')"
+             ondragleave="handleDragLeave('drop_text')"
+             ondrop="handleEvidenceDrop(event,'text')">
+          <div class="drop-label">Raw Evidence</div>
+          <div class="drop-icon">📄</div>
+          <div class="drop-title">Text Documents</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.txt .md .eml .json</code> or click to browse<br/>Statements, chats, emails → Text Agent</div>
+          <div class="drop-filename" id="name_text">—</div>
+          <input type="file" id="file_text" accept=".txt,.md,.eml,.json" multiple onchange="addEvidence('text', event.target.files); event.target.value='';"/>
+        </div>
+        <div class="drop-card" id="drop_audio"
+             onclick="document.getElementById('file_audio').click()"
+             ondragover="handleDragOver(event,'drop_audio')"
+             ondragleave="handleDragLeave('drop_audio')"
+             ondrop="handleEvidenceDrop(event,'audio')">
           <div class="drop-label">Raw Evidence</div>
           <div class="drop-icon">🎙</div>
           <div class="drop-title">Audio Recordings</div>
-          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.wav .mp3 .m4a .flac .ogg</code> or click to browse<br/>Transcribed into observations, then run</div>
-          <div class="drop-filename" id="audioName">—</div>
-          <input type="file" id="fileAudio" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*" multiple onchange="addAudioFiles(event.target.files); event.target.value='';"/>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.wav .mp3 .m4a .flac .ogg</code> or click to browse<br/>Transcribed + speakers → Audio Agent</div>
+          <div class="drop-filename" id="name_audio">—</div>
+          <input type="file" id="file_audio" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*" multiple onchange="addEvidence('audio', event.target.files); event.target.value='';"/>
+        </div>
+        <div class="drop-card" id="drop_video"
+             onclick="document.getElementById('file_video').click()"
+             ondragover="handleDragOver(event,'drop_video')"
+             ondragleave="handleDragLeave('drop_video')"
+             ondrop="handleEvidenceDrop(event,'video')">
+          <div class="drop-label">Raw Evidence</div>
+          <div class="drop-icon">🎞</div>
+          <div class="drop-title">Video Clips</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.mp4 .mov .webm .mkv</code> or click to browse<br/>CCTV clips → Video Agent (unverified)</div>
+          <div class="drop-filename" id="name_video">—</div>
+          <input type="file" id="file_video" accept=".mp4,.mov,.webm,.mkv,video/*" multiple onchange="addEvidence('video', event.target.files); event.target.value='';"/>
         </div>
 
       </div>
 
-      <!-- Audio evidence details (shown once recordings are added) -->
-      <div class="human-input-zone audio-zone" id="audioZone">
+      <!-- Evidence details (shown once any evidence is added) -->
+      <div class="human-input-zone audio-zone" id="evidenceZone">
         <div class="human-input-header">
-          <span class="human-input-label">Audio Evidence Details</span>
-          <span class="human-input-sub">Audio alone cannot tell when or where it was recorded</span>
+          <span class="human-input-label">Case Evidence</span>
+          <span class="human-input-sub">Everything below is analysed together as one case</span>
         </div>
         <div class="human-input-body">
           <div class="constraint-row">
             <div class="constraint-label">Case ID</div>
             <div style="flex:1;">
-              <input class="constraint-input" id="audioCaseId" style="width:100%;" placeholder="CASE_AUD_001"/>
+              <input class="constraint-input" id="caseIdInput" style="width:100%;" placeholder="CASE_001"/>
             </div>
           </div>
-          <div class="audio-clip-head">
-            <div style="width:180px;flex-shrink:0;">Recording</div>
-            <div style="flex:0 0 200px;">Recording start time</div>
-            <div style="flex:1;">Location</div>
+          <div class="constraint-hint">A single obs_only file on its own keeps its own case ID (so ground-truth evaluation still applies).</div>
+
+          <div id="evList_obs" class="ev-group"></div>
+          <div id="evList_text" class="ev-group"></div>
+
+          <div id="evGroup_audio" class="ev-group">
+            <div class="audio-clip-head">
+              <div style="width:180px;flex-shrink:0;">Recording</div>
+              <div style="flex:0 0 200px;">Recording start time</div>
+              <div style="flex:1;">Location</div>
+            </div>
+            <div id="audioClipList"></div>
+            <div class="constraint-hint" style="padding-left:0;">Audio alone cannot tell when or where it was recorded. Speakers are labelled per recording; ER links the same person across recordings by voice.</div>
           </div>
-          <div id="audioClipList"></div>
-          <div class="constraint-hint" style="padding-left:0;">Speakers are labelled per recording; the ER agent links the same person across recordings by voice.</div>
+
+          <div id="evList_video" class="ev-group"></div>
+          <div id="videoToggleRow" class="config-row" style="display:none;">
+            <div class="config-item">
+              <label for="analyseVideo">Analyse video (unverified agent)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="analyseVideo"/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <span class="constraint-hint" style="padding-left:0;margin:0;">Off: clips are stored with the case but not analysed. On: needs the video agent's Gemini key.</span>
+          </div>
         </div>
       </div>
 
@@ -916,7 +948,7 @@ input[type=file]{display:none;}
       <div class="empty-state" id="emptyState">
         <div class="empty-icon">🔍</div>
         <div class="empty-title">No reconstruction yet</div>
-        <div class="empty-sub">Drop a case file and observations file above — or audio recordings — configure any investigator overrides, then run the pipeline.</div>
+        <div class="empty-sub">Add an obs_only file and/or raw evidence (text documents, audio recordings, video clips) above, configure any investigator overrides, then run the pipeline.</div>
       </div>
     </div>
 
@@ -1007,12 +1039,17 @@ input[type=file]{display:none;}
 
 <script>
 // ── State ──────────────────────────────────────────────────────────────────
-let caseData = null;
-let obsData  = null;
 let currentResult = null;
 let cases = [];
-let audioFiles = [];       // [{file, start, location}] — alternative to obsData
-let audioObsCache = null;  // {key, obs} — skip re-transcribing unchanged audio
+// Evidence for the case being built. audio entries carry the start time and
+// location the Audio Agent needs; the rest are plain File objects.
+const evidence = { obs: [], text: [], audio: [], video: [] };
+const EV_RULES = {
+  obs:   { re: /\.json$/i,                  exts: '.json',                     label: 'Observations (obs_only)', noun: 'obs file' },
+  text:  { re: /\.(txt|md|eml|json)$/i,      exts: '.txt .md .eml .json',       label: 'Text documents',          noun: 'document' },
+  audio: { re: /\.(wav|mp3|m4a|flac|ogg)$/i, exts: '.wav .mp3 .m4a .flac .ogg', label: 'Audio recordings',        noun: 'recording' },
+  video: { re: /\.(mp4|mov|webm|mkv)$/i,     exts: '.mp4 .mov .webm .mkv',      label: 'Video clips',             noun: 'clip' },
+};
 
 // ── Mock DB — persists across page interactions in sessionStorage ──────────
 function loadCases() {
@@ -1024,7 +1061,7 @@ function saveCases() {
   sessionStorage.setItem('forensynth_cases', JSON.stringify(cases));
 }
 
-// ── File drop logic ────────────────────────────────────────────────────────
+// ── Evidence drop / pick ───────────────────────────────────────────────────
 function handleDragOver(e, cardId) {
   e.preventDefault();
   document.getElementById(cardId).classList.add('drag-over');
@@ -1032,143 +1069,138 @@ function handleDragOver(e, cardId) {
 function handleDragLeave(cardId) {
   document.getElementById(cardId).classList.remove('drag-over');
 }
-function handleDrop(e, cardId, inputId) {
+function handleEvidenceDrop(e, kind) {
   e.preventDefault();
-  document.getElementById(cardId).classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (!file) return;
-  const fakeEvt = { target: { files: [file] } };
-  const nameKey = cardId === 'dropCase' ? 'caseName' : 'obsName';
-  const dataKey = cardId === 'dropCase' ? 'caseData' : 'obsData';
-  loadFile(fakeEvt, cardId, nameKey, dataKey);
+  document.getElementById('drop_' + kind).classList.remove('drag-over');
+  addEvidence(kind, e.dataTransfer.files);
 }
 
-function loadFile(event, cardId, nameId, dataKey) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (dataKey === 'caseData') caseData = data;
-      else {
-        obsData = data;
-        // an observations file and audio recordings are alternative inputs
-        if (audioFiles.length) { audioFiles = []; renderAudioPanel(); }
-      }
-      document.getElementById(nameId).textContent = file.name;
-      document.getElementById(cardId).classList.add('has-file');
-      document.getElementById(cardId).classList.remove('drag-over');
-      const id = (caseData||obsData||{}).case_id || '';
-      if (id) {
-        document.getElementById('topbarTitle').textContent = id;
-        document.getElementById('topbarSub').textContent = ' — ' + ((caseData||obsData||{}).template || '');
-      }
-      showToast('File Loaded', file.name + ' ready for pipeline.');
-    } catch {
-      showToast('Parse Error', 'File is not valid JSON.', true);
-    }
-  };
-  reader.readAsText(file);
+function defaultCaseId() {
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `CASE_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
 }
 
-// ── Audio evidence (Audio Field Agent) ─────────────────────────────────────
-function handleAudioDrop(e) {
-  e.preventDefault();
-  document.getElementById('dropAudio').classList.remove('drag-over');
-  addAudioFiles(e.dataTransfer.files);
-}
+function evName(kind, item) { return kind === 'audio' ? item.file.name : item.name; }
 
-function addAudioFiles(fileList) {
-  const picked = Array.from(fileList || []).filter(f => /\.(wav|mp3|m4a|flac|ogg)$/i.test(f.name));
+async function addEvidence(kind, fileList) {
+  const rule = EV_RULES[kind];
+  const picked = Array.from(fileList || []).filter(f => rule.re.test(f.name));
   if (!picked.length) {
-    showToast('Unsupported File', 'Audio must be .wav, .mp3, .m4a, .flac or .ogg.', true);
+    showToast('Unsupported File', `${rule.label} must be ${rule.exts}.`, true);
     return;
   }
-  picked.forEach(f => {
-    if (!audioFiles.some(a => a.file.name === f.name)) audioFiles.push({ file: f, start: '', location: '' });
-  });
-  // an observations file and audio recordings are alternative inputs
-  if (obsData) {
-    obsData = null;
-    document.getElementById('dropObs').classList.remove('has-file');
-    document.getElementById('obsName').textContent = '—';
+  const idInput = document.getElementById('caseIdInput');
+  let added = 0;
+  for (const f of picked) {
+    if (evidence[kind].some(x => evName(kind, x) === f.name)) continue;
+    if (kind === 'obs') {
+      // check it really is an obs_only file, and adopt its case ID
+      try {
+        const data = JSON.parse(await f.text());
+        if (!Array.isArray(data.observations)) throw new Error('no observations');
+        if (data.case_id && !idInput.value.trim()) idInput.value = data.case_id;
+      } catch {
+        showToast('Not an obs_only file', `${f.name} has no "observations" list.`, true);
+        continue;
+      }
+    }
+    evidence[kind].push(kind === 'audio' ? { file: f, start: '', location: '' } : f);
+    added++;
   }
-  const idInput = document.getElementById('audioCaseId');
-  if (!idInput.value.trim()) {
-    const d = new Date(), p = n => String(n).padStart(2, '0');
-    idInput.value = `CASE_AUD_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
-  }
-  renderAudioPanel();
-  showToast('Audio Added', picked.length + ' recording(s) ready — set start time and location.');
+  if (!added) return;
+  if (!idInput.value.trim()) idInput.value = defaultCaseId();
+  renderEvidencePanel();
+  const extra = kind === 'audio' ? ' — set start time and location.' :
+                kind === 'video' ? ' — stored; analysed only if video analysis is on.' : '.';
+  showToast('Evidence Added', `${added} ${rule.noun}(s) added${extra}`);
 }
 
-function removeAudioFile(idx) {
-  audioFiles.splice(idx, 1);
-  renderAudioPanel();
+function removeEvidence(kind, idx) {
+  evidence[kind].splice(idx, 1);
+  renderEvidencePanel();
 }
 
-function renderAudioPanel() {
-  const has = audioFiles.length > 0;
-  document.getElementById('audioZone').classList.toggle('visible', has);
-  document.getElementById('dropAudio').classList.toggle('has-file', has);
-  document.getElementById('audioName').textContent =
-    has ? audioFiles.length + ' recording' + (audioFiles.length > 1 ? 's' : '') : '—';
+function fileRow(name, onRemove) {
+  const row = document.createElement('div');
+  row.className = 'ev-file-row';
+  const n = document.createElement('div');
+  n.className = 'audio-clip-name';
+  n.textContent = name; n.title = name;
+  const rm = document.createElement('button');
+  rm.className = 'audio-clip-remove'; rm.textContent = '✕'; rm.title = 'Remove';
+  rm.onclick = onRemove;
+  row.append(n, rm);
+  return row;
+}
 
+function renderEvidencePanel() {
+  const total = Object.values(evidence).reduce((n, l) => n + l.length, 0);
+  document.getElementById('evidenceZone').classList.toggle('visible', total > 0);
+  for (const kind of Object.keys(EV_RULES)) {
+    const n = evidence[kind].length;
+    document.getElementById('drop_' + kind).classList.toggle('has-file', n > 0);
+    document.getElementById('name_' + kind).textContent = n ? `${n} ${EV_RULES[kind].noun}${n > 1 ? 's' : ''}` : '—';
+  }
+  // plain file lists: obs, text, video
+  for (const kind of ['obs', 'text', 'video']) {
+    const box = document.getElementById('evList_' + kind);
+    box.textContent = '';
+    if (!evidence[kind].length) continue;
+    const t = document.createElement('div');
+    t.className = 'ev-group-title'; t.textContent = EV_RULES[kind].label;
+    box.appendChild(t);
+    evidence[kind].forEach((f, i) => box.appendChild(fileRow(f.name, () => removeEvidence(kind, i))));
+  }
+  document.getElementById('videoToggleRow').style.display = evidence.video.length ? '' : 'none';
+  // audio rows need a start time and a location each
+  document.getElementById('evGroup_audio').style.display = evidence.audio.length ? '' : 'none';
   const list = document.getElementById('audioClipList');
   list.textContent = '';
-  audioFiles.forEach((clip, idx) => {
+  evidence.audio.forEach((clip, idx) => {
     const row = document.createElement('div');
     row.className = 'audio-clip-row';
-
     const name = document.createElement('div');
     name.className = 'audio-clip-name';
-    name.textContent = clip.file.name;
-    name.title = clip.file.name;
-
+    name.textContent = clip.file.name; name.title = clip.file.name;
     const time = document.createElement('input');
-    time.type = 'datetime-local';
-    time.step = '1';
+    time.type = 'datetime-local'; time.step = '1';
     time.className = 'constraint-input audio-clip-time';
     time.value = clip.start;
     time.oninput = () => { clip.start = time.value; };
-
     const loc = document.createElement('input');
     loc.className = 'constraint-input';
     loc.placeholder = 'e.g. near ATM location, mobile network';
     loc.value = clip.location;
     loc.oninput = () => { clip.location = loc.value; };
-
     const rm = document.createElement('button');
-    rm.className = 'audio-clip-remove';
-    rm.textContent = '✕';
-    rm.title = 'Remove recording';
-    rm.onclick = () => removeAudioFile(idx);
-
+    rm.className = 'audio-clip-remove'; rm.textContent = '✕'; rm.title = 'Remove recording';
+    rm.onclick = () => removeEvidence('audio', idx);
     row.append(name, time, loc, rm);
     list.appendChild(row);
   });
 }
 
-// Returns an error message, or '' when the audio inputs are complete.
-function validateAudioInputs() {
-  const caseId = document.getElementById('audioCaseId').value.trim();
+// Returns an error message, or '' when the evidence is ready to run.
+function validateEvidence() {
+  const caseId = document.getElementById('caseIdInput').value.trim();
   if (!/^[A-Za-z0-9_-]{1,64}$/.test(caseId)) return "Case ID may only contain letters, digits, '_' and '-'.";
-  const incomplete = audioFiles.find(c => !c.start || !c.location.trim());
+  const incomplete = evidence.audio.find(c => !c.start || !c.location.trim());
   if (incomplete) return `Set the start time and location for ${incomplete.file.name}.`;
+  const analysable = evidence.obs.length || evidence.text.length || evidence.audio.length ||
+                     (evidence.video.length && document.getElementById('analyseVideo').checked);
+  if (!analysable) return 'Video alone is only analysed when "Analyse video" is on: add other evidence or enable it.';
   return '';
 }
 
-// Upload the recordings and run the Audio Field Agent; resolves to obs_only JSON.
-async function extractAudioObservations() {
-  const caseId = document.getElementById('audioCaseId').value.trim();
-  const key = JSON.stringify([caseId, audioFiles.map(c => [c.file.name, c.file.size, c.file.lastModified, c.start, c.location.trim()])]);
-  if (audioObsCache && audioObsCache.key === key) return audioObsCache.obs;
-
-  for (let i = 0; i < audioFiles.length; i++) {
-    const f = audioFiles[i].file;
-    setProgress(100, `Uploading recording ${i + 1} of ${audioFiles.length}…`);
-    const up = await fetch(`/api/audio-upload?case_id=${encodeURIComponent(caseId)}&filename=${encodeURIComponent(f.name)}`, {
+async function uploadEvidence(caseId) {
+  const jobs = [];
+  for (const kind of Object.keys(EV_RULES)) {
+    for (const item of evidence[kind]) jobs.push([kind, kind === 'audio' ? item.file : item]);
+  }
+  for (let i = 0; i < jobs.length; i++) {
+    const [kind, f] = jobs[i];
+    setProgress(100, `Uploading evidence ${i + 1} of ${jobs.length}: ${f.name}`);
+    const up = await fetch(`/api/upload?case_id=${encodeURIComponent(caseId)}&kind=${kind}&filename=${encodeURIComponent(f.name)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/octet-stream' },
       body: f,
@@ -1178,22 +1210,6 @@ async function extractAudioObservations() {
       throw new Error(err.detail || `Upload of ${f.name} failed.`);
     }
   }
-
-  setProgress(100, 'Audio Field Agent: transcribing and identifying speakers (this can take a few minutes)…');
-  const resp = await fetch('/api/extract-audio', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      case_id: caseId,
-      clips: audioFiles.map(c => ({ filename: c.file.name, start_time: c.start, location: c.location.trim() })),
-    }),
-  });
-  const data = await resp.json();
-  if (!resp.ok) {
-    throw new Error(data.error ? `${data.error}\n${(data.stderr||'').slice(-500)}` : (data.detail || 'Audio extraction failed.'));
-  }
-  audioObsCache = { key, obs: data };
-  return data;
 }
 
 // ── Human input toggle ─────────────────────────────────────────────────────
@@ -1253,61 +1269,66 @@ function parseConstraintPairs(raw) {
 }
 
 async function runPipeline() {
-  if (!obsData && !audioFiles.length) {
-    showToast('Missing Input', 'Drop an observations (_obs_only.json) file or audio recordings to run.', true);
+  const total = Object.values(evidence).reduce((n, l) => n + l.length, 0);
+  if (!total) {
+    showToast('Missing Input', 'Add an obs_only file, text documents, audio recordings or video clips to run.', true);
     return;
   }
-  if (audioFiles.length) {
-    const audioErr = validateAudioInputs();
-    if (audioErr) { showToast('Audio Details Missing', audioErr, true); return; }
-  }
+  const evErr = validateEvidence();
+  if (evErr) { showToast('Evidence Incomplete', evErr, true); return; }
+
   const btn = document.getElementById('runBtn');
   btn.classList.add('running');
   btn.disabled = true;
   document.getElementById('emptyState').style.display = 'none';
   setStatus('running', 'Running…');
-  setProgress(100, 'Running full ForenSynth pipeline (ER → Timeline → Critique → Showrunner)…');
   document.getElementById('progressBar').classList.add('indeterminate');
 
   const noLlm = document.getElementById('noLlmToggle').checked || !document.getElementById('llmToggle').checked;
-
   const mustMerge = parseConstraintPairs(document.getElementById('mustMerge').value);
   const mustNotMerge = parseConstraintPairs(document.getElementById('mustNotMerge').value);
   if (mustMerge === 'PARSE_ERROR' || mustNotMerge === 'PARSE_ERROR') {
     showToast('Constraint Parse Error', 'Must Merge / Must Not Merge must be pairs like ["A","B"], ["C","D"]. Ignoring invalid field(s).', true);
   }
+  const caseId = document.getElementById('caseIdInput').value.trim();
+  const analyseVideo = document.getElementById('analyseVideo').checked;
 
   try {
-    const runObs = audioFiles.length ? await extractAudioObservations() : obsData;
-    if (audioFiles.length) {
-      document.getElementById('topbarTitle').textContent = runObs.case_id;
-      setProgress(100, `Audio transcribed (${runObs.observations.length} observations) — running ER → Timeline → Critique → Showrunner…`);
-    }
+    await uploadEvidence(caseId);
+    const agents = [evidence.text.length && 'Text Agent', evidence.audio.length && 'Audio Agent',
+                    evidence.video.length && analyseVideo && 'Video Agent'].filter(Boolean);
+    setProgress(100, (agents.length ? `${agents.join(' + ')} extracting evidence, then ` : 'Running ')
+                     + 'ER → Timeline → Critique → Showrunner (audio can take a few minutes)…');
 
-    const payload = {
-      obs_data: runObs,
-      no_llm: noLlm,
-      must_merge: mustMerge === 'PARSE_ERROR' ? null : mustMerge,
-      must_not_merge: mustNotMerge === 'PARSE_ERROR' ? null : mustNotMerge,
-    };
-
-    const resp = await fetch('/api/run-pipeline', {
+    const resp = await fetch('/api/run-case', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        case_id: caseId,
+        obs_files: evidence.obs.map(f => f.name),
+        text_files: evidence.text.map(f => f.name),
+        audio: evidence.audio.map(c => ({ filename: c.file.name, start_time: c.start, location: c.location.trim() })),
+        video_files: evidence.video.map(f => f.name),
+        analyse_video: analyseVideo,
+        no_llm: noLlm,
+        must_merge: mustMerge === 'PARSE_ERROR' ? null : mustMerge,
+        must_not_merge: mustNotMerge === 'PARSE_ERROR' ? null : mustNotMerge,
+      }),
     });
     const data = await resp.json();
-
     if (!resp.ok) {
-      throw new Error(data.error ? `${data.error}\n${(data.stderr||'').slice(-500)}` : 'Pipeline run failed.');
+      throw new Error(data.error ? `${data.error}\n${(data.stderr||'').slice(-500)}` : (data.detail || 'Pipeline run failed.'));
     }
 
     currentResult = data;
+    document.getElementById('topbarTitle').textContent = data.case_id;
     renderOutput(currentResult);
     saveToHistory(currentResult);
     renderSidebar();
     setStatus('ready', 'Complete');
-    showToast('Pipeline Complete', currentResult.case_id + ' — ' + currentResult.verdict);
+    const warn = (data.warnings || []).join(' ');
+    showToast(warn ? 'Pipeline Complete — note' : 'Pipeline Complete',
+              currentResult.case_id + ' — ' + currentResult.verdict + (warn ? ' · ' + warn : ''), false);
   } catch (err) {
     setStatus('ready', 'Error');
     showToast('Pipeline Failed', String(err.message || err).slice(0, 300), true);
@@ -1539,7 +1560,7 @@ function renderIterLog(r) {
 
 function renderPostOutputs(r) {
   // Produced for real by run_case.py (scene_reconstruction_v3.py and
-  // explainability_report_v2.py) during the /api/run-pipeline call that just
+  // explainability_report_v2.py) during the /api/run-case call that just
   // completed. Served by pipeline/api.py's static mount at /output.
   const videoName  = `${r.case_id}_scene_reconstruction_v3.mp4`;
   const reportName = `${r.case_id}_explainability_report_v2.pdf`;
@@ -1638,16 +1659,12 @@ function startNewCase() {
 }
 
 function clearAll() {
-  caseData = null; obsData = null; currentResult = null;
-  audioFiles = []; audioObsCache = null;
-  document.getElementById('audioCaseId').value = '';
-  renderAudioPanel();
-  ['dropCase','dropObs'].forEach(id=>{
-    const el = document.getElementById(id);
-    el.classList.remove('has-file','drag-over');
-  });
-  document.getElementById('caseName').textContent = '—';
-  document.getElementById('obsName').textContent = '—';
+  currentResult = null;
+  for (const kind of Object.keys(evidence)) evidence[kind] = [];
+  document.getElementById('caseIdInput').value = '';
+  document.getElementById('analyseVideo').checked = false;
+  renderEvidencePanel();
+  for (const kind of Object.keys(EV_RULES)) document.getElementById('drop_' + kind).classList.remove('drag-over');
   document.getElementById('outputSection').classList.remove('visible');
   document.getElementById('emptyState').style.display = '';
   document.getElementById('progressWrap').classList.remove('visible');
