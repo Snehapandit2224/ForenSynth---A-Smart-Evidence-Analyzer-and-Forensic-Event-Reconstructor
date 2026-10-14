@@ -217,7 +217,13 @@ class CritiqueLLM:
                 model=self._model,
                 messages=[{"role":"system","content":_COHERENCE_SYSTEM},
                           {"role":"user","content":user}],
-                temperature=0.0, max_tokens=512, timeout=self._timeout,
+                # gpt-oss-20b is a reasoning model: hidden reasoning tokens
+                # count against max_tokens. At 512 with default effort it
+                # could spend the whole budget reasoning and return an empty
+                # answer ("Expecting value: line 1 column 1"), which also
+                # switched the check off for the rest of the run (_ok=False).
+                temperature=0.0, max_tokens=1024, timeout=self._timeout,
+                reasoning_effort="low", response_format={"type": "json_object"},
             )
             text = resp.choices[0].message.content or ""
             text = re.sub(r"^```(json)?","",text.strip()).rstrip("`").strip()

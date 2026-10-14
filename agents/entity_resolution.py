@@ -335,12 +335,17 @@ class _BatchLLMScorer:
             prompt = (
                 f"{system_prompt}\n\n{user_intro}\n"
                 + json.dumps(chunk, ensure_ascii=False)
-                + '\n\nReturn ONLY JSON: {"0": 0.85, "1": 0.12, ...} with one float 0.0-1.0 per id.'
+                # Placeholders, not sample numbers: given sample values the
+                # model was seen echoing them back as its scores.
+                + '\n\nReturn ONLY JSON mapping each id to its score: {"0": <float 0.0-1.0>, "1": <float 0.0-1.0>, ...}'
             )
-            # FIX: was len(chunk)*16+128 which gave only 288 tokens for 10 pairs
-            # — not enough for the JSON response, causing truncation and parse errors.
-            # 10 pairs need ~200 output tokens; 300 gives safe headroom.
-            max_tok = min(4096, max(300, len(chunk) * 30))
+            # gpt-oss-20b is a reasoning model and its hidden reasoning counts
+            # against max_tokens. At the old 300 a 5-pair call spent 298 of
+            # them reasoning and returned an empty answer (finish_reason
+            # "length"), so every chunk silently fell back to heuristics.
+            # Low effort + 1024 tokens + JSON mode returns the scores
+            # (verified on Groq: ~170 reasoning tokens, complete JSON).
+            max_tok = min(4096, max(1024, len(chunk) * 30))
             raw_scores: Dict[str, float] = {}
             try:
                 resp = self._client.chat.completions.create(
@@ -348,6 +353,8 @@ class _BatchLLMScorer:
                     messages=[{"role": "user", "content": prompt}],
                     max_tokens=max_tok,
                     temperature=0.0,
+                    reasoning_effort="low",
+                    response_format={"type": "json_object"},
                 )
                 raw_scores = _parse_llm_json_map(resp.choices[0].message.content or "")
             except Exception as exc:
