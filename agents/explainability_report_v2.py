@@ -573,24 +573,29 @@ def build_guide(pdf: ExplainabilityPDF):
 def build_er_section(pdf: ExplainabilityPDF, er: dict):
     pdf.add_page()
     pdf.h1("Section 2 — Who Was Involved")
-    pdf.small("Source file: CASE_ATM_001_er_output.json  (Entity Resolution Agent)")
+    pdf.small(f"Source file: {er.get('case_id', 'case')}_er_output.json  (Entity Resolution Agent)")
 
     n_entities = er.get("entity_count", 0)
     er_status  = er.get("output_classification", "UNKNOWN")
     er_reason  = safe(er.get("output_classification_reason", ""), 300)
 
+    who_lines = "".join(
+        f"  • {ent.get('primary_alias', 'Unknown')} — "
+        f"{', '.join(ent.get('roles', ['unknown']))}, in "
+        f"{ent.get('total_mentions', 0)} evidence mention(s) "
+        f"({', '.join(ent.get('modalities', [])) or 'unknown modality'})"
+        + (f"; also referred to as {', '.join(a for a in ent.get('aliases', []) if a != ent.get('primary_alias'))}"
+           if len(ent.get("aliases", [])) > 1 else "")
+        + ".\n"
+        for ent in er.get("canonical_entities", [])
+    )
     pdf.plain_box(
         "Who did the system identify?",
         f"The system analysed all pieces of evidence and identified {n_entities} distinct "
-        f"individual(s) who appear across the footage, audio recordings, and written reports.\n\n"
-        f"  • Person 14 — identified as the primary suspect. Seen on CCTV at the ATM "
-        f"across multiple camera angles over a 4-minute window.\n\n"
-        f"  • Witness cluster — a second individual (or group of sources from the same "
-        f"person) who reported the incident. Three different evidence sources "
-        f"(video, audio, text report) were grouped together, but their exact identity "
-        f"and physical location at the time are not fully confirmed.\n\n"
-        f"System confidence in these identifications: {er_status}. "
-        f"A human investigator should review the witness cluster before drawing any conclusions.",
+        f"individual(s):\n\n{who_lines}\n"
+        f"System confidence in these identifications: {er_status}."
+        + (" A human investigator should review these groupings before drawing any conclusions."
+           if er_status in ("AMBIGUOUS", "PARTIAL") else ""),
     )
 
     pdf.tech_box("Entity Resolution — system status", [
@@ -641,15 +646,20 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
                 f"sightings are the same person."
             )
         else:
+            when = (f"All are timestamped at {time_str(t0_raw)}." if t0_raw == t1_raw else
+                    f"They were recorded between {time_str(t0_raw)} and {time_str(t1_raw)}.")
+            caution = (
+                f"[!] CAUTION: The grouped evidence places this person at {len(set(locs))} "
+                f"different locations. One of them may be where a report was filed rather "
+                f"than where the person physically was. This needs human confirmation.\n\n"
+                if len(set(locs)) > 1 else ""
+            )
             plain = (
                 f"This entry groups {len(srcs)} evidence items ({', '.join(srcs)}) that "
                 f"may belong to the same witness, recorded via {', '.join(mods)}. "
-                f"All three are timestamped at exactly {time_str(t0_raw)}.\n\n"
+                f"{when}\n\n"
                 f"Locations reported: {'; '.join(locs)}\n\n"
-                f"[!] CAUTION: The evidence shows this person at conflicting locations at "
-                f"the same time. The 'email_74' item is likely a text message filed with "
-                f"police — it may represent the witness's report, not their physical "
-                f"location. This needs human confirmation.\n\n"
+                f"{caution}"
                 f"Confidence that this grouping is correct: {label} ({conf:.0%})."
             )
         pdf.plain_box(f"About: {ent.get('primary_alias', 'Unknown')}", plain)
@@ -702,7 +712,8 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
 def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
     pdf.add_page()
     pdf.h1("Section 3 — What Happened: Timeline of Events")
-    pdf.small("Source file: CASE_ATM_001_timeline_V3.json  (Timeline Agent — final version)")
+    pdf.small(f"Source file: {tl.get('case_id', 'case')}_timeline_{tl.get('timeline_version', 'final')}.json  "
+              f"(Timeline Agent — final version)")
 
     events   = tl.get("events", [])
     n        = len(events)
@@ -826,20 +837,22 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
 
 def build_critique_section(
     pdf: ExplainabilityPDF,
-    c1: dict, c2: dict, c3: dict,
+    case_id: str,
+    critiques: List[Tuple[int, dict]],
 ):
     pdf.add_page()
     pdf.h1("Section 4 — Evidence Gaps: What the System Found Missing")
     pdf.small(
-        "Source files: CASE_ATM_001_critique_C1/C2/C3.json  (Critique Agent — 3 rounds)"
+        f"Source files: {case_id}_critique_C1..C{len(critiques)}.json  "
+        f"(Critique Agent — {len(critiques)} round(s))"
     )
 
     pdf.plain_box(
         "What are evidence gaps?",
         "After building the timeline, the system reviewed its own work and looked for "
         "problems — places where evidence was weak, missing, or contradictory. "
-        "These problems are called 'gaps.' The system then ran the analysis again "
-        "(up to 3 times) to try to fix the gaps it found.\n\n"
+        "These problems are called 'gaps.' The system can then run the analysis again "
+        "to try to fix the gaps it found.\n\n"
         "Each gap is given a severity score from 0 (minor) to 1 (critical). "
         "The sections below show what was found in each review round.",
     )
@@ -852,13 +865,8 @@ def build_critique_section(
         "critical": "Critical — must be resolved; do not rely on this evidence",
     }
 
-    rounds = [
-        ("Round 1 (C1)", c1, "CASE_ATM_001_critique_C1.json"),
-        ("Round 2 (C2)", c2, "CASE_ATM_001_critique_C2.json"),
-        ("Round 3 (C3)", c3, "CASE_ATM_001_critique_C3.json"),
-    ]
-
-    for round_label, critique, src_file in rounds:
+    for n, critique in critiques:
+        round_label = f"Round {n} (C{n})"
         if not critique:
             continue
 
@@ -925,12 +933,14 @@ def build_critique_section(
 
 def build_showrunner_section(
     pdf: ExplainabilityPDF,
-    s1: dict, s2: dict, s3: dict,
+    case_id: str,
+    decisions: List[Tuple[int, dict]],
 ):
     pdf.add_page()
     pdf.h1("Section 5 — System Decisions: How the AI Revised Its Analysis")
     pdf.small(
-        "Source files: CASE_ATM_001_showrunner_C1/C2/C3.json  (Showrunner Agent — 3 rounds)"
+        f"Source files: {case_id}_showrunner_C1..C{len(decisions)}.json  "
+        f"(Showrunner Agent — {len(decisions)} round(s))"
     )
 
     pdf.plain_box(
@@ -942,7 +952,7 @@ def build_showrunner_section(
         "  • Re-run timeline — redo the event reconstruction with corrections\n"
         "  • Re-run entity resolution — redo the person identification\n"
         "  • Human review — the AI is not confident enough; a person must decide\n\n"
-        "The system can run up to 3 rounds. Below you can see what was decided after "
+        "The system can run several rounds. Below you can see what was decided after "
         "each round and why.",
     )
 
@@ -953,9 +963,8 @@ def build_showrunner_section(
         "human_review":    "Sent for human review (AI not confident enough)",
     }
 
-    for round_label, sr in [("Round 1 (C1)", s1), ("Round 2 (C2)", s2), ("Round 3 (C3)", s3)]:
-        if not sr:
-            continue
+    for n, sr in decisions:
+        round_label = f"Round {n} (C{n})"
 
         action    = sr.get("action", "unknown")
         # field is called "reasoning" in the showrunner JSON (not "reason")
@@ -994,7 +1003,7 @@ def build_showrunner_section(
 
 def build_human_review(
     pdf: ExplainabilityPDF,
-    er: dict, tl: dict, c3: dict, s3: dict,
+    er: dict, tl: dict, c_final: dict, s_final: dict, final_round: int,
 ):
     pdf.add_page()
     pdf.h1("Section 6 — What Still Needs Human Review")
@@ -1012,11 +1021,11 @@ def build_human_review(
     # ER ambiguous
     if er and er.get("output_classification") == "AMBIGUOUS":
         items.append((
-            "Witness identity could not be confirmed",
-            "The system grouped Person_55, Speaker_C, and email_74 as one witness, but the "
-            "evidence places them at different physical locations at exactly the same time. "
-            "A human investigator must determine whether these are the same person or "
-            "different individuals.",
+            "Identity groupings could not be confirmed",
+            "Entity resolution classified its result as AMBIGUOUS: "
+            f"{safe(er.get('output_classification_reason', 'no reason recorded'), 200)} "
+            "A human investigator must confirm which evidence items belong to the same "
+            "person before relying on the groupings in Section 2.",
             True,
         ))
 
@@ -1043,24 +1052,24 @@ def build_human_review(
         ))
 
     # Showrunner requested human review
-    if s3 and s3.get("action") == "human_review":
+    if s_final and s_final.get("action") == "human_review":
         items.append((
-            "The system itself requested human review after the final round",
-            safe(s3.get("reason", "Reason not recorded."), 250),
+            f"The system itself requested human review after round {final_round}",
+            safe(s_final.get("reasoning", "Reason not recorded."), 250),
             True,
         ))
 
     # High-severity remaining gaps
-    if c3:
+    if c_final:
         critical_gaps = [
-            g for g in c3.get("gaps", [])
+            g for g in c_final.get("gaps", [])
             if isinstance(g.get("severity"), float) and g["severity"] >= 0.70
         ]
         if critical_gaps:
             descs = "; ".join(safe(g.get("description", ""), 80) for g in critical_gaps[:3])
             items.append((
-                f"{len(critical_gaps)} critical evidence gap(s) remain after 3 rounds",
-                f"These gaps were not resolved after three rounds of analysis: {descs}",
+                f"{len(critical_gaps)} critical evidence gap(s) remain after {final_round} round(s)",
+                f"These gaps were not resolved after {final_round} round(s) of analysis: {descs}",
                 True,
             ))
 
@@ -1131,7 +1140,7 @@ def build_verdict(pdf: ExplainabilityPDF, tl: dict, er: dict):
     # Plain English verdict
     if classification == "AMBIGUOUS":
         plain = (
-            f"After analysing all available evidence and running the analysis three times, "
+            f"After analysing all available evidence and revising its analysis, "
             f"the ForenSynth system produced an AMBIGUOUS reconstruction.\n\n"
             f"AMBIGUOUS means the AI found significant uncertainty. The average confidence "
             f"across all events is {avg_conf:.0%}, and {n_conflict} event(s) have "
@@ -1192,7 +1201,7 @@ def build_verdict(pdf: ExplainabilityPDF, tl: dict, er: dict):
 
 def build_narrative_summary(
     pdf: ExplainabilityPDF,
-    er: dict, tl: dict, c3: dict, s3: dict,
+    er: dict, tl: dict, c_final: dict, s_final: dict, final_round: int,
 ):
     """
     A self-contained plain-English summary page. Written so that someone can
@@ -1242,22 +1251,24 @@ def build_narrative_summary(
         pdf.set_font(FONT_NAME, "", 9)
         if "suspect" in role:
             desc = (
-                f"{alias} is identified as the primary suspect. They appear in "
+                f"{alias} is identified as a suspect. They appear in "
                 f"{len(srcs)} piece(s) of {', '.join(mods)} evidence "
-                f"({', '.join(srcs)}), recorded at the ATM across three different "
-                f"camera angles. The system is {label} confidence ({conf:.0%}) that "
+                f"({', '.join(srcs)}), recorded at {len(set(locs))} location(s). "
+                f"The system is {label} confidence ({conf:.0%}) that "
                 f"all these sightings are the same person."
             )
         else:
+            conflict = (
+                f"However, the grouped evidence places this person at {len(set(locs))} "
+                f"different locations ({'; '.join(sorted(set(locs)))}). One may be where a "
+                f"report was filed rather than where they physically were — this needs a "
+                f"human to confirm. "
+                if len(set(locs)) > 1 else ""
+            )
             desc = (
                 f"A witness appears in {len(srcs)} piece(s) of evidence "
                 f"({', '.join(srcs)}) captured via {', '.join(mods)}. "
-                f"These sources were grouped together because they all report the same "
-                f"incident at the same time. However, the system flagged a conflict: "
-                f"one of the evidence items (email_74) places this person at the local "
-                f"police station, while another (Person_55 on video) shows them at the "
-                f"ATM. This may mean the witness sent a text message to police from "
-                f"their phone while at the ATM — but this needs a human to confirm. "
+                f"{conflict}"
                 f"Confidence in this grouping: {label} ({conf:.0%})."
             )
         pdf.multi_cell(0, 5.5, desc, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -1399,17 +1410,17 @@ def build_narrative_summary(
     # ── What still needs investigation ────────────────────────────────────────
     pdf.h2("What Still Needs Investigation")
 
-    remaining_gaps = (c3 or {}).get("gaps", [])
-    s3_action      = (s3 or {}).get("action", "")
+    remaining_gaps = (c_final or {}).get("gaps", [])
+    final_action   = (s_final or {}).get("action", "")
     unresolved     = (tl or {}).get("unresolved_entities", [])
 
     investigation_items = []
 
-    if s3_action == "human_review":
+    if final_action == "human_review":
         investigation_items.append(
-            "The AI system itself escalated this case for human review after its "
-            "third and final analysis round. It reached the limit of what it can "
-            "determine automatically."
+            f"The AI system itself escalated this case for human review after analysis "
+            f"round {final_round}. It reached the limit of what it can determine "
+            f"automatically: {safe(s_final.get('reasoning', ''), 200)}"
         )
     if unresolved:
         investigation_items.append(
@@ -1432,7 +1443,7 @@ def build_narrative_summary(
             investigation_items.append(safe(desc, 200))
 
     if investigation_items:
-        text = "\n\n".join(f"  {chr(9679)}  {item}" for item in investigation_items)
+        text = "\n\n".join(f"  •  {item}" for item in investigation_items)
         pdf.warn_box("[!]  Items requiring human investigation:\n\n" + text)
     else:
         pdf.body("No outstanding investigation items. The system reached a complete result.")
@@ -1459,6 +1470,15 @@ def build_narrative_summary(
 # Entry point
 # ──────────────────────────────────────────────────────────────────────────────
 
+def _rounds(pipeline_outputs: Dict[str, Any], prefix: str) -> List[Tuple[int, dict]]:
+    """[(n, result), ...] for every non-empty '<prefix><n>' key, in round order."""
+    found = []
+    for key, val in pipeline_outputs.items():
+        if key.startswith(prefix) and key[len(prefix):].isdigit() and val:
+            found.append((int(key[len(prefix):]), val))
+    return sorted(found, key=lambda r: r[0])
+
+
 def generate_explainability_report(
     pipeline_outputs: Dict[str, Any],
     output_dir: str,
@@ -1470,18 +1490,19 @@ def generate_explainability_report(
     if generation failed for any reason (never raises).
 
     pipeline_outputs keys (all optional, missing ones render as empty):
-        er, timeline_v3, critique_c1, critique_c2, critique_c3,
-        showrunner_c1, showrunner_c2, showrunner_c3
+        er, timeline_v3 (the final timeline, whatever its version),
+        critique_c1..critique_cN, showrunner_c1..showrunner_cN
     """
     try:
         er = pipeline_outputs.get("er") or {}
         tl = pipeline_outputs.get("timeline_v3") or {}
-        c1 = pipeline_outputs.get("critique_c1") or {}
-        c2 = pipeline_outputs.get("critique_c2") or {}
-        c3 = pipeline_outputs.get("critique_c3") or {}
-        s1 = pipeline_outputs.get("showrunner_c1") or {}
-        s2 = pipeline_outputs.get("showrunner_c2") or {}
-        s3 = pipeline_outputs.get("showrunner_c3") or {}
+        critiques = _rounds(pipeline_outputs, "critique_c")
+        decisions = _rounds(pipeline_outputs, "showrunner_c")
+        # The loop can stop after any round, so "final" means the last round
+        # that actually ran, not a fixed round 3.
+        final_round = max([n for n, _ in critiques + decisions], default=0)
+        c_final = dict(critiques).get(final_round, {})
+        s_final = dict(decisions).get(final_round, {})
 
         pdf = ExplainabilityPDF(case_id)
 
@@ -1489,11 +1510,11 @@ def generate_explainability_report(
         build_guide(pdf)
         build_er_section(pdf, er)
         build_timeline_section(pdf, tl)
-        build_critique_section(pdf, c1, c2, c3)
-        build_showrunner_section(pdf, s1, s2, s3)
-        build_human_review(pdf, er, tl, c3, s3)
+        build_critique_section(pdf, case_id, critiques)
+        build_showrunner_section(pdf, case_id, decisions)
+        build_human_review(pdf, er, tl, c_final, s_final, final_round)
         build_verdict(pdf, tl, er)
-        build_narrative_summary(pdf, er, tl, c3, s3)
+        build_narrative_summary(pdf, er, tl, c_final, s_final, final_round)
 
         out_dir = Path(output_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -1521,12 +1542,8 @@ if __name__ == "__main__":
     outputs = {
         "er":            load_json(base / f"{args.case_id}_er_output.json"),
         "timeline_v3":   load_json(base / f"{args.case_id}_timeline_V3.json"),
-        "critique_c1":   load_json(base / f"{args.case_id}_critique_C1.json"),
-        "critique_c2":   load_json(base / f"{args.case_id}_critique_C2.json"),
-        "critique_c3":   load_json(base / f"{args.case_id}_critique_C3.json"),
-        "showrunner_c1": load_json(base / f"{args.case_id}_showrunner_C1.json"),
-        "showrunner_c2": load_json(base / f"{args.case_id}_showrunner_C2.json"),
-        "showrunner_c3": load_json(base / f"{args.case_id}_showrunner_C3.json"),
+        **{f"critique_c{n}":   load_json(base / f"{args.case_id}_critique_C{n}.json") for n in range(1, 6)},
+        **{f"showrunner_c{n}": load_json(base / f"{args.case_id}_showrunner_C{n}.json") for n in range(1, 6)},
     }
     print("Files loaded:")
     for name, obj in outputs.items():
