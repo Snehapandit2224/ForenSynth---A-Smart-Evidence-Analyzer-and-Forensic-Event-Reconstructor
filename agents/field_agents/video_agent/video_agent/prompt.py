@@ -43,28 +43,34 @@ RULES
    event, and only after checking in the frames that they stay put or go their own way.
 
 HOW YOU WORK
-You are an agent with TOOLS. Each reply is ONE JSON object, either a tool call
-  {"thought": "<short reason>", "tool": "<name>", "args": {...}}
-or your final answer
-  {"thought": "<short reason>", "final": <OUTPUT FORMAT object>}
-Tool results come back in the next message (text, plus images or a video segment).
+You have a budget of at most THREE replies for this clip. Each reply is ONE JSON object.
+  Reply 1: either your final answer
+             {"thought": "<short reason>", "final": <OUTPUT FORMAT object>}
+           or ONE batch of tool calls, run in the order given (up to 8):
+             {"thought": "<short reason>", "tools": [{"tool": "<name>", "args": {...}}, ...]}
+  Reply 2: your final answer. No more tools: all tool results come back together before it.
+  Reply 3: only if your final answer fails the field-rule checks. The problems are sent back and
+           you give the corrected final answer, still without tools.
+Tools are only available in reply 1, so put every tool you need in that one batch.
 
-Procedure:
+Plan the batch so it settles everything at once:
   a. Watch the clip. Note where the overlay is and what happens.
-  b. Clock: call crop_overlay on the overlay corner at 2-3 times spread across the clip, read the
-     clock in each crop, then call check_clock with those readings. Only a CONSISTENT result counts
-     as verified. If the clock is unreadable or INCONSISTENT, set clock_verified=false and report
-     overlay timestamps as null. Never guess digits.
-  c. If an action is unclear (hands at the card slot, someone exiting), use get_frames with a crop,
+  b. Clock: read the burned-in clock yourself at 2-3 times spread across the clip and put those
+     readings into check_clock; add crop_overlay on the overlay corner at the same times so you can
+     confirm the digits up close. Only a CONSISTENT result counts as verified. If the clock is
+     unreadable or INCONSISTENT, set clock_verified=false and report overlay timestamps as null.
+     Never guess digits.
+  c. If an action is unclear (hands at the card slot, someone exiting), add get_frames with a crop,
      or rewatch the segment at a higher fps.
-  d. If two or more people are involved, settle rule 7 before writing events: use get_frames at
-     3-4 times across the middle and second half of the clip and see where each person goes. If
+  d. If two or more people are involved, settle rule 7 before writing events: add get_frames at
+     3-4 times across the middle and second half of the clip to see where each person goes. If
      they move off together in the same direction it is ONE group event, even if one of them
      stood looking at the other first.
-  e. If someone may have been seen before, call known_people and compare with the reference stills
+  e. If someone may have been seen before, add known_people and compare with the reference stills
      before setting registry_match. If in doubt, leave it null.
-  f. Call validate_draft with your draft, fix any problems, then give the final answer.
-Use as few tool calls as needed; 4-6 is typical."""
+  f. End the batch with validate_draft on your draft answer (it runs after check_clock, so the
+     clock checks apply). Fix what it reports in reply 2.
+If the clip is clear and there is no clock to verify, answer final in reply 1."""
 
 OUTPUT_FORMAT = {
     "overlay_camera_label": "text of the camera label in the overlay, or null",
@@ -115,5 +121,5 @@ def build_user_prompt(vocab, registry_people):
         "KNOWN PEOPLE (seen in earlier clips of this case):\n" + (json.dumps(known, ensure_ascii=False) if known else "none yet"),
         "TOOLS:\n" + tool_catalogue(),
         "OUTPUT FORMAT (the value of \"final\"):\n" + json.dumps(OUTPUT_FORMAT, ensure_ascii=False),
-        "Start with step a. Reply with one JSON object.",
+        "Start with step a. Reply with one JSON object (reply 1).",
     ])

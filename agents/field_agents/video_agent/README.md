@@ -23,10 +23,13 @@ loop until it is confident, and only then gives its answer.
 | `known_people` | People already seen in this case, with a reference still of each, for identity matching |
 | `validate_draft` | Runs the field rules on a draft answer |
 
-The final answer then has to pass the same field rules (a **validation gate**). If it fails, the
-problems go back to the agent to fix, up to twice. Whatever still fails is flagged
+Each clip costs at most **three model requests**, usually two. In the first, the agent either answers straight
+away or asks for one batch of tool calls (clock crops, `check_clock`, frames, `validate_draft` ...),
+which all run locally. In the second it gets every result back and must give its final answer.
+The final answer has to pass the same field rules (a **validation gate**); if it fails, the
+problems go back once more to fix (the third request). Clips that pass never make it. Whatever still fails is flagged
 `unresolved_checks` in the output log. Finally the agent's own code turns the answer into the
-fields, using rules copied from the case generator. Typical clips take 3-6 tool calls.
+fields, using rules copied from the case generator.
 
 Every step is recorded in `<case>_video_log.json` (`agent_trace`), so you can see what the agent
 looked at and why.
@@ -91,9 +94,9 @@ All cases, one folder per case:
 for d in clips/CASE_ATM_*; do python -m video_agent.run --case-id "$(basename "$d")" --video "$d"; done
 ```
 
-Each tool step is one request, so a clip takes about 4-7 requests. The free tier allows about 10
-requests a minute; the agent waits and retries when it is rate limited. `--max-steps` caps the tool
-calls per clip (default 8). Results are cached, so reruns cost nothing.
+A clip takes 2 requests, at most 3 (`api_calls` in the log). The free tier allows about 10 requests a
+minute; the agent waits and retries the same request when it is rate limited. `--max-calls 1` skips
+tools and takes the first answer. Results are cached, so reruns cost nothing.
 
 ### Clips without an overlay
 

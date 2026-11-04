@@ -27,15 +27,37 @@ def parse_json(text):
 class GeminiBackend:
     name = "gemini"
     INLINE_LIMIT = 18 * 1024 * 1024
+    TIMEOUT_S = 180                  # per request
+    OVERLOAD_RETRIES = 10            # 503 "high demand": waits 8, 16 ... 180 s, about 16 min in all
 
     def __init__(self, model, fps, retries=6, **_):
-        from google import genai
-        key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-        if not key:
+        # GEMINI_API_KEY, then GEMINI_API_KEY_2, _3 ...: when one key's daily quota is used up the next
+        # one takes over (keys from different accounts / projects have separate quotas)
+        names = ["GEMINI_API_KEY"] + [f"GEMINI_API_KEY_{i}" for i in range(2, 10)] + ["GOOGLE_API_KEY"]
+        self.keys = list(dict.fromkeys(os.environ[n].strip() for n in names if os.environ.get(n, "").strip()))
+        if not self.keys:
             raise SystemExit("Set GEMINI_API_KEY (free key: https://aistudio.google.com/apikey).")
-        self.client = genai.Client(api_key=key)
+        self.key_index = 0
+        self.client = self._client()
         self.model, self.fps, self.retries = model, fps, retries
         self._uploaded = {}
+
+    def _client(self):
+        from google import genai
+        from google.genai import types
+        # without a timeout a dropped connection waits forever; a timed-out request is retried below
+        return genai.Client(api_key=self.keys[self.key_index],
+                            http_options=types.HttpOptions(timeout=self.TIMEOUT_S * 1000))
+
+    def _next_key(self):
+        """Switch to the next API key; False if there is none left."""
+        if self.key_index + 1 >= len(self.keys):
+            return False
+        self.key_index += 1
+        self.client = self._client()
+        self._uploaded = {}          # uploaded files belong to the old key's project
+        print(f"    daily quota used up, switching to API key {self.key_index + 1} of {len(self.keys)}", flush=True)
+        return True
 
     def _video_part(self, path, fps):
         from google.genai import types
@@ -84,20 +106,30 @@ class GeminiBackend:
         config = types.GenerateContentConfig(system_instruction=system, temperature=0.0,
                                              response_mime_type="application/json")
         contents = self._contents(turns)
-        delay = 8
-        for attempt in range(self.retries):
+        delay, attempt = 8, 0
+        while attempt < self.retries:
+            attempt += 1
             try:
                 resp = self.client.models.generate_content(model=self.model, contents=contents, config=config)
                 return resp.text or self._function_call(resp) or ""
             except Exception as e:  # free-tier rate limits are the usual cause
                 msg = str(e)
-                if "PerDay" in msg:      # daily quota used up: waiting a minute will not help
+                if "PerDay" in msg:      # daily quota used up: waiting will not help, another key might
+                    if not self._next_key():
+                        raise
+                    contents = self._contents(turns)      # re-upload large videos under the new key
+                    delay, attempt = 8, 0
+                    continue
+                timed_out = "timed out" in msg.lower() or "timeout" in type(e).__name__.lower()
+                # model overloaded ("high demand"): spikes last minutes, so wait longer and more often
+                overloaded = "503" in msg or "UNAVAILABLE" in msg
+                limit = self.OVERLOAD_RETRIES if overloaded else self.retries
+                if attempt >= limit or not (timed_out or overloaded or any(k in msg for k in ("429", "RESOURCE_EXHAUSTED"))):
                     raise
-                if attempt == self.retries - 1 or not any(k in msg for k in ("429", "RESOURCE_EXHAUSTED", "503", "UNAVAILABLE")):
-                    raise
-                print(f"    rate limited, retrying in {delay}s", flush=True)
+                why = "request timed out" if timed_out else "model overloaded" if overloaded else "rate limited"
+                print(f"    {why}, retrying in {delay}s", flush=True)
                 time.sleep(delay)
-                delay = min(delay * 2, 64)
+                delay = min(delay * 2, 180 if overloaded else 64)
 
 
 class MockBackend:

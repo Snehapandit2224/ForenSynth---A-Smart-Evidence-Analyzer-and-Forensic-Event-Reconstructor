@@ -18,7 +18,7 @@ from pathlib import Path
 
 from . import config as C
 from .backends import BACKENDS
-from .loop import run_loop
+from .loop import MAX_API_CALLS, run_loop
 from .prompt import SYSTEM, build_user_prompt
 from .quality import measure
 from .registry import PeopleRegistry
@@ -85,14 +85,14 @@ def source_from_filename(name):
 # ---------------------------------------------------------------- agent
 class VideoAgent:
     def __init__(self, ctx, out_dir, backend="gemini", model=C.DEFAULT_MODEL, fps=C.DEFAULT_FPS,
-                 registry_seed=None, overrides=None, use_cache=True, keep_registry=False, max_steps=8):
+                 registry_seed=None, overrides=None, use_cache=True, keep_registry=False, max_calls=MAX_API_CALLS):
         self.ctx = ctx
         self.out_dir = Path(out_dir)
         self.vocab = C.load_vocabulary(ctx["domain"])
         self.locations = C.VIDEO_LOCATIONS.get(ctx["domain"], {})
         self.backend = BACKENDS[backend](model=model, fps=fps)
-        self.fps, self.max_steps = fps, max_steps
-        self.model_id = f"{backend}:{model}@{fps}fps:agent-v2"
+        self.fps, self.max_calls = fps, min(max_calls, MAX_API_CALLS)
+        self.model_id = f"{backend}:{model}@{fps}fps:agent-v3"
         self.registry = PeopleRegistry(self.out_dir / "people_registry.json", ctx["case_id"], registry_seed,
                                        keep_existing=keep_registry)
         self.overrides = overrides or {}
@@ -105,7 +105,7 @@ class VideoAgent:
     def _analyze(self, clip, duration):
         user = build_user_prompt(self.vocab, self.registry.people)
         h = hashlib.sha256(Path(clip).read_bytes())
-        h.update((self.model_id + SYSTEM + user + str(self.max_steps)).encode())
+        h.update((self.model_id + SYSTEM + user + str(self.max_calls)).encode())
         cache = self.cache_dir / f"{h.hexdigest()[:24]}.json"
         if self.use_cache and cache.exists():
             data = json.loads(cache.read_text(encoding="utf-8"))
@@ -113,13 +113,13 @@ class VideoAgent:
             return data
         tools = ClipTools(clip, duration, self.vocab, self.registry, self.ctx, self.locations)
         try:
-            final, trace, issues = run_loop(self.backend, clip, self.fps, SYSTEM, user, tools, self.ctx,
-                                            max_steps=self.max_steps)
+            final, trace, issues, api_calls = run_loop(self.backend, clip, self.fps, SYSTEM, user, tools, self.ctx,
+                                                       max_calls=self.max_calls)
         finally:
             tools.close()
         data = {"final": final, "trace": trace, "unresolved_issues": issues,
                 "verified_clock": tools.verified_clock.isoformat() if tools.verified_clock else None,
-                "tool_calls": len(tools.calls)}
+                "tool_calls": len(tools.calls), "api_calls": api_calls}
         cache.parent.mkdir(parents=True, exist_ok=True)
         cache.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
         data["cached"] = False
@@ -183,16 +183,18 @@ class VideoAgent:
         return action, ev.get("free_content") or templates[0]
 
     def _timestamp(self, ev, raw, verified_clock, override_start, flags):
-        """Override > clock verified by the check_clock tool > the model's own overlay readings."""
-        start_s = mmss(ev.get("start"))
+        """Clock at the clip's first frame: override > clock verified by the check_clock tool > the model's
+        own overlay readings. The event's offset into the clip is not added (an observation is stamped with
+        the time its clip starts, as add_overlay assumes)."""
         if override_start:
-            ts, how = parse_ts(override_start) + timedelta(seconds=start_s), "override+offset"
+            ts, how = parse_ts(override_start), "override"
         elif verified_clock:
-            ts, how = parse_ts(verified_clock) + timedelta(seconds=start_s), "verified_clock+offset"
-        elif parse_ts(ev.get("overlay_timestamp_at_start")) and raw.get("clock_verified") is not False:
-            ts, how = parse_ts(ev.get("overlay_timestamp_at_start")), "overlay_at_event(unverified)"
+            ts, how = parse_ts(verified_clock), "verified_clock"
         elif parse_ts(raw.get("overlay_timestamp_first")) and raw.get("clock_verified") is not False:
-            ts, how = parse_ts(raw.get("overlay_timestamp_first")) + timedelta(seconds=start_s), "overlay_first+offset(unverified)"
+            ts, how = parse_ts(raw.get("overlay_timestamp_first")), "overlay_first(unverified)"
+        elif parse_ts(ev.get("overlay_timestamp_at_start")) and raw.get("clock_verified") is not False:
+            ts, how = parse_ts(ev.get("overlay_timestamp_at_start")) - timedelta(seconds=mmss(ev.get("start"))), \
+                "overlay_at_event-offset(unverified)"
         else:
             flags.append("timestamp_unreadable")
             return None, None, "none"
@@ -275,6 +277,7 @@ class VideoAgent:
         log = {"clip": clip.name, "obs_ids": [o["obs_id"] for o in observations], "model": self.model_id,
                "cached": cached, "quality": quality, "footage_issue": issue,
                "verified_clock_at_first_frame": run["verified_clock"], "tool_calls": run["tool_calls"],
+               "api_calls": run.get("api_calls"),
                "unresolved_checks": run["unresolved_issues"], "agent_trace": run["trace"],
                "final_answer": raw, "decisions": details}
         return observations, log
@@ -286,7 +289,8 @@ class VideoAgent:
         m = re.match(r"^(O\d+)", Path(clip).stem, re.I)
         return m.group(1).upper() if m else f"V{n}"
 
-    def process_clips(self, clips, obs_ids):
+    def process_clips(self, clips, obs_ids, on_clip=None):
+        """on_clip(observations, log) is called after each clip (with the registry already saved)."""
         all_obs, logs = [], []
         for clip, obs_id in zip(clips, obs_ids):
             print(f"[video] {Path(clip).name} -> {obs_id}", flush=True)
@@ -298,5 +302,8 @@ class VideoAgent:
                       f"{o['timestamp']}  conf {o['confidence']}  {o['content']}{tag}", flush=True)
             all_obs += obs
             logs.append(log)
+            self.registry.save()
+            if on_clip:
+                on_clip(obs, log)
         self.registry.save()
         return all_obs, logs

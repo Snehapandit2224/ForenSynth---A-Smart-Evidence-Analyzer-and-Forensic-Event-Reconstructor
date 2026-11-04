@@ -53,6 +53,11 @@ def tool(name, args, thought=""):
     return {"thought": thought or f"call {name}", "tool": name, "args": args}
 
 
+def batch(*calls, thought="settle everything in one batch"):
+    """Reply 1: every tool call at once (the agent gets two model requests per clip)."""
+    return {"thought": thought, "tools": [{"tool": c["tool"], "args": c["args"]} for c in calls]}
+
+
 def clock_steps(offset, corner="top-left"):
     return [tool("crop_overlay", {"corner": corner, "times": [0, 3, 6]}),
             tool("check_clock", {"readings": [{"t": t, "clock": clock(offset + t)} for t in (0, 3, 6)]})]
@@ -101,18 +106,22 @@ def scripts(man):
     o17_split = answer("CAM01", "exterior_above_entrance",
                        [ev(MAN, "exit_atm", 0, "00:00", 0.9, 0.85, match=man), ev(COMPANION, "observe_exit", 4, "00:01", 0.9, 0.9)])
     return {
-        "O1.mp4": clock_steps(45) + [tool("validate_draft", {"draft": o1}), final(o1)],
-        # singular exit sentence for a group -> gate sends it back; then the plural one
-        "O17.mp4": clock_steps(188) + [tool("known_people", {}), tool("validate_draft", {"draft": o17_split}),
-                                       final(o17_bad), final(o17)],
-        "O4.mp4": clock_steps(299) + [tool("known_people", {}),
-                                      tool("get_frames", {"times": [1, 3], "crop": [0.3, 0.3, 0.4, 0.5]}), final(o4)],
-        "O5.mp4": clock_steps(321) + [tool("known_people", {}), tool("rewatch", {"start": 0, "end": 3, "fps": 10}), final(o5)],
-        # frozen clock -> INCONSISTENT; first final forgets clock_verified -> gate sends it back
-        "O6.mp4": [tool("crop_overlay", {"corner": "top-left", "times": [0, 4]}),
-                   tool("check_clock", {"readings": [{"t": 0, "clock": "2024-01-15 10:05:52"},
-                                                     {"t": 4, "clock": "2024-01-15 10:05:52"}]}),
-                   final(o6_bad), final(o6)],
+        "O1.mp4": [batch(*clock_steps(45), tool("validate_draft", {"draft": o1})), final(o1)],
+        # exit + watcher draft is challenged by validate_draft; reply 2 uses a singular sentence for the
+        # group -> the gate sends it back; reply 3 (repair) is the plural group event
+        "O17.mp4": [batch(*clock_steps(188), tool("known_people", {}), tool("validate_draft", {"draft": o17_split})),
+                    final(o17_bad), final(o17)],
+        "O4.mp4": [batch(*clock_steps(299), tool("known_people", {}),
+                         tool("get_frames", {"times": [1, 3], "crop": [0.3, 0.3, 0.4, 0.5]}),
+                         tool("rewatch", {"start": 0, "end": 3, "fps": 10})), final(o4)],
+        # no tools: reply 1 is a final answer that forgot clock_verified -> the gate sends it back, reply 2 fixes it
+        "O5.mp4": [final({**o5, "clock_verified": None}), final({**o5, "clock_verified": False})],
+        # frozen clock -> INCONSISTENT; the draft that forgets clock_verified is flagged by validate_draft
+        "O6.mp4": [batch(tool("crop_overlay", {"corner": "top-left", "times": [0, 4]}),
+                         tool("check_clock", {"readings": [{"t": 0, "clock": "2024-01-15 10:05:52"},
+                                                           {"t": 4, "clock": "2024-01-15 10:05:52"}]}),
+                         tool("validate_draft", {"draft": o6_bad})),
+                   final(o6)],
     }
 
 
@@ -161,19 +170,24 @@ def main():
     assert clips_log["O1.mp4"]["verified_clock_at_first_frame"] == "2024-01-15T10:00:45"
     assert clips_log["O6.mp4"]["verified_clock_at_first_frame"] is None
     assert "INCONSISTENT" in clips_log["O6.mp4"]["agent_trace"][1]["result"]
-    gate = [t for t in clips_log["O6.mp4"]["agent_trace"] if t.get("final")]
-    assert gate[0]["issues"] and not gate[-1]["issues"], gate          # rejected once, then accepted
+    assert "clock not verified" in clips_log["O6.mp4"]["agent_trace"][2]["result"]   # draft flagged
+    assert not [t for t in clips_log["O6.mp4"]["agent_trace"] if t.get("final")][-1]["issues"]
+    gate = [t for t in clips_log["O5.mp4"]["agent_trace"] if t.get("final")]
+    assert len(gate) == 2 and gate[0]["issues"] and not gate[-1]["issues"], gate   # rejected once, then accepted
+    # never more than three model requests per clip
+    assert all(c["api_calls"] <= 3 for c in log["clips"]), {c["clip"]: c["api_calls"] for c in log["clips"]}
+    assert clips_log["O1.mp4"]["api_calls"] == 2 and clips_log["O5.mp4"]["api_calls"] == 2
     assert "Known people" in clips_log["O4.mp4"]["agent_trace"][2]["result"]
     assert (case_dir / "people" / f"{man}.jpg").exists()
     # fields
     assert obs["O1"]["entity"] == obs["O4"]["entity"] == obs["O5"]["entity"] == man
     assert obs["O1"]["timestamp"] == "2024-01-15T10:00:45" and obs["O1"]["time_offset"] == 45
-    assert obs["O4"]["timestamp"] == "2024-01-15T10:05:00" and obs["O4"]["source"] == "camera_3"
+    assert obs["O4"]["timestamp"] == "2024-01-15T10:04:59" and obs["O4"]["source"] == "camera_3"
     assert obs["O5"]["location"] == "ATM booth interior, card reader and keypad area"
     assert obs["O6"]["role"] == "witness" and obs["O6b"]["role"] == "suspect"
     assert obs["O6b"]["entity"] not in (man, obs["O6"]["entity"])
     assert obs["O6b"]["content"] == "Subject's face not visible in available footage."
-    assert obs["O6"]["timestamp"] == "2024-01-15T10:05:53"                 # from the override, not the frozen clock
+    assert obs["O6"]["timestamp"] == "2024-01-15T10:05:52"                 # from the override, not the frozen clock
     assert obs["O6"]["confidence"] < obs["O1"]["confidence"]
     # group event: two people leaving together -> exactly one observation, plural sentence, lead's entity
     assert clips_log["O17.mp4"]["obs_ids"] == ["O17"], clips_log["O17.mp4"]["obs_ids"]
@@ -189,6 +203,19 @@ def main():
     assert "stays_behind" in clips_log["O17.mp4"]["agent_trace"][3]["result"]   # exit + watcher draft is challenged
     gate = [t for t in clips_log["O17.mp4"]["agent_trace"] if t.get("final")]
     assert any("plural sentence" in i for i in gate[0]["issues"]) and not gate[-1]["issues"], gate
+    assert clips_log["O17.mp4"]["api_calls"] == 3                          # tools, final, repair
+
+    # a folder run that dies on its last clip (O6: no model answer, like a quota error) keeps the clips
+    # finished before it; the rerun takes those from the cache and completes the case
+    o6_mock = (clips / "O6.mp4").with_suffix(".mock.json")
+    o6_mock.rename(o6_mock.with_suffix(".bak"))
+    failed = subprocess.run([sys.executable, "-m", "video_agent.run", "--case-id", "CASE_ATM_001", "--video", str(clips),
+                             "--out", str(runs_folder), "--backend", "mock", "--overrides", str(tmp / "overrides.json")],
+                            cwd=ROOT, capture_output=True, text=True)
+    assert failed.returncode != 0, "the run without O6's answer should fail"
+    partial = json.loads((runs_folder / "CASE_ATM_001" / "CASE_ATM_001_video_obs.json").read_text())
+    assert sorted(o["obs_id"] for o in partial["observations"]) == ["O1", "O17", "O4", "O5"], partial
+    o6_mock.with_suffix(".bak").rename(o6_mock)
 
     run(clips, runs_folder)                                               # whole folder gives the same result
     folder = json.loads((runs_folder / "CASE_ATM_001" / "CASE_ATM_001_video_obs.json").read_text())
