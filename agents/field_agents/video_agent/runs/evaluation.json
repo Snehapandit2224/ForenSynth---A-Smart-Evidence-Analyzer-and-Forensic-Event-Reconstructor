@@ -1,68 +1,177 @@
 {
   "summary": {
-    "reference_video_obs": 4,
-    "matched": 1,
-    "unrendered_or_missing": [
-      "CASE_ATM_010:O4",
-      "CASE_ATM_010:O9",
-      "CASE_ATM_010:O6"
-    ],
-    "extra_extracted_obs": 1,
+    "reference_video_obs": 7,
+    "matched": 7,
+    "unrendered_or_missing": [],
+    "extra_extracted_obs": 3,
     "source_acc": 1.0,
     "location_acc": 1.0,
     "role_acc": 1.0,
-    "action_acc": 0.0,
+    "action_acc": 1.0,
     "entity_consistency": 1.0,
-    "timestamp_mae_s": 1.0,
-    "time_offset_mae_s": 1.0,
-    "confidence_mae": 0.004
+    "timestamp_mae_s": 0.71,
+    "time_offset_mae_s": 0.71,
+    "confidence_mae": 0.094
   },
   "cases": [
     {
-      "case_id": "CASE_ATM_010",
+      "case_id": "CASE_ATM_001",
       "rows": [
         {
-          "ref_obs": "O4",
-          "ref_content": "The second actor arrives at the ATM vicinity.",
+          "ref_obs": "O1",
+          "ref_content": "Subject is seen nearing the ATM from the main road (poor image quality).",
           "ref_action": "approach_atm",
-          "status": "missing (no clip or nothing extracted)"
+          "pred_obs": "O1",
+          "pred_content": "Individual walks towards ATM booth.",
+          "pred_action": "approach_atm",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 0.0,
+          "time_offset_err_s": 0,
+          "confidence_ref": 0.89,
+          "confidence_pred": 0.783,
+          "action_ok": true,
+          "status": "matched"
         },
         {
-          "ref_obs": "O9",
-          "ref_content": "Second person loiters near ATM entrance.",
-          "ref_action": "wait_outside",
-          "status": "missing (no clip or nothing extracted)"
+          "ref_obs": "O2",
+          "ref_content": "Subject lingers near the ATM kiosk for an unusually long time.",
+          "ref_action": "loiter_near_atm",
+          "pred_obs": "O2",
+          "pred_content": "Individual observed loitering outside ATM booth.",
+          "pred_action": "loiter_near_atm",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 0.0,
+          "time_offset_err_s": 0,
+          "confidence_ref": 0.793,
+          "confidence_pred": 0.798,
+          "action_ok": true,
+          "status": "matched"
         },
         {
-          "ref_obs": "O6",
-          "ref_content": "First person proceeds into the ATM kiosk.",
+          "ref_obs": "O3",
+          "ref_content": "Person pushes into ATM enclosure.",
           "ref_action": "enter_atm",
-          "status": "missing (no clip or nothing extracted)"
+          "pred_obs": "O3",
+          "pred_content": "Person enters ATM booth.",
+          "pred_action": "enter_atm",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 2.0,
+          "time_offset_err_s": 2,
+          "confidence_ref": 0.826,
+          "confidence_pred": 0.811,
+          "action_ok": true,
+          "status": "matched"
         },
         {
-          "ref_obs": "O17",
-          "ref_content": "Two individuals are recorded leaving the scene side by side.",
-          "ref_action": "flee_scene",
-          "pred_obs": "O17",
+          "ref_obs": "O5",
+          "ref_content": "Person departs from the ATM kiosk at pace.",
+          "ref_action": "exit_atm",
+          "pred_obs": "O5",
           "pred_content": "Person exits ATM booth.",
           "pred_action": "exit_atm",
           "source_ok": true,
           "location_ok": true,
           "role_ok": true,
           "entity_ok": true,
-          "timestamp_err_s": 1.0,
-          "time_offset_err_s": 1,
-          "confidence_ref": 0.788,
+          "timestamp_err_s": 0.0,
+          "time_offset_err_s": 0,
+          "confidence_ref": 0.766,
+          "confidence_pred": 0.813,
+          "action_ok": true,
+          "status": "matched"
+        },
+        {
+          "ref_obs": "O6",
+          "ref_content": "Eyewitness notices a person leaving the ATM enclosure in a rush (poor image quality).",
+          "ref_action": "observe_exit",
+          "pred_obs": "O6b",
+          "pred_content": "Individual on pavement observed watching a person walk away from the ATM.",
+          "pred_action": "observe_exit",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 0.0,
+          "time_offset_err_s": 0,
+          "confidence_ref": 0.611,
           "confidence_pred": 0.784,
-          "action_ok": false,
+          "action_ok": true,
           "status": "matched"
         }
       ],
       "entity_mapping": {
-        "Person_03": "Person_50"
+        "Person_94": "Person_14",
+        "Person_01": "Person_55"
       },
       "extra_pred_obs": [
-        "O17b"
+        "O6"
+      ]
+    },
+    {
+      "case_id": "CASE_ATM_009",
+      "rows": [
+        {
+          "ref_obs": "O11",
+          "ref_content": "Passerby stops walking and watches two people leave the ATM area (poor image quality).",
+          "ref_action": "observe_exit",
+          "pred_obs": "O11b",
+          "pred_content": "Bystander on pavement seen watching two individuals leave the ATM.",
+          "pred_action": "observe_exit",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 3.0,
+          "time_offset_err_s": 3,
+          "confidence_ref": 0.559,
+          "confidence_pred": 0.758,
+          "action_ok": true,
+          "status": "matched"
+        }
+      ],
+      "entity_mapping": {
+        "Person_30": "Person_66"
+      },
+      "extra_pred_obs": [
+        "O11"
+      ]
+    },
+    {
+      "case_id": "CASE_ATM_010",
+      "rows": [
+        {
+          "ref_obs": "O6",
+          "ref_content": "Witness spots individual departing the cash machine area suddenly.",
+          "ref_action": "observe_exit",
+          "pred_obs": "O17b",
+          "pred_content": "Individual on pavement observed watching a person walk away from the ATM.",
+          "pred_action": "observe_exit",
+          "source_ok": true,
+          "location_ok": true,
+          "role_ok": true,
+          "entity_ok": true,
+          "timestamp_err_s": 0.0,
+          "time_offset_err_s": 0,
+          "confidence_ref": 0.663,
+          "confidence_pred": 0.774,
+          "action_ok": true,
+          "status": "matched"
+        }
+      ],
+      "entity_mapping": {
+        "Person_94": "Person_13"
+      },
+      "extra_pred_obs": [
+        "O17"
       ]
     }
   ]

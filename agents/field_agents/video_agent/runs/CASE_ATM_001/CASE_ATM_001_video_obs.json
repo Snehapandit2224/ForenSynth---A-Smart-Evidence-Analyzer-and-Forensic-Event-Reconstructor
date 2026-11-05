@@ -15,16 +15,64 @@
       "confidence": 0.783
     },
     {
+      "obs_id": "O2",
+      "entity": "Person_94",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Individual observed loitering outside ATM booth.",
+      "timestamp": "2024-01-15T10:03:34",
+      "time_offset": 214,
+      "confidence": 0.798
+    },
+    {
       "obs_id": "O3",
       "entity": "Person_94",
       "role": "suspect",
       "modality": "video",
       "source": "camera_1",
       "location": "ATM booth entrance, exterior facing",
-      "content": "Person pulls open the ATM door and proceeds inside.",
-      "timestamp": "2024-01-15T10:04:09",
-      "time_offset": 249,
+      "content": "Person enters ATM booth.",
+      "timestamp": "2024-01-15T10:04:08",
+      "time_offset": 248,
       "confidence": 0.811
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Person_94",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person exits ATM booth.",
+      "timestamp": "2024-01-15T10:05:20",
+      "time_offset": 320,
+      "confidence": 0.813
+    },
+    {
+      "obs_id": "O6",
+      "entity": "Person_94",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Individual exits through the ATM door and walks away.",
+      "timestamp": "2024-01-15T10:05:50",
+      "time_offset": 350,
+      "confidence": 0.819
+    },
+    {
+      "obs_id": "O6b",
+      "entity": "Person_01",
+      "role": "witness",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Individual on pavement observed watching a person walk away from the ATM.",
+      "timestamp": "2024-01-15T10:05:50",
+      "time_offset": 350,
+      "confidence": 0.784
     }
   ]
 }

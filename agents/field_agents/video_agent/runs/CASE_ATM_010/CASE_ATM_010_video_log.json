@@ -1,8 +1,8 @@
 {
   "case_id": "CASE_ATM_010",
-  "updated_utc": "2026-10-12T16:33:00.356110+00:00",
+  "updated_utc": "2026-11-05T08:03:31.524044+00:00",
   "anchor": "2024-01-15T10:00:00",
-  "model": "gemini:gemini-3.7-flash@4fps:agent-v2",
+  "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
   "clips": [
     {
       "clip": "O17.mp4",
@@ -10,7 +10,7 @@
         "O17",
         "O17b"
       ],
-      "model": "gemini:gemini-3.7-flash@4fps:agent-v2",
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
       "cached": false,
       "quality": {
         "score": 0.438,
@@ -26,195 +26,206 @@
       },
       "footage_issue": null,
       "verified_clock_at_first_frame": "2024-01-15T10:03:28",
-      "tool_calls": 7,
+      "tool_calls": 4,
+      "api_calls": 2,
       "unresolved_checks": [],
       "agent_trace": [
         {
           "step": 0,
-          "thought": "Check the overlay timestamp at the bottom-left corner across several times.",
+          "call": 1,
+          "thought": "Check clock readings across the clip, verify details of both actors and check draft.",
           "tool": "crop_overlay",
           "args": {
             "corner": "bottom-left",
             "times": [
-              1.0,
-              5.0,
-              9.0
+              0,
+              4,
+              8
             ]
           },
-          "result": "Enlarged bottom-left crops (OCR not installed: read the crops yourself):\nt=1.0s\nt=5.0s\nt=9.0s"
+          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: 'By 227 (QO S47. mm'  parsed: none\nt=4.0s  OCR: 'AN) Z dk 31 oo 2A ef a'  parsed: none\nt=8.0s  OCR: '2022 Zool: 03 Car'  parsed: none"
         },
         {
           "step": 1,
-          "thought": "Check top-left overlay for camera label.",
-          "tool": "crop_overlay",
-          "args": {
-            "corner": "top-left",
-            "times": [
-              1.0
-            ]
-          },
-          "result": "Enlarged top-left crops (OCR not installed: read the crops yourself):\nt=1.0s"
-        },
-        {
-          "step": 2,
-          "thought": "Check clock readings with check_clock.",
+          "call": 1,
+          "thought": "Check clock readings across the clip, verify details of both actors and check draft.",
           "tool": "check_clock",
           "args": {
             "readings": [
               {
-                "clock": "2024-01-15 10:03:29",
-                "t": 1.0
+                "clock": "2024-01-15 10:03:28",
+                "t": 0
               },
               {
-                "clock": "2024-01-15 10:03:33",
-                "t": 5.0
+                "clock": "2024-01-15 10:03:32",
+                "t": 4
               },
               {
-                "clock": "2024-01-15 10:03:38",
-                "t": 9.0
+                "clock": "2024-01-15 10:03:36",
+                "t": 8
               }
             ]
           },
-          "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:03:28 (spread 1.0s)."
+          "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:03:28 (spread 0.0s)."
         },
         {
-          "step": 3,
-          "thought": "Check known people registry.",
-          "tool": "known_people",
-          "args": {},
-          "result": "No people seen yet in this case."
-        },
-        {
-          "step": 4,
-          "thought": "Check the actions of both people. Person 1 is walking along pavement in light blue shirt and jeans. Person 2 is exiting the ATM in black hoodie and black cap, and walks off. Let's inspect person 1 closely.",
+          "step": 2,
+          "call": 1,
+          "thought": "Check clock readings across the clip, verify details of both actors and check draft.",
           "tool": "get_frames",
           "args": {
-            "crop": [
-              0.05,
-              0.3,
-              0.45,
-              0.7
-            ],
             "times": [
-              0.5,
-              2.0,
-              5.0,
+              2,
+              5,
               8.5
             ]
           },
-          "result": "Frames t=0.5s, t=2.0s, t=5.0s, t=8.5s cropped to [0.05, 0.3, 0.45, 0.7]"
+          "result": "Frames t=2.0s, t=5.0s, t=8.5s"
         },
         {
-          "step": 5,
-          "thought": "Look closely at the interaction between the two individuals between 2.5s and 7.5s.",
-          "tool": "get_frames",
+          "step": 3,
+          "call": 1,
+          "thought": "Check clock readings across the clip, verify details of both actors and check draft.",
+          "tool": "validate_draft",
           "args": {
-            "crop": [
-              0.1,
-              0.3,
-              0.45,
-              0.7
-            ],
-            "times": [
-              2.5,
-              4.0,
-              6.0,
-              7.5
-            ]
+            "draft": {
+              "camera_view": "exterior_street_side",
+              "clock_note": "Clock checked at 0s, 4s, and 8s and ticks consistently with video time.",
+              "clock_verified": true,
+              "events": [
+                {
+                  "action": "exit_atm",
+                  "bbox": [
+                    0.49,
+                    0.2,
+                    0.1,
+                    0.58
+                  ],
+                  "certainty": 0.95,
+                  "free_content": null,
+                  "group": false,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:03:29",
+                  "people": null,
+                  "person": "Individual wearing a black hoodie/jacket, black trousers, and a black baseball cap",
+                  "ref_time": 2.5,
+                  "registry_match": null,
+                  "start": "00:01",
+                  "stays_behind": null,
+                  "template_index": 0,
+                  "visibility": 0.9
+                },
+                {
+                  "action": "observe_exit",
+                  "bbox": [
+                    0.12,
+                    0.35,
+                    0.1,
+                    0.55
+                  ],
+                  "certainty": 0.9,
+                  "free_content": null,
+                  "group": false,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:03:31",
+                  "people": null,
+                  "person": "Individual in a light blue button-down shirt and blue jeans",
+                  "ref_time": 8.5,
+                  "registry_match": null,
+                  "start": "00:03",
+                  "stays_behind": true,
+                  "template_index": 4,
+                  "visibility": 0.95
+                }
+              ],
+              "footage_issue": null,
+              "image_quality": 0.85,
+              "overlay_camera_label": "CAM 01",
+              "overlay_timestamp_first": "2024-01-15 10:03:28"
+            }
           },
-          "result": "Frames t=2.5s, t=4.0s, t=6.0s, t=7.5s cropped to [0.1, 0.3, 0.45, 0.7]"
+          "result": "No problems found."
         },
         {
-          "step": 6,
-          "thought": "Check what the man in the blue shirt does at 7.75 to 9.75s.",
-          "tool": "get_frames",
-          "args": {
-            "crop": [
-              0.1,
-              0.3,
-              0.5,
-              0.7
-            ],
-            "times": [
-              7.75,
-              8.25,
-              9.0,
-              9.75
-            ]
-          },
-          "result": "Frames t=7.8s, t=8.2s, t=9.0s, t=9.8s cropped to [0.1, 0.3, 0.5, 0.7]"
-        },
-        {
-          "step": 7,
-          "invalid_reply": "{'_unparseable': ''}"
-        },
-        {
-          "step": 8,
+          "step": 4,
+          "call": 2,
+          "thought": "The clock was verified as consistent, and the draft analysis of the suspect exiting the ATM and the bystander watching was validated without errors.",
           "final": true,
-          "forced": true,
           "issues": []
         }
       ],
       "final_answer": {
+        "overlay_camera_label": "CAM 01",
+        "overlay_timestamp_first": "2024-01-15 10:03:28",
         "camera_view": "exterior_street_side",
-        "clock_note": "Clock verified consistent from bottom-left overlay ticking 10:03:28 to 10:03:38.",
+        "footage_issue": null,
+        "image_quality": 0.85,
         "clock_verified": true,
+        "clock_note": "Clock checked at 0s, 4s, and 8s and ticks consistently with video time.",
         "events": [
           {
-            "action": "exit_atm",
-            "certainty": 0.95,
-            "free_content": null,
-            "group": false,
+            "person": "Individual wearing a black hoodie/jacket, black trousers, and a black baseball cap",
             "identifiable": true,
-            "overlay_timestamp_at_start": "2024-01-15 10:03:29",
-            "people": null,
-            "person": "black hoodie, black trousers, black cap, dark footwear, medium build",
-            "ref_time": 2.5,
             "registry_match": null,
+            "action": "exit_atm",
+            "template_index": 0,
+            "free_content": null,
             "start": "00:01",
+            "overlay_timestamp_at_start": "2024-01-15 10:03:29",
+            "certainty": 0.95,
+            "visibility": 0.9,
+            "ref_time": 2.5,
+            "bbox": [
+              0.49,
+              0.2,
+              0.1,
+              0.58
+            ],
+            "group": false,
             "stays_behind": null,
-            "template_index": 4,
-            "visibility": 0.9
+            "people": null
           },
           {
-            "action": "observe_exit",
-            "certainty": 0.9,
-            "free_content": null,
-            "group": false,
+            "person": "Individual in a light blue button-down shirt and blue jeans",
             "identifiable": true,
-            "overlay_timestamp_at_start": "2024-01-15 10:03:30",
-            "people": null,
-            "person": "light blue long-sleeve button-down shirt, blue jeans, black shoes, watch on left wrist, dark hair, medium build",
-            "ref_time": 8.5,
             "registry_match": null,
-            "start": "00:02",
-            "stays_behind": true,
+            "action": "observe_exit",
             "template_index": 4,
-            "visibility": 0.95
+            "free_content": null,
+            "start": "00:03",
+            "overlay_timestamp_at_start": "2024-01-15 10:03:31",
+            "certainty": 0.9,
+            "visibility": 0.95,
+            "ref_time": 8.5,
+            "bbox": [
+              0.12,
+              0.35,
+              0.1,
+              0.55
+            ],
+            "group": false,
+            "stays_behind": true,
+            "people": null
           }
-        ],
-        "footage_issue": null,
-        "image_quality": 0.9,
-        "overlay_camera_label": "CAM 01",
-        "overlay_timestamp_first": "2024-01-15 10:03:28"
+        ]
       },
       "decisions": [
         {
           "obs_id": "O17",
           "action": "exit_atm",
           "source_from": "overlay_label",
-          "timestamp_from": "override+offset",
+          "timestamp_from": "verified_clock",
           "flags": [],
-          "person": "black hoodie, black trousers, black cap, dark footwear, medium build",
+          "person": "Individual wearing a black hoodie/jacket, black trousers, and a black baseball cap",
           "identifiable": true
         },
         {
           "obs_id": "O17b",
           "action": "observe_exit",
           "source_from": "overlay_label",
-          "timestamp_from": "override+offset",
+          "timestamp_from": "verified_clock",
           "flags": [],
-          "person": "light blue long-sleeve button-down shirt, blue jeans, black shoes, watch on left wrist, dark hair, medium build",
+          "person": "Individual in a light blue button-down shirt and blue jeans",
           "identifiable": true
         }
       ]

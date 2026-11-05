@@ -1,0 +1,288 @@
+{
+  "case_id": "CASE_ATM_009",
+  "updated_utc": "2026-11-04T15:42:59.934783+00:00",
+  "anchor": "2024-01-15T10:00:00",
+  "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
+  "clips": [
+    {
+      "clip": "O11.mp4",
+      "obs_ids": [
+        "O11",
+        "O11b"
+      ],
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
+      "cached": true,
+      "quality": {
+        "score": 0.428,
+        "usable": true,
+        "sharpness": 0.192,
+        "noise": 1.0,
+        "flicker": 0.95,
+        "brightness": 1.0,
+        "width": 1920,
+        "height": 1080,
+        "fps": 30.0,
+        "duration": 8.766667
+      },
+      "footage_issue": null,
+      "verified_clock_at_first_frame": "2024-01-15T10:02:41",
+      "tool_calls": 4,
+      "api_calls": 2,
+      "unresolved_checks": [],
+      "agent_trace": [
+        {
+          "step": 0,
+          "call": 1,
+          "thought": "Check clock overlay, verify image details, test draft validation, and examine frames to confirm group movement and witness behavior.",
+          "tool": "crop_overlay",
+          "args": {
+            "corner": "bottom-left",
+            "times": [
+              0.0,
+              3.0,
+              6.0
+            ]
+          },
+          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '2024-01-15 10:02:41'  parsed: 2024-01-15 10:02:41\nt=3.0s  OCR: '2024-01-15 10:02:44'  parsed: 2024-01-15 10:02:44\nt=6.0s  OCR: 'ee | 2024-01-15 10:02:47'  parsed: 2024-01-15 10:02:47"
+        },
+        {
+          "step": 1,
+          "call": 1,
+          "thought": "Check clock overlay, verify image details, test draft validation, and examine frames to confirm group movement and witness behavior.",
+          "tool": "check_clock",
+          "args": {
+            "readings": [
+              {
+                "clock": "2024-01-15 10:02:41",
+                "t": 0.0
+              },
+              {
+                "clock": "2024-01-15 10:02:44",
+                "t": 3.0
+              },
+              {
+                "clock": "2024-01-15 10:02:47",
+                "t": 6.0
+              }
+            ]
+          },
+          "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:02:41 (spread 0.0s)."
+        },
+        {
+          "step": 2,
+          "call": 1,
+          "thought": "Check clock overlay, verify image details, test draft validation, and examine frames to confirm group movement and witness behavior.",
+          "tool": "get_frames",
+          "args": {
+            "times": [
+              1.5,
+              3.5,
+              5.0,
+              7.5
+            ]
+          },
+          "result": "Frames t=1.5s, t=3.5s, t=5.0s, t=7.5s"
+        },
+        {
+          "step": 3,
+          "call": 1,
+          "thought": "Check clock overlay, verify image details, test draft validation, and examine frames to confirm group movement and witness behavior.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "camera_view": "exterior_above_entrance",
+              "clock_note": "Clock checked at 0s, 3s, and 6s, ticking consistently from 10:02:41.",
+              "clock_verified": true,
+              "events": [
+                {
+                  "action": "flee_scene",
+                  "bbox": [
+                    0.32,
+                    0.47,
+                    0.18,
+                    0.46
+                  ],
+                  "certainty": 0.95,
+                  "free_content": null,
+                  "group": true,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:02:44",
+                  "people": [
+                    {
+                      "bbox": [
+                        0.32,
+                        0.47,
+                        0.18,
+                        0.46
+                      ],
+                      "identifiable": true,
+                      "person": "Individual in black cap, black hoodie, dark trousers, black shoes",
+                      "ref_time": 4.5,
+                      "registry_match": null
+                    },
+                    {
+                      "bbox": [
+                        0.44,
+                        0.49,
+                        0.16,
+                        0.45
+                      ],
+                      "identifiable": true,
+                      "person": "Individual in grey long-sleeve shirt, dark trousers, wearing black backpack",
+                      "ref_time": 4.5,
+                      "registry_match": null
+                    }
+                  ],
+                  "person": "Individual in black cap, black hoodie, dark trousers, black shoes",
+                  "ref_time": 4.5,
+                  "registry_match": null,
+                  "start": "00:03",
+                  "stays_behind": null,
+                  "template_index": 0,
+                  "visibility": 0.95
+                },
+                {
+                  "action": "observe_exit",
+                  "bbox": [
+                    0.72,
+                    0.48,
+                    0.1,
+                    0.45
+                  ],
+                  "certainty": 0.9,
+                  "free_content": null,
+                  "group": false,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:02:45",
+                  "people": null,
+                  "person": "Individual in light blue shirt and dark trousers",
+                  "ref_time": 5.0,
+                  "registry_match": null,
+                  "start": "00:04",
+                  "stays_behind": true,
+                  "template_index": 16,
+                  "visibility": 0.9
+                }
+              ],
+              "footage_issue": null,
+              "image_quality": 0.85,
+              "overlay_camera_label": "CAM 01",
+              "overlay_timestamp_first": "2024-01-15 10:02:41"
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 4,
+          "call": 2,
+          "thought": "Clock verified as consistent from 10:02:41. Draft validated successfully.",
+          "final": true,
+          "issues": []
+        }
+      ],
+      "final_answer": {
+        "overlay_camera_label": "CAM 01",
+        "overlay_timestamp_first": "2024-01-15 10:02:41",
+        "camera_view": "exterior_above_entrance",
+        "footage_issue": null,
+        "image_quality": 0.85,
+        "clock_verified": true,
+        "clock_note": "Clock checked at 0s, 3s, and 6s, ticking consistently from 10:02:41.",
+        "events": [
+          {
+            "person": "Individual in black cap, black hoodie, dark trousers, black shoes",
+            "identifiable": true,
+            "registry_match": null,
+            "action": "flee_scene",
+            "template_index": 0,
+            "free_content": null,
+            "start": "00:03",
+            "overlay_timestamp_at_start": "2024-01-15 10:02:44",
+            "certainty": 0.95,
+            "visibility": 0.95,
+            "ref_time": 4.5,
+            "bbox": [
+              0.32,
+              0.47,
+              0.18,
+              0.46
+            ],
+            "group": true,
+            "stays_behind": null,
+            "people": [
+              {
+                "person": "Individual in black cap, black hoodie, dark trousers, black shoes",
+                "identifiable": true,
+                "registry_match": null,
+                "ref_time": 4.5,
+                "bbox": [
+                  0.32,
+                  0.47,
+                  0.18,
+                  0.46
+                ]
+              },
+              {
+                "person": "Individual in grey long-sleeve shirt, dark trousers, wearing black backpack",
+                "identifiable": true,
+                "registry_match": null,
+                "ref_time": 4.5,
+                "bbox": [
+                  0.44,
+                  0.49,
+                  0.16,
+                  0.45
+                ]
+              }
+            ]
+          },
+          {
+            "person": "Individual in light blue shirt and dark trousers",
+            "identifiable": true,
+            "registry_match": null,
+            "action": "observe_exit",
+            "template_index": 16,
+            "free_content": null,
+            "start": "00:04",
+            "overlay_timestamp_at_start": "2024-01-15 10:02:45",
+            "certainty": 0.9,
+            "visibility": 0.9,
+            "ref_time": 5.0,
+            "bbox": [
+              0.72,
+              0.48,
+              0.1,
+              0.45
+            ],
+            "group": false,
+            "stays_behind": true,
+            "people": null
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "obs_id": "O11",
+          "action": "flee_scene",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock",
+          "flags": [],
+          "person": "Individual in black cap, black hoodie, dark trousers, black shoes",
+          "identifiable": true,
+          "co_entities": [
+            "Person_42"
+          ]
+        },
+        {
+          "obs_id": "O11b",
+          "action": "observe_exit",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock",
+          "flags": [],
+          "person": "Individual in light blue shirt and dark trousers",
+          "identifiable": true
+        }
+      ]
+    }
+  ]
+}
