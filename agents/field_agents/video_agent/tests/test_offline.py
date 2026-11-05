@@ -9,6 +9,7 @@ stills, and the validation gate that sends a bad final answer back.
   python -m tests.test_offline
 """
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -114,8 +115,9 @@ def scripts(man):
         "O4.mp4": [batch(*clock_steps(299), tool("known_people", {}),
                          tool("get_frames", {"times": [1, 3], "crop": [0.3, 0.3, 0.4, 0.5]}),
                          tool("rewatch", {"start": 0, "end": 3, "fps": 10})), final(o4)],
-        # no tools: reply 1 is a final answer that forgot clock_verified -> the gate sends it back, reply 2 fixes it
-        "O5.mp4": [final({**o5, "clock_verified": None}), final({**o5, "clock_verified": False})],
+        # no tools: reply 1 is a final answer with a sentence number that does not exist -> the gate sends
+        # it back, reply 2 fixes it (O5's clock is settled by the OCR pre-check, or the gate catches that too)
+        "O5.mp4": [final({**o5, "events": [{**o5["events"][0], "template_index": 99}]}), final(o5)],
         # frozen clock -> INCONSISTENT; the draft that forgets clock_verified is flagged by validate_draft
         "O6.mp4": [batch(tool("crop_overlay", {"corner": "top-left", "times": [0, 4]}),
                          tool("check_clock", {"readings": [{"t": 0, "clock": "2024-01-15 10:05:52"},
@@ -221,6 +223,47 @@ def main():
     folder = json.loads((runs_folder / "CASE_ATM_001" / "CASE_ATM_001_video_obs.json").read_text())
     assert folder["observations"] == out["observations"], "folder run differs from clip-by-clip run"
     print("\nextracted observations:\n" + json.dumps(out, indent=2))
+
+    # OCR clock pre-check (only where Tesseract is installed): verified before the model is asked,
+    # and a frozen clock is caught even though it looks plausible
+    if shutil.which("tesseract"):
+        assert clips_log["O1.mp4"]["ocr_clock"]["status"] == "consistent", clips_log["O1.mp4"]["ocr_clock"]
+        assert clips_log["O1.mp4"]["ocr_clock"]["clock_at_first_frame"] == "2024-01-15T10:00:45"
+        assert clips_log["O6.mp4"]["ocr_clock"]["status"] == "frozen", clips_log["O6.mp4"]["ocr_clock"]
+
+    # model failures: a reply that is valid JSON but no object must not crash, a clip the model gave no
+    # answer for keeps its earlier result and is not cached, and a rerun with nothing in it clears the clip
+    one = tmp / "clips_one"
+    one.mkdir()
+    shutil.copy(clips / "O1.mp4", one / "O1.mp4")
+    runs_one = tmp / "runs_one"
+    case_one = runs_one / "CASE_ATM_001"
+
+    def run_one(script, *extra):
+        (one / "O1.mock.json").write_text(json.dumps({"script": script}))
+        r = subprocess.run([sys.executable, "-m", "video_agent.run", "--case-id", "CASE_ATM_001", "--video",
+                            str(one / "O1.mp4"), "--out", str(runs_one), "--backend", "mock", *extra],
+                           cwd=ROOT, capture_output=True, text=True)
+        assert r.returncode == 0, r.stderr[-2000:]
+        return json.loads((case_one / "CASE_ATM_001_video_obs.json").read_text())["observations"], r.stdout
+
+    good = answer("CAM01", "exterior_above_entrance", [ev(MAN, "approach_atm", 1, "00:00", 0.9, 0.9)])
+    first, _ = run_one([final(good)])
+    assert [o["obs_id"] for o in first] == ["O1"], first
+    cached_before = sorted(p.name for p in (case_one / "cache").glob("*.json") if not p.name.startswith("ocr_"))
+    kept, stdout = run_one(["not an object", ["a list"], "still not"], "--no-cache")
+    assert kept == first, "a clip the model gave no answer for must keep its earlier result"
+    assert "no answer from the model" in stdout, stdout
+    cached_after = sorted(p.name for p in (case_one / "cache").glob("*.json") if not p.name.startswith("ocr_"))
+    assert cached_after == cached_before, "a failed answer must not be cached"
+    nothing = answer("CAM01", "exterior_above_entrance", [])
+    cleared, _ = run_one([final(nothing)] * 3, "--no-cache")
+    assert cleared == [], f"a rerun that finds nothing must clear the clip's old observations: {cleared}"
+    # an action outside the vocabulary gets role "unknown", not a guessed "suspect"
+    odd = answer("CAM01", "exterior_above_entrance", [{**ev(MAN, "dance_near_atm", None, "00:00", 0.9, 0.9),
+                                                         "free_content": "Person dances near the ATM."}])
+    odd_obs, _ = run_one([final(odd)] * 3, "--no-cache")
+    assert [o["role"] for o in odd_obs] == ["unknown"], odd_obs
 
     subprocess.run([sys.executable, "-m", "video_agent.evaluate", "--cases", str(CASE.parent), "--runs", str(runs)],
                    cwd=ROOT, check=True)

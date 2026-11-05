@@ -75,17 +75,27 @@ def main():
                        overrides=overrides, use_cache=not a.no_cache, keep_registry=single,
                        max_calls=a.max_calls)
     def save(observations, logs, merge):
-        """Write the case files. merge=True keeps earlier entries of the clips not in `logs`, replacing
-        only these clips' entries; merge=False writes exactly these observations."""
+        """Write the case files. merge=True replaces only these clips' entries and keeps the rest;
+        merge=False (a complete folder run) writes exactly these clips. Either way a clip whose model call
+        failed keeps its earlier entries: a passing API problem must not wipe a good result."""
+        failed = [l for l in logs if l.get("failed")]
+        logs = [l for l in logs if not l.get("failed")]
+        # a clip replaces everything filed under its obs_id, even when it now yields no observations
+        replace = {base_id(o["obs_id"]) for o in observations} | {base_id(l["obs_id"]) for l in logs if l.get("obs_id")}
+        old_obs = json.loads(obs_path.read_text())["observations"] if obs_path.exists() else []
+        old_logs = json.loads(log_path.read_text())["clips"] if log_path.exists() else []
+        new_clips = {l["clip"] for l in logs}
         if merge:
-            new_ids = {base_id(o["obs_id"]) for o in observations}
-            if obs_path.exists():
-                observations = [o for o in json.loads(obs_path.read_text())["observations"]
-                                if base_id(o["obs_id"]) not in new_ids] + observations
-            if log_path.exists():   # by clip name too: a clip that gave no observations has empty obs_ids
-                new_clips = {l["clip"] for l in logs}
-                logs = [l for l in json.loads(log_path.read_text())["clips"]
-                        if l["clip"] not in new_clips and not new_ids & {base_id(i) for i in l["obs_ids"]}] + logs
+            keep_log = lambda l: l["clip"] not in new_clips and not replace & {base_id(i) for i in l["obs_ids"]}
+        else:
+            keep_log = lambda l: l["clip"] in {f["clip"] for f in failed}
+        kept_logs = [l for l in old_logs if keep_log(l)]
+        kept_ids = {base_id(i) for l in kept_logs for i in l["obs_ids"]} if not merge else None
+        observations = [o for o in old_obs if (base_id(o["obs_id"]) not in replace if merge
+                                               else base_id(o["obs_id"]) in kept_ids)] + observations
+        logs = kept_logs + logs
+        # a failed clip with nothing earlier on file still gets its log entry, so the failure is on record
+        logs += [f for f in failed if f["clip"] not in {l["clip"] for l in logs}]
         observations = sorted(observations, key=lambda o: (o["timestamp"] is None, o["timestamp"] or "", o["obs_id"]))
         out_dir.mkdir(parents=True, exist_ok=True)
         result = {"case_id": ctx["case_id"], "domain": ctx["domain"],
@@ -104,6 +114,9 @@ def main():
 
     flagged = [d for l in logs for d in l["decisions"] if d["flags"]]
     print(f"\n[video] {len(result['observations'])} observations -> {obs_path}")
+    failed = [l["clip"] for l in logs if l.get("failed")]
+    if failed:
+        print(f"[video] no model answer for {', '.join(failed)}: earlier results kept, run again later")
     if flagged:
         print(f"[video] {len(flagged)} need review (see {log_path.name}): "
               + ", ".join(f"{d['obs_id']}({'/'.join(d['flags'])})" for d in flagged))

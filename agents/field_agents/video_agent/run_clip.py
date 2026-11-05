@@ -13,8 +13,9 @@ Results always go to runs/<case id>/ (one folder per case; each clip adds its ow
 
 If overrides_<case id>.json exists next to this file it is applied (see README).
 
-The free Gemini tier allows about 20 requests a day per model (roughly two clips). When a model's
-daily quota is used up, the next one in MODELS is tried automatically; the log file records which
+The free Gemini tier allows about 20 requests a day per model and API key (a clip takes 2-3). Extra
+keys in .env (GEMINI_API_KEY_2 ...) are used first; when every key's quota for a model is used up,
+or the model is overloaded, the next one in MODELS is tried automatically; the log file records which
 model produced each clip's answer. Extra options are passed on, and an explicit --model switches
 the fallback off, e.g.  python run_clip.py --model gemini-3.6-flash
 """
@@ -25,7 +26,9 @@ from pathlib import Path
 
 VIDEO = r"clips/CASE_ATM_010/O17.mp4"      # <-- change this to the clip you want to analyse
 
-MODELS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash"]   # tried in this order
+# tried in this order. One per daily quota: Google counts gemini-3.7-flash against gemini-3.8-flash and
+# gemini-3.5-flash against gemini-3.6-flash, so falling back within a pair never helps
+MODELS = ["gemini-3.8-flash", "gemini-3.5-flash"]
 
 ROOT = Path(__file__).resolve().parent
 
@@ -51,11 +54,13 @@ def main():
         print(f"[run_clip] model {model}", flush=True)
         run = subprocess.run(cmd + ["--model", model] + sys.argv[1:], cwd=ROOT, stderr=subprocess.PIPE,
                              text=True, encoding="utf-8", errors="replace")
-        if run.returncode == 0 or "RESOURCE_EXHAUSTED" not in run.stderr:
+        quota, overloaded = "RESOURCE_EXHAUSTED" in run.stderr, "503 UNAVAILABLE" in run.stderr
+        if run.returncode == 0 or not (quota or overloaded):
             sys.stderr.write(run.stderr)
             raise SystemExit(run.returncode)
-        print(f"[run_clip] {model}: daily quota used up, trying the next model", flush=True)
-    raise SystemExit("every model in MODELS is out of quota for today; try again tomorrow")
+        why = "daily quota used up (on every API key)" if quota else "overloaded right now"
+        print(f"[run_clip] {model}: {why}, trying the next model", flush=True)
+    raise SystemExit("every model in MODELS is out of quota or overloaded; try again later")
 
 
 if __name__ == "__main__":

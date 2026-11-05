@@ -11,13 +11,19 @@ Modality is always `video`.
 
 ## How it works
 
-Gemini (a multimodal LLM) runs as an **agent**: it watches the clip, then calls local tools in a
-loop until it is confident, and only then gives its answer.
+Gemini (a multimodal LLM) runs as an **agent**: it watches the clip, can call local tools, and
+then gives its answer.
+
+Before the model is asked anything, the burned-in clock is checked with **OCR** (Tesseract, no API
+call): it is read at four times across the clip, and if the readings tick in step with the video the
+clock is verified there, independently of the model. A clock stuck on one time is marked frozen. Only
+when OCR cannot decide (no OCR installed, or an overlay it can't read) does the model verify the
+clock itself with `crop_overlay` + `check_clock`.
 
 | Tool | What it does |
 |---|---|
 | `crop_overlay` | Enlarged crops of the corner holding the clock and camera label, at chosen times, plus OCR text (Tesseract, if installed) |
-| `check_clock` | Checks that clock readings at different times tick in step with the video. Only a consistent result counts as a verified clock, and timestamps are then computed from it by code, not from the model's own reading |
+| `check_clock` | Checks that the model's clock readings at different times tick in step with the video (all must agree). Only used when the OCR check could not decide; it cannot overrule OCR. Timestamps are then computed from the verified clock by code |
 | `get_frames` | Full or cropped frames at chosen times (hands at the card slot, a face, the door) |
 | `rewatch` | A short segment re-sent at a higher frame rate |
 | `known_people` | People already seen in this case, with a reference still of each, for identity matching |
@@ -40,13 +46,13 @@ looked at and why.
 |---|---|
 | `obs_id` | From the clip name (`O4.mp4` -> `O4`) or `--obs-id`. A second person/action in the same clip becomes `O4b`, `O4c`. Otherwise `V1`, `V2` ... People doing the same thing together (two people leaving side by side) are ONE observation, as in the generator: a plural sentence (`flee_scene`: "Two individuals are recorded leaving the scene side by side."), the lead person's `entity`, and the other members' labels under `co_entities` in the log. |
 | `entity` | `Person_NN`, the generator's video alias format. A per-case registry keeps the same person on the same label across clips (the model matches clothing and accessories). People who can't be identified (back view, occluded) always get a new label. These labels are the agent's own: they won't equal the generator's aliases, which is what entity resolution is for. |
-| `role` | From the action, as in the templates: `observe_exit` / `report_incident` -> `witness`, everything else -> `suspect`. |
+| `role` | From the action, as in the templates: `observe_exit` / `report_incident` -> `witness`, every other vocabulary action -> `suspect`. An action outside the vocabulary gets `unknown` (`witness` if the sentence names a bystander / passerby / witness): ER treats different roles as different people, so the agent does not guess. |
 | `modality` | Always `video`. |
 | `domain` (file header) | From the case ID: `CASE_ATM_001` -> `ATM_Robbery`. |
 | `source` | From the burned-in camera label (`CAM01` -> `camera_1`, `CAM03` -> `camera_3`, `ATM-INT` -> `cctv_atm`; edit `OVERLAY_LABEL_TO_SOURCE` in `config.py`). Falls back to the filename, then to the camera view the model recognises. |
 | `location` | Looked up from `source` with the generator's own `OBSERVATION_LOCATIONS` table. |
 | `content` | The model picks the closest sentence from the generator's ATM phrase banks (`atm_video_vocabulary.json`, extracted from `templates.py`). Using those exact phrases keeps the Timeline agent's action tagging (`ACTION_TAG_FRAGMENTS`) working. If the footage itself hides the action, content is one of the generator's footage-quality sentences instead, e.g. "Subject's face not visible in available footage." |
-| `timestamp` | From the clock overlaid on the video. Preferred: the clock verified by `check_clock` + the action's offset into the clip. If the clock can't be verified, the model's own reading is used and flagged `clock_not_verified`. If the clock is frozen or garbled, the timestamp is left null and flagged `timestamp_unreadable`. |
+| `timestamp` | The clock time at the clip's **first frame**, for every observation from that clip (as the generator stamps an observation with the time its clip starts; the event's offset into the clip is not added, so with long real footage all events of one clip share a time). Preferred: the clock verified by OCR or `check_clock`. If the clock can't be verified, the model's own reading is used and flagged `clock_not_verified`. If the clock is frozen or garbled, the timestamp is left null and flagged `timestamp_unreadable`. |
 | `time_offset` | Seconds from the generator's fixed base time `2024-01-15T10:00:00`, the same anchor every case uses (change with `--anchor`). |
 | `confidence` | `0.45 x model certainty + 0.25 x visibility + 0.30 x measured image quality`, minus penalties for a footage problem, an unverified or unreadable clock, or an unidentifiable person; clamped to 0.10-0.99. Image quality is measured from the pixels (sharpness after removing grain, noise, flicker, darkness), not judged by the model. `evaluate.py --calibrate` can fit it to your case files. |
 
@@ -86,7 +92,7 @@ Outputs in `runs/CASE_ATM_001/`:
 - `CASE_ATM_001_video_obs.json` - `case_id`, `domain`, `observations` (same shape as `*_obs_only.json`, video only)
 - `CASE_ATM_001_video_log.json` - per clip: raw model answer, quality metrics, how each field was decided, review flags
 - `people_registry.json` and `people/` - who each `Person_NN` is (appearance, reference still) and where they appear
-- `cache/` - model answers. Reruns reuse them, so the same clips give the same output without new API calls (`--no-cache` to force)
+- `cache/` - model answers and OCR clock checks. Reruns reuse them, so the same clips give the same output without new API calls (`--no-cache` to force). A clip the model gave no answer for (e.g. empty replies when the API is overloaded) is not cached, and its earlier result in the output files is kept; just run it again later.
 
 All cases, one folder per case:
 
@@ -95,8 +101,12 @@ for d in clips/CASE_ATM_*; do python -m video_agent.run --case-id "$(basename "$
 ```
 
 A clip takes 2 requests, at most 3 (`api_calls` in the log). The free tier allows about 10 requests a
-minute; the agent waits and retries the same request when it is rate limited. `--max-calls 1` skips
-tools and takes the first answer. Results are cached, so reruns cost nothing.
+minute; the agent waits and retries the same request when it is rate limited or the model is
+overloaded. `--max-calls 1` skips tools and takes the first answer (the prompt says so). Results are
+cached, so reruns cost nothing. Each clip is saved as soon as it is done.
+
+Several API keys: put `GEMINI_API_KEY_2`, `_3` ... in `.env` next to `GEMINI_API_KEY`; when one key's
+daily quota is used up the next takes over. Keys from different Google accounts have separate quotas.
 
 ### Clips without an overlay
 

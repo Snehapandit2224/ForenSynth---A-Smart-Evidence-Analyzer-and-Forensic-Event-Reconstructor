@@ -88,13 +88,37 @@ def ocr_overlay(img):
 CLOCK_RE = re.compile(r"(\d{4})[-/.](\d{2})[-/.](\d{2})\D{1,3}(\d{2})[:.](\d{2})[:.](\d{2})")
 
 
+def first_frame_clock(pts, slack=0.3):
+    """Clock time at the first frame (whole seconds) from (t, clock reading) pairs, by majority vote.
+
+    A clock showing whole seconds reads D at t only if the first frame was in [D - t, D - t + 1), so each
+    reading allows one or two whole-second start times. The start most readings allow wins; slack absorbs
+    frame-seek jitter. Returns (start or None, votes for it)."""
+    votes = {}
+    for t, d in pts:
+        lo = d - timedelta(seconds=t + slack)
+        hi = d - timedelta(seconds=t) + timedelta(seconds=1 + slack)
+        s = lo.replace(microsecond=0) + (timedelta(seconds=1) if lo.microsecond else timedelta(0))
+        while s < hi:
+            votes[s] = votes.get(s, 0) + 1
+            s += timedelta(seconds=1)
+    if not votes:
+        return None, 0
+    best = max(votes.values())
+    winners = sorted(s for s, v in votes.items() if v == best)
+    return winners[len(winners) // 2], best
+
+
 class ClipTools:
+    last_clock_corner = None              # where the previous clip's clock was: clips of a case share it
+
     def __init__(self, clip, duration, vocab, registry, ctx, locations):
         self.clip = Path(clip)
         self.duration = duration
         self.vocab, self.registry, self.ctx, self.locations = vocab, registry, ctx, locations
         self.tmp = Path(tempfile.mkdtemp(prefix="va_tools_"))
-        self.verified_clock = None          # set only by check_clock
+        self.verified_clock = None          # set only by ocr_clock or check_clock
+        self.ocr_status = None              # result of ocr_clock: consistent / frozen / unclear
         self.calls = []
         self.ocr = shutil.which("tesseract") is not None
         if self.ocr:
@@ -105,6 +129,43 @@ class ClipTools:
 
     def close(self):
         shutil.rmtree(self.tmp, ignore_errors=True)
+
+    # ------------------------------------------------------------ clock check by OCR (no model)
+    def _ocr_clock_at(self, corner, t, tag):
+        img = crop_frac(ffmpeg_frame(self.clip, self._t(t), self.tmp / f"oc_{tag}.png"), CORNERS[corner])
+        big = img.resize((img.width * 3, img.height * 3), Image.LANCZOS).filter(ImageFilter.SHARPEN)
+        m = CLOCK_RE.search(ocr_overlay(big))
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)} {m.group(4)}:{m.group(5)}:{m.group(6)}" if m else None
+
+    def ocr_clock(self, n=4):
+        """Read the burned-in clock with OCR at n times across the clip, before the model is asked.
+
+        consistent  most readings put the first frame at the same clock time (within 1.5 s): the clock is
+                    verified here, independently of the model's own reading of it
+        frozen      every reading shows the same time although the video moves on: not a usable clock
+        unclear     OCR could not decide (unreadable, or readings disagree): the model's check_clock decides
+        """
+        from .agent import parse_ts
+        if not self.ocr or self.duration < 1.5:
+            return {"status": "unclear", "note": "OCR not available" if not self.ocr else "clip too short"}
+        t0 = min(0.5, self.duration / 4)
+        order = sorted(CORNERS, key=lambda c: c != ClipTools.last_clock_corner)   # last hit first: faster
+        corner = next((c for c in order if self._ocr_clock_at(c, t0, f"{c}_0")), None)
+        if corner:
+            ClipTools.last_clock_corner = corner
+        if corner is None:
+            return {"status": "unclear", "note": "OCR found no clock in any corner"}
+        times = [t0 + i * (self.duration - 2 * t0) / (n - 1) for i in range(n)]
+        pts = [(t, parse_ts(self._ocr_clock_at(corner, t, f"{corner}_{i}"))) for i, t in enumerate(times)]
+        pts = [(t, ts) for t, ts in pts if ts is not None]
+        out = {"corner": corner, "readings": [{"t": round(t, 2), "clock": ts.isoformat()} for t, ts in pts]}
+        if len(pts) >= 2 and len({ts for _, ts in pts}) == 1 and pts[-1][0] - pts[0][0] >= 2:
+            return {**out, "status": "frozen", "note": "the clock shows the same time all through the clip"}
+        start, votes = first_frame_clock(pts)
+        if start and votes >= max(2, len(pts) - 1) and votes * 2 > len(pts):   # one misread is tolerated
+            self.verified_clock = start
+            return {**out, "status": "consistent", "clock_at_first_frame": start.isoformat()}
+        return {**out, "status": "unclear", "note": "OCR readings disagree"}
 
     def _t(self, t):
         return max(0.0, min(float(t), max(0.0, self.duration - 0.05)))
@@ -141,16 +202,22 @@ class ClipTools:
 
     def tool_check_clock(self, readings=()):
         from .agent import parse_ts
-        pts = [(float(r["t"]), parse_ts(r.get("clock"))) for r in readings if isinstance(r, dict)]
+        # OCR has the last word when it could decide: the model's readings cannot overturn it
+        if self.ocr_status == "consistent":
+            return {"text": f"CONSISTENT: already verified by OCR. Clock at first frame = "
+                            f"{self.verified_clock.isoformat()}."}
+        if self.ocr_status == "frozen":
+            return {"text": "INCONSISTENT: OCR shows the clock frozen on one time while the video moves on, "
+                            "so the overlay clock is unreliable. Report overlay timestamps as null."}
+        pts = [(float(r["t"]), parse_ts(r.get("clock"))) for r in readings if isinstance(r, dict) and "t" in r]
         pts = [(t, ts) for t, ts in pts if ts is not None]
         if len(pts) < 2:
             return {"text": "need at least 2 readable clock readings at different times"}
         starts = [ts - timedelta(seconds=t) for t, ts in pts]
         spread = (max(starts) - min(starts)).total_seconds()
-        if spread <= 1.5 and (max(t for t, _ in pts) - min(t for t, _ in pts)) >= 1.0:
-            start = min(starts) + (max(starts) - min(starts)) / 2
-            start = start.replace(microsecond=0)
-            self.verified_clock = start
+        start, votes = first_frame_clock(pts)
+        if start and votes == len(pts) and (max(t for t, _ in pts) - min(t for t, _ in pts)) >= 1.0:
+            self.verified_clock = start      # every reading must agree: these are the model's own readings
             return {"text": f"CONSISTENT: clock ticks with the video. Clock at first frame = "
                             f"{start.isoformat()} (spread {spread:.1f}s)."}
         return {"text": f"INCONSISTENT: readings imply first-frame clock times spread over {spread:.0f}s, "
@@ -210,8 +277,8 @@ def validate(raw, vocab, registry, ctx, verified_clock):
     if raw.get("footage_issue") not in (None, *C.VIDEO_QUALITY_BANK):
         issues.append(f"footage_issue must be null or one of {list(C.VIDEO_QUALITY_BANK)}")
     if verified_clock is None and raw.get("clock_verified") is not False:
-        issues.append("clock not verified: use crop_overlay at 2-3 times, then check_clock "
-                      "(if it is unreadable or INCONSISTENT, say so with clock_verified=false)")
+        issues.append("clock not verified: no check confirmed the clock ticks with the video, so set "
+                      "clock_verified=false and report overlay timestamps as null")
     events = raw.get("events")
     if not isinstance(events, list):
         return issues + ["events must be a list"]
@@ -222,8 +289,8 @@ def validate(raw, vocab, registry, ctx, verified_clock):
     for i, ev in enumerate(events):
         tag = f"event {i}"
         if ev.get("action") == "observe_exit" and leaving and ev.get("stays_behind") is not True:
-            issues.append(f"{tag}: this person is reported as a witness watching event {leaving[0]} leave. Use "
-                          f"get_frames in the second half of the clip to see where they go. If they walk off "
+            issues.append(f"{tag}: this person is reported as a witness watching event {leaving[0]} leave. Look at "
+                          f"the second half of the clip (and any frames you have) to see where they go. If they walk off "
                           f"with the person they watched, merge both into ONE group event (rule 7: group=true, "
                           f"\"people\", a plural sentence). If they stay behind or go their own way, set "
                           f"\"stays_behind\": true on this event")
@@ -254,7 +321,7 @@ def validate(raw, vocab, registry, ctx, verified_clock):
         for who, p in [("", ev)] + [(f" people[{j}]", q) for j, q in enumerate(people) if isinstance(q, dict)]:
             m = p.get("registry_match")
             if m and m not in registry.people:
-                issues.append(f"{tag}{who}: registry_match '{m}' is not a known person (use known_people)")
+                issues.append(f"{tag}{who}: registry_match '{m}' is not a known person: use only labels listed under KNOWN PEOPLE, or null")
             if m and not p.get("identifiable", True):
                 issues.append(f"{tag}{who}: an unidentifiable person cannot have a registry_match")
         if not re.match(r"^\d+:\d{1,2}", str(ev.get("start", ""))):

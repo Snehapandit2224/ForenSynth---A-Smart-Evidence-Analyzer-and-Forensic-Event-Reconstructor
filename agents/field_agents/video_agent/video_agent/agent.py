@@ -10,6 +10,7 @@ Division of labour
                  source label mapping, location lookup, role-from-action, Person_NN labels,
                  time_offset from the case anchor, and confidence from measured quality.
 """
+import copy
 import hashlib
 import json
 import re
@@ -103,27 +104,47 @@ class VideoAgent:
 
     # ---- agent loop with on-disk cache (same clip + prompt + model -> same answer, no API calls)
     def _analyze(self, clip, duration):
-        user = build_user_prompt(self.vocab, self.registry.people)
-        h = hashlib.sha256(Path(clip).read_bytes())
-        h.update((self.model_id + SYSTEM + user + str(self.max_calls)).encode())
-        cache = self.cache_dir / f"{h.hexdigest()[:24]}.json"
-        if self.use_cache and cache.exists():
-            data = json.loads(cache.read_text(encoding="utf-8"))
-            data["cached"] = True
-            return data
         tools = ClipTools(clip, duration, self.vocab, self.registry, self.ctx, self.locations)
         try:
+            # the clock is checked by OCR first (local, no API call); the model is told the outcome
+            clip_hash = hashlib.sha256(Path(clip).read_bytes())
+            clock = self._ocr_clock(tools, clip_hash.hexdigest()[:24])
+            user = build_user_prompt(self.vocab, self.registry.people, clock, self.max_calls)
+            h = clip_hash.copy()
+            h.update((self.model_id + SYSTEM + user + str(self.max_calls)).encode())
+            cache = self.cache_dir / f"{h.hexdigest()[:24]}.json"
+            if self.use_cache and cache.exists():
+                data = json.loads(cache.read_text(encoding="utf-8"))
+                data["cached"] = True
+                return data
             final, trace, issues, api_calls = run_loop(self.backend, clip, self.fps, SYSTEM, user, tools, self.ctx,
                                                        max_calls=self.max_calls)
         finally:
             tools.close()
         data = {"final": final, "trace": trace, "unresolved_issues": issues,
                 "verified_clock": tools.verified_clock.isoformat() if tools.verified_clock else None,
-                "tool_calls": len(tools.calls), "api_calls": api_calls}
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        cache.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+                "ocr_clock": clock, "tool_calls": len(tools.calls), "api_calls": api_calls}
+        # an answer the model never gave (empty / invalid replies until the call limit) is a passing
+        # failure, often API load: caching it would replay the failure on every later run
+        if not trace[-1].get("forced"):
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
         data["cached"] = False
         return data
+
+    def _ocr_clock(self, tools, clip_hash):
+        """tools.ocr_clock(), cached per clip (OCR takes ~15 s a clip); sets the tools' clock state."""
+        path = self.cache_dir / f"ocr_{clip_hash}.json"
+        clock = json.loads(path.read_text(encoding="utf-8")) if self.use_cache and path.exists() else None
+        if clock is None:
+            clock = tools.ocr_clock()
+            if tools.ocr:                         # without OCR installed there is nothing worth keeping
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(clock, indent=2), encoding="utf-8")
+        elif clock["status"] == "consistent":
+            tools.verified_clock = parse_ts(clock["clock_at_first_frame"])
+        tools.ocr_status = clock["status"]
+        return clock
 
     def _save_still(self, clip, label, ev):
         """Reference image of a newly seen person, shown to the agent in later clips."""
@@ -212,6 +233,10 @@ class VideoAgent:
         quality = measure(clip)
         run = self._analyze(clip, quality["duration"])
         raw, cached = run["final"] or {}, run["cached"]
+        if not raw:   # the model gave no answer at all: report the failure, invent nothing
+            return [], {"clip": clip.name, "obs_id": obs_id, "obs_ids": [], "failed": True,
+                        "model": self.model_id, "cached": cached, "quality": quality,
+                        "api_calls": run.get("api_calls"), "agent_trace": run["trace"], "decisions": []}
 
         flags = ["unresolved_checks"] if run["unresolved_issues"] else []
         source = ov.get("source") or source_from_label(raw.get("overlay_camera_label"))
@@ -243,8 +268,10 @@ class VideoAgent:
             elif action is None or self.vocab.get(action, {}).get("templates", [None]).count(content) == 0:
                 if content not in C.VIDEO_QUALITY_BANK.values():
                     ev_flags.append("free_text_content")
+            # an action outside the vocabulary carries no role; guessing "suspect" could make ER split one
+            # person in two (it treats a different role as a different person)
             role = self.vocab[action]["role"] if action in self.vocab else "witness" \
-                if any(k in content.lower() for k in ("bystander", "passerby", "witness")) else "suspect"
+                if any(k in content.lower() for k in ("bystander", "passerby", "witness")) else "unknown"
             # a group event is one observation: every member gets a label, the lead's is the entity
             labels = []
             for m in self._members(ev):
@@ -274,9 +301,10 @@ class VideoAgent:
             if ev.get("group"):
                 details[-1]["co_entities"] = labels[1:]
 
-        log = {"clip": clip.name, "obs_ids": [o["obs_id"] for o in observations], "model": self.model_id,
-               "cached": cached, "quality": quality, "footage_issue": issue,
-               "verified_clock_at_first_frame": run["verified_clock"], "tool_calls": run["tool_calls"],
+        log = {"clip": clip.name, "obs_id": obs_id, "obs_ids": [o["obs_id"] for o in observations],
+               "model": self.model_id, "cached": cached, "quality": quality, "footage_issue": issue,
+               "verified_clock_at_first_frame": run["verified_clock"], "ocr_clock": run.get("ocr_clock"),
+               "tool_calls": run["tool_calls"],
                "api_calls": run.get("api_calls"),
                "unresolved_checks": run["unresolved_issues"], "agent_trace": run["trace"],
                "final_answer": raw, "decisions": details}
@@ -294,8 +322,13 @@ class VideoAgent:
         all_obs, logs = [], []
         for clip, obs_id in zip(clips, obs_ids):
             print(f"[video] {Path(clip).name} -> {obs_id}", flush=True)
+            before = copy.deepcopy(self.registry.people)
             self.registry.forget(obs_id)          # re-running a clip replaces its earlier result
             obs, log = self.process_clip(clip, obs_id)
+            if log.get("failed"):                 # ...unless it failed: then the earlier result stays
+                self.registry.people = before
+                print(f"   ! no answer from the model for {Path(clip).name}: its earlier result (if any) is "
+                      f"kept; run this clip again later", flush=True)
             for o, d in zip(obs, log["decisions"]):
                 tag = f"  ! {', '.join(d['flags'])}" if d["flags"] else ""
                 print(f"   {o['obs_id']:<5} {o['entity']} {o['role']:<7} {o['source']:<13} "

@@ -13,6 +13,10 @@ RULES
    using the machine, touching the card slot area, waiting/lingering, exiting, hurrying away,
    watching others leave, reporting to someone or on a phone). People acting together are the
    exception: see rule 7. Ignore background pedestrians and traffic that do nothing case-relevant.
+   One continuous movement is ONE event, named by where it ends: a person who walks up to the
+   booth and goes straight in is one enter_atm event, not approach_atm + enter_atm; someone who
+   comes out and keeps walking is one exit_atm event. Report two events for one person only when
+   they clearly stop, wait or do something else in between.
 2. For each event choose the action key and the index of the closest vocabulary sentence from the
    VOCABULARY. Pick the sentence that describes the visible action most literally. Prefer neutral
    subject words (Person / Individual / Subject) unless several actors are on screen and an ordinal
@@ -55,11 +59,13 @@ Tools are only available in reply 1, so put every tool you need in that one batc
 
 Plan the batch so it settles everything at once:
   a. Watch the clip. Note where the overlay is and what happens.
-  b. Clock: read the burned-in clock yourself at 2-3 times spread across the clip and put those
-     readings into check_clock; add crop_overlay on the overlay corner at the same times so you can
-     confirm the digits up close. Only a CONSISTENT result counts as verified. If the clock is
-     unreadable or INCONSISTENT, set clock_verified=false and report overlay timestamps as null.
-     Never guess digits.
+  b. Clock: the CLOCK CHECK below says whether OCR has already checked the clock. If it is
+     VERIFIED or FROZEN, the clock is settled: skip clock tools (FROZEN means clock_verified=false
+     and overlay timestamps null). Only if it is UNCLEAR: read the burned-in clock yourself at 2-3
+     times spread across the clip and put those readings into check_clock, adding crop_overlay on
+     the overlay corner at the same times. Only a CONSISTENT result counts as verified. If the
+     clock is unreadable or INCONSISTENT, set clock_verified=false and report overlay timestamps as
+     null. Never guess digits.
   c. If an action is unclear (hands at the card slot, someone exiting), add get_frames with a crop,
      or rewatch the segment at a higher fps.
   d. If two or more people are involved, settle rule 7 before writing events: add get_frames at
@@ -110,7 +116,30 @@ CAMERA_VIEWS = {
 }
 
 
-def build_user_prompt(vocab, registry_people):
+def clock_check_text(clock):
+    """What the OCR pre-check (tools.ClipTools.ocr_clock) found, for the model."""
+    status = (clock or {}).get("status")
+    if status == "consistent":
+        return (f"VERIFIED by OCR: the clock ticks with the video; clock at first frame = "
+                f"{clock['clock_at_first_frame']} ({clock['corner']} corner). Set clock_verified=true.")
+    if status == "frozen":
+        return ("FROZEN: OCR shows the clock stuck on one time while the video moves on. Set "
+                "clock_verified=false and report overlay timestamps as null.")
+    return f"UNCLEAR ({(clock or {}).get('note', 'not checked')}): verify the clock yourself (step b)."
+
+
+def budget_text(max_calls):
+    """The reply budget, when it is smaller than the three replies the system prompt describes."""
+    if max_calls <= 1:
+        return ("BUDGET: you have only ONE reply for this clip. Tools are NOT available: give your final "
+                "answer straight away.")
+    if max_calls == 2:
+        return ("BUDGET: you have TWO replies; there is no third reply to fix a failed answer, so use "
+                "validate_draft in your tool batch.")
+    return None
+
+
+def build_user_prompt(vocab, registry_people, clock=None, max_calls=3):
     vocab_view = {a: {"role": v["role"], "sentences": dict(enumerate(v["templates"]))} for a, v in vocab.items()}
     known = {label: p["appearance"] for label, p in registry_people.items() if p.get("identifiable", True)}
     return "\n\n".join([
@@ -119,7 +148,9 @@ def build_user_prompt(vocab, registry_people):
         + json.dumps(plural_sentences(vocab), ensure_ascii=False),
         "CAMERA VIEWS:\n" + json.dumps(CAMERA_VIEWS, ensure_ascii=False),
         "KNOWN PEOPLE (seen in earlier clips of this case):\n" + (json.dumps(known, ensure_ascii=False) if known else "none yet"),
+        "CLOCK CHECK:\n" + clock_check_text(clock),
         "TOOLS:\n" + tool_catalogue(),
         "OUTPUT FORMAT (the value of \"final\"):\n" + json.dumps(OUTPUT_FORMAT, ensure_ascii=False),
+        *([budget_text(max_calls)] if budget_text(max_calls) else []),
         "Start with step a. Reply with one JSON object (reply 1).",
     ])

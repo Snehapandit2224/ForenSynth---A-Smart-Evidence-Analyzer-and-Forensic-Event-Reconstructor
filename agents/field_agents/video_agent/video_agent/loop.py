@@ -32,9 +32,11 @@ def run_loop(backend, clip, fps, system, user, tools, ctx, max_calls=MAX_API_CAL
         # empty parts, so keep a stand-in; the next prompt then asks for a valid reply
         turns.append({"role": "model", "parts": [{"text": text or "(empty reply)"}]})
         try:
-            return parse_json(text)
+            reply = parse_json(text)
         except ValueError:
             return {"_unparseable": text}
+        # valid JSON that is not an object (a string, a list) is as unusable as no JSON at all
+        return reply if isinstance(reply, dict) else {"_unparseable": text}
 
     def tool_requests(reply):
         reqs = reply.get("tools")
@@ -94,7 +96,8 @@ def run_loop(backend, clip, fps, system, user, tools, ctx, max_calls=MAX_API_CAL
     # out of calls without an accepted final answer: fall back to the last draft the model validated
     final = last_draft or {}
     issues = validate(final, tools.vocab, tools.registry, ctx, tools.verified_clock)
-    trace.append({"step": step, "final": True, "forced": True, "from_draft": last_draft is not None, "issues": issues})
+    trace.append({"step": step, "final": True, "forced": True, "from_draft": last_draft is not None, "issues": issues,
+                  "no_answer": not final})
     log(f"    call budget used up: {'last validated draft' if last_draft else 'empty answer'} used "
         f"({len(issues)} problems)")
     return final, trace, issues, max_calls
