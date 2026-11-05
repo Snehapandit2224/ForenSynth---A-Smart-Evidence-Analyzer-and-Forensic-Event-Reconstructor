@@ -27,7 +27,10 @@ langgraph>=1.2,<2
 
 # ── Field agents: pulls real evidence data from Hugging Face datasets ─────────
 # (text_agent.py streams corbt/enron-emails; no full-dataset download needed)
-datasets>=2.19
+datasets>=2.19,<5
+# datasets 5 pulls pyarrow>=24, which needs NumPy 2; this project runs on NumPy 1.x (streamlit
+# also caps pyarrow below 22)
+pyarrow>=15,<22
 
 # ── Text field agent: real NER extraction (CPU-friendly, ~13MB model) ─────────
 # After installing, run: python -m spacy download en_core_web_sm

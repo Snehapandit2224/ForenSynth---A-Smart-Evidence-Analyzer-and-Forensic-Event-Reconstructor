@@ -76,7 +76,7 @@ def main():
     ev.add_argument("--obs-files", nargs="+", help="Ready-made obs_only files to merge in")
     ev.add_argument("--video", help="A video clip, or a folder of a case's clips (video agent)")
     ev.add_argument("--enable-video", action="store_true",
-                    help="Actually run the video agent on --video (unverified; off by default)")
+                    help="Actually run the video agent on --video (off by default: uses Gemini quota, 2-3 requests a clip)")
     ev.add_argument("--adopt-role-hints", action="store_true",
                     help="Copy LLM role hints with confidence >= 0.7 into `role` at intake")
     p.add_argument("--no-llm",  action="store_true")

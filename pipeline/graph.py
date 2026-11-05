@@ -45,6 +45,7 @@ import importlib.util
 import json
 import logging
 import operator
+import os
 import subprocess
 import sys
 import threading
@@ -189,32 +190,76 @@ def audio_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     return {"intake_files": [str(out)] if out else []}
 
 
+# Gemini models for the video agent, tried in order when one is overloaded or out of daily quota.
+# One per quota: Google counts 3.7-flash against 3.8-flash and 3.5-flash against 3.6-flash.
+# Override with FORENSYNTH_VIDEO_MODELS="model-a,model-b".
+VIDEO_MODELS = [m.strip() for m in os.environ.get("FORENSYNTH_VIDEO_MODELS",
+                                                  "gemini-3.8-flash,gemini-3.5-flash").split(",") if m.strip()]
+_VIDEO_EXT = (".mp4", ".mov", ".webm", ".mkv")
+
+
 def video_intake_node(state: ForenSynthState) -> Dict[str, Any]:
-    """Wired in but never selected unless enable_video is set: the video
-    agent is unverified (one matched observation in its own evaluation).
+    """Runs the video agent on the case's clips, in parallel with the other
+    intake agents. Opt-in (enable_video): every run spends Gemini free-tier
+    quota (2-3 requests a clip, about 20 a day per model and key). In its own
+    evaluation against the case files the agent matches all 7 reference video
+    observations of the demo clips on source, location, role, action and entity.
 
     Its observations assert `role`; ER treats differing roles as a hard
-    "different people" rule, so an unverified model's guess could block a
-    real cross-modal match. As with the text agent, the guess is kept as
-    `role_hint` and `role` becomes "unknown"; every observation is marked
+    "different people" rule, so a wrong guess could block a real cross-modal
+    match. As with the text agent, the guess is kept as `role_hint` (with the
+    observation's confidence as `role_hint_confidence`, so --adopt-role-hints
+    can promote it) and `role` becomes "unknown"; every observation is marked
     extraction_status "unverified"."""
     case_id = state["case_id"]
+    video = Path(state["evidence"]["video"]).resolve()
     out_root = (_staging(state) / "video").resolve()
-    cmd = [sys.executable, "-m", "video_agent.run", "--case-id", case_id,
-           "--video", str(Path(state["evidence"]["video"]).resolve()), "--out", str(out_root)]
-    rc = subprocess.run(cmd, cwd=str(_VIDEO_AGENT_DIR)).returncode
     src = out_root / case_id / f"{case_id}_video_obs.json"
-    if rc != 0 or not src.exists():
-        log.warning("video agent failed (exit %s) - continuing without video evidence.", rc)
+    rc = None
+    for model in VIDEO_MODELS:
+        cmd = [sys.executable, "-m", "video_agent.run", "--case-id", case_id, "--video", str(video),
+               "--out", str(out_root), "--model", model]
+        run = subprocess.run(cmd, cwd=str(_VIDEO_AGENT_DIR), stderr=subprocess.PIPE, text=True,
+                             encoding="utf-8", errors="replace")
+        rc = run.returncode
+        if rc == 0:
+            break
+        busy = "RESOURCE_EXHAUSTED" in run.stderr or "503 UNAVAILABLE" in run.stderr
+        log.warning("video agent with %s failed (exit %s)%s", model, rc,
+                    ": out of quota or overloaded, trying the next model" if busy else "")
+        if not busy:
+            sys.stderr.write(run.stderr[-3000:])
+            break
+    if not src.exists():
+        log.warning("video agent produced nothing (exit %s) - continuing without video evidence.", rc)
         return {"intake_files": []}
+    _warn_missing_clips(video, out_root / case_id / f"{case_id}_video_log.json", rc)
     case = json.loads(src.read_text(encoding="utf-8"))
     for obs in case.get("observations", []):
         obs["role_hint"] = obs.get("role", "unknown")
+        obs["role_hint_confidence"] = obs.get("confidence", 0.0)
         obs["role"] = "unknown"
         obs["extraction_status"] = "unverified"
     out = _staging(state) / f"{case_id}__video_obs_only.json"
     out.write_text(json.dumps(case, indent=2, ensure_ascii=False), encoding="utf-8")
     return {"intake_files": [str(out)]}
+
+
+def _warn_missing_clips(video: Path, log_path: Path, rc) -> None:
+    """The agent saves each clip as it finishes, so a run can end with only some clips done (quota
+    ran out part-way) or with clips it got no model answer for. Say which, instead of carrying on
+    silently with part of the video evidence."""
+    clips = sorted(p.name for p in video.iterdir() if p.suffix.lower() in _VIDEO_EXT) if video.is_dir() \
+        else [video.name]
+    done, failed = set(), []
+    if log_path.exists():
+        for entry in json.loads(log_path.read_text(encoding="utf-8")).get("clips", []):
+            (failed.append if entry.get("failed") else done.add)(entry["clip"])
+    missing = [c for c in clips if c not in done and c not in failed]
+    if failed or missing:
+        log.warning("video evidence incomplete (agent exit %s): %s - run the case again later for these clips.",
+                    rc, "; ".join(filter(None, [failed and f"no model answer for {', '.join(failed)}",
+                                                missing and f"not processed: {', '.join(missing)}"])))
 
 
 def merge_evidence_node(state: ForenSynthState) -> Dict[str, Any]:
