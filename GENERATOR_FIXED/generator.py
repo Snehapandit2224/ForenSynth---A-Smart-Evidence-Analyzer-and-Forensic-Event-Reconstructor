@@ -313,6 +313,14 @@ class ForenSynthGenerator:
                 api_key=self.config.cohere_api_key,
             )
 
+        # ── Step 13 (Optional): Realism - real field-agent output ──────
+        # Own random stream (seed + case id): the main stream, and so every
+        # case generated without flags, is untouched.
+        if self.config.realism is not None and self.config.realism.enabled():
+            from realism import apply_realism
+            case = apply_realism(case, self.config.realism,
+                                 random.Random(f"{self.config.seed}|{case_id}|realism"))
+
         # ── Final Schema Validation ────────────────────────────────────
         errors = validate_case_schema(case)
         if errors:

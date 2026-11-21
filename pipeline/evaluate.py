@@ -2,31 +2,64 @@
 """
 ForenSynth - Ground Truth Evaluation Layer
 Compares a pipeline-reconstructed timeline against the case generator's
-ground truth to measure event recall, action-tag accuracy, temporal
-accuracy, entity accuracy, an overall F1 score, and confidence calibration.
+ground truth: event recall, precision and F1, action-tag accuracy,
+temporal error, entity accuracy, and confidence calibration.
 
-Matching algorithm:
-  1. For each ground-truth event, look at pipeline events whose alias(es)
-     fuzzy-resolve (via ground_truth.entity_mapping) to the same entity_id.
-     "Fuzzy" means: exact alias match first, then a case-insensitive
-     substring match (so e.g. "UNRESOLVED_person_14" still resolves).
-  2. Among those same-entity candidates, pick the one with the smallest
-     timestamp delta (each pipeline event can only be used once).
-  3. A ground-truth event with no same-entity pipeline event at all is
-     unmatched (an event the pipeline never reconstructed) UNLESS it is
-     "covered": one of its own raw observations (via the ground truth's
-     obs_id -> event_ref linkage) was absorbed into an already-matched
-     pipeline event's cluster. Covered events count as 0.5 recall credit
-     rather than a full miss, since the underlying moment wasn't lost, it
-     was legitimately merged with another one by the Timeline agent's
-     entity+temporal clustering.
+Matching - by PROVENANCE, not by guessing:
+  The generator records which ground-truth event every observation came
+  from (observations[].event_ref in the full case file), and every pipeline
+  event lists the observations it was built from (obs_ids). So each
+  pipeline event "is about" the ground-truth event most of its observations
+  came from (its majority event).
 
-Action-tag accuracy and entity accuracy are then computed independently
-on top of that matched set: action match is a fuzzy keyword check between
-the ground truth's snake_case action (e.g. "approach_atm") and the
-pipeline's action_tags (e.g. "APPROACH"); entity accuracy re-checks with
-the STRICT (non-substring) alias resolver, so a pair that only matched
-via a loose substring alias overlap can still be marked entity-incorrect.
+  For each ground-truth event:
+    matched      - some pipeline event's majority event is this one. If
+                   several are, the one with the most of its observations
+                   is the match; the rest are duplicates (fragments of one
+                   moment), which cost precision.
+    covered      - no pipeline event is mainly about it, but one includes
+                   an observation of it (merged into a neighbouring event by
+                   the Timeline's clustering): 0.5 recall credit.
+    unobservable - none of its observations survived into the case (the
+                   generator's missing-modality noise dropped them all).
+                   Nothing could recover it; reported, and also excluded in
+                   event_recall_observable.
+    missed       - its observations are in the case, but in no event.
+
+  (This used to pair each ground-truth event with the nearest-in-time
+  pipeline event of the same person, found by alias with a substring
+  fallback - which paired different actions of one person, and under name
+  variants matched "Kumar" to two different people. That alias matching is
+  kept only as a fallback for ground truth without event_ref.)
+
+Metrics on the matched pairs:
+  entity_accuracy     - is the pipeline event's ENTITY (ER's group) really
+                        the event's person? Each ER entity is identified
+                        with the person most of its observations belong to;
+                        a pair is correct if that person is the event's.
+                        A wrong merge makes the minority person's events
+                        wrong. (This used to be circular: pairs were only
+                        formed when the two already resolved to the same
+                        person, so it was 100% for every case, including
+                        ones where ER fused two people. Wrong SPLITS don't
+                        show here - each fragment is still the right person;
+                        ER's split/merge rates are in evaluate_er.py.)
+  action_tag_accuracy - do the pipeline event's action tags include a tag
+                        for the ground-truth action (explicit table below,
+                        not substring matching)?
+  temporal_accuracy_sec - mean absolute timestamp error in seconds (an
+                        ERROR: lower is better; the key keeps its old name).
+                        temporal_error_median_sec alongside.
+  confidence_calibration - correlation between the pipeline's confidence
+                        and being right (action AND entity correct).
+
+  recall    = (matched + 0.5 * covered) / ground-truth events
+  precision = matched / pipeline events
+  f1        = harmonic mean. PASS is F1 >= 0.75, PARTIAL >= 0.55, else FAIL.
+  precision_linked / f1_linked - the same, not counting repeats the timeline
+            links to the matched event as one moment (same_moment_as), nor
+            events made only of denials. Both versions are reported; the
+            verdict uses the raw F1.
 
 Usage:
     python pipeline/evaluate.py --case CASE_ATM_001 \\
@@ -37,8 +70,10 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
+from statistics import median
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 log = logging.getLogger(__name__)
@@ -46,22 +81,62 @@ log = logging.getLogger(__name__)
 PASS_THRESHOLD = 0.75
 PARTIAL_THRESHOLD = 0.55
 
+# Ground-truth action -> the Timeline action tags that describe it.
+# A witness observing an exit is often tagged by what was seen (EXIT).
+ACTION_TAGS: Dict[str, Set[str]] = {
+    "approach_atm": {"APPROACH"}, "approach_office": {"APPROACH"},
+    "enter_atm": {"ENTER"}, "enter_office": {"ENTER"},
+    "withdraw_cash": {"WITHDRAW"},
+    "exit_atm": {"EXIT"}, "exit_office": {"EXIT"},
+    "wait_outside": {"WATCH", "LOITER"}, "loiter_near_atm": {"LOITER", "WATCH"},
+    "tamper_atm": {"TAMPER"},
+    "flee_scene": {"FLEE"},
+    "steal_items": {"STEAL"}, "steal_data": {"STEAL"},
+    "navigate_to_target": {"NAVIGATE"},
+    "perform_legit_work": {"WORK"},
+    "observe_exit": {"OBSERVE", "EXIT"},
+    "report_incident": {"REPORT"},
+    "initiate_communication": {"COMMUNICATE"}, "respond_to_communication": {"COMMUNICATE"},
+    "exchange_information": {"COMMUNICATE"}, "coordinate_activity": {"COMMUNICATE"},
+    "confirm_plan": {"CONFIRM", "COMMUNICATE"},
+    "intercept_communication": {"INTERCEPT"},
+    "flag_suspicious_comm": {"REPORT", "INTERCEPT"},
+}
+
 
 def _parse_ts(ts: str) -> Optional[datetime]:
+    """Naive datetime (aware times converted to UTC), or None."""
     if not ts:
         return None
     try:
-        return datetime.fromisoformat(ts.replace("Z", ""))
+        dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
     except ValueError:
         return None
+    return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+
+
+def _delta(a: Optional[datetime], b: Optional[datetime]) -> Optional[float]:
+    return None if a is None or b is None else abs((a - b).total_seconds())
 
 
 def _norm(s: str) -> str:
     return (s or "").strip().lower()
 
 
-def _resolve_entity_strict(alias: str, entity_mapping: Dict[str, str]) -> Optional[str]:
-    """Exact (case-insensitive) alias -> ground-truth entity_id lookup only."""
+def _action_match(gt_action: str, action_tags: List[str]) -> bool:
+    tags = {(t or "").upper() for t in action_tags or []}
+    if not gt_action or not tags:
+        return False
+    expected = ACTION_TAGS.get(gt_action)
+    if expected is not None:
+        return bool(tags & expected)
+    # an action not in the table: its leading verb as a whole tag
+    return gt_action.split("_")[0].upper() in tags
+
+
+# ── Fallback matching (ground truth without observation -> event links) ──────
+
+def _resolve_entity_fuzzy(alias: str, entity_mapping: Dict[str, str]) -> Optional[str]:
     if not alias:
         return None
     if alias in entity_mapping:
@@ -70,18 +145,6 @@ def _resolve_entity_strict(alias: str, entity_mapping: Dict[str, str]) -> Option
     for gt_alias, gt_eid in entity_mapping.items():
         if _norm(gt_alias) == a:
             return gt_eid
-    return None
-
-
-def _resolve_entity_fuzzy(alias: str, entity_mapping: Dict[str, str]) -> Optional[str]:
-    """Strict match first, then a partial/substring alias match -- e.g.
-    'UNRESOLVED_person_14' or a slightly-mangled alias still resolves."""
-    hit = _resolve_entity_strict(alias, entity_mapping)
-    if hit:
-        return hit
-    a = _norm(alias)
-    if not a:
-        return None
     for gt_alias, gt_eid in entity_mapping.items():
         g = _norm(gt_alias)
         if g and (g in a or a in g):
@@ -89,113 +152,73 @@ def _resolve_entity_fuzzy(alias: str, entity_mapping: Dict[str, str]) -> Optiona
     return None
 
 
-def _pipeline_event_entity(ev: Dict[str, Any], entity_mapping: Dict[str, str],
-                            strict: bool = False) -> Optional[str]:
-    """Try every alias a pipeline event carries (primary + known aliases),
-    plus its raw entity_id with an 'UNRESOLVED_' prefix stripped."""
-    resolver = _resolve_entity_strict if strict else _resolve_entity_fuzzy
-    candidates = [ev.get("primary_alias", "")] + list(ev.get("aliases") or [])
-    eid = ev.get("entity_id", "") or ""
-    if eid.startswith("UNRESOLVED_"):
-        candidates.append(eid[len("UNRESOLVED_"):])
-    for alias in candidates:
-        hit = resolver(alias, entity_mapping)
-        if hit:
-            return hit
-    return None
-
-
-def _fuzzy_action_match(gt_action: str, action_tags: List[str]) -> bool:
-    """gt_action is a snake_case phrase like 'approach_atm'; action_tags are
-    short pipeline keywords like 'APPROACH'. Match if either contains the other."""
-    if not gt_action or not action_tags:
-        return False
-    gt_norm = gt_action.replace("_", " ").upper()
-    gt_verb = gt_action.split("_")[0].upper()
-    for tag in action_tags:
-        t = (tag or "").upper()
-        if not t:
-            continue
-        if t in gt_norm or gt_verb in t or t in gt_verb:
-            return True
-    return False
-
-
-def _match_events(
-    gt_events: List[Dict[str, Any]],
-    pipeline_events: List[Dict[str, Any]],
-    entity_mapping: Dict[str, str],
-) -> Tuple[List[Dict[str, Any]], List[str]]:
-    """Greedy match: each ground-truth event (chronological order) is paired
-    with the nearest-in-time, same-(fuzzy)-entity pipeline event that hasn't
-    already been used. Returns (matched_pairs, unmatched_gt_event_ids)."""
-    used = set()
-    pairs = []
-    unmatched = []
-
-    p_entities = [_pipeline_event_entity(p, entity_mapping) for p in pipeline_events]
-
+def _match_by_alias_and_time(gt_events, pipeline_events, entity_mapping):
+    """Legacy: nearest-in-time pipeline event of the same (alias-resolved)
+    person. Only used when the ground truth has no event_ref links."""
+    used, pairs, unmatched = set(), [], []
+    p_ent = []
+    for p in pipeline_events:
+        cands = [p.get("primary_alias", "")] + list(p.get("aliases") or [])
+        p_ent.append(next((e for e in (_resolve_entity_fuzzy(a, entity_mapping) for a in cands) if e), None))
     for g in sorted(gt_events, key=lambda e: e.get("timestamp") or ""):
         g_ts = _parse_ts(g.get("timestamp", ""))
-        best_idx, best_delta = None, None
+        best = None
         for i, p in enumerate(pipeline_events):
-            if i in used or p_entities[i] != g.get("entity_id"):
+            if i in used or p_ent[i] != g.get("entity_id"):
                 continue
-            p_ts = _parse_ts(p.get("timestamp", ""))
-            delta = float("inf") if (g_ts is None or p_ts is None) else abs((p_ts - g_ts).total_seconds())
-            if best_delta is None or delta < best_delta:
-                best_idx, best_delta = i, delta
-
-        if best_idx is None:
+            d = _delta(_parse_ts(p.get("timestamp", "")), g_ts)
+            d = float("inf") if d is None else d
+            if best is None or d < best[1]:
+                best = (i, d)
+        if best is None:
             unmatched.append(g.get("event_id", "?"))
             continue
-
-        used.add(best_idx)
-        p = pipeline_events[best_idx]
-        p_ts = _parse_ts(p.get("timestamp", ""))
-        pairs.append({
-            "gt_event_id":                 g.get("event_id", "?"),
-            "pipeline_event_id":           p.get("event_id", "?"),
-            "gt_action":                   g.get("action", ""),
-            "pipeline_action_tags":        p.get("action_tags", []),
-            "action_match":                _fuzzy_action_match(g.get("action", ""), p.get("action_tags", [])),
-            "gt_entity_id":                g.get("entity_id", ""),
-            "pipeline_entity_strict_match": _pipeline_event_entity(p, entity_mapping, strict=True) == g.get("entity_id"),
-            "temporal_delta_sec":          None if (g_ts is None or p_ts is None) else abs((p_ts - g_ts).total_seconds()),
-            "pipeline_confidence":         p.get("confidence"),
-        })
-
+        used.add(best[0])
+        pairs.append((g, pipeline_events[best[0]]))
     return pairs, unmatched
 
 
-def _find_covered_events(
-    unmatched_gt_ids: List[str],
-    matched_pairs: List[Dict[str, Any]],
-    pipeline_events: List[Dict[str, Any]],
-    obs_to_gt_event: Dict[str, str],
-) -> Set[str]:
-    """
-    A ground-truth event with no dedicated pipeline event match may still
-    have been legitimately absorbed into an already-matched pipeline
-    event's cluster -- the Timeline agent merges multiple raw observations
-    (and hence multiple conceptual moments) into one reconstructed event
-    by design. Rather than guess this from a fuzzy time window, use the
-    ground truth's own obs_id -> event_ref linkage (present in the full
-    case file's top-level "observations" array, distinct from
-    ground_truth.events): a GT event counts as "covered" if any ALREADY-
-    MATCHED pipeline event's obs_ids includes an observation the generator
-    itself attributes to that GT event.
-    """
-    matched_pipeline_ids = {p["pipeline_event_id"] for p in matched_pairs}
-    events_by_id = {ev.get("event_id"): ev for ev in pipeline_events}
-    covered: Set[str] = set()
-    for gt_id in unmatched_gt_ids:
-        for pe_id in matched_pipeline_ids:
-            pe = events_by_id.get(pe_id, {})
-            if any(obs_to_gt_event.get(oid) == gt_id for oid in (pe.get("obs_ids") or [])):
-                covered.add(gt_id)
-                break
-    return covered
+# ── Provenance matching ───────────────────────────────────────────────────────
+
+def _match_by_provenance(gt_events, pipeline_events, obs_to_gt_event):
+    """(pairs, covered_ids, missed_ids, unobservable_ids, duplicates) where
+    duplicates = [(index of a repeat event, index of the matched event)]."""
+    observed = set(obs_to_gt_event.values())
+    majority, counts = [], []
+    for p in pipeline_events:
+        c = Counter(obs_to_gt_event[o] for o in p.get("obs_ids") or [] if o in obs_to_gt_event)
+        counts.append(c)
+        # majority event; ties go to the earliest ground-truth event id order
+        majority.append(max(sorted(c), key=lambda e: c[e]) if c else None)
+
+    pairs, covered, missed, unobservable = [], set(), [], []
+    duplicates = []
+    for g in sorted(gt_events, key=lambda e: e.get("timestamp") or ""):
+        gid = g.get("event_id")
+        mine = [i for i, m in enumerate(majority) if m == gid]
+        if mine:
+            g_ts = _parse_ts(g.get("timestamp", ""))
+            best = max(mine, key=lambda i: (counts[i][gid],
+                                            -(_delta(_parse_ts(pipeline_events[i].get("timestamp", "")), g_ts)
+                                              or 0.0)))
+            pairs.append((g, pipeline_events[best]))
+            duplicates += [(i, best) for i in mine if i != best]
+        elif any(gid in c for c in counts):
+            covered.add(gid)
+        elif gid not in observed:
+            unobservable.append(gid)
+        else:
+            missed.append(gid)
+    return pairs, covered, missed, unobservable, duplicates
+
+
+def _er_entity_identity(pipeline_events, obs_truth) -> Dict[str, str]:
+    """ER entity id -> the person most of its observations belong to."""
+    votes: Dict[str, Counter] = {}
+    for p in pipeline_events:
+        c = votes.setdefault(p.get("entity_id", ""), Counter())
+        c.update(obs_truth[o] for o in p.get("obs_ids") or [] if obs_truth.get(o))
+    return {eid: max(sorted(c), key=lambda e: c[e]) for eid, c in votes.items() if c}
 
 
 def _correlation(xs: List[float], ys: List[float]) -> Optional[float]:
@@ -221,9 +244,7 @@ def evaluate_case(
     """
     Compare a pipeline-reconstructed timeline against case-generator ground
     truth. NOTE: despite the parameter name (kept for interface
-    compatibility with the spec), pass the case's actual FINAL timeline
-    file -- most cases converge at V1 or V2 and never reach V3, and using
-    a stale/mismatched V3 file would silently compare against the wrong data.
+    compatibility), pass the case's actual FINAL timeline file.
 
     Returns a metrics dict and also writes it to
     {output_dir}/{case_id}_evaluation.json.
@@ -231,12 +252,14 @@ def evaluate_case(
     result: Dict[str, Any] = {
         "case_id": case_id,
         "n_ground_truth_events": None, "n_pipeline_events": None, "n_matched": None,
-        "n_covered": None, "n_missed": None,
-        "event_recall": None, "action_tag_accuracy": None,
-        "temporal_accuracy_sec": None, "entity_accuracy": None,
+        "n_covered": None, "n_missed": None, "n_unobservable": None, "n_duplicates": None,
+        "n_duplicates_linked": None, "n_denial_events": None,
+        "precision_linked": None, "f1_linked": None,
+        "event_recall": None, "event_recall_observable": None, "action_tag_accuracy": None,
+        "temporal_accuracy_sec": None, "temporal_error_median_sec": None, "entity_accuracy": None,
         "precision": None, "f1_score": None,
         "confidence_calibration": {"correlation": None, "n_samples": 0},
-        "result": "ERROR", "status": "failed",
+        "matching": None, "result": "ERROR", "status": "failed",
     }
     try:
         gt_data = json.loads(Path(ground_truth_path).read_text(encoding="utf-8"))
@@ -246,69 +269,116 @@ def evaluate_case(
         gt_events = gt.get("events", [])
         entity_mapping = gt.get("entity_mapping", {})
         pipeline_events = tl_data.get("events", [])
+        gt_obs = gt_data.get("observations", [])
+        obs_to_gt_event = {o["obs_id"]: o["event_ref"] for o in gt_obs if o.get("obs_id") and o.get("event_ref")}
+        # each observation's true person: exact when the generator recorded
+        # it (realism flags), else through its alias
+        obs_entity = gt.get("obs_entity") or {}
+        obs_truth = {o["obs_id"]: obs_entity.get(o["obs_id"]) or entity_mapping.get(o.get("entity", ""))
+                     for o in gt_obs if o.get("obs_id")}
 
-        pairs, unmatched = _match_events(gt_events, pipeline_events, entity_mapping)
-
-        # A GT event with no dedicated pipeline match may still have been
-        # legitimately absorbed into an already-matched pipeline event's
-        # cluster (see _find_covered_events docstring). Credit those at
-        # 0.5 recall rather than a full 0 -- this targets the structural
-        # recall ceiling from event clustering, not pipeline errors.
-        obs_to_gt_event = {
-            o["obs_id"]: o.get("event_ref")
-            for o in gt_data.get("observations", [])
-            if o.get("obs_id")
-        }
-        covered_ids = _find_covered_events(unmatched, pairs, pipeline_events, obs_to_gt_event)
-        truly_missed = [g_id for g_id in unmatched if g_id not in covered_ids]
-
-        n_gt, n_pipeline, n_matched = len(gt_events), len(pipeline_events), len(pairs)
-        n_covered = len(covered_ids)
-
-        recall    = ((n_matched + 0.5 * n_covered) / n_gt) if n_gt else 0.0
-        precision = (n_matched / n_pipeline) if n_pipeline else 0.0
-        f1        = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
-
-        action_acc = (sum(1 for p in pairs if p["action_match"]) / n_matched) if n_matched else 0.0
-        entity_acc = (sum(1 for p in pairs if p["pipeline_entity_strict_match"]) / n_matched) if n_matched else 0.0
-
-        temporal_deltas = [p["temporal_delta_sec"] for p in pairs if p["temporal_delta_sec"] is not None]
-        temporal_acc = (sum(temporal_deltas) / len(temporal_deltas)) if temporal_deltas else None
-
-        conf_pairs = [(p["pipeline_confidence"], 1.0 if (p["action_match"] and p["pipeline_entity_strict_match"]) else 0.0)
-                      for p in pairs if p["pipeline_confidence"] is not None]
-        confidences  = [c for c, _ in conf_pairs]
-        correctness  = [c for _, c in conf_pairs]
-        confidence_corr = _correlation(confidences, correctness)
-
-        if f1 >= PASS_THRESHOLD:
-            verdict = "PASS"
-        elif f1 >= PARTIAL_THRESHOLD:
-            verdict = "PARTIAL"
+        if obs_to_gt_event:
+            matching = "provenance"
+            pairs, covered, missed, unobservable, duplicates = _match_by_provenance(
+                gt_events, pipeline_events, obs_to_gt_event)
         else:
-            verdict = "FAIL"
+            matching = "alias_time_fallback"
+            pairs, missed = _match_by_alias_and_time(gt_events, pipeline_events, entity_mapping)
+            covered, unobservable, duplicates = set(), [], []
+        n_dup = len(duplicates)
+
+        # Repeats the timeline itself presents as one moment (same-moment
+        # links, possibly through other events) aren't separate claims; nor
+        # is an event made only of denials - a contradicting statement about
+        # the act, not another copy of it. precision_linked leaves both out.
+        denial_obs = {o["obs_id"] for o in gt_obs if "contradiction" in (o.get("noise_tags") or [])}
+        by_id = {p.get("event_id"): i for i, p in enumerate(pipeline_events)}
+        parent = list(range(len(pipeline_events)))
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+        for i, p in enumerate(pipeline_events):
+            for other in p.get("same_moment_as") or []:
+                if other in by_id:
+                    parent[find(i)] = find(by_id[other])
+        is_denial = lambda i: bool(pipeline_events[i].get("obs_ids")) and             all(o in denial_obs for o in pipeline_events[i]["obs_ids"])
+        n_denial = sum(1 for i, _ in duplicates if is_denial(i))
+        n_linked = sum(1 for i, best in duplicates if not is_denial(i) and find(i) == find(best))
+
+        identity = _er_entity_identity(pipeline_events, obs_truth)
+        rows = []
+        for g, p in pairs:
+            g_ts, p_ts = _parse_ts(g.get("timestamp", "")), _parse_ts(p.get("timestamp", ""))
+            rows.append({
+                "gt_event_id":          g.get("event_id", "?"),
+                "pipeline_event_id":    p.get("event_id", "?"),
+                "gt_action":            g.get("action", ""),
+                "pipeline_action_tags": p.get("action_tags", []),
+                "action_match":         _action_match(g.get("action", ""), p.get("action_tags", [])),
+                "gt_entity_id":         g.get("entity_id", ""),
+                "pipeline_entity":      p.get("entity_id", ""),
+                "pipeline_entity_is":   identity.get(p.get("entity_id", "")),
+                "entity_match":         identity.get(p.get("entity_id", "")) == g.get("entity_id"),
+                "temporal_delta_sec":   _delta(p_ts, g_ts),
+                "pipeline_confidence":  p.get("confidence"),
+            })
+
+        n_gt, n_pipeline, n_matched = len(gt_events), len(pipeline_events), len(rows)
+        n_covered = len(covered)
+        n_observable = n_gt - len(unobservable)
+        recall     = ((n_matched + 0.5 * n_covered) / n_gt) if n_gt else 0.0
+        recall_obs = ((n_matched + 0.5 * n_covered) / n_observable) if n_observable else 0.0
+        precision  = (n_matched / n_pipeline) if n_pipeline else 0.0
+        f1         = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
+        n_claims   = n_pipeline - n_linked - n_denial
+        precision_linked = (n_matched / n_claims) if n_claims else 0.0
+        f1_linked  = (2 * precision_linked * recall / (precision_linked + recall))             if (precision_linked + recall) else 0.0
+
+        action_acc = (sum(r["action_match"] for r in rows) / n_matched) if n_matched else 0.0
+        entity_acc = (sum(r["entity_match"] for r in rows) / n_matched) if n_matched else 0.0
+
+        deltas = [r["temporal_delta_sec"] for r in rows if r["temporal_delta_sec"] is not None]
+
+        conf_pairs = [(r["pipeline_confidence"], 1.0 if (r["action_match"] and r["entity_match"]) else 0.0)
+                      for r in rows if r["pipeline_confidence"] is not None]
+        confidence_corr = _correlation([c for c, _ in conf_pairs], [c for _, c in conf_pairs])
+
+        verdict = "PASS" if f1 >= PASS_THRESHOLD else "PARTIAL" if f1 >= PARTIAL_THRESHOLD else "FAIL"
 
         result.update({
-            "n_ground_truth_events": n_gt,
-            "n_pipeline_events":     n_pipeline,
-            "n_matched":             n_matched,
-            "n_covered":             n_covered,
-            "n_missed":              len(truly_missed),
-            "event_recall":          round(recall, 4),
-            "action_tag_accuracy":   round(action_acc, 4),
-            "temporal_accuracy_sec": None if temporal_acc is None else round(temporal_acc, 2),
-            "entity_accuracy":       round(entity_acc, 4),
-            "precision":             round(precision, 4),
-            "f1_score":              round(f1, 4),
+            "n_ground_truth_events":     n_gt,
+            "n_pipeline_events":         n_pipeline,
+            "n_matched":                 n_matched,
+            "n_covered":                 n_covered,
+            "n_missed":                  len(missed),
+            "n_unobservable":            len(unobservable),
+            "n_duplicates":              n_dup,
+            "n_duplicates_linked":       n_linked,
+            "n_denial_events":           n_denial,
+            "precision_linked":          round(precision_linked, 4),
+            "f1_linked":                 round(f1_linked, 4),
+            "event_recall":              round(recall, 4),
+            "event_recall_observable":   round(recall_obs, 4),
+            "action_tag_accuracy":       round(action_acc, 4),
+            "temporal_accuracy_sec":     round(sum(deltas) / len(deltas), 2) if deltas else None,
+            "temporal_error_median_sec": round(median(deltas), 2) if deltas else None,
+            "entity_accuracy":           round(entity_acc, 4),
+            "precision":                 round(precision, 4),
+            "f1_score":                  round(f1, 4),
             "confidence_calibration": {
                 "correlation": None if confidence_corr is None else round(confidence_corr, 4),
-                "n_samples":   len(confidences),
+                "n_samples":   len(conf_pairs),
             },
-            "result":                 verdict,
-            "matched_pairs":          pairs,
-            "covered_gt_event_ids":   sorted(covered_ids),
-            "unmatched_gt_event_ids": truly_missed,
-            "status":                 "complete",
+            "matching":                 matching,
+            "result":                   verdict,
+            "matched_pairs":            rows,
+            "covered_gt_event_ids":     sorted(covered),
+            "unmatched_gt_event_ids":   missed,
+            "unobservable_gt_event_ids": unobservable,
+            "status":                   "complete",
         })
     except Exception:
         log.exception("Evaluation failed for %s", case_id)

@@ -8,7 +8,7 @@ Evidence intake and the revision loop as one LangGraph state machine.
                                 -> video_intake ---+    (video: wired, never selected yet)
     obs_only file / case in DB: ---------------------------------------> load_case
 
-    load_case -> [ER] -> Timeline -> Critique -> Showrunner --+-> finalize -> scene_video -> report -> eval
+    load_case -> ER -> Timeline -> Critique -> Showrunner --+-> finalize -> scene_video -> report -> eval
                   ^          ^                                |
                   |          +------- re_run_timeline --------+
                   +------------------ re_run_er --------------+
@@ -59,8 +59,8 @@ for _p in [str(_root / "pipeline"), str(_root / "agents"), str(_root / "memory")
 from langgraph.graph import END, START, StateGraph  # noqa: E402
 
 from steps import (  # noqa: E402
-    MAX_LOOPS, _banner, run_critique, run_er, run_eval, run_report,
-    run_scene_video, run_showrunner, run_timeline,
+    MAX_LOOPS, _banner, clear_case_outputs, run_critique, run_er, run_eval,
+    run_report, run_scene_video, run_showrunner, run_timeline,
 )
 
 
@@ -69,7 +69,8 @@ log = logging.getLogger("forensynth.graph")
 
 class ForenSynthState(TypedDict, total=False):
     # raw evidence for intake: {"fir": path, "text": [paths],
-    # "audio_manifest": path, "video": path, "obs_files": [paths]}
+    # "audio_manifest": [paths - manifests or folders of them], "video": path,
+    # "obs_files": [paths]}
     evidence: Dict[str, Any]
     staging: str
     enable_video: bool
@@ -101,6 +102,8 @@ class ForenSynthState(TypedDict, total=False):
     er_result: Dict[str, Any]
     tl_result: Dict[str, Any]
     critique: Dict[str, Any]
+    # edges the Critique flagged, dropped by the next timeline pass
+    excluded_edges: List[List[str]]
     prev_decision: Optional[Dict[str, Any]]
     critiques_by_round: Dict[str, Any]
     showrunner_by_round: Dict[str, Any]
@@ -167,7 +170,7 @@ def fir_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     """FIR failure is fatal (the orchestrator raises): a case anchored on an
     FIR must not silently proceed without it."""
     rec_path, obs_path = _orch().run_fir_agent(state["case_id"], Path(state["evidence"]["fir"]),
-                                               _staging(state))
+                                               _staging(state), no_llm=not state["llm"])
     return {
         "fir_record": json.loads(rec_path.read_text(encoding="utf-8")),
         "fir_summary": json.loads(obs_path.read_text(encoding="utf-8"))["fir"],
@@ -179,13 +182,14 @@ def text_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     fir = state.get("fir_summary") or {}
     out = _orch().run_text_agent(state["case_id"], [Path(p) for p in state["evidence"]["text"]],
                                  _staging(state),
-                                 fir.get("incident_datetime") or fir.get("date_of_report"))
+                                 fir.get("incident_datetime") or fir.get("date_of_report"),
+                                 no_llm=not state["llm"])
     return {"intake_files": [str(out)] if out else []}
 
 
 def audio_intake_node(state: ForenSynthState) -> Dict[str, Any]:
-    out = _orch().run_audio_agent(state["case_id"], Path(state["evidence"]["audio_manifest"]),
-                                  _staging(state))
+    out = _orch().run_audio_agent(state["case_id"], state["evidence"]["audio_manifest"],
+                                  _staging(state), no_llm=not state["llm"])
     return {"intake_files": [str(out)] if out else []}
 
 
@@ -208,10 +212,17 @@ def video_intake_node(state: ForenSynthState) -> Dict[str, Any]:
         log.warning("video agent failed (exit %s) - continuing without video evidence.", rc)
         return {"intake_files": []}
     case = json.loads(src.read_text(encoding="utf-8"))
+    # The agent's people registry describes each Person_NN it labelled; ER
+    # compares that `appearance` with other evidence as identity evidence.
+    reg_path = src.parent / "people_registry.json"
+    people = json.loads(reg_path.read_text(encoding="utf-8")) if reg_path.exists() else {}
     for obs in case.get("observations", []):
         obs["role_hint"] = obs.get("role", "unknown")
         obs["role"] = "unknown"
         obs["extraction_status"] = "unverified"
+        person = people.get(obs.get("entity", ""), {})
+        if person.get("identifiable", True) and person.get("appearance"):
+            obs["appearance"] = person["appearance"]
     out = _staging(state) / f"{case_id}__video_obs_only.json"
     out.write_text(json.dumps(case, indent=2, ensure_ascii=False), encoding="utf-8")
     return {"intake_files": [str(out)]}
@@ -243,7 +254,11 @@ def merge_evidence_node(state: ForenSynthState) -> Dict[str, Any]:
 # ── Analysis nodes ────────────────────────────────────────────────────────────
 
 def load_case_node(state: ForenSynthState) -> Dict[str, Any]:
-    """Register an obs_only file, or load a case already in the DB."""
+    """Register an obs_only file, or load a case already in the DB - and
+    clear that case's previous results. Every run starts at ER v1 / V1 / C1:
+    a re-run used to skip ER whenever any ER run existed (even after new
+    evidence was loaded) and restart at V1 over the old run's versions,
+    leaving its V2/V3 and Showrunner constraints mixed into this one."""
     mem = _mem(state)
     if state.get("input_path"):
         input_path = Path(state["input_path"])
@@ -264,12 +279,16 @@ def load_case_node(state: ForenSynthState) -> Dict[str, Any]:
     print(f"  Output  : {state['output']}")
     print(f"  Max loops: {MAX_LOOPS}")
 
-    versions = mem.get_latest_versions(case_id)
+    mem.reset_case_results(case_id)
+    removed = clear_case_outputs(_out(state), case_id)
+    if removed:
+        print(f"  Cleared {removed} output file(s) from a previous run")
     return {
         "case_id": case_id,
         "obs_data": obs_data,
-        "er_ver": versions["er_version"] or 0,
+        "er_ver": 0,
         "loop": 0,
+        "excluded_edges": [],
         "critiques_by_round": {},
         "showrunner_by_round": {},
         "actions": [],
@@ -301,14 +320,16 @@ def timeline_node(state: ForenSynthState) -> Dict[str, Any]:
     tl_ver = f"V{loop}"
     print(f"\n  Loop {loop}/{MAX_LOOPS}")
     result = run_timeline(_mem(state), state["case_id"], state["er_ver"], tl_ver,
-                          out_dir=_out(state) / "timelines")
+                          out_dir=_out(state) / "timelines",
+                          exclude_edges=state.get("excluded_edges"), llm=state["llm"])
     return {"loop": loop, "tl_ver": tl_ver, "tl_result": result}
 
 
 def critique_node(state: ForenSynthState) -> Dict[str, Any]:
     crit_ver = f"C{state['loop']}"
     critique = run_critique(_mem(state), state["case_id"], state["tl_ver"], crit_ver,
-                            tl_result=state["tl_result"], out_dir=_out(state) / "critiques")
+                            tl_result=state["tl_result"], out_dir=_out(state) / "critiques",
+                            llm=state["llm"])
     return {
         "crit_ver": crit_ver,
         "critique": critique,
@@ -320,7 +341,17 @@ def showrunner_node(state: ForenSynthState) -> Dict[str, Any]:
     decision = run_showrunner(_mem(state), state["case_id"], state["tl_ver"], state["crit_ver"],
                               out_dir=_out(state) / "showrunner",
                               prev_decision=state.get("prev_decision"))
+    # A timeline re-run applies the edges this critique flagged, on top of
+    # earlier ones. An ER re-run renumbers entities (and so event ids):
+    # earlier exclusions no longer name real edges, start over.
+    excluded = list(state.get("excluded_edges") or [])
+    if decision["action"] == "re_run_timeline":
+        excluded += [list(e) for e in state["critique"].get("edges_to_exclude", [])
+                     if list(e) not in excluded]
+    elif decision["action"] == "re_run_er":
+        excluded = []
     return {
+        "excluded_edges": excluded,
         "prev_decision": decision,
         "showrunner_by_round": {**state["showrunner_by_round"], f"showrunner_c{state['loop']}": decision},
         "actions": state["actions"] + [decision["action"]],
@@ -353,7 +384,7 @@ def finalize_node(state: ForenSynthState) -> Dict[str, Any]:
 def scene_video_node(state: ForenSynthState) -> Dict[str, Any]:
     if state.get("skip_video"):
         return {}
-    path = run_scene_video(state["case_id"], _out(state))
+    path = run_scene_video(state["case_id"], _out(state), db_path=state["db"])
     return {"outputs": {**state["outputs"], "video": path}}
 
 
@@ -373,7 +404,8 @@ def report_node(state: ForenSynthState) -> Dict[str, Any]:
 def eval_node(state: ForenSynthState) -> Dict[str, Any]:
     outputs = dict(state["outputs"])
     if not state.get("skip_eval"):
-        outputs["eval"] = run_eval(state["case_id"], _out(state), state["tl_ver"])
+        outputs["eval"] = run_eval(state["case_id"], _out(state), state["tl_ver"],
+                                   input_path=state.get("input_path"))
     _mem(state).print_status(state["case_id"])
     return {"outputs": outputs}
 
@@ -414,10 +446,6 @@ def route_start(state: ForenSynthState):
     return "fir_intake" if state["evidence"].get("fir") else route_modalities(state)
 
 
-def route_after_load(state: ForenSynthState) -> str:
-    return "er" if state["er_ver"] == 0 else "timeline"
-
-
 def route_after_showrunner(state: ForenSynthState) -> str:
     return {
         "re_run_er":       "er",
@@ -454,7 +482,7 @@ def build_graph(checkpointer=None):
     for node in ("text_intake", "audio_intake", "video_intake"):
         g.add_edge(node, "merge_evidence")
     g.add_edge("merge_evidence", "load_case")
-    g.add_conditional_edges("load_case", route_after_load, ["er", "timeline"])
+    g.add_edge("load_case", "er")
     g.add_edge("er", "timeline")
     g.add_edge("timeline", "critique")
     g.add_edge("critique", "showrunner")

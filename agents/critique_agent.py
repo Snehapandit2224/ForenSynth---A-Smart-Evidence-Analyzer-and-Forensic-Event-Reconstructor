@@ -160,9 +160,13 @@ class CritiqueResult:
                 if i.severity == "info" or
                 (i.severity == "warning" and self.revision_number > 0)
             ],
+            # A REVISE verdict with no automatic target (e.g. a narrative
+            # break) needs a person, not FINALIZE - FINALIZE here made the
+            # Showrunner close the case on issues it was meant to escalate.
             "recommended_action": (
                 "RECHECK_OBSERVATIONS" if self.revision_target == "er"
                 else "REBUILD_WITH_BELIEF_UPDATE" if self.revision_target == "timeline"
+                else "SURFACE_TO_INVESTIGATOR" if self.verdict == "REVISE"
                 else "FINALIZE"
             ),
         }
@@ -188,12 +192,16 @@ Respond ONLY with JSON:
 
 
 class CritiqueLLM:
-    def __init__(self, model: str = "openai/gpt-oss-20b", timeout: float = 20.0):
+    def __init__(self, model: str = "openai/gpt-oss-20b", timeout: float = 20.0,
+                 enabled: bool = True):
         self._model   = model
         self._timeout = timeout
         self._ok      = False
         self._client  = None
         self.calls_made = 0
+        if not enabled:
+            log.info("CritiqueLLM: disabled (--no-llm) - coherence check skipped.")
+            return
         key = os.environ.get("Timeline_Key","") or os.environ.get("GROQ_API_KEY","")
         if not key:
             log.info("CritiqueLLM: no API key — coherence check disabled.")
@@ -304,12 +312,14 @@ def _check_orphaned(timeline: Dict) -> Optional[CritiqueIssue]:
                and ev["event_id"] not in connected]
     if not orphans: return None
     ids = ", ".join(ev["event_id"] for ev in orphans)
+    # Info, not a revision trigger: rebuilding the timeline from the same
+    # evidence cannot connect an event nothing links to. It is surfaced to
+    # the investigator (unresolvable_gaps -> investigator_flags) instead.
     return CritiqueIssue(
-        check="orphaned_high_confidence_event", severity="warning",
+        check="orphaned_high_confidence_event", severity="info",
         detail=(f"{len(orphans)} well-supported event(s) have no graph connections: {ids}. "
                 "Usually a narrative gap worth investigator attention."),
         affected_events=[ev["event_id"] for ev in orphans],
-        showrunner_action="re_run_timeline",
     )
 
 def _check_llm_dependency(timeline: Dict) -> Optional[CritiqueIssue]:
@@ -391,15 +401,18 @@ def _check_missing_links(entity_sequences: Dict) -> List[CritiqueIssue]:
                     ts_a = ev_a.get("ts_epoch",0.0) or 0.0
                     ts_b = ev_b.get("ts_epoch",0.0) or 0.0
                     window = ts_b-ts_a if ts_b>ts_a else 0.0
+                    # Info: a missing observation can't be produced by
+                    # re-running the timeline (it used to route there and
+                    # loop until the score flatlined). Surfaced to the
+                    # investigator via unresolvable_gaps instead.
                     issues.append(CritiqueIssue(
-                        check="missing_linking_event", severity="warning",
+                        check="missing_linking_event", severity="info",
                         detail=(f"Rule chain '{tag_a}->{req}->{matching[0]}' broken for "
                                 f"{entity_id}: '{req}' missing between "
                                 f"{ev_a['event_id']} and {ev_b['event_id']}"
                                 +(f" ({window:.0f}s)." if window else ".")+
                                 " ER may have missed an observation cluster."),
                         affected_events=[ev_a["event_id"],ev_b["event_id"]],
-                        showrunner_action="re_run_timeline",  # timeline rebuild, not ER
                     ))
                     break
     return issues
@@ -439,6 +452,112 @@ def _check_role_count(timeline: Dict) -> List[CritiqueIssue]:
         for c in timeline.get("conflicts_summary",[])
         if c.get("conflict_type") == "role_count_mismatch"
     ]
+
+def _check_fir_unverified(er_result: Optional[Dict]) -> List[CritiqueIssue]:
+    """FIR head-counts the evidence doesn't line up with (ER's
+    fir_role_check):
+      more_than_fir  - more PROVABLY different people of a role than the FIR
+                       names: the FIR is contradicted -> human review.
+      possible_split - more entities than the FIR names, but not provably
+                       different people (most likely one person's aliases
+                       left apart) -> info.
+      unverified     - nobody independent shows that role -> info.
+    (A shortfall, "mismatch", is ER's role_count_mismatch conflict, checked
+    in _check_role_count.)"""
+    issues = []
+    for c in (er_result or {}).get("fir_role_check", []):
+        role, exp, got = c.get("role"), c.get("expected_count"), c.get("resolved_count")
+        status = c.get("status")
+        if status == "unverified":
+            issues.append(CritiqueIssue(
+                check="fir_role_unverified", severity="info",
+                detail=(f"FIR names {exp} '{role}' role(s), but no independent evidence "
+                        "(FIR narrative excluded) shows any.")))
+        elif status == "more_than_fir":
+            issues.append(CritiqueIssue(
+                check="fir_role_excess", severity="warning",
+                detail=(f"FIR names {exp} '{role}' role(s), but the evidence shows at least "
+                        f"{c.get('provably_distinct', got)} provably different people in that role "
+                        "(conflicting appearance, voices or recordings). The FIR's account is "
+                        "contradicted."),
+                showrunner_action="human_review"))
+        elif status == "possible_split":
+            issues.append(CritiqueIssue(
+                check="fir_role_possible_split", severity="info",
+                detail=(f"FIR names {exp} '{role}' role(s); the evidence resolves to {got} "
+                        "entities with that role, but nothing proves they are different people - "
+                        "most likely aliases of one person with no identity evidence linking them.")))
+    return issues
+
+
+def _check_entity_contradictions(er_result: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """One ER entity whose own observations contradict each other - a likely
+    WRONG MERGE (two people fused), which no automated re-run can untangle:
+      - descriptions that never agree (every pair conflicts: red cap vs blue
+        cap, tall vs short),
+      - voice prints that differ (cosine below 0.5),
+      - conflicting roles stated by the observations themselves (not hints).
+    Blocking, for an investigator."""
+    if not er_result or not observations:
+        return []
+    from entity_resolution import EntityResolutionPipeline as _ER, IDENTITY_CANDIDATE_MIN
+    obs_by_id = {str(o.get("obs_id")): o for o in observations}
+    issues = []
+    for ent in er_result.get("canonical_entities", []):
+        members = [obs_by_id[o] for o in ent.get("sources", []) if o in obs_by_id]
+        reasons = []
+        by_alias: Dict[str, List[Dict]] = {}
+        for o in members:
+            parsed = _ER._parse_appearance(o.get("appearance") or "")
+            if any(k != "extra" for k in parsed):
+                by_alias.setdefault(o.get("entity", ""), []).append(parsed)
+        aliases = sorted(by_alias)
+        for i, a in enumerate(aliases):
+            for b in aliases[i + 1:]:
+                if all(_ER._compare_appearance(pa, pb)[1] for pa in by_alias[a] for pb in by_alias[b]):
+                    reasons.append(f"descriptions of '{a}' and '{b}' contradict each other")
+        prints = [(o.get("entity", ""), o["identity_embedding"]) for o in members if o.get("identity_embedding")]
+        for i, (a, va) in enumerate(prints):
+            for b, vb in prints[i + 1:]:
+                if len(va) == len(vb) and sum(x * y for x, y in zip(va, vb)) < IDENTITY_CANDIDATE_MIN:
+                    reasons.append(f"voices of '{a}' and '{b}' differ")
+                    break
+        if ent.get("role_conflict") and ent.get("role_source") == "observation":
+            reasons.append(f"its observations state conflicting roles ({', '.join(ent.get('roles', []))})")
+        if reasons:
+            issues.append(CritiqueIssue(
+                check="entity_internal_contradiction", severity="blocking",
+                detail=(f"Entity {ent.get('entity_id')} ({ent.get('primary_alias')}) may be two people "
+                        "fused into one: " + "; ".join(dict.fromkeys(reasons)) + "."),
+                showrunner_action="human_review"))
+    return issues
+
+
+FIR_WINDOW_MARGIN_SEC = 60
+FIR_WINDOW_MIN_INSIDE = 0.5
+
+
+def _check_fir_time(fir: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """The FIR's incident window against the independent evidence: if most
+    timed observations (FIR narrative excluded) fall outside it, the FIR's
+    timing is contradicted - for an investigator."""
+    window = (fir or {}).get("time_window")
+    if not (isinstance(window, (list, tuple)) and len(window) == 2) or window[1] <= window[0]:
+        return []
+    start, end = window[0] - FIR_WINDOW_MARGIN_SEC, window[1] + FIR_WINDOW_MARGIN_SEC
+    offsets = [o.get("time_offset") for o in observations
+               if o.get("timestamp") and not o.get("fir_derived") and isinstance(o.get("time_offset"), (int, float))]
+    if len(offsets) < 3:
+        return []
+    inside = sum(1 for t in offsets if start <= t <= end) / len(offsets)
+    if inside >= FIR_WINDOW_MIN_INSIDE:
+        return []
+    return [CritiqueIssue(
+        check="fir_time_contradiction", severity="warning",
+        detail=(f"Only {inside:.0%} of the {len(offsets)} timed observations fall inside the FIR's "
+                f"incident window ({window[0]}-{window[1]}s from the case start). The FIR's timing is "
+                "contradicted by the evidence."),
+        showrunner_action="human_review")]
 
 def _check_low_confidence(timeline: Dict) -> List[CritiqueIssue]:
     issues = []
@@ -496,6 +615,8 @@ def critique_timeline(
     revision_number: int = 0,
     critique_version: str = "C1",
     llm: Optional[CritiqueLLM] = None,
+    observations: Optional[List[Dict[str,Any]]] = None,
+    fir: Optional[Dict[str,Any]] = None,
 ) -> CritiqueResult:
     case_id = timeline.get("case_id","UNKNOWN")
     tl_ver  = timeline.get("timeline_version","V1")
@@ -529,6 +650,9 @@ def critique_timeline(
         ("narrative_break",       _check_narrative_breaks(timeline, ts_map)),
         ("role_count_mismatch",   _check_role_count(timeline)),
         ("low_confidence_event",  _check_low_confidence(timeline)),
+        ("fir_role_unverified",   _check_fir_unverified(er_result)),
+        ("entity_internal_contradiction", _check_entity_contradictions(er_result, observations or [])),
+        ("fir_time_contradiction", _check_fir_time(fir, observations or [])),
     ]:
         checks_run.append(name)
         if isinstance(results, list): issues.extend(results)
@@ -613,6 +737,7 @@ def run_critique_agent(
     payload: Dict[str,Any],
     critique_version: str = "C1",
     iteration: int = 1,
+    llm_enabled: bool = True,
 ) -> Dict[str,Any]:
     timeline  = payload.get("timeline",{})
     er_result = payload.get("er_result",{})
@@ -621,7 +746,9 @@ def run_critique_agent(
         timeline=timeline, er_result=er_result,
         revision_number=iteration-1,
         critique_version=critique_version,
-        llm=CritiqueLLM(),
+        llm=CritiqueLLM(enabled=llm_enabled),
+        observations=payload.get("observations"),
+        fir=payload.get("fir"),
     )
 
     ev_to_obs = {ev["event_id"]: ev.get("obs_ids",[])

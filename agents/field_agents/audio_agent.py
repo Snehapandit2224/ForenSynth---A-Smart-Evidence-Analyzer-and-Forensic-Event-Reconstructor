@@ -8,7 +8,9 @@ Pipeline:
     2. Transcribe with baseline Whisper (segment-level timestamps)
     3. Diarize speakers with pyannote (optional - needs a HuggingFace token)
     4. Merge transcript segments with speaker labels
-    5. Emit one observation per utterance in ForenSynth's obs_only format
+    5. Extract events from each recording's transcript with the text agent's
+       LLM extractor (who did what, when, where - not who said what), or,
+       without an LLM, emit one observation per utterance
 
 Principles: evidence extraction only. No crime inference, no guilt
 attribution, no action labelling - ER and the Timeline Agent handle that
@@ -26,6 +28,11 @@ Usage:
     python agents\\field_agents\\audio_agent.py --manifest evidence\\clips.json --case-id CASE_AUD_001
     # clips.json: [{"path": "call1.wav", "start_time": "2024-01-15T10:00:00",
     #               "location": "...", "source": "phone_record"}, ...]
+
+    # one folder per recording (audio + its own *_Manifest.json): pass the
+    # folders, or a parent folder - every *manifest*.json inside is used
+    python agents\\field_agents\\audio_agent.py --evidence-dir "Evidence Generation\\Cases\\Case_001\\Audio" ^
+        --case-id CASE_AUD_001
 
 Environment (.env):
     HF_TOKEN    enables real pyannote speaker diarization (or pass --hf-token)
@@ -261,6 +268,184 @@ def build_observations(
         }
         if seg["speaker"] in voice_prints:
             obs["identity_embedding"] = voice_prints[seg["speaker"]]
+        if seg["speaker"] == UNKNOWN_SPEAKER:
+            # No diarization turn covers this segment, so <source>_Speaker_Unknown
+            # may be anyone on the recording. ER must not read the shared
+            # label as "same person" (see entity_resolution.py: undiarized).
+            obs["extraction_status"] = "undiarized"
+        observations.append(obs)
+    return observations
+
+
+_AUDIO_EVENTS_PROMPT = """You turn a transcript of a recorded call or interview into the EVENTS it
+describes, for a forensic timeline. Each transcript line is "<speaker_label>: <words>".
+
+The key rule: the actor of an event is WHO DID IT, not who is talking about it.
+- A speaker describing someone else ("a man in a black jacket went inside") -> the actor is that
+  person: their name if said, otherwise a label like "unknown_man_1". Describe that person's
+  appearance in "people" using only words from the transcript.
+- A speaker describing their own action ("I was standing outside the bank") -> the actor is the
+  speaker label, exactly as written (e.g. "phone_record_SPEAKER_01").
+- A description of a person or vehicle ("he was wearing a helmet", "it was a red motorcycle") is
+  an observation too: actor = the person described (for a vehicle, its rider/driver), content e.g.
+  "The rider wore a helmet and a black jacket."
+- Extract EVERY statement of what happened, who was where, and what someone looked like - from
+  every answering speaker. Only questions, greetings and small talk are skipped.
+- Use one label per person across the transcript ("the man", "he", "the rider" = the same
+  unknown_man_1 when the speaker means the same person).
+
+Example line:  cam_SPEAKER_01: a man in a black jacket went inside and stayed five minutes
+-> {"actor": "unknown_man_1", "content": "An unknown man in a black jacket went inside and stayed
+   about five minutes.", "evidence": "a man in a black jacket went inside and stayed five minutes",
+   "role_hint": "unknown", ...}  and people: [{"name": "unknown_man_1", "description": "black jacket"}]
+
+Fields: "evidence" is a short VERBATIM quote from the transcript (required). "content" is one
+neutral third-person past-tense sentence. "event_time" is ISO "YYYY-MM-DDTHH:MM:SS" only if the
+speaker states a time (resolve against the recording start), else null; "time_text" the words used;
+"time_basis" explicit | relative | unknown. "role_hint" suspect | witness | victim | unknown with
+"role_hint_confidence" 0-1. "confidence" 0-1: how specific and first-hand the account is.
+"action": the kind of act - APPROACH, ENTER, WITHDRAW, TAMPER, LOITER, EXIT, FLEE, STEAL, NAVIGATE,
+WORK, COMMUNICATE, CONFIRM, WATCH (keeping lookout), OBSERVE (seeing something), REPORT (telling
+the police), INTERCEPT - or null. A denial ("I never went inside") gets null.
+
+Return ONLY JSON:
+{"people": [{"name": "...", "aliases": [], "description": "..."}],
+ "observations": [{"actor": "...", "role_hint": "...", "role_hint_confidence": 0.0, "role_reason": "...",
+   "content": "...", "evidence": "...", "event_time": null, "time_text": null, "time_basis": "...",
+   "location": null, "mentioned_people": [], "tags": [], "action": null, "confidence": 0.0}]}"""
+
+
+def _text_agent():
+    """The text agent module (its folder name has a space, so it is put on
+    sys.path rather than imported as a package)."""
+    folder = str(Path(__file__).parent / "text agent")
+    if folder not in sys.path:
+        sys.path.insert(0, folder)
+    import text_agent
+    return text_agent
+
+
+def extract_events(
+    segments: List[Dict[str, Any]],
+    base_time: datetime,
+    location: str,
+    source: str,
+    audio_file: str,
+    llm,
+    id_prefix: str = "AUD1",
+    case_start: Optional[datetime] = None,
+    voice_prints: Optional[Dict[str, List[float]]] = None,
+) -> Optional[List[Dict[str, Any]]]:
+    """
+    Turn one recording's transcript into EVENTS with the text agent's
+    extractor - the same prompt, quote verification and time resolution as
+    every other text - instead of one observation per utterance.
+
+    Why: an utterance is who SAID something and when it was said. A witness
+    saying "they came out of the booth fast" is not the witness coming out;
+    as an utterance observation its speaker became the actor, its timestamp
+    was the time of speaking, and an investigator's questions became events.
+    The extractor separates the actor (who did it - often an unnamed
+    "unknown_man_1") from the speaker (kept as `reported_by`).
+
+    Returns None if the LLM is unavailable or fails - the caller then falls
+    back to utterance observations.
+    """
+    ta = _text_agent()
+    voice_prints = voice_prints or {}
+    if not segments or llm is None or not llm.available:
+        return None
+    # Plain "Speaker: words" lines, not the chat format ("[time] Sender: text"):
+    # in chat format the model follows the chat rules and makes every speaker
+    # the actor of what they describe ("SPEAKER_01 reported that a man ...").
+    # Event times come from the utterance each event's quote is in (below).
+    lines = "\n".join(f"{source}_{seg['speaker']}: {seg['text']}" for seg in segments)
+    doc = ta._doc(source, lines, sent_at=base_time, doc_type_hint="audio_transcript",
+                  source=source, location=location)
+    # Own prompt, the text agent's output schema and validation: with the
+    # general text prompt the model kept making each speaker the actor of
+    # what they described ("SPEAKER_01 reported that a man ...").
+    raw = llm.ask(_AUDIO_EVENTS_PROMPT,
+                  f"Recording starts: {base_time.isoformat()}\n--- TRANSCRIPT ---\n{lines}\n--- END ---",
+                  max_tokens=8192)
+    if raw is None:
+        return None
+    aliases = ta._alias_map(raw.get("people"))
+    descriptions = ta._descriptions(raw.get("people"), lines)
+    events = [c for c in (ta._clean_llm_obs(r, doc, lines, aliases, descriptions)
+                          for r in raw.get("observations") or [] if isinstance(r, dict)) if c]
+
+    def segment_for(ev):
+        """The utterance the event's evidence quote comes from."""
+        for seg in segments:
+            if ta.verify_quote(ev["evidence"], seg["text"]):
+                return seg
+        return None
+
+    speakers = {f"{source}_{seg['speaker']}" for seg in segments}
+
+    def speaker_label(actor: str) -> str:
+        """The model often shortens "phone_record_SPEAKER_01" to "SPEAKER_01":
+        map it back, or the actor wouldn't match the speaker (or its voice print)."""
+        if actor in speakers:
+            return actor
+        hits = [s for s in speakers if s.lower().endswith("_" + actor.lower())]
+        return hits[0] if len(hits) == 1 else actor
+
+    # A person's description, given once, applies to all their events in the
+    # recording (the model often describes someone on one event only).
+    described: Dict[str, str] = {}
+    for ev in events:
+        if ev.get("actor_description"):
+            described.setdefault(ev["actor"], ev["actor_description"])
+
+    observations = []
+    for idx, ev in enumerate(events, 1):
+        seg = segment_for(ev)
+        speaker = f"{source}_{seg['speaker']}" if seg else None
+        seg_time = base_time + timedelta(seconds=seg["start"]) if seg else None
+        # A time the speaker states ("at about 10 in the morning") is the
+        # event's time; otherwise the best available is when it was said.
+        stated = ev["event_time"] if ev["time_basis"] in ("explicit", "relative") else None
+        ts = stated or seg_time or base_time
+        actor = ta.scoped_actor(speaker_label(ev["actor"]), source)
+        asr = estimate_confidence(seg) if seg else 0.5
+        obs = {
+            "obs_id": f"{id_prefix}_E{idx}",
+            "entity": actor,
+            "role": "unknown",
+            "role_hint": ev["role_hint"],
+            "role_hint_confidence": ev["role_hint_confidence"],
+            "role_reason": ev["role_reason"],
+            "modality": "audio",
+            "source": source,
+            "location": ev["location"] or location,
+            "content": ev["content"],
+            "evidence": ev["evidence"],
+            "reported_by": speaker,
+            "mentioned_entities": ev["mentioned_people"],
+            "appearance": ev.get("actor_description") or described.get(ev["actor"], ""),
+            "tags": ev["tags"],
+            **({"action": ev["action"]} if ev.get("action") else {}),
+            "timestamp": ts.isoformat(timespec="seconds"),
+            "time_basis": ev["time_basis"],
+            "time_offset": int((ts - case_start).total_seconds()) if case_start else 0,
+            # the LLM's clarity score, scaled by how well the words were heard
+            "confidence": round(ev["confidence"] * (0.5 + 0.5 * asr), 3),
+            "extraction": "llm",
+            "audio_file": audio_file,
+            "asr_model": MODEL_VERSION,
+            "extracted_by": AGENT_VERSION,
+        }
+        if seg:
+            obs["segment_start_offset"] = round(seg["start"], 2)
+            obs["segment_end_offset"] = round(seg["end"], 2)
+            # the voice print is the SPEAKER's: attach it only when the
+            # speaker is the actor
+            if actor == speaker and seg["speaker"] in voice_prints:
+                obs["identity_embedding"] = voice_prints[seg["speaker"]]
+            if seg["speaker"] == UNKNOWN_SPEAKER and actor == speaker:
+                obs["extraction_status"] = "undiarized"
         observations.append(obs)
     return observations
 
@@ -298,6 +483,7 @@ def process_clips(
     language: Optional[str] = "en",
     hf_token: Optional[str] = None,
     diarize: bool = True,
+    extract: bool = True,
 ) -> Dict[str, Any]:
     """
     One or more recordings -> a single obs_only case dict (ready for
@@ -312,7 +498,19 @@ def process_clips(
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = load_whisper(whisper_model, device)
     pipeline = setup_diarization_pipeline(hf_token, device) if diarize else None
+    if pipeline is None:
+        print("[WARNING] No speaker diarization (set HF_TOKEN / --hf-token for pyannote). "
+              "Every utterance in a recording gets one shared label and is marked "
+              "extraction_status=undiarized; ER will not treat that label as one person.",
+              file=sys.stderr)
     case_start = min(c["start_time"] for c in clips)
+    llm = None
+    if extract:
+        ta = _text_agent()
+        llm = ta.GroqJSON(model=ta.GROQ_MODEL, enabled=True, max_calls=max(10, 3 * len(clips)))
+        if not llm.available:
+            print("[WARNING] No LLM (GROQ_API_KEY) - emitting one observation per utterance "
+                  "instead of extracted events.", file=sys.stderr)
 
     observations: List[Dict[str, Any]] = []
     used_sources: set = set()
@@ -332,6 +530,13 @@ def process_clips(
         print(f"      transcribed {len(whisper_segments)} segment(s)")
         diar_segments, voice_prints = perform_diarization(audio, pipeline)
         merged = merge_transcripts_with_speakers(whisper_segments, diar_segments)
+        events = extract_events(merged, clip["start_time"], clip["location"], source, audio_file, llm,
+                                id_prefix=f"AUD{n}", case_start=case_start,
+                                voice_prints=voice_prints) if llm is not None else None
+        if events is not None:
+            print(f"      extracted {len(events)} event(s) from {len(merged)} utterance(s)")
+            observations += events
+            continue
         observations += build_observations(
             merged,
             base_time=clip["start_time"],
@@ -359,13 +564,15 @@ def load_manifest(path: Path) -> List[Dict[str, Any]]:
     Manifest: a JSON list of {"path", "start_time", "location", "source"?}.
     Relative paths are resolved against the manifest's own directory.
     """
-    with open(path, encoding="utf-8") as f:
+    with open(path, encoding="utf-8-sig") as f:
         entries = json.load(f)
+    if not isinstance(entries, list):
+        raise ValueError(f"{path}: expected a JSON list of clips")
     clips = []
     for i, e in enumerate(entries):
         for field in ("path", "start_time", "location"):
             if not str(e.get(field, "")).strip():
-                raise ValueError(f"manifest[{i}]: missing '{field}'")
+                raise ValueError(f"{path.name}[{i}]: missing '{field}'")
         clip_path = Path(e["path"])
         if not clip_path.is_absolute():
             clip_path = path.parent / clip_path
@@ -378,12 +585,53 @@ def load_manifest(path: Path) -> List[Dict[str, Any]]:
     return clips
 
 
+def find_manifests(paths: List[str]) -> List[Path]:
+    """
+    Expand --manifest arguments: a file is used as is, a folder is searched
+    (recursively) for *manifest*.json - one folder per recording, each with
+    its audio file and its own manifest, as in Evidence Generation/Cases.
+    """
+    found: List[Path] = []
+    for raw in paths:
+        p = Path(raw)
+        if p.is_dir():
+            hits = sorted(f for f in p.rglob("*.json") if "manifest" in f.name.lower())
+            if not hits:
+                raise ValueError(f"{p}: no *manifest*.json found in this folder")
+            found += hits
+        elif p.is_file():
+            found.append(p)
+        else:
+            raise ValueError(f"{p}: no such file or folder")
+    unique: List[Path] = []
+    for f in found:
+        if f.resolve() not in {u.resolve() for u in unique}:
+            unique.append(f)
+    return unique
+
+
+def load_manifests(paths: List[str]) -> List[Dict[str, Any]]:
+    """Every clip from every manifest (files or folders of them), as one list."""
+    clips: List[Dict[str, Any]] = []
+    for manifest in find_manifests(paths):
+        clips += load_manifest(manifest)
+    seen = set()
+    for clip in clips:
+        key = str(Path(clip["path"]).resolve())
+        if key in seen:
+            raise ValueError(f"{clip['path']} is listed by more than one manifest entry")
+        seen.add(key)
+    return clips
+
+
 def parse_args():
     p = argparse.ArgumentParser(description="ForenSynth Audio Field Agent")
     group = p.add_mutually_exclusive_group(required=True)
     group.add_argument("--input", help="Path to one audio file (.wav, .mp3, .m4a, .flac, .ogg)")
-    group.add_argument("--manifest", help="JSON list of clips for one case: "
-                       '[{"path", "start_time", "location", "source"}, ...]')
+    group.add_argument("--manifest", "--evidence-dir", dest="manifest", nargs="+",
+                       help="One or more manifests - JSON lists of clips: "
+                       '[{"path", "start_time", "location", "source"}, ...] - '
+                       "or folders searched recursively for *manifest*.json")
     p.add_argument("--case-base-time", type=parse_base_time,
                    help="(with --input) ISO 8601 wall-clock time at which the recording starts, e.g. 2024-01-15T10:00:00")
     p.add_argument("--location",
@@ -398,6 +646,8 @@ def parse_args():
     p.add_argument("--language", default="en", help="Spoken language code, or 'auto' to detect")
     p.add_argument("--hf-token", default=None, help="HuggingFace token for pyannote (default: $HF_TOKEN)")
     p.add_argument("--no-diarization", action="store_true", help="Skip speaker diarization")
+    p.add_argument("--no-llm", action="store_true",
+                   help="Skip LLM event extraction: one observation per utterance")
     args = p.parse_args()
     if args.input and not (args.case_base_time and args.location):
         p.error("--input requires --case-base-time and --location")
@@ -414,11 +664,11 @@ def main():
 
     if args.manifest:
         try:
-            clips = load_manifest(Path(args.manifest))
+            clips = load_manifests(args.manifest)
         except (OSError, ValueError, argparse.ArgumentTypeError) as exc:
             print(f"[ERROR] Bad manifest: {exc}"); sys.exit(1)
         if not clips:
-            print("[ERROR] Manifest lists no clips."); sys.exit(1)
+            print("[ERROR] The manifest(s) list no clips."); sys.exit(1)
     else:
         clips = [{
             "path": args.input,
@@ -430,7 +680,7 @@ def main():
         if not Path(clip["path"]).is_file():
             print(f"[ERROR] File not found: {clip['path']}"); sys.exit(1)
 
-    case_id = args.case_id or Path(args.manifest or args.input).stem
+    case_id = args.case_id or Path(args.manifest[0] if args.manifest else args.input).stem
     case = process_clips(
         clips,
         case_id=case_id,
@@ -440,6 +690,7 @@ def main():
         language=None if args.language.lower() == "auto" else args.language,
         hf_token=args.hf_token or os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN"),
         diarize=not args.no_diarization,
+        extract=not args.no_llm,
     )
     observations = case["observations"]
 

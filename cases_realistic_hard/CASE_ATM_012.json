@@ -1,0 +1,713 @@
+{
+  "case_id": "CASE_ATM_012",
+  "domain": "ATM_Robbery",
+  "template": "MultiActor_Entry_Action_Exit",
+  "fir": {
+    "crime_type": "ATM robbery",
+    "location": "MG Road ATM Booth",
+    "time_window": [
+      0,
+      0
+    ],
+    "description": "Complainant reports being coerced at an ATM by 3 unknown assailant(s) who acted in concert. One suspect operated the machine while the other blocked the entrance. 2 independent witness(es) observed the incident.",
+    "roles": {
+      "suspect": 3,
+      "witness": 3
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O11",
+      "event_ref": "E7",
+      "entity": "camera_1_Person_88",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Two persons seen walking away rapidly.",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.759,
+      "noise_tags": [
+        "temporal_noise",
+        "timestamp_missing"
+      ],
+      "appearance": "thin, grey sweater",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.433,
+      "action": "FLEE"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E5",
+      "entity": "camera_3_Person_51",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Person inside the cabin is seen pressing ATM keys.",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.919,
+      "noise_tags": [
+        "temporal_noise",
+        "timestamp_missing"
+      ],
+      "appearance": "short, maroon sweater",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.881,
+      "action": "WITHDRAW"
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E1",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A man walked up to the ATM.",
+      "timestamp": "2024-01-15T10:00:12Z",
+      "time_offset": 12,
+      "confidence": 0.729,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.744,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O13",
+      "event_ref": "E2",
+      "entity": "unknown_man_2@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A thin man in a white sweater walked up to the ATM.",
+      "timestamp": "2024-01-15T10:00:19Z",
+      "time_offset": 19,
+      "confidence": 0.564,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "thin, white sweater",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.819,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O14",
+      "event_ref": "E3",
+      "entity": "R. Khan",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I saw a man in a maroon sweater step into the booth.",
+      "timestamp": "2024-01-15T10:00:31Z",
+      "time_offset": 31,
+      "confidence": 0.703,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "maroon sweater",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.843,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E1",
+      "entity": "intercepted_call_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "I can see the ATM now.",
+      "timestamp": "2024-01-15T15:30:55+05:30",
+      "time_offset": 55,
+      "confidence": 0.631,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "identity_embedding": [
+        -0.0374,
+        0.1698,
+        -0.1569,
+        -0.1809,
+        -0.011,
+        0.0016,
+        0.0147,
+        -0.1416,
+        0.1241,
+        -0.1113,
+        0.0813,
+        -0.1279,
+        -0.003,
+        0.0837,
+        0.1416,
+        0.2597,
+        0.0472,
+        0.0563,
+        0.1559,
+        0.0057,
+        -0.1529,
+        -0.1639,
+        -0.0791,
+        0.1015,
+        0.1351,
+        0.0188,
+        0.2129,
+        -0.0255,
+        0.0055,
+        -0.1031,
+        0.1331,
+        0.1196,
+        -0.0747,
+        -0.0645,
+        0.07,
+        0.0465,
+        0.0138,
+        0.0558,
+        -0.0342,
+        -0.1072,
+        -0.204,
+        -0.1462,
+        -0.2527,
+        -0.0552,
+        0.1536,
+        -0.2154,
+        -0.1523,
+        -0.0443,
+        0.0934,
+        0.0522,
+        0.2012,
+        -0.1265,
+        -0.1227,
+        0.143,
+        0.051,
+        -0.0322,
+        0.0593,
+        -0.1155,
+        -0.1323,
+        0.0511,
+        0.1363,
+        0.0901,
+        -0.0883,
+        0.3265
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.845,
+      "action": "TAMPER"
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "cctv_entrance_Person_36",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "First actor arrives at the ATM location (wide-angle view).",
+      "timestamp": "2024-01-15T15:30:58+05:30",
+      "time_offset": 58,
+      "confidence": 0.855,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "appearance": "short, maroon sweater",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.94,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E2",
+      "entity": "camera_1_Person_88",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Footage inconclusive due to lighting conditions.",
+      "timestamp": "2024-01-15T15:30:59+05:30",
+      "time_offset": 59,
+      "confidence": 0.579,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ],
+      "appearance": "thin, grey sweater",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.856
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E3",
+      "entity": "phone_record_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "Yeah I just got inside the ATM.",
+      "timestamp": "2024-01-15T15:31:17+05:30",
+      "time_offset": 77,
+      "confidence": 0.808,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "identity_embedding": [
+        -0.0005,
+        0.1093,
+        -0.0024,
+        -0.1059,
+        0.0239,
+        -0.0803,
+        0.0515,
+        -0.029,
+        0.1587,
+        -0.1214,
+        0.1552,
+        -0.2028,
+        0.0712,
+        0.0027,
+        0.0623,
+        0.3111,
+        0.0623,
+        0.107,
+        0.1258,
+        0.1441,
+        -0.0808,
+        -0.1081,
+        0.003,
+        0.0934,
+        0.1018,
+        0.004,
+        0.254,
+        0.0197,
+        -0.0071,
+        -0.0027,
+        0.0993,
+        0.0878,
+        -0.0308,
+        0.0415,
+        0.1566,
+        0.0578,
+        0.0738,
+        -0.0204,
+        0.0305,
+        -0.1468,
+        -0.1482,
+        -0.0618,
+        -0.2397,
+        -0.1243,
+        0.262,
+        -0.2959,
+        -0.2061,
+        -0.0813,
+        0.0613,
+        0.0349,
+        0.0294,
+        -0.0441,
+        -0.0452,
+        0.0955,
+        -0.1229,
+        -0.0707,
+        0.0017,
+        -0.0528,
+        -0.1294,
+        0.0044,
+        0.136,
+        0.0121,
+        -0.1111,
+        0.3622
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.882
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E3",
+      "entity": "camera_2_Person_42",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "First actor enters the ATM cabin.",
+      "timestamp": "2024-01-15T10:01:19",
+      "time_offset": 79,
+      "confidence": 0.904,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "appearance": "maroon sweater",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.481,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E4",
+      "entity": "camera_3_Person_84",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Second suspect positions themselves at the ATM entrance (observed from distance).",
+      "timestamp": "2024-01-15T10:01:28Z",
+      "time_offset": 88,
+      "confidence": 0.782,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "appearance": "grey sweater",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.789,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O15",
+      "event_ref": "E4",
+      "entity": "unknown_man_2@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A thin man in a grey sweater kept waiting near the entrance.",
+      "timestamp": "2024-01-15T10:01:33Z",
+      "time_offset": 93,
+      "confidence": 0.732,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "thin, grey sweater",
+      "reported_by": "witness_statement_SPEAKER_01",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.444,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O17",
+      "event_ref": "E6",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "Then a man in a maroon sweater came out of the ATM quickly.",
+      "timestamp": "2024-01-15T10:02:33Z",
+      "time_offset": 153,
+      "confidence": 0.717,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "maroon sweater",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.365,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O16",
+      "event_ref": "E5",
+      "entity": "Khan",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A short man in a maroon sweater was using the ATM.",
+      "timestamp": "2024-01-15T10:03:04Z",
+      "time_offset": 184,
+      "confidence": 0.767,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, maroon sweater",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.495,
+      "action": "WITHDRAW"
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E6",
+      "entity": "mic_booth_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "Out of the ATM, heading your way.",
+      "timestamp": "2024-01-15T10:03:17Z",
+      "time_offset": 197,
+      "confidence": 0.568,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.781,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E6",
+      "entity": "camera_1_Person_82",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Lead suspect departs the ATM cabin.",
+      "timestamp": "2024-01-15T15:33:21+05:30",
+      "time_offset": 201,
+      "confidence": 0.868,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "appearance": "short, maroon sweater",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.846,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O18",
+      "event_ref": "E7",
+      "entity": "unknown_man_2@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A thin man in a grey sweater ran off towards the main road.",
+      "timestamp": "2024-01-15T10:03:41Z",
+      "time_offset": 221,
+      "confidence": 0.582,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "thin, grey sweater",
+      "reported_by": "witness_statement_SPEAKER_01",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.758,
+      "action": "FLEE"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_92",
+          "audio": "Speaker_C"
+        },
+        "all_aliases": [
+          "Khan",
+          "R. Khan",
+          "camera_1_Person_82",
+          "camera_2_Person_42",
+          "camera_3_Person_51",
+          "cctv_entrance_Person_36",
+          "intercepted_call_SPEAKER_00",
+          "mic_booth_Speaker_Unknown",
+          "phone_record_SPEAKER_00",
+          "unknown_man_1@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_91"
+        },
+        "all_aliases": [
+          "camera_1_Person_88",
+          "camera_3_Person_84",
+          "unknown_man_2@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "suspect_3",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_70",
+          "audio": "Speaker_K"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_M"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_G"
+        },
+        "all_aliases": []
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:45",
+        "time_offset": 45
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:50",
+        "time_offset": 50
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:01:11",
+        "time_offset": 71
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "action": "wait_outside",
+        "timestamp": "2024-01-15T10:01:27",
+        "time_offset": 87
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "withdraw_cash",
+        "timestamp": "2024-01-15T10:02:56",
+        "time_offset": 176
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:03:23",
+        "time_offset": 203
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "action": "flee_scene",
+        "timestamp": "2024-01-15T10:03:32",
+        "time_offset": 212
+      },
+      {
+        "event_id": "E8",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:03:39",
+        "time_offset": 219
+      }
+    ],
+    "entity_mapping": {
+      "Khan": "suspect_1",
+      "R. Khan": "suspect_1",
+      "camera_1_Person_82": "suspect_1",
+      "camera_1_Person_88": "suspect_2",
+      "camera_2_Person_42": "suspect_1",
+      "camera_3_Person_51": "suspect_1",
+      "camera_3_Person_84": "suspect_2",
+      "cctv_entrance_Person_36": "suspect_1",
+      "intercepted_call_SPEAKER_00": "suspect_1",
+      "mic_booth_Speaker_Unknown": "suspect_1",
+      "phone_record_SPEAKER_00": "suspect_1",
+      "unknown_man_1@witness_statement": "suspect_1",
+      "unknown_man_2@witness_statement": "suspect_2"
+    },
+    "obs_entity": {
+      "O11": "suspect_2",
+      "O7": "suspect_1",
+      "O12": "suspect_1",
+      "O13": "suspect_2",
+      "O14": "suspect_1",
+      "O2": "suspect_1",
+      "O1": "suspect_1",
+      "O3": "suspect_2",
+      "O5": "suspect_1",
+      "O4": "suspect_1",
+      "O6": "suspect_2",
+      "O15": "suspect_2",
+      "O17": "suspect_1",
+      "O16": "suspect_1",
+      "O10": "suspect_1",
+      "O9": "suspect_1",
+      "O18": "suspect_2"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.3,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.9,
+      "undiarized_audio": 0.45,
+      "timestamp_gaps": 0.225,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "difficulty": "hard",
+      "wrong_hint_rate": 0.15,
+      "low_hint_rate": 0.15,
+      "tz_source_rate": 0.75,
+      "fir_error_count": 2,
+      "action_error_rate": 0.15,
+      "action_missing_rate": 0.15
+    },
+    "appearance": {
+      "suspect_1": "short, maroon sweater",
+      "suspect_2": "thin, grey sweater",
+      "suspect_3": "tall, navy sweater, green cap",
+      "witness_1": "short, blue jacket, red scarf",
+      "witness_2": "tall, maroon kurta, blue scarf"
+    },
+    "names": {
+      "suspect_1": "Ramesh Khan",
+      "suspect_2": "Priya Khan",
+      "suspect_3": "Lakshmi Kumar",
+      "witness_1": "Sunita Kumar",
+      "witness_2": "Anil Rao"
+    },
+    "fir_errors": [
+      {
+        "type": "time_window",
+        "fir_value": [
+          0,
+          0
+        ],
+        "true_value": [
+          0,
+          375
+        ]
+      },
+      {
+        "type": "witness_count",
+        "fir_value": 3,
+        "true_value": 2
+      }
+    ]
+  }
+}

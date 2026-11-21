@@ -34,6 +34,10 @@ class GeneratorConfig:
     enrich: bool = False
     cohere_api_key: Optional[str] = None
 
+    # --- Realism (optional): make observations look like real field-agent
+    # output. A realism.RealismConfig; None = the clean output as before.
+    realism: Optional[object] = None
+
 
 # ---------------------------------------------------------------------------
 # Observation location lookup

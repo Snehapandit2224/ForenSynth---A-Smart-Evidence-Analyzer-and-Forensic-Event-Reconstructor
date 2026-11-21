@@ -63,6 +63,7 @@ TIMELINE_LEVEL_GAPS = {
 }
 HUMAN_REVIEW_GAPS = {
     "G5_narrative_break", "narrative_break",
+    "entity_internal_contradiction", "fir_time_contradiction", "fir_role_excess",
 }
 
 
@@ -168,10 +169,37 @@ def _inject_belief_state(
 
 
 def _avg_confidence(timeline: Dict) -> float:
+    if "avg_confidence" in timeline:          # a _timeline_summary()
+        return timeline["avg_confidence"]
     events = timeline.get("events", [])
     if not events:
         return 0.0
     return sum(e.get("confidence", 0.0) for e in events) / len(events)
+
+
+def _timeline_summary(timeline: Dict) -> Dict[str, Any]:
+    """What all_timelines keeps per version. It used to keep the whole
+    timeline, copied into every later decision and its JSON file."""
+    return {
+        "timeline_version": timeline.get("timeline_version", ""),
+        "avg_confidence":   round(_avg_confidence(timeline), 4),
+        "event_count":      len(timeline.get("events", [])),
+    }
+
+
+def _valid_pair(pair: Any) -> bool:
+    """A usable must_not_merge / must_merge pair: two different, real aliases."""
+    if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
+        return False
+    a, b = str(pair[0]), str(pair[1])
+    return bool(a) and bool(b) and a != b and not any(
+        tag in x for x in (a, b) for tag in ("Alt_", "UNRESOLVED"))
+
+
+def _add_pair(pairs: List[List[str]], pair: Any) -> None:
+    """Append an alias pair once, in either order."""
+    if _valid_pair(pair) and not any({*p} == {*pair} for p in pairs):
+        pairs.append([pair[0], pair[1]])
 
 
 def _classify_output(all_timelines: List[Dict], final_tl: Dict) -> Tuple[str, str]:
@@ -326,32 +354,15 @@ class ShowrunnerAgent:
         new_belief     = _apply_belief_update(belief_state, validated) if validated else belief_state
 
         # ── All timelines for output_case classification ──────────────────
-        all_timelines  = list(prev_constr.get("all_timelines", [])) + [timeline]
+        all_timelines  = list(prev_constr.get("all_timelines", [])) + [_timeline_summary(timeline)]
         output_case, case_reason = _classify_output(all_timelines, timeline)
 
-        # ── Convergence checks ────────────────────────────────────────────
-        prev_avg  = prev_constr.get("prev_avg_confidence", 0.0)
-        curr_avg  = _avg_confidence(timeline)
-        score_flat = abs(curr_avg - prev_avg) < CONVERGENCE_DELTA and iteration > 1
-
-        if score_flat:
-            log.info("[Showrunner] CONVERGENCE — score flatlined (delta=%.4f) — finalizing",
-                     abs(curr_avg - prev_avg))
-            return _make_decision(
-                case_id, "no_action", tl_version, crit_version, tl_version,
-                reasoning=(
-                    f"Timeline confidence flatlined (delta={abs(curr_avg-prev_avg):.4f} "
-                    f"< {CONVERGENCE_DELTA}) — further revision won't improve the result. "
-                    f"Output case: {output_case}. {case_reason}"
-                ),
-                output_case=output_case,
-                iter_log=iter_log,
-                investigator_flags=investigator_flags,
-                all_timelines=all_timelines,
-            )
-
         # ── No-action cases ───────────────────────────────────────────────
-        if recommended == "FINALIZE" or not gaps:
+        # Decided by the critique's verdict, not by recommended_action alone:
+        # a REVISE with no automatic target (narrative break) used to read as
+        # FINALIZE and the case closed without the escalation it needed.
+        requires_revision = critique.get("requires_revision", recommended != "FINALIZE")
+        if not requires_revision or not gaps:
             log.info("[Showrunner] FINALIZE — timeline clean")
             return _make_decision(
                 case_id, "no_action", tl_version, crit_version, tl_version,
@@ -360,6 +371,39 @@ class ShowrunnerAgent:
                 iter_log=iter_log,
                 investigator_flags=investigator_flags,
                 all_timelines=all_timelines,
+            )
+
+        # ── Convergence check ─────────────────────────────────────────────
+        # Checked only once we know the critique still wants a revision. A
+        # pass that changed neither the timeline's confidence nor the
+        # critique's score made no progress - and the open gaps it leaves
+        # are for an investigator. (This used to return no_action, which
+        # closed cases as finished with blocking issues still open.)
+        prev_avg   = prev_constr.get("prev_avg_confidence", 0.0)
+        curr_avg   = _avg_confidence(timeline)
+        prev_score = prev_constr.get("prev_overall_score", 0.0)
+        curr_score = float(critique.get("overall_score", 0.0))
+        score_flat = (iteration > 1
+                      and abs(curr_avg - prev_avg) < CONVERGENCE_DELTA
+                      and curr_score <= prev_score + CONVERGENCE_DELTA)
+
+        if score_flat:
+            log.info("[Showrunner] NO PROGRESS — score flatlined (delta=%.4f) — human_review",
+                     abs(curr_avg - prev_avg))
+            return _make_decision(
+                case_id, "human_review", tl_version, crit_version, tl_version,
+                reasoning=(
+                    f"Revision made no progress (timeline confidence delta="
+                    f"{abs(curr_avg-prev_avg):.4f}, critique score {prev_score:.2f} -> "
+                    f"{curr_score:.2f}) and {len(gaps)} gap(s) remain open "
+                    f"({', '.join(sorted({_gap_type(g) for g in gaps}))}). Escalating. "
+                    f"Output case: {output_case}. {case_reason}"
+                ),
+                output_case=output_case,
+                iter_log=iter_log,
+                investigator_flags=investigator_flags,
+                all_timelines=all_timelines,
+                issues_deferred=[_gap_type(g) for g in gaps],
             )
 
         # ── Version ceiling ───────────────────────────────────────────────
@@ -383,7 +427,10 @@ class ShowrunnerAgent:
         current_gap_types = {_gap_type(g) for g in gaps}
         recurring = current_gap_types & prev_gap_types
 
-        if recurring and tl_version not in ("V1", "V2"):
+        # Any pass after the first: a gap type that survived the previous
+        # fix won't yield to the same fix again. (This only checked V3, where
+        # the version ceiling above had already returned - it never ran.)
+        if recurring and tl_version != "V1":
             log.info("[Showrunner] RECURRENCE %s — human_review", recurring)
             return _make_decision(
                 case_id, "human_review", tl_version, crit_version, tl_version,
@@ -408,7 +455,10 @@ class ShowrunnerAgent:
         tl_gaps    = [g for g in tl_gaps    if g not in er_gaps]
         human_gaps = [g for g in human_gaps if g not in er_gaps and g not in tl_gaps]
 
-        resolvable_tl = [g for g in tl_gaps if _resolvable(g)]
+        # A timeline re-run only changes anything through the edges the
+        # Critique flags (edges_to_exclude -> the Timeline agent drops them).
+        # A timeline-level gap with no flagged edge can't be fixed that way.
+        resolvable_tl = [g for g in tl_gaps if _resolvable(g) and g.get("flagged_edges")]
 
         # G1 recheck (old critique format)
         g1_recheck = [
@@ -418,6 +468,20 @@ class ShowrunnerAgent:
         ]
         if g1_recheck and not er_gaps:
             er_gaps = g1_recheck
+
+        # ── A blocking issue only a person can resolve goes first ─────────
+        # (e.g. an entity that contradicts itself - likely two people fused:
+        # re-running ER or the timeline would not untangle it)
+        blocking_human = [g for g in human_gaps if _sev_val(g) >= 1.0]
+        if blocking_human:
+            return _make_decision(
+                case_id, "human_review", tl_version, crit_version, tl_version,
+                reasoning=("Blocking issue(s) needing an investigator: "
+                           + "; ".join((g.get("detail") or _gap_type(g))[:160] for g in blocking_human)),
+                output_case=output_case, iter_log=iter_log,
+                investigator_flags=investigator_flags, all_timelines=all_timelines,
+                issues_deferred=[_gap_type(g) for g in gaps],
+            )
 
         # ── ER-level action ───────────────────────────────────────────────
         if er_gaps:
@@ -433,7 +497,14 @@ class ShowrunnerAgent:
                     issues_deferred=[_gap_type(g) for g in er_gaps],
                 )
 
-            if (not constraints.get("must_not_merge") and
+            # Only constraints ER hasn't already run with can change its
+            # result; carried-over ones alone would reproduce the last run.
+            def _pairs(c):
+                return ({frozenset(p) for p in c.get("must_not_merge", [])},
+                        {frozenset(p) for p in c.get("must_merge", [])},
+                        dict(c.get("soft_hints") or {}))
+            if _pairs(constraints) == _pairs(prev_constr) or (
+                    not constraints.get("must_not_merge") and
                     not constraints.get("must_merge") and
                     not constraints.get("soft_hints")):
                 log.info("[Showrunner] ER constraints empty — human_review")
@@ -466,6 +537,7 @@ class ShowrunnerAgent:
                     "all_timelines":       all_timelines,
                     "belief_state":        new_belief,
                     "prev_avg_confidence": curr_avg,
+                    "prev_overall_score":  curr_score,
                 },
                 belief_updates=new_belief,
                 reasoning=self._build_reasoning(er_gaps, "re_run_er"),
@@ -490,6 +562,10 @@ class ShowrunnerAgent:
                     "all_timelines":       all_timelines,
                     "belief_state":        new_belief,
                     "prev_avg_confidence": curr_avg,
+                    "prev_overall_score":  curr_score,
+                    # carried so the ER re-run limit still counts after a
+                    # timeline-only pass (it reset to 1 before)
+                    "er_version":          prev_constr.get("er_version", 1),
                 },
                 belief_updates=new_belief,
                 reasoning=self._build_reasoning(resolvable_tl, "re_run_timeline"),
@@ -505,8 +581,11 @@ class ShowrunnerAgent:
         return _make_decision(
             case_id, "human_review", tl_version, crit_version, tl_version,
             reasoning=(
-                f"All detected gaps are unresolvable through automated revision. "
-                f"Gap types: {sorted(current_gap_types)}. Escalating."
+                f"The critique asks for revision, but no detected gap can be fixed by "
+                f"re-running ER or the timeline. Gap types: {sorted(current_gap_types)}. "
+                + (f"Flagged for an investigator: {sorted({_gap_type(g) for g in human_gaps})}. "
+                   if human_gaps else "")
+                + "Escalating."
             ),
             output_case=output_case, iter_log=iter_log,
             investigator_flags=investigator_flags, all_timelines=all_timelines,
@@ -520,61 +599,42 @@ class ShowrunnerAgent:
     ) -> Dict[str, Any]:
         must_not_merge: List[List[str]] = []
         must_merge:     List[List[str]] = []
+        # Keyed "aliasA|aliasB" - a hint is about a PAIR of aliases, which is
+        # how ER applies it (it used to be keyed by one alias, which ER never
+        # looked up, so no hint was ever applied).
         soft_hints:     Dict[str, float] = {}
 
         # From explicit must_not_merge on issues
         for issue in all_gaps:
             for pair in issue.get("must_not_merge", []):
-                if not (isinstance(pair, list) and len(pair) == 2):
-                    continue
-                a, b = pair[0], pair[1]
-                if a == b:           continue
-                if "Alt_" in a:      continue
-                if "Alt_" in b:      continue
-                if "UNRESOLVED" in a: continue
-                if "UNRESOLVED" in b: continue
-                if pair not in must_not_merge:
-                    must_not_merge.append(pair)
+                _add_pair(must_not_merge, pair)
 
-        # From G4 gaps
+        # From G4 gaps: the current and alternative candidate are different
+        # people - a hard split plus a negative hint for the pair.
         for gap in er_gaps:
             if _gap_type(gap) in ("G4_unresolved_entity", "unresolved_entity"):
-                current = gap.get("current_candidate", "")
-                alt     = gap.get("alternative_candidate", "")
-                if not current or not alt:          continue
-                if current == alt:                  continue
-                if "Alt_" in current or "Alt_" in alt: continue
-                if "UNRESOLVED" in current or "UNRESOLVED" in alt: continue
-                if [current, alt] not in must_not_merge:
-                    must_not_merge.append([current, alt])
-                sev = _sev_val(gap)
-                soft_hints[current] = soft_hints.get(current, 0.0) - (sev * 0.2)
-                soft_hints[alt]     = soft_hints.get(alt, 0.0)     + (sev * 0.2)
+                pair = [gap.get("current_candidate", ""), gap.get("alternative_candidate", "")]
+                if not _valid_pair(pair):
+                    continue
+                _add_pair(must_not_merge, pair)
+                key = "|".join(sorted(pair))
+                soft_hints[key] = min(soft_hints.get(key, 0.0), -(_sev_val(gap) * 0.2))
 
-        # From G7 gaps — conflict-flagged aliases
-        g7 = [g for g in er_gaps if _gap_type(g) in ("G7_role_count_mismatch", "role_count_mismatch")]
-        if g7:
-            by_entity: Dict[str, List[str]] = {}
-            for ev in timeline.get("events", []):
-                if ev.get("conflict_flag") and ev.get("primary_alias"):
-                    by_entity.setdefault(ev.get("entity_id", ""), []).append(ev["primary_alias"])
-            for eid, aliases in by_entity.items():
-                if len(aliases) >= 2:
-                    for i in range(len(aliases)):
-                        for j in range(i + 1, len(aliases)):
-                            pair = [aliases[i], aliases[j]]
-                            if pair not in must_not_merge:
-                                must_not_merge.append(pair)
+        # role_count_mismatch (G7) deliberately yields NO constraint. It says
+        # a cluster may hold two people, not which aliases to separate - and
+        # pairing the primary aliases of conflict-flagged events only ever
+        # produced self-pairs like [Person_61, Person_61]. With nothing to
+        # constrain, decide() escalates it to an investigator.
 
-        # Accumulate from previous constraints
+        # Accumulate from previous constraints (a hint keeps its strongest
+        # value rather than being added again on every pass)
         for pair in prev_constr.get("must_not_merge", []):
-            if pair not in must_not_merge:
-                must_not_merge.append(pair)
+            _add_pair(must_not_merge, pair)
         for pair in prev_constr.get("must_merge", []):
-            if pair not in must_merge:
-                must_merge.append(pair)
-        for alias, delta in prev_constr.get("soft_hints", {}).items():
-            soft_hints[alias] = soft_hints.get(alias, 0.0) + delta
+            _add_pair(must_merge, pair)
+        for key, delta in (prev_constr.get("soft_hints") or {}).items():
+            if "|" in str(key):
+                soft_hints[key] = min(soft_hints.get(key, 0.0), delta)
 
         return {
             "must_not_merge": must_not_merge,
@@ -613,10 +673,11 @@ class ShowrunnerAgent:
                 f"Root: {root[:100]}. "
                 "Injecting ER constraints and re-running entity resolution."
             )
+        n_edges = len({tuple(e) for g in gaps for e in g.get("flagged_edges", [])})
         return (
             f"Detected {n} timeline-level gap(s) ({', '.join(types)}). "
             f"Highest: {_gap_type(top)} (severity={sev_str}). "
-            "Applying belief updates and rebuilding timeline."
+            f"Rebuilding the timeline without the {n_edges} edge(s) the critique flagged."
         )
 
 

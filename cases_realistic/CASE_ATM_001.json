@@ -1,0 +1,364 @@
+{
+  "case_id": "CASE_ATM_001",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "Indiranagar HDFC ATM",
+    "time_window": [
+      0,
+      0
+    ],
+    "description": "Deponent reports that 1 accused person(s) were seen pacing near the ATM kiosk for an extended duration before accessing the card reader. 1 bystander(s) noted the suspicious conduct and have filed statements.",
+    "roles": {
+      "suspect": 1,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "camera_1_Person_30",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person departs from the ATM kiosk at pace.",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.766,
+      "noise_tags": [
+        "temporal_noise",
+        "timestamp_missing"
+      ],
+      "appearance": "thin, white sweater, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.864,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "camera_1_Person_30",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Subject is seen nearing the ATM from the main road (poor image quality).",
+      "timestamp": "2024-01-15T15:30:58+05:30",
+      "time_offset": 58,
+      "confidence": 0.89,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "appearance": "thin, white sweater, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.939,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E1",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I saw a man in a white sweater heading towards the ATM.",
+      "timestamp": "2024-01-15T10:01:45",
+      "time_offset": 105,
+      "confidence": 0.724,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "white sweater",
+      "reported_by": "witness_statement_Speaker_Unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.767,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E2",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A thin man in a white sweater and a helmet was hanging around near the ATM for a long time.",
+      "timestamp": "2024-01-15T10:02:59",
+      "time_offset": 179,
+      "confidence": 0.602,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "thin, white sweater, helmet",
+      "reported_by": "witness_statement_Speaker_Unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.813,
+      "action": "LOITER"
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "camera_3_Person_80",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Subject lingers near the ATM kiosk for an unusually long time.",
+      "timestamp": "2024-01-15T15:33:34+05:30",
+      "time_offset": 214,
+      "confidence": 0.793,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "appearance": "thin, white sweater, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.875,
+      "action": "LOITER"
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "camera_1_Person_30",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person pushes into ATM enclosure.",
+      "timestamp": "2024-01-15T15:34:10+05:30",
+      "time_offset": 250,
+      "confidence": 0.826,
+      "noise_tags": [],
+      "appearance": "thin, white sweater, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.762,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E5",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "Then a thin man in a white sweater and a helmet came out of the ATM quickly.",
+      "timestamp": "2024-01-15T10:04:38",
+      "time_offset": 278,
+      "confidence": 0.602,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "thin, white sweater, helmet",
+      "reported_by": "witness_statement_Speaker_Unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.83,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E6",
+      "entity": "witness_statement_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I was not paying attention to anyone leaving the area.",
+      "timestamp": "2024-01-15T10:05:39",
+      "time_offset": 339,
+      "confidence": 0.43,
+      "noise_tags": [
+        "contradiction"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.831
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "camera_3_Person_51",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Eyewitness notices a person leaving the ATM enclosure in a rush (poor image quality).",
+      "timestamp": "2024-01-15T15:35:50+05:30",
+      "time_offset": 350,
+      "confidence": 0.611,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "appearance": "short, white jacket, red cap",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.938,
+      "action": "OBSERVE"
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E6",
+      "entity": "Das",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Two individuals left together quickly. One carrying a bag.",
+      "timestamp": "2024-01-15T15:35:54+05:30",
+      "time_offset": 354,
+      "confidence": 0.706,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "role_hint": "witness",
+      "role_hint_confidence": 0.84,
+      "action": "OBSERVE"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_14"
+        },
+        "all_aliases": [
+          "camera_1_Person_30",
+          "camera_3_Person_80",
+          "unknown_man_1@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "video": "Person_55",
+          "audio": "Speaker_C",
+          "text": "email_74"
+        },
+        "all_aliases": [
+          "Das",
+          "camera_3_Person_51",
+          "witness_statement_Speaker_Unknown"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:56",
+        "time_offset": 56
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "loiter_near_atm",
+        "timestamp": "2024-01-15T10:03:45",
+        "time_offset": 225
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:04:08",
+        "time_offset": 248
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "tamper_atm",
+        "timestamp": "2024-01-15T10:04:56",
+        "time_offset": 296
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:05:15",
+        "time_offset": 315
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:05:38",
+        "time_offset": 338
+      }
+    ],
+    "entity_mapping": {
+      "Das": "witness_1",
+      "camera_1_Person_30": "suspect_1",
+      "camera_3_Person_51": "witness_1",
+      "camera_3_Person_80": "suspect_1",
+      "unknown_man_1@witness_statement": "suspect_1",
+      "witness_statement_Speaker_Unknown": "witness_1"
+    },
+    "obs_entity": {
+      "O5": "suspect_1",
+      "O1": "suspect_1",
+      "O9": "suspect_1",
+      "O10": "suspect_1",
+      "O2": "suspect_1",
+      "O3": "suspect_1",
+      "O11": "suspect_1",
+      "O7": "witness_1",
+      "O6": "witness_1",
+      "O8": "witness_1"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.2,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.6,
+      "undiarized_audio": 0.3,
+      "timestamp_gaps": 0.15,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "difficulty": "medium",
+      "wrong_hint_rate": 0.1,
+      "low_hint_rate": 0.1,
+      "tz_source_rate": 0.5,
+      "fir_error_count": 1,
+      "action_error_rate": 0.1,
+      "action_missing_rate": 0.1
+    },
+    "appearance": {
+      "suspect_1": "thin, white sweater, helmet",
+      "witness_1": "short, white jacket, red cap"
+    },
+    "names": {
+      "suspect_1": "Kavitha Das",
+      "witness_1": "Manoj Das"
+    },
+    "fir_errors": [
+      {
+        "type": "time_window",
+        "fir_value": [
+          0,
+          0
+        ],
+        "true_value": [
+          0,
+          528
+        ]
+      }
+    ]
+  }
+}

@@ -9,6 +9,10 @@ Usage:
     python main.py --batch 5 --output ./cases/
     python main.py --seed 123 --validate
 
+    # Realistic field-agent output (see realism.py), into its own folder
+    python main.py --batch 13 --realistic --output ../cases_realistic/
+    python main.py --hide-roles --per-source-labels --appearance --output ./cases/
+
     # With Cohere enrichment (single call: rewrites FIR + all observations)
     python main.py --enrich --api-key co-...
     python main.py --domain Office_Theft --enrich --api-key co-... --output ./cases/
@@ -25,6 +29,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from config import GeneratorConfig, NoiseConfig
 from generator import ForenSynthGenerator
+from realism import RealismConfig
 from utils import export_case, export_observations_only, extract_observations_only, pretty_print_case, validate_case_schema
 
 
@@ -101,7 +106,65 @@ def parse_args() -> argparse.Namespace:
         ),
     )
 
+    # --- Realism flags: make observations look like REAL field-agent output.
+    # All off by default; with none set, output is unchanged.
+    real = parser.add_argument_group(
+        "realism", "Make observations look like real field-agent output (see realism.py)")
+    real.add_argument("--appearance", action="store_true",
+                      help="Every person gets a look (clothing, build); video observations carry it "
+                           "as `appearance` and witnesses describe it.")
+    real.add_argument("--appearance-noise", type=float, default=0.2, metavar="RATE",
+                      help="Chance a description is partial or a colour slightly off (default 0.2).")
+    real.add_argument("--alias-variants", action="store_true",
+                      help="Text names people inconsistently: 'Ramesh Kumar' / 'Ramesh' / 'Kumar' / "
+                           "'R. Kumar', and two people share a surname.")
+    real.add_argument("--voice-prints", action="store_true",
+                      help="Audio observations carry a per-speaker identity_embedding (noisy per recording).")
+    real.add_argument("--hide-roles", action="store_true",
+                      help="Every role 'unknown' plus a role_hint with a confidence - mostly right, "
+                           "sometimes wrong, sometimes low confidence.")
+    real.add_argument("--per-source-labels", action="store_true",
+                      help="A new label per camera / recording (cam_Person_NN, rec_SPEAKER_00) "
+                           "instead of one alias per person per modality.")
+    real.add_argument("--reported-events", action="store_true",
+                      help="Witnesses describe what a suspect did ('a man in a black hoodie came out "
+                           "fast'): the actor is the suspect, the witness is reported_by.")
+    real.add_argument("--undiarized-audio", type=float, default=0.0, metavar="RATE",
+                      help="Chance a recording has no speaker separation: one shared Speaker_Unknown "
+                           "label, extraction_status=undiarized (default 0 = off).")
+    real.add_argument("--timestamp-gaps", type=float, default=0.0, metavar="RATE",
+                      help="Chance a video/text observation has no timestamp (default 0 = off).")
+    real.add_argument("--mixed-timezones", action="store_true",
+                      help="Some sources write timestamps with 'Z' or '+05:30' (same instant).")
+    real.add_argument("--fir-errors", action="store_true",
+                      help="The FIR gets a head-count or the time window wrong (truth in "
+                           "ground_truth.fir_errors).")
+    real.add_argument("--action-labels", action="store_true",
+                      help="Each observation names its action (APPROACH, ENTER...) as the extractors "
+                           "do - mostly right, sometimes missing or wrong.")
+    real.add_argument("--realistic", action="store_true",
+                      help="All of the above at standard rates.")
+    real.add_argument("--difficulty", choices=["easy", "medium", "hard"], default="medium",
+                      help="Scale every realism rate (x0.5 / x1 / x1.5; hard = 2 FIR errors).")
+
     return parser.parse_args()
+
+
+def realism_config(args: argparse.Namespace) -> RealismConfig | None:
+    """The RealismConfig the flags ask for, or None (clean output)."""
+    if args.realistic:
+        cfg = RealismConfig.realistic(args.difficulty)
+        cfg.appearance_noise = args.appearance_noise
+        return cfg
+    cfg = RealismConfig(
+        appearance=args.appearance, appearance_noise=args.appearance_noise,
+        alias_variants=args.alias_variants, voice_prints=args.voice_prints,
+        hide_roles=args.hide_roles, per_source_labels=args.per_source_labels,
+        reported_events=args.reported_events, undiarized_audio=args.undiarized_audio,
+        timestamp_gaps=args.timestamp_gaps, mixed_timezones=args.mixed_timezones,
+        fir_errors=args.fir_errors, action_labels=args.action_labels, difficulty=args.difficulty,
+    )
+    return cfg if cfg.enabled() else None
 
 
 def main() -> None:
@@ -122,6 +185,7 @@ def main() -> None:
         noise=NoiseConfig(),
         enrich=args.enrich,
         cohere_api_key=api_key,
+        realism=realism_config(args),
     )
 
     gen = ForenSynthGenerator(config=cfg, case_index=args.start_index)

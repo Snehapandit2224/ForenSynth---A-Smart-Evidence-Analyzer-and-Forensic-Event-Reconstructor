@@ -55,9 +55,10 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -92,13 +93,15 @@ def _run(cmd: list[str]) -> int:
     return subprocess.run(cmd, cwd=str(_ROOT)).returncode
 
 
-def run_fir_agent(case_id: str, fir_path: Path, staging_dir: Path) -> tuple[Path, Path]:
+def run_fir_agent(case_id: str, fir_path: Path, staging_dir: Path,
+                  no_llm: bool = False) -> tuple[Path, Path]:
     """FIR failure IS fatal (unlike a modality agent): a case explicitly
     anchored on an FIR must not silently proceed without it."""
     staging_dir.mkdir(parents=True, exist_ok=True)
     log.info("Running fir_agent.py on %s ...", fir_path)
     rc = _run([sys.executable, str(Path(__file__).parent / "fir_agent.py"), "--case-id", case_id,
-               "--input", str(fir_path), "--output", str(staging_dir)])
+               "--input", str(fir_path), "--output", str(staging_dir),
+               *(["--no-llm"] if no_llm else [])])
     rec, obs = staging_dir / f"{case_id}_fir.json", staging_dir / f"{case_id}__fir_obs_only.json"
     if rc != 0 or not rec.exists() or not obs.exists():
         raise RuntimeError(f"fir_agent.py failed on {fir_path} (exit {rc}).")
@@ -113,12 +116,13 @@ def _text_args(inputs: list[Path] | None, reference_date: str | None) -> list[st
 
 
 def run_text_agent(case_id: str, inputs: list[Path], staging_dir: Path,
-                   reference_date: str | None = None) -> Path | None:
+                   reference_date: str | None = None, no_llm: bool = False) -> Path | None:
     staging_dir.mkdir(parents=True, exist_ok=True)
     sub_case_id = f"{case_id}__text"
-    log.info("Running text_agent.py on %d input file(s) ...", len(inputs))
+    log.info("Running text_agent.py on %s ...", ", ".join(map(str, inputs)))
     rc = _run([sys.executable, str(Path(__file__).parent / "text_agent.py"), "--case-id", sub_case_id,
-               "--output", str(staging_dir), *_text_args(inputs, reference_date)])
+               "--output", str(staging_dir), *_text_args(inputs, reference_date),
+               *(["--no-llm"] if no_llm else [])])
     out = staging_dir / f"{sub_case_id}_obs_only.json"
     if rc != 0 or not out.exists():
         log.warning("text_agent.py failed (exit %s) - continuing without text evidence.", rc)
@@ -129,15 +133,19 @@ def run_text_agent(case_id: str, inputs: list[Path], staging_dir: Path,
 AUDIO_AGENT = _ROOT / "agents" / "field_agents" / "audio_agent.py"
 
 
-def run_audio_agent(case_id: str, manifest: Path, staging_dir: Path) -> Path | None:
-    """Audio recordings listed in a manifest ([{path, start_time, location,
-    source?}], see audio_agent.py) -> one obs_only file. Like text, a
-    failure skips the modality rather than the case."""
+def run_audio_agent(case_id: str, manifest: Path | str | list, staging_dir: Path,
+                    no_llm: bool = False) -> Path | None:
+    """Audio recordings listed in one or more manifests ([{path, start_time,
+    location, source?}], see audio_agent.py) - or folders of per-recording
+    *manifest*.json - -> one obs_only file. Like text, a failure skips the
+    modality rather than the case."""
     staging_dir.mkdir(parents=True, exist_ok=True)
     sub_case_id = f"{case_id}__audio"
-    log.info("Running audio_agent.py on %s ...", manifest)
+    manifests = [str(m) for m in (manifest if isinstance(manifest, (list, tuple)) else [manifest])]
+    log.info("Running audio_agent.py on %s ...", ", ".join(manifests))
     rc = _run([sys.executable, str(AUDIO_AGENT), "--case-id", sub_case_id,
-               "--manifest", str(manifest), "--output", str(staging_dir)])
+               "--manifest", *manifests, "--output", str(staging_dir),
+               *(["--no-llm"] if no_llm else [])])
     out = staging_dir / f"{sub_case_id}_obs_only.json"
     if rc != 0 or not out.exists():
         log.warning("audio_agent.py failed (exit %s) - continuing without audio evidence.", rc)
@@ -184,12 +192,27 @@ def _clean_observation(obs: dict) -> dict:
     return {k: v for k, v in obs.items() if k not in _DROP_FIELDS}
 
 
-def _ts_key(obs: dict) -> datetime:
+def _parse_ts(value) -> datetime | None:
+    """An observation timestamp as a naive datetime, or None if it has none.
+
+    Agents disagree on format: text writes naive local times, audio and
+    video may write an offset or "Z" - and Python refuses to compare naive
+    with aware datetimes, which crashed the merge. Aware times are converted
+    to UTC and made naive, the same reading shared.parse_timestamp() gives
+    naive times (UTC) everywhere downstream."""
+    s = str(value if value is not None else "").strip()
+    if s.lower() in ("", "none", "null"):
+        return None
     try:
-        return datetime.fromisoformat(str(obs["timestamp"]))
-    except (KeyError, ValueError, TypeError):
-        # Unparseable/missing timestamp sorts last rather than crashing the merge.
-        return datetime.max
+        dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+
+
+def _ts_key(obs: dict) -> datetime:
+    # Unparseable/missing timestamp sorts last rather than crashing the merge.
+    return _parse_ts(obs.get("timestamp")) or datetime.max
 
 
 def adopt_role_hints(observations: list[dict], min_conf: float = 0.7) -> int:
@@ -234,22 +257,35 @@ def merge_cases(case_id: str, source_paths: list[Path], fir_summary: dict | None
     if not all_obs:
         raise RuntimeError(f"No observations found across {len(source_paths)} source file(s).")
 
+    raw_ts = [str(o.get("timestamp") or "") for o in all_obs if _parse_ts(o.get("timestamp"))]
+    aware = sum(1 for t in raw_ts if t.endswith("Z") or re.search(r"[+-]\d{2}:?\d{2}$", t))
+    if 0 < aware < len(raw_ts):
+        log.warning("Merging %d timestamp(s) with a timezone and %d without: the ones without "
+                    "are read as UTC. If they are local times, the modalities will be offset "
+                    "from each other by the local UTC offset.", aware, len(raw_ts) - aware)
+
     all_obs.sort(key=_ts_key)
-    base_ts = _ts_key(all_obs[0])
+    dated = [ts for ts in (_parse_ts(o.get("timestamp")) for o in all_obs) if ts]
+    base_ts = dated[0] if dated else None
 
     merged_obs = []
     for i, obs in enumerate(all_obs, start=1):
-        ts = _ts_key(obs)
-        offset = int((ts - base_ts).total_seconds()) if ts != datetime.max else obs.get("time_offset", 0)
-        merged_obs.append({**obs, "obs_id": f"O{i}", "time_offset": max(0, offset)})
+        ts = _parse_ts(obs.get("timestamp"))
+        if ts is None:
+            # Undated (e.g. a video clip whose clock couldn't be read): an
+            # empty timestamp is the pipeline's "no time" - ER and Timeline
+            # treat it as unknown, not as the case's first moment.
+            merged_obs.append({**obs, "obs_id": f"O{i}", "timestamp": "",
+                               "time_offset": max(0, int(obs.get("time_offset") or 0))})
+            continue
+        merged_obs.append({**obs, "obs_id": f"O{i}", "timestamp": ts.isoformat(timespec="seconds"),
+                           "time_offset": max(0, int((ts - base_ts).total_seconds()))})
 
     if fir_summary:
         # FIR incident window, re-expressed as offsets from this merged case's base.
         def off(iso):
-            try:
-                return max(0, int((datetime.fromisoformat(iso) - base_ts).total_seconds()))
-            except (TypeError, ValueError):
-                return None
+            ts = _parse_ts(iso)
+            return max(0, int((ts - base_ts).total_seconds())) if ts and base_ts else None
         start, end = off(fir_summary.get("incident_datetime")), off(fir_summary.get("incident_datetime_end"))
         window = ([start, end] if start is not None and end is not None
                   else [0, max(o["time_offset"] for o in merged_obs)])
@@ -300,11 +336,13 @@ def main() -> None:
     ap.add_argument("--run-agents", action="store_true",
                      help="Run every registered field agent fresh before merging")
     ap.add_argument("--fir", type=Path, help="FIR text file - anchors the case (see fir_agent.py)")
-    ap.add_argument("--text-inputs", nargs="+", type=Path,
-                     help="Text evidence files for text_agent.py (instead of the Enron pilot)")
-    ap.add_argument("--audio-manifest", type=Path,
-                     help="JSON list of recordings for audio_agent.py: "
-                          '[{"path", "start_time", "location", "source"}, ...]')
+    ap.add_argument("--text-inputs", "--text-dir", dest="text_inputs", nargs="+", type=Path,
+                     help="Text evidence files, or folders of them, for text_agent.py "
+                          "(instead of the Enron pilot)")
+    ap.add_argument("--audio-manifest", "--audio-dir", dest="audio_manifest", nargs="+", type=Path,
+                     help="Manifests for audio_agent.py - JSON lists of recordings "
+                          '[{"path", "start_time", "location", "source"}, ...] - '
+                          "or folders of per-recording *manifest*.json")
     ap.add_argument("--adopt-role-hints", action="store_true",
                      help="Copy LLM role hints with confidence >= 0.7 into `role` at intake")
     ap.add_argument("--staging", default="cases/_staging",

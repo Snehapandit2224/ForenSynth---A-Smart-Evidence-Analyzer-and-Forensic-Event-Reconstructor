@@ -1,0 +1,544 @@
+{
+  "case_id": "CASE_ATM_011",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Action_Exit",
+  "fir": {
+    "crime_type": "ATM robbery",
+    "location": "Indiranagar HDFC ATM",
+    "time_window": [
+      807,
+      1415
+    ],
+    "description": "Deponent states that 1 unidentified accused entered the ATM enclosure and conducted a transaction without presenting valid credentials. 2 independent witness(es) were present at the time of the incident.",
+    "roles": {
+      "suspect": 1,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "camera_1_Person_10",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Subject approaches the ATM location with apparent purpose (wide-angle view).",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.925,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation",
+        "timestamp_missing"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.441,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O15",
+      "event_ref": "E1",
+      "entity": "unknown_man_1@phone_record",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "A short man in a grey shirt and a khaki cap walked up to the ATM.",
+      "timestamp": "2024-01-15T09:59:49Z",
+      "time_offset": 0,
+      "confidence": 0.581,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "reported_by": "phone_record_Speaker_Unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.551,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O16",
+      "event_ref": "E2",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I saw a short man in a grey shirt and a khaki cap step into the booth.",
+      "timestamp": "2024-01-15T10:00:27",
+      "time_offset": 27,
+      "confidence": 0.619,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.835,
+      "action": "CONFIRM"
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E1",
+      "entity": "intercepted_call_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "Almost at the spot, stay on the line (per call log transcript).",
+      "timestamp": "2024-01-15T10:00:50Z",
+      "time_offset": 50,
+      "confidence": 0.591,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.758,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O17",
+      "event_ref": "E3",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A short man in a grey shirt and a khaki cap was at the machine taking out cash.",
+      "timestamp": "2024-01-15T10:01:17",
+      "time_offset": 77,
+      "confidence": 0.559,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.732,
+      "action": "WITHDRAW"
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E2",
+      "entity": "camera_1_Person_10",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person pulls open the ATM door and proceeds inside.",
+      "timestamp": "2024-01-15T10:01:17Z",
+      "time_offset": 77,
+      "confidence": 0.908,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.907,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E3",
+      "entity": "intercepted_call_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "Transaction going through now (reconstructed from partial recording).",
+      "timestamp": "2024-01-15T10:01:49Z",
+      "time_offset": 109,
+      "confidence": 0.566,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.921,
+      "action": "WITHDRAW"
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E3",
+      "entity": "camera_2_Person_94",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "Person interacts with ATM machine.",
+      "timestamp": "2024-01-15T10:01:52",
+      "time_offset": 112,
+      "confidence": 0.82,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.892,
+      "action": "WITHDRAW"
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E4",
+      "entity": "intercepted_call_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "I've got eyes on the ATM entrance.",
+      "timestamp": "2024-01-15T10:02:22Z",
+      "time_offset": 142,
+      "confidence": 0.426,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.543,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E4",
+      "entity": "cctv_entrance_Person_84",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "I had no role in watching or monitoring any area.",
+      "timestamp": "2024-01-15T10:02:25",
+      "time_offset": 145,
+      "confidence": 0.699,
+      "noise_tags": [
+        "contradiction"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.808
+    },
+    {
+      "obs_id": "O19",
+      "event_ref": "E5",
+      "entity": "Sunita",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "Then a short man in a grey shirt and a khaki cap came out of the ATM quickly.",
+      "timestamp": "2024-01-15T10:02:38Z",
+      "time_offset": 158,
+      "confidence": 0.783,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, grey shirt, khaki cap",
+      "reported_by": "phone_record_Speaker_Unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.72,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E5",
+      "entity": "phone_record_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "Done in here, moving now (statement recorded under caution).",
+      "timestamp": "2024-01-15T10:02:43Z",
+      "time_offset": 163,
+      "confidence": 0.593,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.788,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O18",
+      "event_ref": "E4",
+      "entity": "Sunita Das",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A man was standing outside the booth, watching.",
+      "timestamp": "2024-01-15T10:02:54",
+      "time_offset": 174,
+      "confidence": 0.766,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.24,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E6",
+      "entity": "phone_record_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I noticed them leave the ATM in a hurry.",
+      "timestamp": "2024-01-15T10:02:55Z",
+      "time_offset": 175,
+      "confidence": 0.61,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.937,
+      "action": "OBSERVE"
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E6",
+      "entity": "camera_3_Person_22",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Bystander seen looking toward ATM and turning to observe departing individuals (captured on footage).",
+      "timestamp": "2024-01-15T10:03:16",
+      "time_offset": 196,
+      "confidence": 0.626,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "appearance": "stocky, maroon sweater, blue cap",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.923,
+      "action": "OBSERVE"
+    },
+    {
+      "obs_id": "O13",
+      "event_ref": "E7",
+      "entity": "camera_3_Person_22",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Person observed writing something on paper near the ATM area (captured on footage).",
+      "timestamp": "2024-01-15T10:03:52",
+      "time_offset": 232,
+      "confidence": 0.437,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "appearance": "stocky, maroon sweater, blue cap",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.883
+    },
+    {
+      "obs_id": "O14",
+      "event_ref": "E7",
+      "entity": "phone_record_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "There was an incident at the ATM here and I think you should know (reconstructed from partial recording).",
+      "timestamp": "2024-01-15T10:04:08Z",
+      "time_offset": 248,
+      "confidence": 0.594,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.843,
+      "action": "STEAL"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_31",
+          "audio": "Speaker_V"
+        },
+        "all_aliases": [
+          "Sunita",
+          "Sunita Das",
+          "camera_1_Person_10",
+          "camera_2_Person_94",
+          "cctv_entrance_Person_84",
+          "intercepted_call_Speaker_Unknown",
+          "phone_record_Speaker_Unknown",
+          "unknown_man_1@phone_record",
+          "unknown_man_1@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "video": "Person_64",
+          "audio": "Speaker_A"
+        },
+        "all_aliases": [
+          "camera_3_Person_22",
+          "phone_record_Speaker_Unknown"
+        ]
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_K",
+          "text": "report_88"
+        },
+        "all_aliases": []
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:48",
+        "time_offset": 48
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:01:11",
+        "time_offset": 71
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "withdraw_cash",
+        "timestamp": "2024-01-15T10:01:54",
+        "time_offset": 114
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "wait_outside",
+        "timestamp": "2024-01-15T10:02:25",
+        "time_offset": 145
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:02:40",
+        "time_offset": 160
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:03:01",
+        "time_offset": 181
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:04:05",
+        "time_offset": 245
+      }
+    ],
+    "entity_mapping": {
+      "Sunita": "suspect_1",
+      "Sunita Das": "suspect_1",
+      "camera_1_Person_10": "suspect_1",
+      "camera_2_Person_94": "suspect_1",
+      "camera_3_Person_22": "witness_1",
+      "cctv_entrance_Person_84": "suspect_1",
+      "intercepted_call_Speaker_Unknown": "suspect_1",
+      "unknown_man_1@phone_record": "suspect_1",
+      "unknown_man_1@witness_statement": "suspect_1"
+    },
+    "obs_entity": {
+      "O1": "suspect_1",
+      "O15": "suspect_1",
+      "O16": "suspect_1",
+      "O2": "suspect_1",
+      "O17": "suspect_1",
+      "O3": "suspect_1",
+      "O6": "suspect_1",
+      "O5": "suspect_1",
+      "O8": "suspect_1",
+      "O7": "suspect_1",
+      "O19": "suspect_1",
+      "O10": "suspect_1",
+      "O18": "suspect_1",
+      "O12": "witness_1",
+      "O11": "witness_1",
+      "O13": "witness_1",
+      "O14": "witness_1"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.2,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.6,
+      "undiarized_audio": 0.3,
+      "timestamp_gaps": 0.15,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "difficulty": "medium",
+      "wrong_hint_rate": 0.1,
+      "low_hint_rate": 0.1,
+      "tz_source_rate": 0.5,
+      "fir_error_count": 1,
+      "action_error_rate": 0.1,
+      "action_missing_rate": 0.1
+    },
+    "appearance": {
+      "suspect_1": "short, grey shirt, khaki cap",
+      "witness_1": "stocky, maroon sweater, blue cap",
+      "witness_2": "thin, maroon shirt"
+    },
+    "names": {
+      "suspect_1": "Sunita Das",
+      "witness_1": "Kavitha Das",
+      "witness_2": "Lakshmi Iyer"
+    },
+    "fir_errors": [
+      {
+        "type": "time_window",
+        "fir_value": [
+          807,
+          1415
+        ],
+        "true_value": [
+          0,
+          608
+        ]
+      }
+    ]
+  }
+}

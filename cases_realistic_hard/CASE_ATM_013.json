@@ -1,0 +1,537 @@
+{
+  "case_id": "CASE_ATM_013",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "cash machine theft",
+    "location": "Jayanagar ATM Lobby",
+    "time_window": [
+      0,
+      410
+    ],
+    "description": "An individual was seen loitering near an ATM for an extended period before entering the booth. Witnesses reported the person appeared to tamper with the card slot area before leaving hastily. 2 witness(es) have provided statements.",
+    "roles": {
+      "suspect": 2,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "cctv_atm_Person_60",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "ATM booth interior, card reader and keypad area",
+      "content": "Individual seen fiddling with the ATM card insertion area.",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.845,
+      "noise_tags": [
+        "temporal_noise",
+        "timestamp_missing"
+      ],
+      "appearance": "short, yellow kurta, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.829
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "cctv_entrance_Person_91",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "Subject is seen nearing the ATM from the main road (partially obscured).",
+      "timestamp": "2024-01-15T10:00:40",
+      "time_offset": 40,
+      "confidence": 0.871,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "appearance": "yellow kurta",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.752,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E1",
+      "entity": "unknown_man_1@phone_record",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I saw a short man in a yellow kurta and a helmet heading towards the ATM.",
+      "timestamp": "2024-01-15T10:01:06",
+      "time_offset": 66,
+      "confidence": 0.588,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, yellow kurta, helmet",
+      "reported_by": "phone_record_SPEAKER_00",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.726,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E2",
+      "entity": "Anil",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "A man was hanging around near the ATM for a long time.",
+      "timestamp": "2024-01-15T10:02:25",
+      "time_offset": 145,
+      "confidence": 0.771,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "reported_by": "phone_record_SPEAKER_00",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.874,
+      "action": "LOITER"
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "cctv_atm_Person_60",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "ATM booth interior, card reader and keypad area",
+      "content": "Subject enters the ATM enclosure after surveying the area.",
+      "timestamp": "2024-01-15T15:33:22+05:30",
+      "time_offset": 202,
+      "confidence": 0.851,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "appearance": "short, yellow kurta, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.286,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E5",
+      "entity": "camera_3_Person_62",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "Suspect leaves the cash machine booth abruptly (observed from distance).",
+      "timestamp": "2024-01-15T15:34:02+05:30",
+      "time_offset": 242,
+      "confidence": 0.885,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "appearance": "short, yellow kurta, helmet",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.843,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "phone_record_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I deny witnessing the departures described.",
+      "timestamp": "2024-01-15T10:04:20",
+      "time_offset": 260,
+      "confidence": 0.638,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ],
+      "identity_embedding": [
+        0.1501,
+        0.0199,
+        0.1555,
+        0.0677,
+        0.0528,
+        0.0474,
+        0.0411,
+        -0.0073,
+        0.008,
+        0.0849,
+        0.1203,
+        -0.1878,
+        0.0022,
+        0.001,
+        0.199,
+        -0.0586,
+        0.0963,
+        -0.0863,
+        0.0817,
+        -0.2104,
+        -0.046,
+        0.0766,
+        -0.0489,
+        0.0906,
+        -0.0905,
+        0.2466,
+        -0.0646,
+        0.0575,
+        -0.0565,
+        0.1014,
+        0.1143,
+        -0.2017,
+        0.1465,
+        -0.1727,
+        -0.2244,
+        0.2354,
+        -0.0577,
+        -0.216,
+        0.1911,
+        0.0052,
+        0.1042,
+        0.0342,
+        0.041,
+        -0.2291,
+        -0.0764,
+        -0.0524,
+        -0.2004,
+        -0.0767,
+        -0.0312,
+        -0.0201,
+        -0.1238,
+        -0.2012,
+        0.0558,
+        0.2545,
+        0.0208,
+        -0.1747,
+        -0.0209,
+        0.224,
+        -0.1488,
+        0.0542,
+        -0.1052,
+        -0.0648,
+        0.0073,
+        0.0116
+      ],
+      "role_hint": "witness",
+      "role_hint_confidence": 0.898
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E5",
+      "entity": "Anil Menon",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "A short man in a yellow kurta and a helmet came out of the booth fast.",
+      "timestamp": "2024-01-15T10:04:31",
+      "time_offset": 271,
+      "confidence": 0.782,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, yellow kurta, helmet",
+      "reported_by": "phone_record_SPEAKER_00",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.722,
+      "action": "TAMPER"
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E4",
+      "entity": "Anil",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I saw a man fixing something on the machine.",
+      "timestamp": "2024-01-15T10:04:48",
+      "time_offset": 288,
+      "confidence": 0.748,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "reported_by": "phone_record_SPEAKER_00",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.858,
+      "action": "TAMPER"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E7",
+      "entity": "witness_statement_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I need to report something suspicious near the ATM.",
+      "timestamp": "2024-01-15T10:06:46Z",
+      "time_offset": 406,
+      "confidence": 0.817,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "identity_embedding": [
+        0.1922,
+        0.0442,
+        0.2296,
+        0.0397,
+        -0.003,
+        0.0584,
+        0.0537,
+        0.0146,
+        0.0394,
+        0.0809,
+        0.0266,
+        -0.1798,
+        0.0642,
+        0.088,
+        0.0901,
+        -0.1289,
+        0.0718,
+        -0.2568,
+        0.0683,
+        -0.1737,
+        -0.0197,
+        0.0279,
+        -0.0649,
+        0.0645,
+        -0.1216,
+        0.2668,
+        -0.0669,
+        0.1177,
+        -0.0867,
+        0.0769,
+        0.0987,
+        -0.1313,
+        0.0984,
+        -0.1598,
+        -0.1542,
+        0.1912,
+        -0.0058,
+        -0.2294,
+        0.1799,
+        -0.0738,
+        0.0417,
+        0.0159,
+        -0.0085,
+        -0.1867,
+        -0.1088,
+        0.0435,
+        -0.2084,
+        -0.1104,
+        -0.0205,
+        -0.0484,
+        -0.1507,
+        -0.2638,
+        0.1125,
+        0.2124,
+        0.0063,
+        -0.0627,
+        -0.0176,
+        0.1687,
+        -0.2407,
+        0.0567,
+        -0.0398,
+        -0.0827,
+        0.0728,
+        0.0982
+      ],
+      "role_hint": "witness",
+      "role_hint_confidence": 0.8,
+      "action": "FLEE"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_34"
+        },
+        "all_aliases": [
+          "Anil",
+          "Anil Menon",
+          "camera_3_Person_62",
+          "cctv_atm_Person_60",
+          "cctv_entrance_Person_91",
+          "unknown_man_1@phone_record"
+        ]
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_52",
+          "audio": "Speaker_T",
+          "text": "report_80"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "suspect_3",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_65",
+          "audio": "Speaker_J"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_E"
+        },
+        "all_aliases": [
+          "phone_record_SPEAKER_00",
+          "witness_statement_SPEAKER_00"
+        ]
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "text": "sms_56"
+        },
+        "all_aliases": []
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:39",
+        "time_offset": 39
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "loiter_near_atm",
+        "timestamp": "2024-01-15T10:03:17",
+        "time_offset": 197
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:03:28",
+        "time_offset": 208
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "tamper_atm",
+        "timestamp": "2024-01-15T10:03:53",
+        "time_offset": 233
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:03:59",
+        "time_offset": 239
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:04:08",
+        "time_offset": 248
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:06:34",
+        "time_offset": 394
+      }
+    ],
+    "entity_mapping": {
+      "Anil": "suspect_1",
+      "Anil Menon": "suspect_1",
+      "camera_3_Person_62": "suspect_1",
+      "cctv_atm_Person_60": "suspect_1",
+      "cctv_entrance_Person_91": "suspect_1",
+      "phone_record_SPEAKER_00": "witness_1",
+      "unknown_man_1@phone_record": "suspect_1",
+      "witness_statement_SPEAKER_00": "witness_1"
+    },
+    "obs_entity": {
+      "O4": "suspect_1",
+      "O1": "suspect_1",
+      "O8": "suspect_1",
+      "O9": "suspect_1",
+      "O3": "suspect_1",
+      "O5": "suspect_1",
+      "O6": "witness_1",
+      "O11": "suspect_1",
+      "O10": "suspect_1",
+      "O7": "witness_1"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.3,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.9,
+      "undiarized_audio": 0.45,
+      "timestamp_gaps": 0.225,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "difficulty": "hard",
+      "wrong_hint_rate": 0.15,
+      "low_hint_rate": 0.15,
+      "tz_source_rate": 0.75,
+      "fir_error_count": 2,
+      "action_error_rate": 0.15,
+      "action_missing_rate": 0.15
+    },
+    "appearance": {
+      "suspect_1": "short, yellow kurta, helmet",
+      "suspect_2": "tall, green t-shirt, white scarf",
+      "suspect_3": "tall, maroon shirt, yellow cap",
+      "witness_1": "tall, white kurta",
+      "witness_2": "thin, black jacket, helmet"
+    },
+    "names": {
+      "suspect_1": "Anil Menon",
+      "suspect_2": "Suresh Menon",
+      "suspect_3": "Priya Sharma",
+      "witness_1": "Sunita Nair",
+      "witness_2": "Rahul Das"
+    },
+    "fir_errors": [
+      {
+        "type": "witness_count",
+        "fir_value": 1,
+        "true_value": 2
+      },
+      {
+        "type": "suspect_count",
+        "fir_value": 2,
+        "true_value": 3
+      }
+    ]
+  }
+}

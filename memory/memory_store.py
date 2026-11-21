@@ -239,21 +239,38 @@ class ForenSynthMemory:
             con.executescript(_SCHEMA)
 
     # ── Generator ──────────────────────────────────────────────────────────────
-    def save_case(self, case: Dict[str, Any]) -> None:
+    def save_case(self, case: Dict[str, Any]) -> bool:
+        """Register a case, REPLACING its observations and FIR block.
+
+        Re-saving a case used to INSERT OR IGNORE: observations whose obs_id
+        already existed kept their old content and dropped ones lingered, so
+        after re-ingesting changed evidence ER (fed from the file) and
+        Timeline/Critique (fed from here) worked on different evidence.
+
+        Returns True if the observations differ from what was stored."""
         case_id = case["case_id"]
         fir = case.get("fir", {})
+        new_obs = [{k: v for k, v in obs.items() if k != "event_ref"}
+                   for obs in case.get("observations", [])]
+        old_obs = [_load(r["raw_json"]) for r in self._query(
+            "SELECT raw_json FROM observations WHERE case_id=? ORDER BY obs_id", (case_id,))]
+        key = lambda o: str(o.get("obs_id", ""))
+        changed = sorted(old_obs, key=key) != sorted(new_obs, key=key)
         with self._conn() as con:
             con.execute("""
                 INSERT INTO cases (case_id,domain,template,crime_type,location,
                     description,fir_json,pipeline_status)
                 VALUES (?,?,?,?,?,?,?,'generated')
                 ON CONFLICT(case_id) DO UPDATE SET
+                    domain=excluded.domain, template=excluded.template,
+                    crime_type=excluded.crime_type, location=excluded.location,
+                    description=excluded.description, fir_json=excluded.fir_json,
                     updated_at=datetime('now'),pipeline_status=excluded.pipeline_status
             """, (case_id, case.get("domain",""), case.get("template",""),
                   fir.get("crime_type",""), fir.get("location",""),
                   fir.get("description",""), _j(fir)))
-            for obs in case.get("observations", []):
-                clean = {k: v for k, v in obs.items() if k != "event_ref"}
+            con.execute("DELETE FROM observations WHERE case_id=?", (case_id,))
+            for obs, clean in zip(case.get("observations", []), new_obs):
                 con.execute("""
                     INSERT OR IGNORE INTO observations
                         (case_id,obs_id,entity,role,modality,source,location,
@@ -265,7 +282,28 @@ class ForenSynthMemory:
                       obs.get("timestamp",""), obs.get("time_offset",0),
                       obs.get("confidence",0.5), _j(obs.get("noise_tags",[])), _j(clean)))
         self._log_pipeline(case_id, "generator", "save_case", "")
-        log.info("[Generator] Saved %s (%d obs)", case_id, len(case.get("observations",[])))
+        log.info("[Generator] Saved %s (%d obs%s)", case_id, len(new_obs),
+                 ", evidence changed" if changed and old_obs else "")
+        return changed
+
+    # Everything the ER -> Timeline -> Critique -> Showrunner loop derives
+    # from a case's evidence. The evidence itself (cases, observations,
+    # fir_records) and the pipeline_runs audit log are kept.
+    _DERIVED_TABLES = (
+        "er_runs", "er_canonical", "er_clusters", "er_constraints",
+        "timeline_runs", "timeline_events", "timeline_edges",
+        "critique_runs", "critique_issues", "showrunner_runs",
+    )
+
+    def reset_case_results(self, case_id: str) -> None:
+        """Drop every derived result for a case so a new pipeline run starts
+        at ER v1 / V1 / C1 instead of mixing with a previous run's versions
+        and Showrunner constraints."""
+        with self._conn() as con:
+            for t in self._DERIVED_TABLES:
+                con.execute(f"DELETE FROM {t} WHERE case_id=?", (case_id,))
+        self._log_pipeline(case_id, "pipeline", "reset_case_results", "")
+        log.info("[Pipeline] Cleared previous results for %s", case_id)
 
     # ── FIR (agents/field_agent/fir_agent.py) ────────────────────────────────────────
     def save_fir_record(self, record: Dict[str, Any], summary: Dict[str, Any]) -> None:
@@ -456,11 +494,13 @@ class ForenSynthMemory:
         er_row = self._query_one(
             "SELECT full_json FROM er_runs WHERE case_id=? ORDER BY run_version DESC LIMIT 1", (case_id,))
         graph_data = _load(tl_row["graph_json"]) or {}
+        case_row = self._query_one("SELECT fir_json FROM cases WHERE case_id=?", (case_id,))
         return {
             "timeline": _load(tl_row["full_json"]),
             "graph": self._build_nx_graph(graph_data),
             "observations": [_load(r["raw_json"]) for r in obs_rows],
             "er_result": _load(er_row["full_json"]) if er_row else {},
+            "fir": _load(case_row["fir_json"]) if case_row else {},
         }
 
     def save_critique(self, critique: Dict[str, Any]) -> None:

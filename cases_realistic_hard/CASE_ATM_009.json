@@ -1,0 +1,551 @@
+{
+  "case_id": "CASE_ATM_009",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Action_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "Indiranagar HDFC ATM",
+    "time_window": [
+      0,
+      386
+    ],
+    "description": "Surveillance logs confirm entry by 2 person(s) into the ATM booth during the reported time window. The accused departed prior to security arrival. 2 independent observer(s) corroborate the sequence of events.",
+    "roles": {
+      "suspect": 3,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O13",
+      "event_ref": "E1",
+      "entity": "unknown_man_1@phone_record",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "A short man in a maroon sweater and a maroon scarf walked up to the ATM.",
+      "timestamp": "2024-01-15T15:29:47+05:30",
+      "time_offset": 0,
+      "confidence": 0.791,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, maroon sweater, maroon scarf",
+      "reported_by": "phone_record_Speaker_Unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.708,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E2",
+      "entity": "Kavitha Kumar",
+      "role": "unknown",
+      "modality": "text",
+      "source": "incident_report",
+      "location": "bank security office, incident registry",
+      "content": "Inside. Booth is empty. (forwarded)",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.765,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation",
+        "timestamp_missing"
+      ],
+      "role_hint": "victim",
+      "role_hint_confidence": 0.848,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O14",
+      "event_ref": "E2",
+      "entity": "Kavitha",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A short man in a maroon sweater and a maroon scarf went inside the ATM booth.",
+      "timestamp": "2024-01-15T10:00:01Z",
+      "time_offset": 1,
+      "confidence": 0.619,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, maroon sweater, maroon scarf",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.941,
+      "action": "ENTER"
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E1",
+      "entity": "Kavitha Kumar",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "On my way to the spot now.",
+      "timestamp": "2024-01-15T10:00:22Z",
+      "time_offset": 22,
+      "confidence": 0.745,
+      "noise_tags": [],
+      "role_hint": "victim",
+      "role_hint_confidence": 0.771,
+      "action": "APPROACH"
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "phone_record_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I can see the ATM now.",
+      "timestamp": "2024-01-15T15:30:34+05:30",
+      "time_offset": 34,
+      "confidence": 0.421,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.762
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E2",
+      "entity": "intercepted_call_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "intercepted_call",
+      "location": "ATM vicinity, intercepted channel",
+      "content": "In the enclosure now, all good.",
+      "timestamp": "2024-01-15T15:30:44+05:30",
+      "time_offset": 44,
+      "confidence": 0.433,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.762
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E3",
+      "entity": "K. Kumar",
+      "role": "unknown",
+      "modality": "text",
+      "source": "incident_report",
+      "location": "bank security office, incident registry",
+      "content": "Card working. Cash out now.",
+      "timestamp": "2024-01-15T10:01:29Z",
+      "time_offset": 89,
+      "confidence": 0.751,
+      "noise_tags": [],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.853,
+      "action": "WITHDRAW"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E4",
+      "entity": "mic_booth_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "mic_booth",
+      "location": "ATM booth interior",
+      "content": "I've got eyes on the ATM entrance.",
+      "timestamp": "2024-01-15T15:31:52+05:30",
+      "time_offset": 112,
+      "confidence": 0.808,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "identity_embedding": [
+        -0.0141,
+        0.0308,
+        -0.0086,
+        -0.1324,
+        -0.0119,
+        -0.186,
+        0.1763,
+        0.1317,
+        -0.0417,
+        0.012,
+        -0.1906,
+        -0.0053,
+        -0.1223,
+        0.1906,
+        0.0698,
+        0.051,
+        -0.076,
+        -0.0175,
+        -0.1462,
+        0.0242,
+        0.0356,
+        -0.1297,
+        -0.0244,
+        0.0629,
+        -0.202,
+        -0.0019,
+        0.0995,
+        -0.1257,
+        -0.0811,
+        -0.0863,
+        0.01,
+        0.1337,
+        -0.0921,
+        0.1715,
+        0.1008,
+        0.0503,
+        0.2028,
+        0.078,
+        0.0967,
+        0.0055,
+        -0.1107,
+        -0.0283,
+        0.0732,
+        0.1125,
+        -0.234,
+        0.1254,
+        0.079,
+        0.2079,
+        -0.0241,
+        -0.0132,
+        -0.154,
+        0.0015,
+        -0.3554,
+        -0.0893,
+        -0.1956,
+        -0.1026,
+        -0.0894,
+        -0.1218,
+        0.1316,
+        0.1125,
+        0.2235,
+        0.1909,
+        -0.2117,
+        0.0456
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.888,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O16",
+      "event_ref": "E4",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A short man in a maroon sweater and a maroon scarf was standing outside the booth, watching.",
+      "timestamp": "2024-01-15T10:01:58Z",
+      "time_offset": 118,
+      "confidence": 0.795,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, maroon sweater, maroon scarf",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.848,
+      "action": "WATCH"
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E4",
+      "entity": "Kavitha",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Nothing suspicious. Continue.",
+      "timestamp": "2024-01-15T10:02:02Z",
+      "time_offset": 122,
+      "confidence": 0.861,
+      "noise_tags": [],
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.531,
+      "action": "LOITER"
+    },
+    {
+      "obs_id": "O15",
+      "event_ref": "E3",
+      "entity": "unknown_man_1@phone_record",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "A short man in a maroon sweater and a maroon scarf was at the machine taking out cash.",
+      "timestamp": "2024-01-15T15:32:19+05:30",
+      "time_offset": 139,
+      "confidence": 0.696,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, maroon sweater, maroon scarf",
+      "reported_by": "phone_record_Speaker_Unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.864,
+      "action": "LOITER"
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E5",
+      "entity": "Kavitha",
+      "role": "unknown",
+      "modality": "text",
+      "source": "incident_report",
+      "location": "bank security office, incident registry",
+      "content": "Done here. Moving.",
+      "timestamp": "2024-01-15T10:02:20Z",
+      "time_offset": 140,
+      "confidence": 0.705,
+      "noise_tags": [],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.487,
+      "action": "EXIT"
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E5",
+      "entity": "phone_record_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I departed that location long before the time mentioned.",
+      "timestamp": "2024-01-15T15:32:25+05:30",
+      "time_offset": 145,
+      "confidence": 0.343,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise"
+      ],
+      "extraction_status": "undiarized",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.727
+    },
+    {
+      "obs_id": "O11",
+      "event_ref": "E6",
+      "entity": "camera_1_Person_29",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Passerby stops walking and watches two people leave the ATM area (poor image quality).",
+      "timestamp": "2024-01-15T10:02:44Z",
+      "time_offset": 164,
+      "confidence": 0.559,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "appearance": "blue jacket",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.794,
+      "action": "OBSERVE"
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E6",
+      "entity": "phone_record_Speaker_Unknown",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I noticed them leave the ATM in a hurry.",
+      "timestamp": "2024-01-15T15:32:49+05:30",
+      "time_offset": 169,
+      "confidence": 0.591,
+      "noise_tags": [],
+      "extraction_status": "undiarized",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.766,
+      "action": "OBSERVE"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "audio": "Speaker_V",
+          "text": "report_20"
+        },
+        "all_aliases": [
+          "K. Kumar",
+          "Kavitha",
+          "Kavitha Kumar",
+          "intercepted_call_Speaker_Unknown",
+          "mic_booth_SPEAKER_00",
+          "phone_record_Speaker_Unknown",
+          "unknown_man_1@phone_record",
+          "unknown_man_1@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_55",
+          "audio": "Speaker_Q"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "video": "Person_66",
+          "audio": "Speaker_P",
+          "text": "log_96"
+        },
+        "all_aliases": [
+          "camera_1_Person_29",
+          "phone_record_Speaker_Unknown"
+        ]
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_H",
+          "text": "email_86"
+        },
+        "all_aliases": []
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:21",
+        "time_offset": 21
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:00:40",
+        "time_offset": 40
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "withdraw_cash",
+        "timestamp": "2024-01-15T10:01:27",
+        "time_offset": 87
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "wait_outside",
+        "timestamp": "2024-01-15T10:02:01",
+        "time_offset": 121
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:02:19",
+        "time_offset": 139
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:02:48",
+        "time_offset": 168
+      }
+    ],
+    "entity_mapping": {
+      "K. Kumar": "suspect_1",
+      "Kavitha": "suspect_1",
+      "Kavitha Kumar": "suspect_1",
+      "camera_1_Person_29": "witness_1",
+      "intercepted_call_Speaker_Unknown": "suspect_1",
+      "mic_booth_SPEAKER_00": "suspect_1",
+      "unknown_man_1@phone_record": "suspect_1",
+      "unknown_man_1@witness_statement": "suspect_1"
+    },
+    "obs_entity": {
+      "O13": "suspect_1",
+      "O4": "suspect_1",
+      "O14": "suspect_1",
+      "O2": "suspect_1",
+      "O1": "suspect_1",
+      "O3": "suspect_1",
+      "O6": "suspect_1",
+      "O7": "suspect_1",
+      "O16": "suspect_1",
+      "O8": "suspect_1",
+      "O15": "suspect_1",
+      "O10": "suspect_1",
+      "O9": "suspect_1",
+      "O11": "witness_1",
+      "O12": "witness_1"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.3,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.9,
+      "undiarized_audio": 0.45,
+      "timestamp_gaps": 0.225,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "difficulty": "hard",
+      "wrong_hint_rate": 0.15,
+      "low_hint_rate": 0.15,
+      "tz_source_rate": 0.75,
+      "fir_error_count": 2,
+      "action_error_rate": 0.15,
+      "action_missing_rate": 0.15
+    },
+    "appearance": {
+      "suspect_1": "short, maroon sweater, maroon scarf",
+      "suspect_2": "short, maroon sweater, helmet",
+      "witness_1": "stocky, blue jacket, helmet",
+      "witness_2": "thin, green sweater, red cap"
+    },
+    "names": {
+      "suspect_1": "Kavitha Kumar",
+      "suspect_2": "Priya Kumar",
+      "witness_1": "Vikram Menon",
+      "witness_2": "Deepak Patel"
+    },
+    "fir_errors": [
+      {
+        "type": "suspect_count",
+        "fir_value": 3,
+        "true_value": 2
+      },
+      {
+        "type": "witness_count",
+        "fir_value": 1,
+        "true_value": 2
+      }
+    ]
+  }
+}

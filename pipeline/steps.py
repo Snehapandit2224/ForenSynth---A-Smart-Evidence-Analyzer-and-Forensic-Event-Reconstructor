@@ -20,9 +20,21 @@ for _p in [str(_root / "agents"), str(_root / "memory"), str(_root)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+# Every stage prints "→"; a Windows console's legacy codepage (cp1252) can't
+# encode it and the first print crashes the run. Same fix as run_case.py,
+# here so every caller of these stages gets it.
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+from showrunner_agent import MAX_TIMELINE_VERSION  # noqa: E402
+
 log = logging.getLogger("forensynth.steps")
 
-MAX_LOOPS = 5
+# One loop pass produces one timeline version, and the Showrunner escalates
+# at its version ceiling - so the loop ceiling IS that ceiling. (It used to
+# be 5 against a ceiling of 3: passes 4 and 5 could never happen.)
+MAX_LOOPS = MAX_TIMELINE_VERSION
 
 
 def _import_video():
@@ -67,6 +79,24 @@ def _import_evaluator():
         return None
 
 
+def clear_case_outputs(out, case_id) -> int:
+    """Delete a case's versioned ER / timeline / critique / showrunner files
+    from a previous run, so a re-run that stops at V1 doesn't leave the old
+    run's V2/V3 next to it (the dashboard and evaluate_all would read them).
+    Matches on "<case_id>_" so CASE_ATM_001 never touches CASE_ATM_0011."""
+    out = Path(out)
+    patterns = [("er", f"{case_id}_er_v*_output.json"),
+                ("timelines", f"{case_id}_timeline_*.json"),
+                ("critiques", f"{case_id}_critique_C*.json"),
+                ("showrunner", f"{case_id}_showrunner_C*.json")]
+    removed = 0
+    for sub, pattern in patterns:
+        for f in (out / sub).glob(pattern):
+            f.unlink()
+            removed += 1
+    return removed
+
+
 def _banner(msg: str) -> None:
     print(f"\n{'='*60}")
     print(f"  {msg}")
@@ -91,14 +121,26 @@ def run_er(mem, obs_data, llm, run_version, human_constraints=None, out_dir=None
     return result
 
 
-def run_timeline(mem, case_id, er_ver, tl_version, out_dir=None):
-    from timeline_agent import run_timeline_agent
+def run_timeline(mem, case_id, er_ver, tl_version, out_dir=None,
+                 exclude_edges=None, llm=True):
+    """exclude_edges: [source, target] pairs the Critique flagged in an
+    earlier pass (its edges_to_exclude) - the revision a re_run_timeline
+    actually applies. llm=False forces the deterministic path."""
+    from timeline_agent import NoOpLLMFallback, run_timeline_agent
     _banner(f"Timeline {tl_version} — {case_id}  (ER v{er_ver})")
     payload = mem.load_for_timeline(case_id, er_version=er_ver)
     if not payload:
         raise RuntimeError(f"Cannot load timeline payload for {case_id}")
+    if exclude_edges:
+        payload["revision"] = {"exclude_edges": [list(e) for e in exclude_edges]}
+        print(f"  Excluding {len(exclude_edges)} edge(s) flagged by the Critique")
     tmp = str(out_dir) if out_dir else "./output/timelines"
-    result = run_timeline_agent(payload, output_dir=tmp)
+    # save_outputs=False: the agent's own save always writes
+    # <case>_timeline_V1.json (its internal version is fixed), which
+    # overwrote the real V1 file on every later pass. The versioned files
+    # are written below.
+    result = run_timeline_agent(payload, output_dir=tmp, save_outputs=False,
+                                llm=None if llm else NoOpLLMFallback())
     result["timeline_version"] = tl_version
     mem.save_timeline(result)
     if out_dir:
@@ -115,7 +157,7 @@ def run_timeline(mem, case_id, er_ver, tl_version, out_dir=None):
 
 
 def run_critique(mem, case_id, tl_version, crit_version,
-                 tl_result=None, out_dir=None):
+                 tl_result=None, out_dir=None, llm=True):
     from critique_agent import run_critique_agent
     from memory_store import _load
     _banner(f"Critique {crit_version} — {case_id}  (Timeline {tl_version})")
@@ -128,12 +170,14 @@ def run_critique(mem, case_id, tl_version, crit_version,
         obs_rows = mem._query(
             "SELECT raw_json FROM observations "
             "WHERE case_id=? ORDER BY time_offset", (case_id,))
+        case_row = mem._query_one("SELECT fir_json FROM cases WHERE case_id=?", (case_id,))
         payload = {
             "timeline":     tl_result,
             "graph":        mem._build_nx_graph(
                                 tl_result.get("timeline_graph", {})),
             "observations": [_load(r["raw_json"]) for r in obs_rows],
             "er_result":    _load(er_row["full_json"]) if er_row else {},
+            "fir":          _load(case_row["fir_json"]) if case_row else {},
         }
     else:
         payload = mem.load_for_critique(case_id, tl_version=tl_version)
@@ -142,7 +186,12 @@ def run_critique(mem, case_id, tl_version, crit_version,
                 f"Cannot load critique payload for {case_id} "
                 f"tl_version={tl_version}")
 
-    result = run_critique_agent(payload, critique_version=crit_version)
+    # The pass number decides how warnings are treated (they only force a
+    # revision on the first pass). It was never passed, so every pass was
+    # judged as the first and warnings re-triggered REVISE forever.
+    result = run_critique_agent(payload, critique_version=crit_version,
+                                iteration=int(crit_version.lstrip("C") or 1),
+                                llm_enabled=llm)
     mem.save_critique(result)
 
     if out_dir:
@@ -217,7 +266,7 @@ def run_showrunner(mem, case_id, tl_ver, crit_ver, out_dir=None, prev_decision=N
 # MAX_LOOPS ceiling). Each is optional and returns None when its dependency
 # is missing, so a failed output never fails the case.
 
-def run_scene_video(case_id, out):
+def run_scene_video(case_id, out, db_path=None):
     generate_scene_video = _import_video()
     build_scene_specs, scene_db_path = _import_scene_planner()
     if not generate_scene_video:
@@ -230,7 +279,7 @@ def run_scene_video(case_id, out):
     # forensynth.db -- a fresh, not stale, read -- so that the video is
     # driven by the same physical-vs-reported classification used
     # everywhere else, instead of re-deriving it from the timeline result.
-    scene_spec = build_scene_specs(case_id, scene_db_path)
+    scene_spec = build_scene_specs(case_id, db_path or scene_db_path)
     video_path = generate_scene_video(scene_spec, str(out / "videos"), case_id)
     print(f"  Video  → {video_path}" if video_path else "  Video generation FAILED — see log.")
     return video_path
@@ -246,12 +295,13 @@ def run_report(case_id, out, pipeline_outputs):
     return report_path
 
 
-def run_eval(case_id, out, tl_ver):
+def run_eval(case_id, out, tl_ver, input_path=None):
     # Ground-truth evaluation only applies to synthetic cases generated
-    # with a matching cases/{case_id}.json ground truth file -- skip
-    # quietly for any case that doesn't have one.
-    ground_truth_path = Path("cases") / f"{case_id}.json"
-    if not ground_truth_path.exists():
+    # with a matching <case_id>.json ground truth file - next to the input
+    # (e.g. cases_realistic/) or in cases/ - and is skipped quietly otherwise.
+    candidates = ([Path(input_path).parent / f"{case_id}.json"] if input_path else []) +                  [Path("cases") / f"{case_id}.json"]
+    ground_truth_path = next((p for p in candidates if p.exists()), None)
+    if ground_truth_path is None:
         return None
     evaluate_case = _import_evaluator()
     if not evaluate_case:
@@ -268,4 +318,18 @@ def run_eval(case_id, out, tl_ver):
     )
     log.info("Evaluation: F1=%s result=%s", eval_result.get("f1_score", "N/A"), eval_result.get("result"))
     print(f"  Eval   → F1={eval_result.get('f1_score', 'N/A')}  result={eval_result.get('result')}")
+
+    # ER scored on its own (wrong merges / wrong splits), on the final ER run
+    from evaluate_er import evaluate_er_file
+    er_files = sorted((out / "er").glob(f"{case_id}_er_v*_output.json"),
+                      key=lambda p: int(p.stem.split("_er_v")[1].split("_")[0]))
+    if er_files:
+        er_eval = evaluate_er_file(str(er_files[-1]), str(ground_truth_path))
+        if er_eval:
+            eval_result["entity_resolution"] = er_eval
+            (out / "evaluation").mkdir(parents=True, exist_ok=True)
+            (out / "evaluation" / f"{case_id}_er_eval.json").write_text(
+                json.dumps(er_eval, indent=2), encoding="utf-8")
+            print(f"  ER     → precision={er_eval['er_precision']}  recall={er_eval['er_recall']}"
+                  + (f"  wrong merges: {er_eval['wrong_merges']}" if er_eval["wrong_merges"] else ""))
     return eval_result

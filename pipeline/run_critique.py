@@ -17,6 +17,12 @@ import logging
 import sys
 from pathlib import Path
 
+# Windows consoles default to cp1252, which can't encode the "→" in this
+# script's output - force UTF-8 (same fix as run_case.py).
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 
@@ -73,7 +79,8 @@ def main():
                 print(f"[ERROR] Could not load critique payload for {args.case}")
                 sys.exit(1)
 
-            result = run_critique_agent(payload, critique_version=crit_ver)
+            result = run_critique_agent(payload, critique_version=crit_ver,
+                                        iteration=int(crit_ver.lstrip("C") or 1))
 
         except ImportError:
             print("[ERROR] memory_store.py not found."); sys.exit(1)

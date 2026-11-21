@@ -214,6 +214,10 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         # legitimate approach-phase observations to get zero action tags and
         # fail to cluster with the rest of the approach event.
         "i can see", "i'm close", "walking up to",
+        # General phrasing found missing by the tag error analysis (video
+        # descriptions and witness reports): arrival / walking up.
+        "arrives at", "arriving at", "arrived at", "walked up to", "walks up to", "went up to",
+        "in the direction of", "coming towards", "came towards", "headed towards", "heading towards",
     ),
     "ENTER": (
         "enter", "steps into", "step inside", "stepped in", "pushes open", "pulls open",
@@ -224,6 +228,8 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         # FIX: found via real CASE_ATM_002 data (O6 "proceeds into the ATM
         # kiosk") and systematic phrase-bank audit of enter_atm (audio+text).
         "proceeds into", "inside now", "in the enclosure", "inside. booth", "booth is empty",
+        "pushes into", "steps through", "step into", "stepped into", "went inside", "goes inside",
+        "went into", "walked into", "walks into",
     ),
     "WITHDRAW": (
         "withdraw", "transaction", "operate the atm", "operating the atm", "pressing keys",
@@ -231,6 +237,8 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         "dispensing", "cash is coming out", "cash out", "getting the money",
         "machine is dispensing", "transaction complete", "transaction going through",
         "card working", "card's in", "processing",
+        "pressing atm keys", "pressing the keys", "interacts with atm", "interacts with the atm",
+        "using the atm", "using the machine", "taking out cash", "took out cash", "at the machine",
     ),
     "TAMPER": (
         "tamper", "skimmer", "device is attached", "device placed", "reader fitted",
@@ -243,6 +251,7 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         # and added the real phrasing the generator actually uses.
         "fiddling", "fiddling with", "card slot", "manipulating", "messing with",
         "insertion area",
+        "affix", "foreign device", "card reader",
     ),
     "LOITER": (
         "loiter", "lingers", "linger", "remains in", "standing near", "waiting for the right moment",
@@ -260,7 +269,7 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         "exit", "leaves", "leaving", "left the", "left through", "walks out", "walked out",
         "walk out", "departs", "departing", "departed", "recorded leaving", "coming out",
         "come out", "out of the atm", "out of the booth", "out now", "clean exit",
-        "exiting via", "i'm out", "i'm through",
+        "exiting via", "i'm out", "i'm through", "came out", "left together", "leave the atm",
         # FIX: found via real CASE_ATM_002 data (O15 "Done in here, moving
         # now." should have merged with O16 into one exit_atm event).
         "done in here", "done here",
@@ -275,12 +284,15 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         # generator's own flee_scene phrases were only ~40% covered before.
         "get out", "leave now", "leave everything", "need to leave", "go now",
         "someone's watching", "security nearby", "don't look back", "someone's coming",
+        "walking away rapidly", "at pace", "rushed away", "ran off", "running away", "ran away",
+        "sped off", "ran towards",
     ),
     "STEAL": (
         "steal", "stole", "stolen", "got the files", "got the folders", "documents are in the bag",
         "grabbed everything", "items secured", "usb is in", "usb full", "copying", "copy complete",
         "data's transferring", "transfer complete", "transfer at", "files are on the drive",
         "wiping the logs", "wiping history",
+        "took something", "put it in a bag", "pocketed",
     ),
     "NAVIGATE": (
         "navigate", "corridor", "taking the stairs", "taking stairs", "server room",
@@ -314,19 +326,31 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         # outside the booth, watching the area." should have merged with
         # O10 into one wait_outside event).
         "remains outside", "watching the area",
+        "positions themselves at", "kept waiting", "waiting near", "standing outside",
+        "keeps watch", "kept watch", "on the lookout",
     ),
+    # Active observing only. "observed"/"seen" are passive camera wording
+    # ("Person observed walking towards the ATM") and used to tag every such
+    # video description OBSERVE instead of what the person was doing.
     "OBSERVE": (
-        "observe", "observed", "witness", "witnessed", "saw", "noticed", "sees someone",
-        "bystander", "eyewitness", "i saw", "i noticed",
+        "observes", "observing", "witness spots", "witnessed", "saw", "noticed", "sees someone",
+        "bystander", "eyewitness", "i saw", "i noticed", "watches", "spots",
     ),
     "REPORT": (
         "report", "file a complaint", "speak to an officer", "calling to report",
         "want to let you know", "should report", "should know",
+        "complaint", "filing", "filed",
     ),
     "INTERCEPT": (
         "intercept", "intercepted", "misdirected", "not meant for", "picked up a communication",
     ),
 }
+
+
+# The canonical action tags. Field agents that read whole statements (the
+# text / audio / FIR extractors) output one of these as an observation's
+# `action`; the Timeline prefers it over phrase matching.
+ACTION_TAG_VOCABULARY: frozenset = frozenset(ACTION_TAG_FRAGMENTS)
 
 
 _NEGATION_WORDS = (

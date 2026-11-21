@@ -34,6 +34,7 @@ from shared import (
     normalize_alias, normalize_modality, normalize_role, clean_content,
     extract_action_tags, parse_timestamp, epoch_to_iso,
     utc_now_iso, clamp, content_action_keywords, short_summary, deterministic_tiebreak_key,
+    ACTION_TAG_VOCABULARY,
 )
 
 try:
@@ -71,6 +72,14 @@ LOCAL_LLM_TIMEOUT_SEC: float = 15.0
 # -- Temporal reasoning -------------------------------------------------------
 CAUSAL_WINDOW_SEC: int = 600          # max gap to infer causality
 SIMULTANEOUS_WINDOW_SEC: int = 30     # events within N sec are "simultaneous"
+# Same-moment links (_link_same_moment): events of DIFFERENT entities this
+# close in time, describing the same kind of act, are shown as one moment
+# seen through several observations. Wider than "simultaneous" because a
+# witness's sense of time is off by up to a minute.
+SAME_MOMENT_WINDOW_SEC: int = 60
+# Tags that describe how something was learned, not what happened - two
+# people both "observing" at the same second are not the same moment.
+_FRAME_TAGS = frozenset({"OBSERVE", "REPORT", "COMMUNICATE", "CONFIRM"})
 TEMPORAL_CONFIDENCE_DECAY: float = 0.05  # penalty per hour of gap uncertainty
 
 # FIX: same-location causal check used to require an EXACT location_key
@@ -232,6 +241,9 @@ class CanonicalEntity:
     latest_timestamp:   str
     time_span_seconds:  int
     candidate_mentions: List[Dict[str, Any]] = field(default_factory=list)
+    # ER's role for the whole entity, decided after grouping (observation
+    # roles, else confident field-agent hints) - "unknown" if none.
+    role:              str = "unknown"
 
 
 # -- Timeline event (enriched observation) --------------------------------------
@@ -257,6 +269,10 @@ class TimelineEvent:
 
     # Explainability
     reasoning:     List[str] = field(default_factory=list)
+
+    # Events of OTHER entities describing the same moment (see
+    # _link_same_moment) - corroboration, not a claim they are one person.
+    same_moment_as: List[str] = field(default_factory=list)
 
     # Versioning hook
     version:       str = "V1"
@@ -370,6 +386,7 @@ class TimelineVersion:
                 "conflict_flag": ev.conflict_flag,
                 "conflict_note": ev.conflict_note,
                 "reasoning":     ev.reasoning,
+                "same_moment_as": ev.same_moment_as,
                 "version":       ev.version,
             }
 
@@ -937,6 +954,14 @@ def _lexical_similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
 
+_DENIAL = re.compile(r"\b(never|didn't|did not|wasn't|was not|haven't|have not|denies|denied|deny)\b",
+                     re.IGNORECASE)
+
+
+def _is_denial(content: str) -> bool:
+    return bool(_DENIAL.search(content or ""))
+
+
 def compute_compatibility(a: ClusterableObservation, b: ClusterableObservation) -> float:
     """
     Compatibility score in [0, 1] between two SAME-ENTITY observations,
@@ -950,6 +975,7 @@ def compute_compatibility(a: ClusterableObservation, b: ClusterableObservation) 
     than EVENT_CLUSTER_WINDOW_SEC apart when both have valid timestamps -
     no amount of other similarity should merge events far apart in time.
     """
+    gap = None
     if a.ts_epoch > 0 and b.ts_epoch > 0:
         gap = abs(a.ts_epoch - b.ts_epoch)
         if gap > EVENT_CLUSTER_WINDOW_SEC:
@@ -960,10 +986,33 @@ def compute_compatibility(a: ClusterableObservation, b: ClusterableObservation) 
         # bonus) - let action-tag/location/lexical signal decide.
         time_score = 0.5
 
-    shared_tags = a.action_tags & b.action_tags
-    action_score = 1.0 if shared_tags else 0.0
+    # A denial is a statement about the act, not another sighting of it:
+    # "I never went inside" must not become part of the entry it denies.
+    if _is_denial(a.content) != _is_denial(b.content):
+        return 0.0
 
-    location_score = 1.0 if (a.location_key and b.location_key and a.location_key == b.location_key) else 0.0
+    # Untagged is "unknown action", not "different action": one side without
+    # a tag is neutral; only two DIFFERENT tags count against grouping.
+    # (Requiring a shared tag left one person's camera clip and the witness
+    # report of the same exit as two events whenever either went untagged.)
+    # Only near-simultaneous ones, though: a person's consecutive acts (walk
+    # up, then go in, 40s later) must not blur into one event because one of
+    # them went untagged.
+    shared_tags = a.action_tags & b.action_tags
+    if shared_tags:
+        action_score = 1.0
+    elif (not a.action_tags or not b.action_tags) and gap is not None and gap <= SIMULTANEOUS_WINDOW_SEC:
+        action_score = 0.5
+    else:
+        action_score = 0.0
+
+    # How close the places are, not exact string equality: a camera's "ATM
+    # booth entrance" and a witness's "ATM vicinity" never matched before.
+    if a.location_key and b.location_key:
+        location_score = 1.0 if a.location_key == b.location_key else \
+            semantic_location_similarity(a.location_key, b.location_key)
+    else:
+        location_score = 0.0
 
     lexical_score = _lexical_similarity(a.content, b.content)
 
@@ -2049,6 +2098,7 @@ def _parse_entity(item: Dict[str, Any]) -> CanonicalEntity:
         latest_timestamp=str(item.get("latest_timestamp", "")),
         time_span_seconds=_safe_int(item.get("time_span_seconds", 0), 0),
         candidate_mentions=list(item.get("candidate_mentions", [])),
+        role=str(item.get("role") or "unknown"),
     )
 
 
@@ -2113,6 +2163,22 @@ class JsonObservationRepository(ObservationRepository):
                     location_key=str(item.get("location", "")).strip().lower(),
                     action_tags=set(),
                 )
+
+        # Field-agent knowledge the phrase matcher doesn't have:
+        #  - `action`: the extractor's canonical action for the event (it read
+        #    the whole statement); preferred over phrase matching.
+        #  - `reported_by`: the observation is a witness describing someone
+        #    else's act ("I saw a man step into the booth"). Its actor did the
+        #    act; the observing/reporting frame belongs to the witness.
+        for item in raw_observations:
+            obs = self._obs.get(str(item.get("obs_id", "")).strip())
+            if obs is None:
+                continue
+            action = str(item.get("action") or "").strip().upper()
+            if action in ACTION_TAG_VOCABULARY:
+                obs.action_tags = [action]
+            elif item.get("reported_by") and str(item["reported_by"]) != obs.entity:
+                obs.action_tags = [t for t in obs.action_tags if t not in ("OBSERVE", "REPORT")]
 
 
     def get_all(self, case_id: str) -> List[RawObservation]:
@@ -2370,8 +2436,10 @@ class TimelineAgent:
             # -- Stage 2: Event Enrichment ------------------------------------------
             stage = "stage_2_enrichment"
             t0 = time.perf_counter()
+            fir_derived = {str(o.get("obs_id")) for o in payload["obs_only"]["observations"]
+                           if isinstance(o, dict) and o.get("fir_derived")}
             events, obs_conflict_set, unlocalized_count, unresolved_entities = self._stage_2_enrich(
-                raw_observations, canonical_entities, conflicts_raw, cluster_index
+                raw_observations, canonical_entities, conflicts_raw, cluster_index, fir_derived
             )
             stage_timings["stage_2_enrichment"] = time.perf_counter() - t0
             log.info("Stage 2 complete - %d events created", len(events))
@@ -2412,6 +2480,30 @@ class TimelineAgent:
             causal_edges, unresolved_causal = self._causal.infer_causal_links(events)
             stage_timings["stage_6_causal"] = time.perf_counter() - t0
             log.info("Stage 6 complete - %d causal edges, %d unresolved", len(causal_edges), len(unresolved_causal))
+
+            # -- Revision: drop the edges the Critique flagged ----------------------
+            # A re_run_timeline is only a revision if something changes: the
+            # Critique names the edges it found impossible (the weakest edge
+            # of a causal cycle, an LLM edge contradicting the timestamps) and
+            # this pass leaves them out. Event ids are derived from obs ids +
+            # entity id, so they are stable across passes on the same ER run.
+            excluded = {
+                (str(e[0]), str(e[1]))
+                for e in (payload.get("revision") or {}).get("exclude_edges", [])
+                if isinstance(e, (list, tuple)) and len(e) == 2
+            }
+            excluded_applied: List[List[str]] = []
+            if excluded:
+                for edges in (temporal_edges, causal_edges):
+                    kept = [ed for ed in edges if (ed.source, ed.target) not in excluded]
+                    excluded_applied += [[ed.source, ed.target] for ed in edges
+                                         if (ed.source, ed.target) in excluded]
+                    edges[:] = kept
+                log.info("Revision: excluded %d of %d flagged edge(s)", len(excluded_applied), len(excluded))
+
+            # -- Stage 6b: Same-moment links across entities ------------------------
+            same_moment_links = self._link_same_moment(events)
+            log.info("Stage 6b complete - %d same-moment link(s)", len(same_moment_links))
 
             # -- Stage 7: Uncertainty Modelling (confidence already embedded in Stage 2) --
             stage_timings["stage_7_uncertainty"] = 0.0
@@ -2499,6 +2591,8 @@ class TimelineAgent:
         # fallback is enabled, instead of hiding it inside logs.
         result["llm_backend_used"] = type(self._llm).__name__
         result["llm_calls_made"] = getattr(self._llm, "calls_made", 0)
+        result["excluded_edges"] = excluded_applied
+        result["same_moment_links"] = same_moment_links
 
         classification, reason = self._classify_output(
             events, unresolved_temporal, unresolved_causal, conflicts_summary
@@ -2506,6 +2600,38 @@ class TimelineAgent:
         result["output_classification"] = classification
         result["output_classification_reason"] = reason
         return result
+
+    @staticmethod
+    def _link_same_moment(events: List[TimelineEvent]) -> List[Dict[str, Any]]:
+        """
+        Link events of DIFFERENT entities that describe the same moment: both
+        timed, within SAME_MOMENT_WINDOW_SEC, sharing an action tag that says
+        what happened (not just OBSERVE/REPORT), neither a denial.
+
+        Most of the Timeline's repeated events are one moment seen through
+        aliases ER keeps apart for lack of identity evidence - a suspect's
+        CCTV exit and his phone call "I'm out" at the same second. Merging
+        them would assert they are one person, which nothing proves; listing
+        them as unrelated events misstates the timeline. A link says "same
+        moment, corroborating" and leaves identity to ER and the investigator.
+        """
+        links: List[Dict[str, Any]] = []
+        timed = sorted((e for e in events if e.ts_epoch > 0), key=lambda e: e.ts_epoch)
+        for i, a in enumerate(timed):
+            for b in timed[i + 1:]:
+                gap = b.ts_epoch - a.ts_epoch
+                if gap > SAME_MOMENT_WINDOW_SEC:
+                    break
+                if a.entity_id == b.entity_id or _is_denial(a.content) or _is_denial(b.content):
+                    continue
+                shared = (set(a.action_tags) & set(b.action_tags)) - _FRAME_TAGS
+                if not shared:
+                    continue
+                a.same_moment_as.append(b.event_id)
+                b.same_moment_as.append(a.event_id)
+                links.append({"events": [a.event_id, b.event_id], "entities": [a.entity_id, b.entity_id],
+                              "gap_sec": round(gap, 1), "shared_actions": sorted(shared)})
+        return links
 
     def _classify_output(
         self,
@@ -2586,6 +2712,7 @@ class TimelineAgent:
         canonical_entities: List[CanonicalEntity],
         conflicts_raw: Any,
         cluster_index: Dict[str, List[str]],
+        fir_derived: Optional[Set[str]] = None,
     ) -> Tuple[List[TimelineEvent], Set[str], int, List[str]]:
         """
         Convert raw observations -> TimelineEvent objects.
@@ -2681,7 +2808,9 @@ class TimelineAgent:
                 "timestamp": timestamp,
                 "ts_epoch": ts_epoch,
                 "confidence": confidence,
-                "role": obs.role or "unknown",
+                # the observation's own role, else the role ER gave its entity
+                "role": (obs.role if obs.role and obs.role != "unknown"
+                         else (ent.role if ent else "unknown")),
                 "in_conflict": in_conflict,
                 "action_tags": action_tags,
             }
@@ -2721,7 +2850,11 @@ class TimelineAgent:
             # on the same reconstructed event is a real forensic confidence
             # signal (this is the entire point of multimodal fusion), capped
             # so it can't dominate the base evidence quality.
-            corroboration_bonus = min(0.09, 0.03 * (len(distinct_modalities) - 1))
+            # FIR-derived observations are the allegation itself, so they
+            # never count as corroborating it (fir_agent.py's contract).
+            corroborating = {m["modality"] for m in members
+                             if m["obs_id"] not in (fir_derived or set())}
+            corroboration_bonus = min(0.09, 0.03 * max(0, len(corroborating) - 1))
             confidence = clamp(base_confidence + corroboration_bonus)
 
             in_conflict = any(m["in_conflict"] for m in members)

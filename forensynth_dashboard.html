@@ -190,6 +190,11 @@ html,body{height:100%;background:var(--graphite);color:var(--text-primary);font-
 .drop-card.has-file .drop-filename{display:block;}
 .drop-card.has-file .drop-hint{display:none;}
 input[type=file]{display:none;}
+.drop-folder-btn{
+  margin-top:10px;background:none;border:1px solid var(--border);border-radius:5px;
+  color:var(--text-muted);font-size:10px;padding:4px 8px;cursor:pointer;
+}
+.drop-folder-btn:hover{border-color:var(--tobacco);color:var(--bone);}
 
 /* ── Audio Evidence ──────────────────────────────────── */
 .audio-zone{display:none;}
@@ -203,6 +208,7 @@ input[type=file]{display:none;}
 }
 .audio-clip-row .constraint-input{min-width:0;}
 .audio-clip-row .audio-clip-time{flex:0 0 200px;color-scheme:dark;}
+.audio-clip-row .audio-clip-source{flex:0 0 150px;}
 .audio-clip-remove{
   background:none;border:1px solid var(--border);border-radius:5px;
   color:var(--text-muted);font-size:11px;padding:5px 8px;cursor:pointer;
@@ -794,9 +800,12 @@ input[type=file]{display:none;}
           <div class="drop-label">Raw Evidence</div>
           <div class="drop-icon">📄</div>
           <div class="drop-title">Text Documents</div>
-          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.txt .md .eml .json</code> or click to browse<br/>Statements, chats, emails → Text Agent</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.txt .md .eml .json</code> or folders, or click to browse<br/>Statements, chats, emails → Text Agent</div>
           <div class="drop-filename" id="name_text">—</div>
+          <button type="button" class="drop-folder-btn" title="Pick a folder of text evidence (subfolders included)"
+                  onclick="event.stopPropagation(); document.getElementById('dir_text').click()">📁 Add folder</button>
           <input type="file" id="file_text" accept=".txt,.md,.eml,.json" multiple onchange="addEvidence('text', event.target.files); event.target.value='';"/>
+          <input type="file" id="dir_text" webkitdirectory multiple onchange="addEvidence('text', event.target.files); event.target.value='';"/>
         </div>
         <div class="drop-card" id="drop_audio"
              onclick="document.getElementById('file_audio').click()"
@@ -806,9 +815,12 @@ input[type=file]{display:none;}
           <div class="drop-label">Raw Evidence</div>
           <div class="drop-icon">🎙</div>
           <div class="drop-title">Audio Recordings</div>
-          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.wav .mp3 .m4a .flac .ogg</code> or click to browse<br/>Transcribed + speakers → Audio Agent</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.wav .mp3 .m4a .flac .ogg</code> + manifests, or clip folders<br/>Transcribed + speakers → Audio Agent</div>
           <div class="drop-filename" id="name_audio">—</div>
-          <input type="file" id="file_audio" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*" multiple onchange="addEvidence('audio', event.target.files); event.target.value='';"/>
+          <button type="button" class="drop-folder-btn" title="Pick a clip folder, or a parent folder holding several"
+                  onclick="event.stopPropagation(); document.getElementById('dir_audio').click()">📁 Add folder</button>
+          <input type="file" id="file_audio" accept=".wav,.mp3,.m4a,.flac,.ogg,.json,audio/*" multiple onchange="addAudio(pickedFiles(event.target.files)); event.target.value='';"/>
+          <input type="file" id="dir_audio" webkitdirectory multiple onchange="addAudio(pickedFiles(event.target.files)); event.target.value='';"/>
         </div>
         <div class="drop-card" id="drop_video"
              onclick="document.getElementById('file_video').click()"
@@ -818,9 +830,12 @@ input[type=file]{display:none;}
           <div class="drop-label">Raw Evidence</div>
           <div class="drop-icon">🎞</div>
           <div class="drop-title">Video Clips</div>
-          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.mp4 .mov .webm .mkv</code> or click to browse<br/>CCTV clips → Video Agent (unverified)</div>
+          <div class="drop-hint">Drop <code style="font-size:10px;color:var(--tobacco);">.mp4 .mov .webm .mkv</code> or folders, or click to browse<br/>CCTV clips → Video Agent (unverified)</div>
           <div class="drop-filename" id="name_video">—</div>
+          <button type="button" class="drop-folder-btn" title="Pick a folder of video clips (subfolders included)"
+                  onclick="event.stopPropagation(); document.getElementById('dir_video').click()">📁 Add folder</button>
           <input type="file" id="file_video" accept=".mp4,.mov,.webm,.mkv,video/*" multiple onchange="addEvidence('video', event.target.files); event.target.value='';"/>
+          <input type="file" id="dir_video" webkitdirectory multiple onchange="addEvidence('video', event.target.files); event.target.value='';"/>
         </div>
 
       </div>
@@ -848,9 +863,10 @@ input[type=file]{display:none;}
               <div style="width:180px;flex-shrink:0;">Recording</div>
               <div style="flex:0 0 200px;">Recording start time</div>
               <div style="flex:1;">Location</div>
+              <div style="flex:0 0 150px;">Source</div>
             </div>
             <div id="audioClipList"></div>
-            <div class="constraint-hint" style="padding-left:0;">Audio alone cannot tell when or where it was recorded. Speakers are labelled per recording; ER links the same person across recordings by voice.</div>
+            <div class="constraint-hint" style="padding-left:0;">Audio alone cannot tell when or where it was recorded. A clip's <code>*_Manifest.json</code> (dropped with it, or in its folder) fills these in; check them before running. Speakers are labelled per recording; ER links the same person across recordings by voice.</div>
           </div>
 
           <div id="evList_video" class="ev-group"></div>
@@ -1072,7 +1088,122 @@ function handleDragLeave(cardId) {
 function handleEvidenceDrop(e, kind) {
   e.preventDefault();
   document.getElementById('drop_' + kind).classList.remove('drag-over');
+  // entries must be taken now - dataTransfer is emptied once this handler returns
+  const entries = Array.from(e.dataTransfer.items || [])
+    .map(it => it.webkitGetAsEntry && it.webkitGetAsEntry()).filter(Boolean);
+  if (kind === 'audio') {
+    if (entries.length) droppedFiles(entries).then(addAudio);
+    else addAudio(pickedFiles(e.dataTransfer.files));
+    return;
+  }
+  // text / video: folders are walked, then only matching files are kept
+  if (kind !== 'obs' && entries.some(en => en.isDirectory)) {
+    droppedFiles(entries).then(items => addEvidence(kind, items.map(it => it.file)));
+    return;
+  }
   addEvidence(kind, e.dataTransfer.files);
+}
+
+// ── Audio: clips + their manifests, loose or in folders ────────────────────
+// Each item is {file, dir}: dir is the folder the file came from ('' when
+// picked loose), so a manifest is matched to the audio file beside it.
+function dirOf(path) { const i = path.lastIndexOf('/'); return i < 0 ? '' : path.slice(0, i); }
+function pickedFiles(fileList) {
+  return Array.from(fileList || []).map(f => ({ file: f, dir: dirOf(f.webkitRelativePath || '') }));
+}
+async function droppedFiles(entries) {
+  const out = [];
+  async function walk(entry) {
+    if (entry.isFile) {
+      const file = await new Promise((res, rej) => entry.file(res, rej));
+      out.push({ file, dir: dirOf(entry.fullPath.replace(/^\//, '')) });
+    } else if (entry.isDirectory) {
+      const reader = entry.createReader();
+      // readEntries returns results in batches until it returns an empty one
+      for (;;) {
+        const batch = await new Promise((res, rej) => reader.readEntries(res, rej));
+        if (!batch.length) break;
+        for (const child of batch) await walk(child);
+      }
+    }
+  }
+  for (const entry of entries) await walk(entry);
+  return out;
+}
+
+// datetime-local holds YYYY-MM-DDTHH:MM:SS, no zone - the agent treats times as naive too
+function manifestTime(value) {
+  const m = String(value || '').trim().match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})(:\d{2})?/);
+  return m ? `${m[1]}T${m[2]}${m[3] || ':00'}` : '';
+}
+
+// Manifest entries not yet matched to an uploaded clip (the clip may be added later)
+let pendingManifestEntries = [];
+
+async function addAudio(items) {
+  const audioRe = EV_RULES.audio.re;
+  const audioItems = items.filter(it => audioRe.test(it.file.name));
+  const jsonItems = items.filter(it => /\.json$/i.test(it.file.name));
+  if (!audioItems.length && !jsonItems.length) {
+    showToast('Unsupported File', `Audio recordings must be ${EV_RULES.audio.exts} (plus .json manifests).`, true);
+    return;
+  }
+  const problems = [];
+  let added = 0;
+  for (const it of audioItems) {
+    if (evidence.audio.some(c => c.file.name === it.file.name)) {
+      // uploads are stored flat per case, so two clips cannot share a name
+      problems.push(`${it.file.name} is already added - rename one of them`);
+      continue;
+    }
+    evidence.audio.push({ file: it.file, dir: it.dir, start: '', location: '', source: '' });
+    added++;
+  }
+
+  const batchEntries = [];
+  for (const it of jsonItems) {
+    let entries;
+    try { entries = JSON.parse((await it.file.text()).replace(/^﻿/, '')); }
+    catch { problems.push(`${it.file.name} is not valid JSON`); continue; }
+    if (!Array.isArray(entries)) entries = [entries];
+    entries.forEach((e, i) => {
+      const where = `${it.file.name}[${i}]`;
+      if (!e || typeof e !== 'object' || !String(e.path || '').trim()) { problems.push(`${where}: no "path"`); return; }
+      batchEntries.push({ entry: e, dir: it.dir, where });
+    });
+  }
+
+  // apply this batch's entries, then any earlier ones still waiting for their clip
+  let filled = 0;
+  const stillPending = [];
+  for (const m of [...batchEntries, ...pendingManifestEntries]) {
+    const name = String(m.entry.path).split(/[\\/]/).pop();
+    const same = evidence.audio.filter(c => c.file.name === name);
+    const clip = same.find(c => c.dir === m.dir) || same[0];
+    if (!clip) { stillPending.push(m); continue; }
+    const start = manifestTime(m.entry.start_time);
+    if (m.entry.start_time && !start) problems.push(`${m.where}: start_time "${m.entry.start_time}" is not ISO 8601`);
+    if (start) clip.start = start;
+    if (m.entry.location) clip.location = String(m.entry.location);
+    if (m.entry.source) clip.source = String(m.entry.source);
+    filled++;
+  }
+  for (const m of batchEntries) {
+    if (stillPending.includes(m)) problems.push(`${m.where}: no recording named ${String(m.entry.path).split(/[\\/]/).pop()}`);
+  }
+  pendingManifestEntries = stillPending;
+
+  if (!added && !filled && !problems.length) return;
+  const idInput = document.getElementById('caseIdInput');
+  if (evidence.audio.length && !idInput.value.trim()) idInput.value = defaultCaseId();
+  renderEvidencePanel();
+  if (problems.length) {
+    showToast('Check Audio Evidence', problems.slice(0, 3).join('; ') + (problems.length > 3 ? ` (+${problems.length - 3} more)` : ''), true);
+  } else {
+    const unfilled = evidence.audio.filter(c => !c.start || !c.location.trim()).length;
+    showToast('Evidence Added', `${added} recording(s) added, ${filled} filled from manifests` +
+              (unfilled ? ` — set start time and location for ${unfilled}.` : '.'));
+  }
 }
 
 function defaultCaseId() {
@@ -1084,7 +1215,9 @@ function evName(kind, item) { return kind === 'audio' ? item.file.name : item.na
 
 async function addEvidence(kind, fileList) {
   const rule = EV_RULES[kind];
-  const picked = Array.from(fileList || []).filter(f => rule.re.test(f.name));
+  // audio manifests are not text evidence - skip them when a whole case folder is picked
+  const picked = Array.from(fileList || []).filter(f => rule.re.test(f.name) &&
+                                                       !(kind === 'text' && /manifest/i.test(f.name)));
   if (!picked.length) {
     showToast('Unsupported File', `${rule.label} must be ${rule.exts}.`, true);
     return;
@@ -1172,10 +1305,15 @@ function renderEvidencePanel() {
     loc.placeholder = 'e.g. near ATM location, mobile network';
     loc.value = clip.location;
     loc.oninput = () => { clip.location = loc.value; };
+    const src = document.createElement('input');
+    src.className = 'constraint-input audio-clip-source';
+    src.placeholder = 'e.g. witness_statement';
+    src.value = clip.source;
+    src.oninput = () => { clip.source = src.value; };
     const rm = document.createElement('button');
     rm.className = 'audio-clip-remove'; rm.textContent = '✕'; rm.title = 'Remove recording';
     rm.onclick = () => removeEvidence('audio', idx);
-    row.append(name, time, loc, rm);
+    row.append(name, time, loc, src, rm);
     list.appendChild(row);
   });
 }
@@ -1307,7 +1445,8 @@ async function runPipeline() {
         case_id: caseId,
         obs_files: evidence.obs.map(f => f.name),
         text_files: evidence.text.map(f => f.name),
-        audio: evidence.audio.map(c => ({ filename: c.file.name, start_time: c.start, location: c.location.trim() })),
+        audio: evidence.audio.map(c => ({ filename: c.file.name, start_time: c.start, location: c.location.trim(),
+                                          source: c.source.trim() || null })),
         video_files: evidence.video.map(f => f.name),
         analyse_video: analyseVideo,
         no_llm: noLlm,
@@ -1661,6 +1800,7 @@ function startNewCase() {
 function clearAll() {
   currentResult = null;
   for (const kind of Object.keys(evidence)) evidence[kind] = [];
+  pendingManifestEntries = [];
   document.getElementById('caseIdInput').value = '';
   document.getElementById('analyseVideo').checked = false;
   renderEvidencePanel();

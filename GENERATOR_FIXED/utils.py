@@ -79,6 +79,9 @@ def extract_observations_only(case: dict) -> dict:
         "obs_id", "entity", "role", "modality",
         "source", "location", "content", "timestamp",
         "time_offset", "confidence",
+        # field-agent fields added by the realism flags (realism.py)
+        "role_hint", "role_hint_confidence", "appearance", "identity_embedding",
+        "extraction_status", "reported_by", "action",
     }
     stripped_obs = [
         {k: v for k, v in obs.items() if k in keep_obs_fields}

@@ -587,5 +587,73 @@ class TestAllDomains:
             assert len(case["ground_truth"]["events"]) > 0
 
 
+# ===========================================================================
+# Realism flags (realism.py) - real field-agent output
+# ===========================================================================
+
+from realism import RealismConfig  # noqa: E402
+from utils import extract_observations_only  # noqa: E402
+
+
+def _gen(realism=None, seed=42, domain="ATM_Robbery", n=3):
+    return ForenSynthGenerator(GeneratorConfig(seed=seed, realism=realism)).generate_batch(n=n, domain=domain)
+
+
+class TestRealism:
+
+    def test_no_flags_output_unchanged(self):
+        """A disabled config must not touch a single byte of the case."""
+        assert _gen(None) == _gen(RealismConfig())
+
+    def test_flags_leave_base_case_events_unchanged(self):
+        """Realism runs on its own random stream: the hidden events stay identical."""
+        for clean, real in zip(_gen(None), _gen(RealismConfig.realistic())):
+            assert clean["ground_truth"]["events"] == real["ground_truth"]["events"]
+
+    @pytest.mark.parametrize("difficulty", ["easy", "medium", "hard"])
+    def test_repeatable_with_seed(self, difficulty):
+        cfg = RealismConfig.realistic(difficulty)
+        assert _gen(cfg) == _gen(cfg)
+
+    @pytest.mark.parametrize("domain", ["ATM_Robbery", "Office_Theft", "Communication"])
+    def test_every_observation_has_true_entity(self, domain):
+        for case in _gen(RealismConfig.realistic("hard"), domain=domain):
+            gt = case["ground_truth"]
+            assert {o["obs_id"] for o in case["observations"]} == set(gt["obs_entity"])
+            for o in case["observations"]:   # every mapped alias agrees with obs_entity
+                if o["entity"] in gt["entity_mapping"]:
+                    assert gt["entity_mapping"][o["entity"]] == gt["obs_entity"][o["obs_id"]]
+
+    def test_hide_roles(self):
+        for case in _gen(RealismConfig(hide_roles=True)):
+            assert all(o["role"] == "unknown" and "role_hint" in o for o in case["observations"])
+
+    def test_undiarized_label_maps_to_nobody(self):
+        for case in _gen(RealismConfig(undiarized_audio=0.9)):
+            undiarized = [o for o in case["observations"] if o.get("extraction_status") == "undiarized"]
+            for o in undiarized:
+                assert o["entity"].endswith("_Speaker_Unknown")
+                assert "identity_embedding" not in o
+
+    def test_reported_events_actor_is_suspect(self):
+        for case in _gen(RealismConfig(reported_events=True, reported_event_rate=0.9), n=5):
+            gt = case["ground_truth"]
+            for o in case["observations"]:
+                if "reported_by" in o:
+                    assert gt["obs_entity"][o["obs_id"]].startswith("suspect")
+                    assert o["reported_by"] != o["entity"]
+
+    def test_fir_errors_recorded(self):
+        for case in _gen(RealismConfig(fir_errors=True)):
+            errors = case["ground_truth"].get("fir_errors", [])
+            assert errors and all(e["fir_value"] != e["true_value"] for e in errors)
+
+    def test_obs_only_keeps_agent_fields_and_no_ground_truth(self):
+        case = _gen(RealismConfig.realistic())[0]
+        obs = extract_observations_only(case)["observations"]
+        assert any("role_hint" in o for o in obs)
+        assert not any("event_ref" in o or "noise_tags" in o for o in obs)
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

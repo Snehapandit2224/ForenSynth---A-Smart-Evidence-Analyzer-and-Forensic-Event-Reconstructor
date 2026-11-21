@@ -52,8 +52,8 @@ logging.basicConfig(
 log = logging.getLogger("forensynth.run_case")
 
 from steps import (  # noqa: E402
-    MAX_LOOPS, _banner, run_critique, run_er, run_eval, run_report,
-    run_scene_video, run_showrunner, run_timeline,
+    MAX_LOOPS, _banner, clear_case_outputs, run_critique, run_er, run_eval,
+    run_report, run_scene_video, run_showrunner, run_timeline,
 )
 
 
@@ -70,9 +70,12 @@ def main():
                                        "the ID of the new case to build from it")
     ev = p.add_argument_group("raw evidence (runs the field agents first; needs --case)")
     ev.add_argument("--fir", help="FIR text file - anchors the case (fir_agent.py)")
-    ev.add_argument("--text-inputs", nargs="+", help="Text evidence files (text_agent.py)")
-    ev.add_argument("--audio-manifest", help="JSON list of recordings (audio_agent.py): "
-                                             '[{"path", "start_time", "location", "source"}, ...]')
+    ev.add_argument("--text-inputs", "--text-dir", dest="text_inputs", nargs="+",
+                    help="Text evidence files, or folders of them (text_agent.py)")
+    ev.add_argument("--audio-manifest", "--audio-dir", dest="audio_manifest", nargs="+",
+                    help="Recordings for audio_agent.py: manifest JSON lists "
+                         '[{"path", "start_time", "location", "source"}, ...], '
+                         "or folders of per-recording *manifest*.json")
     ev.add_argument("--obs-files", nargs="+", help="Ready-made obs_only files to merge in")
     ev.add_argument("--video", help="A video clip, or a folder of a case's clips (video agent)")
     ev.add_argument("--enable-video", action="store_true",
@@ -154,9 +157,9 @@ def main():
     print(f"  Output  : {out}")
     print(f"  Max loops: {MAX_LOOPS}")
 
-    # ── Check existing state ──────────────────────────────────────────────────
-    versions = mem.get_latest_versions(case_id)
-    er_ver   = versions["er_version"] or 0
+    # ── Start clean: every run is ER v1 / V1 / C1 (same as graph.py) ─────────
+    mem.reset_case_results(case_id)
+    clear_case_outputs(out, case_id)
 
     # ── Step 1: ER ────────────────────────────────────────────────────────────
     initial_constraints = None
@@ -166,18 +169,17 @@ def main():
             "must_not_merge": json.loads(args.must_not_merge) if args.must_not_merge else [],
         }
 
-    er_result = None
-    if er_ver == 0:
-        er_result = run_er(mem, obs_data, llm, run_version=1,
-                           human_constraints=initial_constraints,
-                           out_dir=out / "er")
-        er_ver = 1
+    er_result = run_er(mem, obs_data, llm, run_version=1,
+                       human_constraints=initial_constraints,
+                       out_dir=out / "er")
+    er_ver = 1
 
     # ── Main loop ─────────────────────────────────────────────────────────────
     tl_result    = None   # timeline result from this iteration
     tl_ver       = None   # current timeline version
     crit_ver     = None   # current critique version
     prev_decision = None  # full previous Showrunner result for convergence tracking
+    excluded_edges = []   # edges the Critique flagged, dropped by the next timeline pass
     critiques_by_round   = {}  # "critique_c{n}"   -> critique dict, for the explainability report
     showrunner_by_round  = {}  # "showrunner_c{n}" -> decision dict, for the explainability report
 
@@ -189,13 +191,14 @@ def main():
         _banner_msg = f"Loop {loop}/{MAX_LOOPS}"
         print(f"\n  {_banner_msg}")
         tl_result = run_timeline(mem, case_id, er_ver, next_tl,
-                                  out_dir=out / "timelines")
+                                  out_dir=out / "timelines",
+                                  exclude_edges=excluded_edges, llm=llm)
         tl_ver = next_tl
 
         # Critique — pass tl_result directly, no DB reload needed
         critique = run_critique(mem, case_id, tl_ver, next_crit,
                                 tl_result=tl_result,
-                                out_dir=out / "critiques")
+                                out_dir=out / "critiques", llm=llm)
         crit_ver = next_crit
         critiques_by_round[f"critique_c{loop}"] = critique
 
@@ -232,16 +235,18 @@ def main():
                 "must_merge":     c.get("must_merge", []),
                 "soft_hints":     c.get("soft_hints", {}),
             } if c else None
-            run_er(mem, obs_data, llm, run_version=er_ver,
-                   human_constraints=human_constraints,
-                   out_dir=out / "er")
+            er_result = run_er(mem, obs_data, llm, run_version=er_ver,
+                               human_constraints=human_constraints,
+                               out_dir=out / "er")
+            excluded_edges = []  # new entity ids -> new event ids
             tl_result = None  # will rebuild next iteration
 
         elif action == "re_run_timeline":
             if loop == MAX_LOOPS:
                 _banner(f"MAX REVISIONS REACHED — {case_id}")
                 break
-            tl_result = None  # will rebuild next iteration
+            excluded_edges += [list(e) for e in critique.get("edges_to_exclude", [])
+                               if list(e) not in excluded_edges]
             # continue loop — next iteration produces next TL version
 
         if loop == MAX_LOOPS:
@@ -261,11 +266,11 @@ def main():
     }
 
     if not args.skip_video:
-        run_scene_video(case_id, out)
+        run_scene_video(case_id, out, db_path=mem.db_path)
     if not args.skip_report:
         run_report(case_id, out, pipeline_outputs)
     if not args.skip_eval:
-        run_eval(case_id, out, tl_ver)
+        run_eval(case_id, out, tl_ver, input_path=args.input)
 
     # ── Final status ──────────────────────────────────────────────────────────
     mem.print_status(case_id)

@@ -51,12 +51,18 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from llm_extract import GROQ_MODEL, GroqJSON, chunk_text, clamp_conf, strip_honorific, verify_quote  # noqa: E402
+from llm_extract import (GROQ_MODEL, GroqJSON, chunk_text, clamp_conf, strip_honorific,  # noqa: E402
+                         ungrounded_words, verify_quote)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s")
 log = logging.getLogger("forensynth.text_agent")
 
 ROLE_HINTS = {"suspect", "witness", "victim", "unknown"}
+# The Timeline's canonical action tags (agents/shared.py ACTION_TAG_VOCABULARY):
+# the extractor names the kind of act, so the Timeline doesn't have to guess
+# it from phrasing.
+ACTIONS = ("APPROACH", "ENTER", "WITHDRAW", "TAMPER", "LOITER", "EXIT", "FLEE", "STEAL", "NAVIGATE",
+           "WORK", "COMMUNICATE", "CONFIRM", "WATCH", "OBSERVE", "REPORT", "INTERCEPT")
 TIME_BASES = {"explicit", "relative", "document_date", "unknown"}
 EVENT_TAGS = {
     "threat", "admission", "denial", "alibi", "weapon", "money", "injury",
@@ -221,6 +227,24 @@ def parse_chat_txt(text: str) -> list[dict] | None:
     return None
 
 
+TEXT_EXTENSIONS = {".txt", ".md", ".eml", ".json"}
+
+
+def expand_inputs(paths: list[Path]) -> list[Path]:
+    """Files as given; folders searched recursively for text evidence.
+    Audio manifests (*manifest*.json) are skipped, so a whole case folder
+    can be passed without its recordings' metadata being read as statements."""
+    files: list[Path] = []
+    for p in paths:
+        if p.is_dir():
+            files += sorted(f for f in p.rglob("*") if f.is_file()
+                            and f.suffix.lower() in TEXT_EXTENSIONS
+                            and "manifest" not in f.name.lower())
+        else:
+            files.append(p)
+    return files
+
+
 def load_file(path: Path) -> list[dict]:
     """.txt/.md -> one document; .eml -> one email; .json -> a list of
     {text, author?, timestamp?, doc_type?, location?} records (or
@@ -344,9 +368,18 @@ Rules:
 - "actor" is who did / said the thing. Use one consistent canonical name per person across the
   document (list them in "people"). If the author/narrator ("I", "me") is the actor and an author
   identifier is given, use that identifier exactly. Unnamed people get a stable descriptive label,
-  e.g. "unknown_man_1" (and describe them in "people").
+  e.g. "unknown_man_1" (and describe them in "people"). A person's "description" holds ONLY
+  physical details the text states - clothing, colours, build, age, distinguishing marks (e.g.
+  "black hoodie, red cap, tall") - or "" if none are stated. Never add details.
   In a message transcript (lines like "[YYYY-MM-DD HH:MM] Sender: text") the sender is the actor
-  of what they say, and that line's bracketed time is when the message was sent.
+  of what they say, and that line's bracketed time is when the message was sent - EXCEPT in an
+  audio_transcript (next rule).
+- A recorded call or interview (declared_type "audio_transcript") is testimony: when a speaker
+  describes what someone else did ("a man in a black jacket went inside"), output THAT event with
+  that person as the actor (their name, or an unnamed label like "unknown_man_1") - not "the
+  speaker said ...". The speaker is the actor only of what they did themselves ("I was standing
+  outside"). Questions an interviewer asks are not events - skip them. The chat rule below
+  ("X messaged that ...") does NOT apply to an audio_transcript.
 - "content": one neutral sentence describing the event, third person, past tense. For a chat
   message that only reports or plans something, describe the message (e.g. "Rakesh messaged that
   ..."), and set event_time to the message time.
@@ -363,6 +396,9 @@ Rules:
   | unknown.
 - "location": where it happened, as written, else null.
 - "tags": any of {sorted(EVENT_TAGS)}.
+- "action": the kind of act, one of {list(ACTIONS)} (WATCH = keeping lookout, LOITER = hanging
+  around, OBSERVE = seeing something happen, REPORT = telling police/authorities), or null if
+  none fits. A denial ("I never went inside") gets null, not the act it denies.
 - "confidence" 0-1: how clear, specific and first-hand the statement is (hearsay, vague or
   hedged text scores lower; precise first-hand detail scores higher).
 - Skip greetings, signatures, boilerplate and anything with no bearing on what happened.
@@ -373,7 +409,7 @@ Return ONLY a JSON object:
   "observations": [{{"actor": "...", "role_hint": "...", "role_hint_confidence": 0.0,
      "role_reason": "...", "content": "...", "evidence": "...", "event_time": null,
      "time_text": null, "time_basis": "...", "location": null, "mentioned_people": ["..."], "tags": [],
-     "confidence": 0.0}}]}}"""
+     "action": null, "confidence": 0.0}}]}}"""
 
 
 def _user_prompt(doc: dict, chunk: str, part: str, reference_date: datetime | None) -> str:
@@ -386,6 +422,33 @@ def _user_prompt(doc: dict, chunk: str, part: str, reference_date: datetime | No
         "part": part,
     }
     return f"Document metadata: {json.dumps(meta)}\n\n--- TEXT START ---\n{chunk}\n--- TEXT END ---"
+
+
+def _descriptions(people: list, chunk: str) -> dict[str, str]:
+    """canonical name -> the LLM's description of that person (clothing,
+    build...), passed on as `appearance` for ER's identity matching. A
+    description using any word the text doesn't contain is dropped: an
+    invented "black hoodie" would become false identity evidence."""
+    out = {}
+    for p in people or []:
+        if isinstance(p, dict) and p.get("name"):
+            desc = str(p.get("description") or "").strip()
+            if desc and ungrounded_words(desc, chunk):
+                log.info("  dropped ungrounded description for %s: %.60s", p["name"], desc)
+                desc = ""
+            out[str(p["name"]).strip()] = desc
+    return out
+
+
+_UNNAMED = re.compile(r"^(unknown|unidentified|unnamed)", re.IGNORECASE)
+
+
+def scoped_actor(actor: str, doc_id: str) -> str:
+    """Unnamed people are labelled per document ("unknown_man_1"), so the
+    same label in two documents is usually two different people - but ER
+    treats an identical alias as one person. Make the label document-scoped;
+    linking them is ER's job, on evidence (e.g. matching appearance)."""
+    return f"{actor}@{doc_id}" if _UNNAMED.match(actor or "") else actor
 
 
 def _alias_map(people: list) -> dict[str, str]:
@@ -419,7 +482,8 @@ def _fix_meridiem(ts: datetime | None, time_text: str | None) -> datetime | None
     return ts
 
 
-def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str]) -> dict | None:
+def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str],
+                   descriptions: dict[str, str] | None = None) -> dict | None:
     """Validate one LLM observation. Returns None (dropped) if its evidence
     quote can't be found in the source chunk."""
     evidence = str(raw.get("evidence") or "").strip()
@@ -427,7 +491,8 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str]) ->
         log.info("  dropped unverified event: %.80s", raw.get("content"))
         return None
     actor = str(raw.get("actor") or "").strip() or doc.get("author") or "unknown_person"
-    actor = strip_honorific(aliases.get(actor.lower(), actor))
+    canon = aliases.get(actor.lower(), actor)
+    actor = strip_honorific(canon)
     role = str(raw.get("role_hint") or "unknown").strip().lower()
     basis = str(raw.get("time_basis") or "unknown").strip().lower()
     return {
@@ -444,6 +509,8 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str]) ->
                              for m in (raw.get("mentioned_people") or []) if str(m).strip()],
         "tags": sorted({str(t).lower() for t in (raw.get("tags") or [])} & EVENT_TAGS),
         "confidence": clamp_conf(raw.get("confidence"), 0.6),
+        "action": a if (a := str(raw.get("action") or "").strip().upper()) in ACTIONS else None,
+        "actor_description": (descriptions or {}).get(canon, ""),
     }
 
 
@@ -459,8 +526,10 @@ def extract_llm(doc: dict, llm: GroqJSON, reference_date: datetime | None) -> tu
             return None
         doc_type = doc_type or str(result.get("doc_type") or "").lower() or None
         aliases = _alias_map(result.get("people"))
+        descriptions = _descriptions(result.get("people"), chunk)
         raw_obs = result.get("observations") or []
-        kept = [c for c in (_clean_llm_obs(r, doc, chunk, aliases) for r in raw_obs if isinstance(r, dict)) if c]
+        kept = [c for c in (_clean_llm_obs(r, doc, chunk, aliases, descriptions)
+                            for r in raw_obs if isinstance(r, dict)) if c]
         log.info("  %s part %s: %d event(s) extracted, %d verified", doc["doc_id"], part, len(raw_obs), len(kept))
         events.extend(kept)
     return events, (doc_type if doc_type in DOC_TYPES else None)
@@ -576,7 +645,7 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                     # Timeline scores it neutral) - rather than invent one.
                     basis = "unknown"
             observations.append({
-                "entity": ev["actor"],
+                "entity": scoped_actor(ev["actor"], doc["doc_id"]),
                 "role": "unknown",
                 "role_hint": ev["role_hint"],
                 "role_hint_confidence": ev["role_hint_confidence"],
@@ -589,6 +658,8 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                 "content": ev["content"],
                 "evidence": ev["evidence"],
                 "mentioned_entities": ev["mentioned_people"],
+                "appearance": ev.get("actor_description", ""),
+                **({"action": ev["action"]} if ev.get("action") else {}),
                 "tags": ev["tags"],
                 "timestamp": ts.strftime("%Y-%m-%dT%H:%M:%S") if ts else "",
                 "time_basis": basis,
@@ -632,7 +703,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Any text evidence -> ForenSynth obs_only case")
     ap.add_argument("--case-id", default="CASE_ENRON_001")
     ap.add_argument("--input", nargs="+", type=Path,
-                    help="Text evidence files (.txt/.md/.eml/.json). Omit to run the Enron pilot.")
+                    help="Text evidence files (.txt/.md/.eml/.json), or folders of them. "
+                         "Omit to run the Enron pilot.")
     ap.add_argument("--output", default="cases")
     ap.add_argument("--reference-date", help="ISO date to resolve relative times against when a "
                                              "document has no date of its own (e.g. the FIR incident date)")
@@ -645,8 +717,11 @@ def main() -> None:
         missing = [p for p in args.input if not p.exists()]
         if missing:
             sys.exit(f"[ERROR] Missing input file(s): {missing}")
-        docs = [d for p in args.input for d in load_file(p)]
-        label = ", ".join(p.name for p in args.input)
+        files = expand_inputs(args.input)
+        if not files:
+            sys.exit(f"[ERROR] No {'/'.join(sorted(TEXT_EXTENSIONS))} files in: {args.input}")
+        docs = [d for p in files for d in load_file(p)]
+        label = ", ".join(p.name for p in files)
     else:
         docs = load_enron(args.sample_size)
         label = "Enron email thread"
