@@ -1,7 +1,8 @@
 # FIR test samples
 
 All people, places-of-business, phone numbers and case numbers here are **fictional**,
-hand-written to test `agents/field_agent/fir_agent.py` and `agents/field_agent/text_agent.py`.
+hand-written to test the text agent (`agents/field_agents/text agent/text_agent.py`), which
+reads the FIR and every other text document in one run.
 
 | File | What it tests |
 |---|---|
@@ -13,7 +14,7 @@ hand-written to test `agents/field_agent/fir_agent.py` and `agents/field_agent/t
 Run case 1 end to end:
 
 ```bash
-python agents/field_agent/orchestrator.py --case-id CASE_FIR_001 \
+python "agents/field_agents/text agent/orchestrator.py" --case-id CASE_FIR_001 \
     --fir samples/fir/FIR_001_chain_snatching.txt \
     --text-inputs samples/fir/FIR_001_witness_statement.txt samples/fir/FIR_001_chat.json
 ```
@@ -21,5 +22,5 @@ python agents/field_agent/orchestrator.py --case-id CASE_FIR_001 \
 Run case 2, FIR only:
 
 ```bash
-python agents/field_agent/fir_agent.py --case-id CASE_FIR_002 --input samples/fir/FIR_002_house_burglary.txt
+python "agents/field_agents/text agent/text_agent.py" --case-id CASE_FIR_002 --input samples/fir/FIR_002_house_burglary.txt
 ```

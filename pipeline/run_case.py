@@ -69,7 +69,7 @@ def main():
     group.add_argument("--case",  help="Case ID already in DB - or, with raw evidence below, "
                                        "the ID of the new case to build from it")
     ev = p.add_argument_group("raw evidence (runs the field agents first; needs --case)")
-    ev.add_argument("--fir", help="FIR text file - anchors the case (fir_agent.py)")
+    ev.add_argument("--fir", help="FIR text file - anchors the case (read by the text agent)")
     ev.add_argument("--text-inputs", "--text-dir", dest="text_inputs", nargs="+",
                     help="Text evidence files, or folders of them (text_agent.py)")
     ev.add_argument("--audio-manifest", "--audio-dir", dest="audio_manifest", nargs="+",

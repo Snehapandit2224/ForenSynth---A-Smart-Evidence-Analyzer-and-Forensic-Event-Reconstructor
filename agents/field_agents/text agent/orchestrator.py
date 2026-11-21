@@ -45,10 +45,12 @@ Usage:
         --fir samples/fir/FIR_001_chain_snatching.txt \\
         --text-inputs samples/fir/FIR_001_witness_statement.txt samples/fir/FIR_001_chat.json
 
-With --fir, fir_agent.py processes the FIR: its record goes to the separate
+With --fir, the FIR goes to text_agent.py together with the other text
+evidence (one agent for all text): its record goes to the separate
 fir_records table (partial ground truth), its summary becomes the merged
 case's `fir` block, and its narrative observations (source "fir",
-fir_derived: true) are merged in like any other modality.
+fir_derived: true) are merged in like any other observation. An FIR inside
+--text-inputs is detected by text_agent.py on its own as well.
 """
 from __future__ import annotations
 
@@ -93,41 +95,62 @@ def _run(cmd: list[str]) -> int:
     return subprocess.run(cmd, cwd=str(_ROOT)).returncode
 
 
-def run_fir_agent(case_id: str, fir_path: Path, staging_dir: Path,
-                  no_llm: bool = False) -> tuple[Path, Path]:
-    """FIR failure IS fatal (unlike a modality agent): a case explicitly
-    anchored on an FIR must not silently proceed without it."""
-    staging_dir.mkdir(parents=True, exist_ok=True)
-    log.info("Running fir_agent.py on %s ...", fir_path)
-    rc = _run([sys.executable, str(Path(__file__).parent / "fir_agent.py"), "--case-id", case_id,
-               "--input", str(fir_path), "--output", str(staging_dir),
-               *(["--no-llm"] if no_llm else [])])
-    rec, obs = staging_dir / f"{case_id}_fir.json", staging_dir / f"{case_id}__fir_obs_only.json"
-    if rc != 0 or not rec.exists() or not obs.exists():
-        raise RuntimeError(f"fir_agent.py failed on {fir_path} (exit {rc}).")
-    return rec, obs
-
-
-def _text_args(inputs: list[Path] | None, reference_date: str | None) -> list[str]:
-    """Extra text_agent.py args. The FIR's incident date is the reference for
-    statements that give a day but no year ("Friday 14th March")."""
+def _text_args(inputs: list[Path] | None, reference_date: str | None = None,
+               fir: Path | None = None) -> list[str]:
+    """Extra text_agent.py args: the evidence files, the FIR if one was given,
+    and a reference date for statements that give a day but no year ("Friday
+    14th March") - without one, text_agent.py takes it from the FIR itself."""
     args = ["--input", *map(str, inputs)] if inputs else []
+    args += ["--fir", str(fir)] if fir else []
     return args + (["--reference-date", reference_date] if reference_date else [])
 
 
 def run_text_agent(case_id: str, inputs: list[Path], staging_dir: Path,
-                   reference_date: str | None = None, no_llm: bool = False) -> Path | None:
+                   reference_date: str | None = None, no_llm: bool = False,
+                   fir: Path | None = None, suffix: str = "text") -> tuple[Path | None, Path | None]:
+    """All text (FIR included) -> one obs_only file (+ the FIR record).
+    Returns (obs_only path, fir record path). A text failure skips the
+    modality - unless an FIR was given: a case explicitly anchored on an FIR
+    must not silently proceed without it."""
     staging_dir.mkdir(parents=True, exist_ok=True)
-    sub_case_id = f"{case_id}__text"
-    log.info("Running text_agent.py on %s ...", ", ".join(map(str, inputs)))
+    sub_case_id = f"{case_id}__{suffix}"
+    rec = staging_dir / f"{sub_case_id}_fir.json"
+    rec.unlink(missing_ok=True)      # never pick up a previous run's FIR record
+    log.info("Running text_agent.py on %s%s ...", ", ".join(map(str, inputs)) or "no documents",
+             f" + FIR {fir}" if fir else "")
     rc = _run([sys.executable, str(Path(__file__).parent / "text_agent.py"), "--case-id", sub_case_id,
-               "--output", str(staging_dir), *_text_args(inputs, reference_date),
+               "--output", str(staging_dir), *_text_args(inputs, reference_date, fir),
                *(["--no-llm"] if no_llm else [])])
     out = staging_dir / f"{sub_case_id}_obs_only.json"
+    rec = staging_dir / f"{sub_case_id}_fir.json"
     if rc != 0 or not out.exists():
+        if fir:
+            raise RuntimeError(f"text_agent.py failed on FIR {fir} (exit {rc}).")
         log.warning("text_agent.py failed (exit %s) - continuing without text evidence.", rc)
-        return None
-    return out
+        return None, None
+    if fir and not rec.exists():
+        raise RuntimeError(f"text_agent.py produced no FIR record for {fir}.")
+    if rec.exists():
+        # The agent ran under a sub-case id; the record belongs to the case.
+        record = json.loads(rec.read_text(encoding="utf-8"))
+        record.update(case_id=case_id, fir_id=f"{case_id}_FIR")
+        rec.write_text(json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8")
+        case = json.loads(out.read_text(encoding="utf-8"))
+        if case.get("fir"):
+            case["fir"]["fir_record_id"] = record["fir_id"]
+            out.write_text(json.dumps(case, indent=2, ensure_ascii=False), encoding="utf-8")
+    return out, (rec if rec.exists() else None)
+
+
+def run_fir_agent(case_id: str, fir_path: Path, staging_dir: Path,
+                  no_llm: bool = False) -> tuple[Path, Path]:
+    """The FIR on its own, through text_agent.py (one agent for all text) -
+    for callers that run FIR intake as a separate step before the other text
+    (pipeline/graph.py fir_intake), so that text gets the FIR's incident date
+    as its reference date. Returns (fir record path, obs_only path); failure
+    is fatal, as for any FIR-anchored case."""
+    out, rec = run_text_agent(case_id, [], staging_dir, no_llm=no_llm, fir=fir_path, suffix="fir")
+    return rec, out
 
 
 AUDIO_AGENT = _ROOT / "agents" / "field_agents" / "audio_agent.py"
@@ -154,7 +177,7 @@ def run_audio_agent(case_id: str, manifest: Path | str | list, staging_dir: Path
 
 
 def run_field_agents(case_id: str, staging_dir: Path, text_inputs: list[Path] | None = None,
-                     reference_date: str | None = None) -> list[Path]:
+                     fir: Path | None = None) -> list[Path]:
     """Invoke every registered field agent as its own subprocess, each
     producing its own obs_only file under staging_dir, namespaced under
     its own sub-case-id (<case_id>__<modality>) so agents never see or
@@ -173,7 +196,7 @@ def run_field_agents(case_id: str, staging_dir: Path, text_inputs: list[Path] | 
         cmd = [sys.executable, str(script), "--case-id", sub_case_id,
                "--output", str(staging_dir), *agent["extra_args"]]
         if agent["modality"] == "text":
-            cmd += _text_args(text_inputs, reference_date)
+            cmd += _text_args(text_inputs, fir=fir)
         log.info("Running %s (modality=%s) ...", agent["script"], agent["modality"])
         result = subprocess.run(cmd, cwd=str(_ROOT))
         out_path = staging_dir / f"{sub_case_id}_obs_only.json"
@@ -337,7 +360,7 @@ def main() -> None:
                      help="Pre-generated obs_only files to merge (skips running agents)")
     ap.add_argument("--run-agents", action="store_true",
                      help="Run every registered field agent fresh before merging")
-    ap.add_argument("--fir", type=Path, help="FIR text file - anchors the case (see fir_agent.py)")
+    ap.add_argument("--fir", type=Path, help="FIR text file - anchors the case (read by text_agent.py)")
     ap.add_argument("--text-inputs", "--text-dir", dest="text_inputs", nargs="+", type=Path,
                      help="Text evidence files, or folders of them, for text_agent.py "
                           "(instead of the Enron pilot)")
@@ -361,19 +384,22 @@ def main() -> None:
 
     staging = Path(args.staging)
     source_paths: list[Path] = list(args.from_files) if args.from_files else []
-    fir_record = fir_summary = None
-    if args.fir:
-        rec_path, fir_obs_path = run_fir_agent(args.case_id, args.fir, staging)
-        fir_record = json.loads(rec_path.read_text(encoding="utf-8"))
-        fir_summary = json.loads(fir_obs_path.read_text(encoding="utf-8"))["fir"]
-        source_paths.append(fir_obs_path)
-    ref = (fir_summary or {}).get("incident_datetime") or (fir_summary or {}).get("date_of_report")
+    # The text agent writes the FIR record here (FIR given via --fir or detected
+    # in --text-inputs); clear a previous run's so it is never picked up stale.
+    rec_path = staging / f"{args.case_id}__text_fir.json"
+    rec_path.unlink(missing_ok=True)
     if args.run_agents:
-        source_paths += run_field_agents(args.case_id, staging, args.text_inputs, ref)
-    elif args.text_inputs:
-        text_out = run_text_agent(args.case_id, args.text_inputs, staging, ref)
+        source_paths += run_field_agents(args.case_id, staging, args.text_inputs, args.fir)
+    elif args.text_inputs or args.fir:
+        text_out, _ = run_text_agent(args.case_id, args.text_inputs or [], staging, fir=args.fir)
         if text_out:
             source_paths.append(text_out)
+    fir_record = fir_summary = None
+    if rec_path.exists():
+        fir_record = json.loads(rec_path.read_text(encoding="utf-8"))
+        fir_record.update(case_id=args.case_id, fir_id=f"{args.case_id}_FIR")
+        text_case = json.loads((staging / f"{args.case_id}__text_obs_only.json").read_text(encoding="utf-8"))
+        fir_summary = {**text_case["fir"], "fir_record_id": fir_record["fir_id"]}
     if args.audio_manifest:
         audio_out = run_audio_agent(args.case_id, args.audio_manifest, staging)
         if audio_out:

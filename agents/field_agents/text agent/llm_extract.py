@@ -1,6 +1,6 @@
 """
 ForenSynth - shared LLM extraction helpers for the text-based field agents
-(fir_agent.py, text_agent.py).
+(text_agent.py, which also handles the FIR).
 
 Two things live here so both agents behave identically:
 

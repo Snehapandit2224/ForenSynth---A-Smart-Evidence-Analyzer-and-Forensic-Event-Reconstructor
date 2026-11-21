@@ -181,7 +181,7 @@ def fir_intake_node(state: ForenSynthState) -> Dict[str, Any]:
 
 def text_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     fir = state.get("fir_summary") or {}
-    out = _orch().run_text_agent(state["case_id"], [Path(p) for p in state["evidence"]["text"]],
+    out, _ = _orch().run_text_agent(state["case_id"], [Path(p) for p in state["evidence"]["text"]],
                                  _staging(state),
                                  fir.get("incident_datetime") or fir.get("date_of_report"),
                                  no_llm=not state["llm"])
