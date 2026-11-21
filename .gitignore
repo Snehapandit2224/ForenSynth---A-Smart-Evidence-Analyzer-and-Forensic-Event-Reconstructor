@@ -1,6 +1,7 @@
 # Secrets
 .env
 .env.local
+agents/field_agents/video_agent/.env
 
 # Virtual environment
 venv/
@@ -18,6 +19,16 @@ __pycache__/
 # Database files
 *.db
 *.sqlite
+*.db-shm
+*.db-wal
+
+# Generated pipeline outputs (video/PDF/evaluation artifacts, not source)
+output/videos/
+output/reports/
+output/evaluation/
+output/_uploads/
+*.mp4
+*.pdf
 
 # IDE
 .vscode/

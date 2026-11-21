@@ -1,0 +1,2711 @@
+{
+  "case_id": "CASE_FIR_001_MM",
+  "action": "no_action",
+  "input_tl_version": "V1",
+  "input_crit_version": "C1",
+  "output_tl_version": "V1",
+  "er_constraints": {},
+  "belief_updates": {},
+  "reasoning": "Critique found no actionable gaps. Output case: PARTIAL. Single timeline, moderate confidence (0.72).",
+  "issues_addressed": [],
+  "issues_deferred": [],
+  "output_case": "PARTIAL",
+  "iter_log": [
+    {
+      "iteration": 1,
+      "timeline_version": "V1",
+      "critique_version": "C1",
+      "gaps_detected": 13,
+      "resolvable_gaps": 6,
+      "unresolvable_gaps": 7,
+      "recommended_action": "FINALIZE",
+      "overall_score": 0.26,
+      "narrative_summary": "Case CASE_FIR_001_MM (pass 1): REVISE. 0 blocking, 6 warning(s), 7 info. Top: narrative_break \u2014 Rakesh has a 54-min gap between EVT_entity_1_o1 and EVT_entity_1_o25. No observations cover this win"
+    }
+  ],
+  "investigator_flags": [
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_18_o4",
+      "detail": "Event EVT_entity_18_o4 confidence=0.43. Reasons: low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    },
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_21_o7",
+      "detail": "Event EVT_entity_21_o7 confidence=0.50. Reasons: low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    },
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_2_o8",
+      "detail": "Event EVT_entity_2_o8 confidence=0.50. Reasons: low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    },
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_12_o34",
+      "detail": "Event EVT_entity_12_o34 confidence=0.49. Reasons: missing timestamp; low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    },
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_12_o35",
+      "detail": "Event EVT_entity_12_o35 confidence=0.49. Reasons: missing timestamp; low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    },
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_12_o36",
+      "detail": "Event EVT_entity_12_o36 confidence=0.49. Reasons: missing timestamp; low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    },
+    {
+      "gap_type": "low_confidence_event",
+      "affected_entity": "EVT_entity_12_o38",
+      "detail": "Event EVT_entity_12_o38 confidence=0.49. Reasons: missing timestamp; low observation confidence; entity resolution conflict present",
+      "fix_hint": "",
+      "iteration": 1
+    }
+  ],
+  "all_timelines": [
+    {
+      "case_id": "CASE_FIR_001_MM",
+      "timeline_version": "V1",
+      "schema_version": "1.1.0",
+      "generated_at": "2026-10-14T06:21:58Z",
+      "events": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "obs_ids": [
+            "O1"
+          ],
+          "timestamp": "2025-03-14T19:58:00Z",
+          "location": "12th main side",
+          "location_key": "12th main side",
+          "entity_id": "entity_1",
+          "primary_alias": "Rakesh",
+          "aliases": [
+            "Rakesh"
+          ],
+          "modality": "text",
+          "content": "Rakesh informed Sunil that the old aunty comes from market around 8:30 daily, heavy chain, and that they would be at 12th main side today evening.",
+          "confidence": 0.925,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_16_o2",
+          "obs_ids": [
+            "O2"
+          ],
+          "timestamp": "2025-03-14T20:03:00Z",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_16",
+          "primary_alias": "Sunil",
+          "aliases": [
+            "Sunil"
+          ],
+          "modality": "text",
+          "content": "Sunil agreed to bring Dio, told Rakesh to sit back side, would drive, and to wear a grey jacket without a helmet.",
+          "confidence": 0.925,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_17_o3",
+          "obs_ids": [
+            "O3"
+          ],
+          "timestamp": "2025-03-14T20:20:00Z",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "location_key": "phone call",
+          "entity_id": "entity_17",
+          "primary_alias": "phone_call_rakesh_Speaker_Unknown_1",
+          "aliases": [
+            "phone_call_rakesh_Speaker_Unknown_1"
+          ],
+          "modality": "audio",
+          "content": "Sunil, where are you? I am at the T-stall on 12th main road.",
+          "confidence": 0.67,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_18_o4",
+          "obs_ids": [
+            "O4"
+          ],
+          "timestamp": "2025-03-14T20:20:06Z",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "location_key": "phone call",
+          "entity_id": "entity_18",
+          "primary_alias": "phone_call_rakesh_Speaker_Unknown_2",
+          "aliases": [
+            "phone_call_rakesh_Speaker_Unknown_2"
+          ],
+          "modality": "audio",
+          "content": "I am bringing the scooter now. Did you wear the gray jacket?",
+          "confidence": 0.4345,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_19_o5",
+          "obs_ids": [
+            "O5"
+          ],
+          "timestamp": "2025-03-14T20:20:11Z",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "location_key": "phone call",
+          "entity_id": "entity_19",
+          "primary_alias": "phone_call_rakesh_Speaker_Unknown_3",
+          "aliases": [
+            "phone_call_rakesh_Speaker_Unknown_3"
+          ],
+          "modality": "audio",
+          "content": "Yes. The old Honda comes from the market around 830. She is wearing a heavy gold chain.",
+          "confidence": 0.6947,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_20_o6",
+          "obs_ids": [
+            "O6"
+          ],
+          "timestamp": "2025-03-14T20:20:20Z",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "location_key": "phone call",
+          "entity_id": "entity_20",
+          "primary_alias": "phone_call_rakesh_Speaker_Unknown_4",
+          "aliases": [
+            "phone_call_rakesh_Speaker_Unknown_4"
+          ],
+          "modality": "audio",
+          "content": "Okay. I will drive slowly from behind. You sit at the back and pull the chain.",
+          "confidence": 0.6947,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_21_o7",
+          "obs_ids": [
+            "O7"
+          ],
+          "timestamp": "2025-03-14T20:20:26Z",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "location_key": "phone call",
+          "entity_id": "entity_21",
+          "primary_alias": "phone_call_rakesh_Speaker_Unknown_5",
+          "aliases": [
+            "phone_call_rakesh_Speaker_Unknown_5"
+          ],
+          "modality": "audio",
+          "content": "Fine. After that we go straight to 100 feet road, then Domler. Do not stop the scooter.",
+          "confidence": 0.4998,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_2_o8",
+          "obs_ids": [
+            "O8"
+          ],
+          "timestamp": "2025-03-14T20:20:34Z",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "location_key": "phone call",
+          "entity_id": "entity_2",
+          "primary_alias": "phone_call_rakesh_Speaker_Unknown_6",
+          "aliases": [
+            "phone_call_rakesh_Speaker_Unknown_6"
+          ],
+          "modality": "audio",
+          "content": "Okay. I will reach the T-stall in 10 minutes.",
+          "confidence": 0.4998,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_12_o10_o11_o12_o13_o9",
+          "obs_ids": [
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "O9"
+          ],
+          "timestamp": "2025-03-14T20:30:00Z",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_12",
+          "primary_alias": "Manjunath Gowda",
+          "aliases": [
+            "Manjunath Gowda"
+          ],
+          "modality": "text",
+          "content": "He heard a lady shouting \"chain, chain\" outside his shop.",
+          "confidence": 0.7497,
+          "role": "witness",
+          "action_tags": [
+            "FLEE",
+            "OBSERVE"
+          ],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 5 supporting observations across modalities: text",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_4_o15_o18_o22",
+          "obs_ids": [
+            "O15",
+            "O18",
+            "O22"
+          ],
+          "timestamp": "2025-03-14T20:45:00Z",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store",
+          "location_key": "12th main road",
+          "entity_id": "entity_4",
+          "primary_alias": "Kavitha Raghunath",
+          "aliases": [
+            "Kavitha Raghunath"
+          ],
+          "modality": "text",
+          "content": "Kavitha Raghunath was returning home on foot after buying vegetables from the market on 12th Main Road.",
+          "confidence": 0.8521,
+          "role": "victim",
+          "action_tags": [
+            "OBSERVE"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 3 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_6_o19_o21",
+          "obs_ids": [
+            "O19",
+            "O21"
+          ],
+          "timestamp": "2025-03-14T20:45:00Z",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store",
+          "location_key": "12th main road",
+          "entity_id": "entity_6",
+          "primary_alias": "unknown_man_1",
+          "aliases": [
+            "unknown_man_1"
+          ],
+          "modality": "text",
+          "content": "The scooter driver accelerated the scooter towards 100 Feet Road.",
+          "confidence": 0.8094,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_5_o17_o20",
+          "obs_ids": [
+            "O17",
+            "O20"
+          ],
+          "timestamp": "2025-03-14T20:45:00Z",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store",
+          "location_key": "12th main road",
+          "entity_id": "entity_5",
+          "primary_alias": "unknown_man_2",
+          "aliases": [
+            "unknown_man_2"
+          ],
+          "modality": "text",
+          "content": "The pillion rider pulled the gold mangalsutra chain from Kavitha Raghunath's neck.",
+          "confidence": 0.801,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_7_o23",
+          "obs_ids": [
+            "O23"
+          ],
+          "timestamp": "2025-03-14T20:45:00Z",
+          "location": "Sri Lakshmi Provision Store",
+          "location_key": "sri lakshmi provision store",
+          "entity_id": "entity_7",
+          "primary_alias": "Manjunath",
+          "aliases": [
+            "Manjunath"
+          ],
+          "modality": "text",
+          "content": "Sri Manjunath ran to help Kavitha and saw the scooter going away.",
+          "confidence": 0.7563,
+          "role": "witness",
+          "action_tags": [
+            "OBSERVE"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_3_o14_o16_o24",
+          "obs_ids": [
+            "O14",
+            "O16",
+            "O24"
+          ],
+          "timestamp": "2025-03-14T20:45:00Z",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+          "location_key": "12th main road",
+          "entity_id": "entity_3",
+          "primary_alias": "Unknown",
+          "aliases": [
+            "Unknown"
+          ],
+          "modality": "text",
+          "content": "The snatching incident occurred at approximately 20:45 on 14 March 2025.",
+          "confidence": 0.6243,
+          "role": "unknown",
+          "action_tags": [
+            "STEAL"
+          ],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 3 supporting observations across modalities: text",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_1_o25",
+          "obs_ids": [
+            "O25"
+          ],
+          "timestamp": "2025-03-14T20:52:00Z",
+          "location": "100 ft road",
+          "location_key": "100 ft road",
+          "entity_id": "entity_1",
+          "primary_alias": "Rakesh",
+          "aliases": [
+            "Rakesh"
+          ],
+          "modality": "text",
+          "content": "Rakesh reported that she fell down and that they were going to 100 ft road then Domlur.",
+          "confidence": 0.925,
+          "role": "suspect",
+          "action_tags": [
+            "REPORT"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_8_o26",
+          "obs_ids": [
+            "O26"
+          ],
+          "timestamp": "2025-03-14T21:20:00Z",
+          "location": "Shivajinagar",
+          "location_key": "shivajinagar",
+          "entity_id": "entity_8",
+          "primary_alias": "Sunil",
+          "aliases": [
+            "Sunil"
+          ],
+          "modality": "text",
+          "content": "Sunil said that Imran anna at Shivajinagar will take it tomorrow, and that Imran said 1 lakh max for 28 gram.",
+          "confidence": 0.925,
+          "role": "suspect",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_9_o27",
+          "obs_ids": [
+            "O27"
+          ],
+          "timestamp": "2025-03-14T21:55:00Z",
+          "location": "Indiranagar Police Station",
+          "location_key": "indiranagar police station",
+          "entity_id": "entity_9",
+          "primary_alias": "Kavitha Raghunath",
+          "aliases": [
+            "Kavitha Raghunath"
+          ],
+          "modality": "text",
+          "content": "Kavitha Raghunath and her husband went to the police station.",
+          "confidence": 0.925,
+          "role": "victim",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_10_o28",
+          "obs_ids": [
+            "O28"
+          ],
+          "timestamp": "2025-03-14T21:55:00Z",
+          "location": "Indiranagar Police Station",
+          "location_key": "indiranagar police station",
+          "entity_id": "entity_10",
+          "primary_alias": "Unknown",
+          "aliases": [
+            "Unknown"
+          ],
+          "modality": "text",
+          "content": "Information about the incident was received at the police station at 21:55 on 14 March 2025.",
+          "confidence": 0.85,
+          "role": "unknown",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_11_o29",
+          "obs_ids": [
+            "O29"
+          ],
+          "timestamp": "2025-03-14T22:10:00Z",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+          "location_key": "12th main road",
+          "entity_id": "entity_11",
+          "primary_alias": "Officer S. Prakash",
+          "aliases": [
+            "Officer S. Prakash"
+          ],
+          "modality": "text",
+          "content": "Officer S. Prakash registered the FIR at 22:10 on 14 March 2025.",
+          "confidence": 0.775,
+          "role": "unknown",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_11_o31",
+          "obs_ids": [
+            "O31"
+          ],
+          "timestamp": "2025-03-14T22:10:00Z",
+          "location": "Indiranagar Police Station",
+          "location_key": "indiranagar police station",
+          "entity_id": "entity_11",
+          "primary_alias": "Officer S. Prakash",
+          "aliases": [
+            "Officer S. Prakash"
+          ],
+          "modality": "text",
+          "content": "Officer S. Prakash registered the case and took up the investigation.",
+          "confidence": 0.775,
+          "role": "unknown",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_13_o30_o32",
+          "obs_ids": [
+            "O30",
+            "O32"
+          ],
+          "timestamp": "2025-03-14T22:10:00Z",
+          "location": "Kavitha's home",
+          "location_key": "kavitha's home",
+          "entity_id": "entity_13",
+          "primary_alias": "Kavitha Raghunath",
+          "aliases": [
+            "Kavitha Raghunath"
+          ],
+          "modality": "text",
+          "content": "Kavitha Raghunath was in shock and first went home to inform her husband before reporting to police.",
+          "confidence": 0.8375,
+          "role": "victim",
+          "action_tags": [
+            "REPORT"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_14_o33",
+          "obs_ids": [
+            "O33"
+          ],
+          "timestamp": "2025-03-15T09:12:00Z",
+          "location": "tea stall area",
+          "location_key": "tea stall area",
+          "entity_id": "entity_14",
+          "primary_alias": "Rakesh",
+          "aliases": [
+            "Rakesh"
+          ],
+          "modality": "text",
+          "content": "Rakesh instructed to delete all messages and warned that police may check the tea stall area.",
+          "confidence": 0.925,
+          "role": "suspect",
+          "action_tags": [
+            "COMMUNICATE"
+          ],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_15_o37",
+          "obs_ids": [
+            "O37"
+          ],
+          "timestamp": "",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_15",
+          "primary_alias": "Kavitha",
+          "aliases": [
+            "Kavitha"
+          ],
+          "modality": "text",
+          "content": "She then went home.",
+          "confidence": 0.575,
+          "role": "victim",
+          "action_tags": [],
+          "conflict_flag": false,
+          "conflict_note": "",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "timestamp missing or unparseable"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_12_o34",
+          "obs_ids": [
+            "O34"
+          ],
+          "timestamp": "",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_12",
+          "primary_alias": "Manjunath Gowda",
+          "aliases": [
+            "Manjunath Gowda"
+          ],
+          "modality": "text",
+          "content": "He had seen that same scooter parked near the tea stall at 13th Main junction two or three times in the last week, in the evenings.",
+          "confidence": 0.4897,
+          "role": "witness",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_12_o35",
+          "obs_ids": [
+            "O35"
+          ],
+          "timestamp": "",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_12",
+          "primary_alias": "Manjunath Gowda",
+          "aliases": [
+            "Manjunath Gowda"
+          ],
+          "modality": "text",
+          "content": "The same two boys used to stand near the tea stall smoking.",
+          "confidence": 0.4897,
+          "role": "witness",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_12_o36",
+          "obs_ids": [
+            "O36"
+          ],
+          "timestamp": "",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_12",
+          "primary_alias": "Manjunath Gowda",
+          "aliases": [
+            "Manjunath Gowda"
+          ],
+          "modality": "text",
+          "content": "He did not see the number plate of the scooter.",
+          "confidence": 0.4897,
+          "role": "witness",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "version": "V1"
+        },
+        {
+          "event_id": "EVT_entity_12_o38",
+          "obs_ids": [
+            "O38"
+          ],
+          "timestamp": "",
+          "location": "unspecified",
+          "location_key": "unspecified",
+          "entity_id": "entity_12",
+          "primary_alias": "Manjunath Gowda",
+          "aliases": [
+            "Manjunath Gowda"
+          ],
+          "modality": "text",
+          "content": "He can identify the boy without helmet if he sees him again.",
+          "confidence": 0.4897,
+          "role": "witness",
+          "action_tags": [],
+          "conflict_flag": true,
+          "conflict_note": "Entity resolution conflict detected; confidence reduced.",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "version": "V1"
+        }
+      ],
+      "causal_links": [
+        {
+          "source": "EVT_entity_7_o23",
+          "target": "EVT_entity_1_o25",
+          "edge_type": "CAUSAL",
+          "confidence": 0.6221,
+          "relation": "BEFORE",
+          "label": "action dependency: OBSERVE->REPORT"
+        }
+      ],
+      "timeline_graph": {
+        "nodes": [
+          {
+            "id": "EVT_entity_1_o1",
+            "timestamp": "2025-03-14T19:58:00Z",
+            "ts_epoch": 1741982280.0,
+            "entity_id": "entity_1",
+            "primary_alias": "Rakesh",
+            "confidence": 0.925,
+            "location": "12th main side",
+            "modality": "text",
+            "content": "Rakesh informed Sunil that the old aunty comes from market around 8:30 daily, heavy chain, and that they would be at 12t",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O1"
+            ]
+          },
+          {
+            "id": "EVT_entity_16_o2",
+            "timestamp": "2025-03-14T20:03:00Z",
+            "ts_epoch": 1741982580.0,
+            "entity_id": "entity_16",
+            "primary_alias": "Sunil",
+            "confidence": 0.925,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "Sunil agreed to bring Dio, told Rakesh to sit back side, would drive, and to wear a grey jacket without a helmet.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O2"
+            ]
+          },
+          {
+            "id": "EVT_entity_17_o3",
+            "timestamp": "2025-03-14T20:20:00Z",
+            "ts_epoch": 1741983600.0,
+            "entity_id": "entity_17",
+            "primary_alias": "phone_call_rakesh_Speaker_Unknown_1",
+            "confidence": 0.67,
+            "location": "phone call, Rakesh's mobile (seized)",
+            "modality": "audio",
+            "content": "Sunil, where are you? I am at the T-stall on 12th main road.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O3"
+            ]
+          },
+          {
+            "id": "EVT_entity_18_o4",
+            "timestamp": "2025-03-14T20:20:06Z",
+            "ts_epoch": 1741983606.0,
+            "entity_id": "entity_18",
+            "primary_alias": "phone_call_rakesh_Speaker_Unknown_2",
+            "confidence": 0.4345,
+            "location": "phone call, Rakesh's mobile (seized)",
+            "modality": "audio",
+            "content": "I am bringing the scooter now. Did you wear the gray jacket?",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O4"
+            ]
+          },
+          {
+            "id": "EVT_entity_19_o5",
+            "timestamp": "2025-03-14T20:20:11Z",
+            "ts_epoch": 1741983611.0,
+            "entity_id": "entity_19",
+            "primary_alias": "phone_call_rakesh_Speaker_Unknown_3",
+            "confidence": 0.6947,
+            "location": "phone call, Rakesh's mobile (seized)",
+            "modality": "audio",
+            "content": "Yes. The old Honda comes from the market around 830. She is wearing a heavy gold chain.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O5"
+            ]
+          },
+          {
+            "id": "EVT_entity_20_o6",
+            "timestamp": "2025-03-14T20:20:20Z",
+            "ts_epoch": 1741983620.0,
+            "entity_id": "entity_20",
+            "primary_alias": "phone_call_rakesh_Speaker_Unknown_4",
+            "confidence": 0.6947,
+            "location": "phone call, Rakesh's mobile (seized)",
+            "modality": "audio",
+            "content": "Okay. I will drive slowly from behind. You sit at the back and pull the chain.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O6"
+            ]
+          },
+          {
+            "id": "EVT_entity_21_o7",
+            "timestamp": "2025-03-14T20:20:26Z",
+            "ts_epoch": 1741983626.0,
+            "entity_id": "entity_21",
+            "primary_alias": "phone_call_rakesh_Speaker_Unknown_5",
+            "confidence": 0.4998,
+            "location": "phone call, Rakesh's mobile (seized)",
+            "modality": "audio",
+            "content": "Fine. After that we go straight to 100 feet road, then Domler. Do not stop the scooter.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O7"
+            ]
+          },
+          {
+            "id": "EVT_entity_2_o8",
+            "timestamp": "2025-03-14T20:20:34Z",
+            "ts_epoch": 1741983634.0,
+            "entity_id": "entity_2",
+            "primary_alias": "phone_call_rakesh_Speaker_Unknown_6",
+            "confidence": 0.4998,
+            "location": "phone call, Rakesh's mobile (seized)",
+            "modality": "audio",
+            "content": "Okay. I will reach the T-stall in 10 minutes.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O8"
+            ]
+          },
+          {
+            "id": "EVT_entity_12_o10_o11_o12_o13_o9",
+            "timestamp": "2025-03-14T20:30:00Z",
+            "ts_epoch": 1741984200.0,
+            "entity_id": "entity_12",
+            "primary_alias": "Manjunath Gowda",
+            "confidence": 0.7497,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "He heard a lady shouting \"chain, chain\" outside his shop.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O10",
+              "O11",
+              "O12",
+              "O13",
+              "O9"
+            ]
+          },
+          {
+            "id": "EVT_entity_4_o15_o18_o22",
+            "timestamp": "2025-03-14T20:45:00Z",
+            "ts_epoch": 1741985100.0,
+            "entity_id": "entity_4",
+            "primary_alias": "Kavitha Raghunath",
+            "confidence": 0.8521,
+            "location": "12th Main Road, near Sri Lakshmi Provision Store",
+            "modality": "text",
+            "content": "Kavitha Raghunath was returning home on foot after buying vegetables from the market on 12th Main Road.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O15",
+              "O18",
+              "O22"
+            ]
+          },
+          {
+            "id": "EVT_entity_6_o19_o21",
+            "timestamp": "2025-03-14T20:45:00Z",
+            "ts_epoch": 1741985100.0,
+            "entity_id": "entity_6",
+            "primary_alias": "unknown_man_1",
+            "confidence": 0.8094,
+            "location": "12th Main Road, near Sri Lakshmi Provision Store",
+            "modality": "text",
+            "content": "The scooter driver accelerated the scooter towards 100 Feet Road.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O19",
+              "O21"
+            ]
+          },
+          {
+            "id": "EVT_entity_5_o17_o20",
+            "timestamp": "2025-03-14T20:45:00Z",
+            "ts_epoch": 1741985100.0,
+            "entity_id": "entity_5",
+            "primary_alias": "unknown_man_2",
+            "confidence": 0.801,
+            "location": "12th Main Road, near Sri Lakshmi Provision Store",
+            "modality": "text",
+            "content": "The pillion rider pulled the gold mangalsutra chain from Kavitha Raghunath's neck.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O17",
+              "O20"
+            ]
+          },
+          {
+            "id": "EVT_entity_7_o23",
+            "timestamp": "2025-03-14T20:45:00Z",
+            "ts_epoch": 1741985100.0,
+            "entity_id": "entity_7",
+            "primary_alias": "Manjunath",
+            "confidence": 0.7563,
+            "location": "Sri Lakshmi Provision Store",
+            "modality": "text",
+            "content": "Sri Manjunath ran to help Kavitha and saw the scooter going away.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O23"
+            ]
+          },
+          {
+            "id": "EVT_entity_3_o14_o16_o24",
+            "timestamp": "2025-03-14T20:45:00Z",
+            "ts_epoch": 1741985100.0,
+            "entity_id": "entity_3",
+            "primary_alias": "Unknown",
+            "confidence": 0.6243,
+            "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+            "modality": "text",
+            "content": "The snatching incident occurred at approximately 20:45 on 14 March 2025.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O14",
+              "O16",
+              "O24"
+            ]
+          },
+          {
+            "id": "EVT_entity_1_o25",
+            "timestamp": "2025-03-14T20:52:00Z",
+            "ts_epoch": 1741985520.0,
+            "entity_id": "entity_1",
+            "primary_alias": "Rakesh",
+            "confidence": 0.925,
+            "location": "100 ft road",
+            "modality": "text",
+            "content": "Rakesh reported that she fell down and that they were going to 100 ft road then Domlur.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O25"
+            ]
+          },
+          {
+            "id": "EVT_entity_8_o26",
+            "timestamp": "2025-03-14T21:20:00Z",
+            "ts_epoch": 1741987200.0,
+            "entity_id": "entity_8",
+            "primary_alias": "Sunil",
+            "confidence": 0.925,
+            "location": "Shivajinagar",
+            "modality": "text",
+            "content": "Sunil said that Imran anna at Shivajinagar will take it tomorrow, and that Imran said 1 lakh max for 28 gram.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O26"
+            ]
+          },
+          {
+            "id": "EVT_entity_9_o27",
+            "timestamp": "2025-03-14T21:55:00Z",
+            "ts_epoch": 1741989300.0,
+            "entity_id": "entity_9",
+            "primary_alias": "Kavitha Raghunath",
+            "confidence": 0.925,
+            "location": "Indiranagar Police Station",
+            "modality": "text",
+            "content": "Kavitha Raghunath and her husband went to the police station.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O27"
+            ]
+          },
+          {
+            "id": "EVT_entity_10_o28",
+            "timestamp": "2025-03-14T21:55:00Z",
+            "ts_epoch": 1741989300.0,
+            "entity_id": "entity_10",
+            "primary_alias": "Unknown",
+            "confidence": 0.85,
+            "location": "Indiranagar Police Station",
+            "modality": "text",
+            "content": "Information about the incident was received at the police station at 21:55 on 14 March 2025.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O28"
+            ]
+          },
+          {
+            "id": "EVT_entity_11_o29",
+            "timestamp": "2025-03-14T22:10:00Z",
+            "ts_epoch": 1741990200.0,
+            "entity_id": "entity_11",
+            "primary_alias": "Officer S. Prakash",
+            "confidence": 0.775,
+            "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+            "modality": "text",
+            "content": "Officer S. Prakash registered the FIR at 22:10 on 14 March 2025.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O29"
+            ]
+          },
+          {
+            "id": "EVT_entity_11_o31",
+            "timestamp": "2025-03-14T22:10:00Z",
+            "ts_epoch": 1741990200.0,
+            "entity_id": "entity_11",
+            "primary_alias": "Officer S. Prakash",
+            "confidence": 0.775,
+            "location": "Indiranagar Police Station",
+            "modality": "text",
+            "content": "Officer S. Prakash registered the case and took up the investigation.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O31"
+            ]
+          },
+          {
+            "id": "EVT_entity_13_o30_o32",
+            "timestamp": "2025-03-14T22:10:00Z",
+            "ts_epoch": 1741990200.0000002,
+            "entity_id": "entity_13",
+            "primary_alias": "Kavitha Raghunath",
+            "confidence": 0.8375,
+            "location": "Kavitha's home",
+            "modality": "text",
+            "content": "Kavitha Raghunath was in shock and first went home to inform her husband before reporting to police.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O30",
+              "O32"
+            ]
+          },
+          {
+            "id": "EVT_entity_14_o33",
+            "timestamp": "2025-03-15T09:12:00Z",
+            "ts_epoch": 1742029920.0,
+            "entity_id": "entity_14",
+            "primary_alias": "Rakesh",
+            "confidence": 0.925,
+            "location": "tea stall area",
+            "modality": "text",
+            "content": "Rakesh instructed to delete all messages and warned that police may check the tea stall area.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O33"
+            ]
+          },
+          {
+            "id": "EVT_entity_15_o37",
+            "timestamp": "",
+            "ts_epoch": 0.0,
+            "entity_id": "entity_15",
+            "primary_alias": "Kavitha",
+            "confidence": 0.575,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "She then went home.",
+            "conflict_flag": false,
+            "obs_ids": [
+              "O37"
+            ]
+          },
+          {
+            "id": "EVT_entity_12_o34",
+            "timestamp": "",
+            "ts_epoch": 0.0,
+            "entity_id": "entity_12",
+            "primary_alias": "Manjunath Gowda",
+            "confidence": 0.4897,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "He had seen that same scooter parked near the tea stall at 13th Main junction two or three times in the last week, in th",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O34"
+            ]
+          },
+          {
+            "id": "EVT_entity_12_o35",
+            "timestamp": "",
+            "ts_epoch": 0.0,
+            "entity_id": "entity_12",
+            "primary_alias": "Manjunath Gowda",
+            "confidence": 0.4897,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "The same two boys used to stand near the tea stall smoking.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O35"
+            ]
+          },
+          {
+            "id": "EVT_entity_12_o36",
+            "timestamp": "",
+            "ts_epoch": 0.0,
+            "entity_id": "entity_12",
+            "primary_alias": "Manjunath Gowda",
+            "confidence": 0.4897,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "He did not see the number plate of the scooter.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O36"
+            ]
+          },
+          {
+            "id": "EVT_entity_12_o38",
+            "timestamp": "",
+            "ts_epoch": 0.0,
+            "entity_id": "entity_12",
+            "primary_alias": "Manjunath Gowda",
+            "confidence": 0.4897,
+            "location": "unspecified",
+            "modality": "text",
+            "content": "He can identify the boy without helmet if he sees him again.",
+            "conflict_flag": true,
+            "obs_ids": [
+              "O38"
+            ]
+          }
+        ],
+        "edges": [
+          {
+            "source": "EVT_entity_1_o1",
+            "target": "EVT_entity_16_o2",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_16_o2",
+            "target": "EVT_entity_17_o3",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_17_o3",
+            "target": "EVT_entity_18_o4",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_18_o4",
+            "target": "EVT_entity_19_o5",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_19_o5",
+            "target": "EVT_entity_20_o6",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_20_o6",
+            "target": "EVT_entity_21_o7",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_21_o7",
+            "target": "EVT_entity_2_o8",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_2_o8",
+            "target": "EVT_entity_12_o10_o11_o12_o13_o9",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_12_o10_o11_o12_o13_o9",
+            "target": "EVT_entity_4_o15_o18_o22",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_4_o15_o18_o22",
+            "target": "EVT_entity_6_o19_o21",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_6_o19_o21",
+            "target": "EVT_entity_5_o17_o20",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_5_o17_o20",
+            "target": "EVT_entity_7_o23",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_7_o23",
+            "target": "EVT_entity_3_o14_o16_o24",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_7_o23",
+            "target": "EVT_entity_1_o25",
+            "edge_type": "CAUSAL",
+            "confidence": 0.6221,
+            "relation": "BEFORE",
+            "label": "action dependency: OBSERVE->REPORT"
+          },
+          {
+            "source": "EVT_entity_3_o14_o16_o24",
+            "target": "EVT_entity_1_o25",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_1_o25",
+            "target": "EVT_entity_8_o26",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_8_o26",
+            "target": "EVT_entity_9_o27",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_9_o27",
+            "target": "EVT_entity_10_o28",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_10_o28",
+            "target": "EVT_entity_11_o29",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_11_o29",
+            "target": "EVT_entity_11_o31",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_11_o31",
+            "target": "EVT_entity_13_o30_o32",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.90)"
+          },
+          {
+            "source": "EVT_entity_13_o30_o32",
+            "target": "EVT_entity_14_o33",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.95,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.95)"
+          },
+          {
+            "source": "EVT_entity_14_o33",
+            "target": "EVT_entity_15_o37",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.6,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.60)"
+          },
+          {
+            "source": "EVT_entity_15_o37",
+            "target": "EVT_entity_12_o34",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.35,
+            "relation": "UNKNOWN",
+            "label": "UNKNOWN (0.35)"
+          },
+          {
+            "source": "EVT_entity_12_o34",
+            "target": "EVT_entity_12_o35",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.35,
+            "relation": "UNKNOWN",
+            "label": "UNKNOWN (0.35)"
+          },
+          {
+            "source": "EVT_entity_12_o35",
+            "target": "EVT_entity_12_o36",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.8,
+            "relation": "SIMULTANEOUS",
+            "label": "SIMULTANEOUS (0.80) [local-LLM]"
+          },
+          {
+            "source": "EVT_entity_12_o36",
+            "target": "EVT_entity_12_o38",
+            "edge_type": "TEMPORAL",
+            "confidence": 0.9,
+            "relation": "BEFORE",
+            "label": "BEFORE (0.90) [local-LLM]"
+          }
+        ],
+        "causal_links": [
+          {
+            "source": "EVT_entity_7_o23",
+            "target": "EVT_entity_1_o25",
+            "edge_type": "CAUSAL",
+            "confidence": 0.6221,
+            "relation": "BEFORE",
+            "label": "action dependency: OBSERVE->REPORT"
+          }
+        ],
+        "node_count": 27,
+        "edge_count": 27
+      },
+      "uncertainties": [
+        {
+          "event_id": "EVT_entity_17_o3",
+          "uncertainty_score": 0.33,
+          "sources": [
+            "O3"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_18_o4",
+          "uncertainty_score": 0.5655,
+          "sources": [
+            "O4"
+          ],
+          "reasons": [
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_19_o5",
+          "uncertainty_score": 0.3053,
+          "sources": [
+            "O5"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_20_o6",
+          "uncertainty_score": 0.3053,
+          "sources": [
+            "O6"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_21_o7",
+          "uncertainty_score": 0.5002,
+          "sources": [
+            "O7"
+          ],
+          "reasons": [
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_2_o8",
+          "uncertainty_score": 0.5002,
+          "sources": [
+            "O8"
+          ],
+          "reasons": [
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_12_o10_o11_o12_o13_o9",
+          "uncertainty_score": 0.2503,
+          "sources": [
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "O9"
+          ],
+          "reasons": [
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_6_o19_o21",
+          "uncertainty_score": 0.1906,
+          "sources": [
+            "O19",
+            "O21"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_5_o17_o20",
+          "uncertainty_score": 0.199,
+          "sources": [
+            "O17",
+            "O20"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_7_o23",
+          "uncertainty_score": 0.2437,
+          "sources": [
+            "O23"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_3_o14_o16_o24",
+          "uncertainty_score": 0.3757,
+          "sources": [
+            "O14",
+            "O16",
+            "O24"
+          ],
+          "reasons": [
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_11_o29",
+          "uncertainty_score": 0.225,
+          "sources": [
+            "O29"
+          ],
+          "reasons": [
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_11_o31",
+          "uncertainty_score": 0.225,
+          "sources": [
+            "O31"
+          ],
+          "reasons": [
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_13_o30_o32",
+          "uncertainty_score": 0.1625,
+          "sources": [
+            "O30",
+            "O32"
+          ],
+          "reasons": [
+            "moderate confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_15_o37",
+          "uncertainty_score": 0.425,
+          "sources": [
+            "O37"
+          ],
+          "reasons": [
+            "missing timestamp",
+            "low observation confidence"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_12_o34",
+          "uncertainty_score": 0.5103,
+          "sources": [
+            "O34"
+          ],
+          "reasons": [
+            "missing timestamp",
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_12_o35",
+          "uncertainty_score": 0.5103,
+          "sources": [
+            "O35"
+          ],
+          "reasons": [
+            "missing timestamp",
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_12_o36",
+          "uncertainty_score": 0.5103,
+          "sources": [
+            "O36"
+          ],
+          "reasons": [
+            "missing timestamp",
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        },
+        {
+          "event_id": "EVT_entity_12_o38",
+          "uncertainty_score": 0.5103,
+          "sources": [
+            "O38"
+          ],
+          "reasons": [
+            "missing timestamp",
+            "low observation confidence",
+            "entity resolution conflict present"
+          ]
+        }
+      ],
+      "narrative": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "timestamp": "2025-03-14T19:58:00Z",
+          "actor": "Rakesh",
+          "action": "Rakesh informed Sunil that the old aunty comes from market around 8:30 daily, heavy chain, and that...",
+          "location": "12th main side",
+          "evidence": [
+            "O1"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_16_o2",
+          "timestamp": "2025-03-14T20:03:00Z",
+          "actor": "Sunil",
+          "action": "Sunil agreed to bring Dio, told Rakesh to sit back side, would drive, and to wear a grey jacket with...",
+          "location": "unspecified",
+          "evidence": [
+            "O2"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_17_o3",
+          "timestamp": "2025-03-14T20:20:00Z",
+          "actor": "phone_call_rakesh_Speaker_Unknown_1",
+          "action": "Sunil, where are you? I am at the T-stall on 12th main road.",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "evidence": [
+            "O3"
+          ],
+          "confidence": 0.67
+        },
+        {
+          "event_id": "EVT_entity_18_o4",
+          "timestamp": "2025-03-14T20:20:06Z",
+          "actor": "phone_call_rakesh_Speaker_Unknown_2",
+          "action": "I am bringing the scooter now. Did you wear the gray jacket?",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "evidence": [
+            "O4"
+          ],
+          "confidence": 0.4345
+        },
+        {
+          "event_id": "EVT_entity_19_o5",
+          "timestamp": "2025-03-14T20:20:11Z",
+          "actor": "phone_call_rakesh_Speaker_Unknown_3",
+          "action": "Yes. The old Honda comes from the market around 830. She is wearing a heavy gold chain.",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "evidence": [
+            "O5"
+          ],
+          "confidence": 0.6947
+        },
+        {
+          "event_id": "EVT_entity_20_o6",
+          "timestamp": "2025-03-14T20:20:20Z",
+          "actor": "phone_call_rakesh_Speaker_Unknown_4",
+          "action": "Okay. I will drive slowly from behind. You sit at the back and pull the chain.",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "evidence": [
+            "O6"
+          ],
+          "confidence": 0.6947
+        },
+        {
+          "event_id": "EVT_entity_21_o7",
+          "timestamp": "2025-03-14T20:20:26Z",
+          "actor": "phone_call_rakesh_Speaker_Unknown_5",
+          "action": "Fine. After that we go straight to 100 feet road, then Domler. Do not stop the scooter.",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "evidence": [
+            "O7"
+          ],
+          "confidence": 0.4998
+        },
+        {
+          "event_id": "EVT_entity_2_o8",
+          "timestamp": "2025-03-14T20:20:34Z",
+          "actor": "phone_call_rakesh_Speaker_Unknown_6",
+          "action": "Okay. I will reach the T-stall in 10 minutes.",
+          "location": "phone call, Rakesh's mobile (seized)",
+          "evidence": [
+            "O8"
+          ],
+          "confidence": 0.4998
+        },
+        {
+          "event_id": "EVT_entity_12_o10_o11_o12_o13_o9",
+          "timestamp": "2025-03-14T20:30:00Z",
+          "actor": "Manjunath Gowda",
+          "action": "He heard a lady shouting \"chain, chain\" outside his shop.",
+          "location": "unspecified",
+          "evidence": [
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "O9"
+          ],
+          "confidence": 0.7497
+        },
+        {
+          "event_id": "EVT_entity_4_o15_o18_o22",
+          "timestamp": "2025-03-14T20:45:00Z",
+          "actor": "Kavitha Raghunath",
+          "action": "Kavitha Raghunath was returning home on foot after buying vegetables from the market on 12th Main Ro...",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store",
+          "evidence": [
+            "O15",
+            "O18",
+            "O22"
+          ],
+          "confidence": 0.8521
+        },
+        {
+          "event_id": "EVT_entity_6_o19_o21",
+          "timestamp": "2025-03-14T20:45:00Z",
+          "actor": "unknown_man_1",
+          "action": "The scooter driver accelerated the scooter towards 100 Feet Road.",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store",
+          "evidence": [
+            "O19",
+            "O21"
+          ],
+          "confidence": 0.8094
+        },
+        {
+          "event_id": "EVT_entity_5_o17_o20",
+          "timestamp": "2025-03-14T20:45:00Z",
+          "actor": "unknown_man_2",
+          "action": "The pillion rider pulled the gold mangalsutra chain from Kavitha Raghunath's neck.",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store",
+          "evidence": [
+            "O17",
+            "O20"
+          ],
+          "confidence": 0.801
+        },
+        {
+          "event_id": "EVT_entity_7_o23",
+          "timestamp": "2025-03-14T20:45:00Z",
+          "actor": "Manjunath",
+          "action": "Sri Manjunath ran to help Kavitha and saw the scooter going away.",
+          "location": "Sri Lakshmi Provision Store",
+          "evidence": [
+            "O23"
+          ],
+          "confidence": 0.7563
+        },
+        {
+          "event_id": "EVT_entity_3_o14_o16_o24",
+          "timestamp": "2025-03-14T20:45:00Z",
+          "actor": "Unknown",
+          "action": "The snatching incident occurred at approximately 20:45 on 14 March 2025.",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+          "evidence": [
+            "O14",
+            "O16",
+            "O24"
+          ],
+          "confidence": 0.6243
+        },
+        {
+          "event_id": "EVT_entity_1_o25",
+          "timestamp": "2025-03-14T20:52:00Z",
+          "actor": "Rakesh",
+          "action": "Rakesh reported that she fell down and that they were going to 100 ft road then Domlur.  [-> action dependency: OBSERVE->REPORT]",
+          "location": "100 ft road",
+          "evidence": [
+            "O25"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_8_o26",
+          "timestamp": "2025-03-14T21:20:00Z",
+          "actor": "Sunil",
+          "action": "Sunil said that Imran anna at Shivajinagar will take it tomorrow, and that Imran said 1 lakh max for...",
+          "location": "Shivajinagar",
+          "evidence": [
+            "O26"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_9_o27",
+          "timestamp": "2025-03-14T21:55:00Z",
+          "actor": "Kavitha Raghunath",
+          "action": "Kavitha Raghunath and her husband went to the police station.",
+          "location": "Indiranagar Police Station",
+          "evidence": [
+            "O27"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_10_o28",
+          "timestamp": "2025-03-14T21:55:00Z",
+          "actor": "Unknown",
+          "action": "Information about the incident was received at the police station at 21:55 on 14 March 2025.",
+          "location": "Indiranagar Police Station",
+          "evidence": [
+            "O28"
+          ],
+          "confidence": 0.85
+        },
+        {
+          "event_id": "EVT_entity_11_o29",
+          "timestamp": "2025-03-14T22:10:00Z",
+          "actor": "Officer S. Prakash",
+          "action": "Officer S. Prakash registered the FIR at 22:10 on 14 March 2025.",
+          "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+          "evidence": [
+            "O29"
+          ],
+          "confidence": 0.775
+        },
+        {
+          "event_id": "EVT_entity_11_o31",
+          "timestamp": "2025-03-14T22:10:00Z",
+          "actor": "Officer S. Prakash",
+          "action": "Officer S. Prakash registered the case and took up the investigation.",
+          "location": "Indiranagar Police Station",
+          "evidence": [
+            "O31"
+          ],
+          "confidence": 0.775
+        },
+        {
+          "event_id": "EVT_entity_13_o30_o32",
+          "timestamp": "2025-03-14T22:10:00Z",
+          "actor": "Kavitha Raghunath",
+          "action": "Kavitha Raghunath was in shock and first went home to inform her husband before reporting to police.",
+          "location": "Kavitha's home",
+          "evidence": [
+            "O30",
+            "O32"
+          ],
+          "confidence": 0.8375
+        },
+        {
+          "event_id": "EVT_entity_14_o33",
+          "timestamp": "2025-03-15T09:12:00Z",
+          "actor": "Rakesh",
+          "action": "Rakesh instructed to delete all messages and warned that police may check the tea stall area.",
+          "location": "tea stall area",
+          "evidence": [
+            "O33"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_15_o37",
+          "timestamp": "unknown",
+          "actor": "Kavitha",
+          "action": "She then went home.",
+          "location": "unspecified",
+          "evidence": [
+            "O37"
+          ],
+          "confidence": 0.575
+        },
+        {
+          "event_id": "EVT_entity_12_o34",
+          "timestamp": "unknown",
+          "actor": "Manjunath Gowda",
+          "action": "He had seen that same scooter parked near the tea stall at 13th Main junction two or three times in...",
+          "location": "unspecified",
+          "evidence": [
+            "O34"
+          ],
+          "confidence": 0.4897
+        },
+        {
+          "event_id": "EVT_entity_12_o35",
+          "timestamp": "unknown",
+          "actor": "Manjunath Gowda",
+          "action": "The same two boys used to stand near the tea stall smoking.",
+          "location": "unspecified",
+          "evidence": [
+            "O35"
+          ],
+          "confidence": 0.4897
+        },
+        {
+          "event_id": "EVT_entity_12_o36",
+          "timestamp": "unknown",
+          "actor": "Manjunath Gowda",
+          "action": "He did not see the number plate of the scooter.",
+          "location": "unspecified",
+          "evidence": [
+            "O36"
+          ],
+          "confidence": 0.4897
+        },
+        {
+          "event_id": "EVT_entity_12_o38",
+          "timestamp": "unknown",
+          "actor": "Manjunath Gowda",
+          "action": "He can identify the boy without helmet if he sees him again.",
+          "location": "unspecified",
+          "evidence": [
+            "O38"
+          ],
+          "confidence": 0.4897
+        }
+      ],
+      "explainability": [
+        {
+          "event_id": "EVT_entity_1_o1",
+          "derived_from": [
+            "O1"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_16_o2",
+          "derived_from": [
+            "O2"
+          ],
+          "entity_used": "entity_16",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_17_o3",
+          "derived_from": [
+            "O3"
+          ],
+          "entity_used": "entity_17",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.67
+        },
+        {
+          "event_id": "EVT_entity_18_o4",
+          "derived_from": [
+            "O4"
+          ],
+          "entity_used": "entity_18",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.4345
+        },
+        {
+          "event_id": "EVT_entity_19_o5",
+          "derived_from": [
+            "O5"
+          ],
+          "entity_used": "entity_19",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.6947
+        },
+        {
+          "event_id": "EVT_entity_20_o6",
+          "derived_from": [
+            "O6"
+          ],
+          "entity_used": "entity_20",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.6947
+        },
+        {
+          "event_id": "EVT_entity_21_o7",
+          "derived_from": [
+            "O7"
+          ],
+          "entity_used": "entity_21",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.4998
+        },
+        {
+          "event_id": "EVT_entity_2_o8",
+          "derived_from": [
+            "O8"
+          ],
+          "entity_used": "entity_2",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.4998
+        },
+        {
+          "event_id": "EVT_entity_12_o10_o11_o12_o13_o9",
+          "derived_from": [
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "O9"
+          ],
+          "entity_used": "entity_12",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 5 supporting observations across modalities: text",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.7497
+        },
+        {
+          "event_id": "EVT_entity_4_o15_o18_o22",
+          "derived_from": [
+            "O15",
+            "O18",
+            "O22"
+          ],
+          "entity_used": "entity_4",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 3 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "confidence": 0.8521
+        },
+        {
+          "event_id": "EVT_entity_6_o19_o21",
+          "derived_from": [
+            "O19",
+            "O21"
+          ],
+          "entity_used": "entity_6",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "confidence": 0.8094
+        },
+        {
+          "event_id": "EVT_entity_5_o17_o20",
+          "derived_from": [
+            "O17",
+            "O20"
+          ],
+          "entity_used": "entity_5",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "confidence": 0.801
+        },
+        {
+          "event_id": "EVT_entity_7_o23",
+          "derived_from": [
+            "O23"
+          ],
+          "entity_used": "entity_7",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.7563
+        },
+        {
+          "event_id": "EVT_entity_3_o14_o16_o24",
+          "derived_from": [
+            "O14",
+            "O16",
+            "O24"
+          ],
+          "entity_used": "entity_3",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 3 supporting observations across modalities: text",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.6243
+        },
+        {
+          "event_id": "EVT_entity_1_o25",
+          "derived_from": [
+            "O25"
+          ],
+          "entity_used": "entity_1",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_8_o26",
+          "derived_from": [
+            "O26"
+          ],
+          "entity_used": "entity_8",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_9_o27",
+          "derived_from": [
+            "O27"
+          ],
+          "entity_used": "entity_9",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_10_o28",
+          "derived_from": [
+            "O28"
+          ],
+          "entity_used": "entity_10",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.85
+        },
+        {
+          "event_id": "EVT_entity_11_o29",
+          "derived_from": [
+            "O29"
+          ],
+          "entity_used": "entity_11",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.775
+        },
+        {
+          "event_id": "EVT_entity_11_o31",
+          "derived_from": [
+            "O31"
+          ],
+          "entity_used": "entity_11",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "valid timestamp"
+          ],
+          "confidence": 0.775
+        },
+        {
+          "event_id": "EVT_entity_13_o30_o32",
+          "derived_from": [
+            "O30",
+            "O32"
+          ],
+          "entity_used": "entity_13",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "reconstructed from 2 supporting observations across modalities: text",
+            "valid timestamp"
+          ],
+          "confidence": 0.8375
+        },
+        {
+          "event_id": "EVT_entity_14_o33",
+          "derived_from": [
+            "O33"
+          ],
+          "entity_used": "entity_14",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "valid timestamp"
+          ],
+          "confidence": 0.925
+        },
+        {
+          "event_id": "EVT_entity_15_o37",
+          "derived_from": [
+            "O37"
+          ],
+          "entity_used": "entity_15",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "timestamp missing or unparseable"
+          ],
+          "confidence": 0.575
+        },
+        {
+          "event_id": "EVT_entity_12_o34",
+          "derived_from": [
+            "O34"
+          ],
+          "entity_used": "entity_12",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "confidence": 0.4897
+        },
+        {
+          "event_id": "EVT_entity_12_o35",
+          "derived_from": [
+            "O35"
+          ],
+          "entity_used": "entity_12",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "confidence": 0.4897
+        },
+        {
+          "event_id": "EVT_entity_12_o36",
+          "derived_from": [
+            "O36"
+          ],
+          "entity_used": "entity_12",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "confidence": 0.4897
+        },
+        {
+          "event_id": "EVT_entity_12_o38",
+          "derived_from": [
+            "O38"
+          ],
+          "entity_used": "entity_12",
+          "reasoning": [
+            "timestamp ordering",
+            "canonical entity match",
+            "conflict flagged by entity resolution",
+            "timestamp missing or unparseable"
+          ],
+          "confidence": 0.4897
+        }
+      ],
+      "conflicts_summary": [
+        {
+          "conflict_type": "oversized_cluster",
+          "cluster_id": "C2",
+          "detail": "Cluster C2 oversized (9).",
+          "affected_events": [
+            "EVT_entity_12_o10_o11_o12_o13_o9",
+            "EVT_entity_12_o34",
+            "EVT_entity_12_o35",
+            "EVT_entity_12_o36",
+            "EVT_entity_12_o38"
+          ]
+        },
+        {
+          "conflict_type": "low_confidence",
+          "cluster_id": "C6",
+          "detail": "Cluster C6 confidence 0.446 below floor.",
+          "affected_events": [
+            "EVT_entity_18_o4"
+          ]
+        },
+        {
+          "conflict_type": "low_confidence",
+          "cluster_id": "C9",
+          "detail": "Cluster C9 confidence 0.533 below floor.",
+          "affected_events": [
+            "EVT_entity_21_o7"
+          ]
+        },
+        {
+          "conflict_type": "low_confidence",
+          "cluster_id": "C10",
+          "detail": "Cluster C10 confidence 0.533 below floor.",
+          "affected_events": [
+            "EVT_entity_2_o8"
+          ]
+        },
+        {
+          "conflict_type": "physical_impossibility",
+          "cluster_id": "C11",
+          "detail": "Concurrent different locations at t=2820s in C11.",
+          "affected_events": [
+            "EVT_entity_3_o14_o16_o24"
+          ]
+        },
+        {
+          "conflict_type": "physical_impossibility",
+          "cluster_id": "C19",
+          "detail": "Concurrent different locations at t=7920s in C19.",
+          "affected_events": [
+            "EVT_entity_11_o29",
+            "EVT_entity_11_o31"
+          ]
+        }
+      ],
+      "conflicts_unlocalized_count": 0,
+      "unresolved_temporal_pairs": [
+        {
+          "event_a": "EVT_entity_12_o34",
+          "event_b": "EVT_entity_12_o35",
+          "reason": "local LLM also returned UNKNOWN"
+        },
+        {
+          "event_a": "EVT_entity_15_o37",
+          "event_b": "EVT_entity_12_o34",
+          "reason": "local LLM also returned UNKNOWN"
+        }
+      ],
+      "unresolved_causal_pairs": [
+        {
+          "event_a": "EVT_entity_11_o29",
+          "event_b": "EVT_entity_11_o31",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_12_o34",
+          "event_b": "EVT_entity_12_o35",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_12_o34",
+          "event_b": "EVT_entity_12_o36",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_12_o34",
+          "event_b": "EVT_entity_12_o38",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_12_o35",
+          "event_b": "EVT_entity_12_o36",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_12_o35",
+          "event_b": "EVT_entity_12_o38",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_12_o36",
+          "event_b": "EVT_entity_12_o38",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_4_o15_o18_o22",
+          "event_b": "EVT_entity_3_o14_o16_o24",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_4_o15_o18_o22",
+          "event_b": "EVT_entity_6_o19_o21",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_4_o15_o18_o22",
+          "event_b": "EVT_entity_5_o17_o20",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_7_o23",
+          "event_b": "EVT_entity_3_o14_o16_o24",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_6_o19_o21",
+          "event_b": "EVT_entity_3_o14_o16_o24",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_5_o17_o20",
+          "event_b": "EVT_entity_3_o14_o16_o24",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_9_o27",
+          "event_b": "EVT_entity_10_o28",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_6_o19_o21",
+          "event_b": "EVT_entity_5_o17_o20",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_19_o5",
+          "event_b": "EVT_entity_20_o6",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_17_o3",
+          "event_b": "EVT_entity_19_o5",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_17_o3",
+          "event_b": "EVT_entity_20_o6",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_20_o6",
+          "event_b": "EVT_entity_21_o7",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_20_o6",
+          "event_b": "EVT_entity_2_o8",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_19_o5",
+          "event_b": "EVT_entity_21_o7",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_18_o4",
+          "event_b": "EVT_entity_19_o5",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_17_o3",
+          "event_b": "EVT_entity_18_o4",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_19_o5",
+          "event_b": "EVT_entity_2_o8",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_18_o4",
+          "event_b": "EVT_entity_20_o6",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_17_o3",
+          "event_b": "EVT_entity_21_o7",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_17_o3",
+          "event_b": "EVT_entity_2_o8",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_21_o7",
+          "event_b": "EVT_entity_2_o8",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_18_o4",
+          "event_b": "EVT_entity_21_o7",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_18_o4",
+          "event_b": "EVT_entity_2_o8",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_11_o29",
+          "event_b": "EVT_entity_13_o30_o32",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_4_o15_o18_o22",
+          "event_b": "EVT_entity_1_o25",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_11_o31",
+          "event_b": "EVT_entity_13_o30_o32",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_3_o14_o16_o24",
+          "event_b": "EVT_entity_1_o25",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_6_o19_o21",
+          "event_b": "EVT_entity_1_o25",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_5_o17_o20",
+          "event_b": "EVT_entity_1_o25",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_1_o1",
+          "event_b": "EVT_entity_16_o2",
+          "reason": "local LLM returned no result for this pair"
+        },
+        {
+          "event_a": "EVT_entity_14_o33",
+          "event_b": "EVT_entity_15_o37",
+          "reason": "local LLM returned no result for this pair"
+        }
+      ],
+      "unresolved_entities": [],
+      "stage_timings": {
+        "stage_1_validation": 0.0007,
+        "stage_2_enrichment": 0.0151,
+        "stage_3_ordering": 0.0,
+        "stage_4_5_temporal": 1.2377,
+        "stage_6_causal": 1.8777,
+        "stage_7_uncertainty": 0.0,
+        "stage_8_conflicts": 0.0001,
+        "stage_10_explainability": 0.0002,
+        "stage_11_narrative": 0.0001,
+        "stage_12_versioning": 0.0012,
+        "stage_13_export": 0.0059
+      },
+      "total_time_sec": 3.1404,
+      "validation_warnings": [
+        "[obs_only.observations[1]] Missing/empty 'timestamp' - ordering will be uncertain for this observation",
+        "[obs_only.observations[2]] Missing/empty 'timestamp' - ordering will be uncertain for this observation",
+        "[obs_only.observations[3]] Missing/empty 'timestamp' - ordering will be uncertain for this observation",
+        "[obs_only.observations[4]] Missing/empty 'timestamp' - ordering will be uncertain for this observation",
+        "[obs_only.observations[5]] Missing/empty 'timestamp' - ordering will be uncertain for this observation"
+      ],
+      "llm_backend_used": "CloudLLMFallback",
+      "llm_calls_made": 2,
+      "output_classification": "AMBIGUOUS",
+      "output_classification_reason": "avg_confidence=0.72, conflict_fraction=0.41, unresolved_ratio=1.48 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+    }
+  ],
+  "generated_at": "2026-10-14T06:22:12.241662+00:00",
+  "status": "complete"
+}

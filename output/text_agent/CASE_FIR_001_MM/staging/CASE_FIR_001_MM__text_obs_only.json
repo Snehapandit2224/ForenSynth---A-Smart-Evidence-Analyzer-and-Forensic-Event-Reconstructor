@@ -1,0 +1,406 @@
+{
+  "case_id": "CASE_FIR_001_MM__text",
+  "domain": "Text_Evidence",
+  "template": "LLM_Text_Extraction",
+  "fir": {
+    "crime_type": "unknown - no FIR attached",
+    "location": "unspecified",
+    "time_window": [
+      0,
+      47640
+    ],
+    "description": "Observations extracted from 2 text document(s): FIR_001_witness_statement.txt, FIR_001_chat.json.",
+    "roles": {}
+  },
+  "observations": [
+    {
+      "entity": "Rakesh",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.7,
+      "role_reason": "Provides instructions and reports a fall, indicating possible involvement.",
+      "modality": "text",
+      "source": "chat",
+      "source_doc": "FIR_001_chat",
+      "reported_by": null,
+      "location": "12th main side",
+      "content": "Rakesh informed Sunil that the old aunty comes from market around 8:30 daily, heavy chain, and that they would be at 12th main side today evening.",
+      "evidence": "Sunil bro 12th main side today evening. Old aunty comes from market around 8:30 daily, heavy chain",
+      "mentioned_entities": [
+        "Sunil",
+        "old aunty"
+      ],
+      "tags": [
+        "communication",
+        "planning"
+      ],
+      "timestamp": "2025-03-14T19:58:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O1",
+      "time_offset": 0
+    },
+    {
+      "entity": "Sunil",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.7,
+      "role_reason": "Provides instructions and reports a transaction, indicating possible involvement.",
+      "modality": "text",
+      "source": "chat",
+      "source_doc": "FIR_001_chat",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "Sunil agreed to bring Dio, told Rakesh to sit back side, would drive, and to wear a grey jacket without a helmet.",
+      "evidence": "ok I will bring the Dio. You sit back side, I will drive. Wear the grey jacket no helmet for you",
+      "mentioned_entities": [
+        "Rakesh",
+        "Dio"
+      ],
+      "tags": [
+        "communication",
+        "planning"
+      ],
+      "timestamp": "2025-03-14T20:03:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O2",
+      "time_offset": 300
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of events",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "Manjunath Gowda was closing accounts at his shop on Friday 14 March 2025 around 8:30‑8:40 pm.",
+      "evidence": "On Friday 14th March, at around 8:30 or 8:40 in the night, I was closing the accounts at the counter.",
+      "mentioned_entities": [],
+      "tags": [],
+      "timestamp": "2025-03-14T20:30:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O3",
+      "time_offset": 1920
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of events",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He heard a lady shouting \"chain, chain\" outside his shop.",
+      "evidence": "I heard a lady shouting \"chain, chain\" outside.",
+      "mentioned_entities": [],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T20:30:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O4",
+      "time_offset": 1920
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of events",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He ran out and saw Smt. Kavitha lying on the road near his shop with a bleeding elbow.",
+      "evidence": "I ran out and saw Smt. Kavitha madam lying on the road near my shop. Her elbow was bleeding.",
+      "mentioned_entities": [
+        "Kavitha"
+      ],
+      "tags": [
+        "contact",
+        "injury"
+      ],
+      "timestamp": "2025-03-14T20:30:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O5",
+      "time_offset": 1920
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of events",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He saw a black Dio scooter moving fast towards 100 Feet Road with two boys, one at the back not wearing a helmet and wearing a grey jacket.",
+      "evidence": "I saw a black Dio scooter going very fast towards 100 Feet Road with two boys. The one at the back was not wearing a helmet and had a grey jacket.",
+      "mentioned_entities": [
+        "unknown_boy_1",
+        "unknown_boy_2"
+      ],
+      "tags": [
+        "movement",
+        "property"
+      ],
+      "timestamp": "2025-03-14T20:30:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O6",
+      "time_offset": 1920
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of events",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He helped Smt. Kavitha to get up and gave her water.",
+      "evidence": "I helped madam to get up and gave her water.",
+      "mentioned_entities": [
+        "Kavitha"
+      ],
+      "tags": [
+        "contact"
+      ],
+      "timestamp": "2025-03-14T20:30:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O7",
+      "time_offset": 1920
+    },
+    {
+      "entity": "Rakesh",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.7,
+      "role_reason": "Reports a fall and movement, indicating possible involvement.",
+      "modality": "text",
+      "source": "chat",
+      "source_doc": "FIR_001_chat",
+      "reported_by": null,
+      "location": "100 ft road",
+      "content": "Rakesh reported that she fell down and that they were going to 100 ft road then Domlur.",
+      "evidence": "done. she fell down. going to 100 ft road then Domlur",
+      "mentioned_entities": [
+        "old aunty"
+      ],
+      "tags": [
+        "injury",
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:52:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O8",
+      "time_offset": 3240
+    },
+    {
+      "entity": "Sunil",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.7,
+      "role_reason": "Mentions a transaction and a potential buyer, indicating possible involvement.",
+      "modality": "text",
+      "source": "chat",
+      "source_doc": "FIR_001_chat",
+      "reported_by": null,
+      "location": "Shivajinagar",
+      "content": "Sunil said that Imran anna at Shivajinagar will take it tomorrow, and that Imran said 1 lakh max for 28 gram.",
+      "evidence": "Imran anna at Shivajinagar will take it tomorrow, he said 1 lakh max for 28 gram",
+      "mentioned_entities": [
+        "Imran anna"
+      ],
+      "tags": [
+        "communication",
+        "money",
+        "planning"
+      ],
+      "timestamp": "2025-03-14T21:20:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O9",
+      "time_offset": 4920
+    },
+    {
+      "entity": "Rakesh",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.7,
+      "role_reason": "Instructs deletion of messages and warns police, indicating possible concealment.",
+      "modality": "text",
+      "source": "chat",
+      "source_doc": "FIR_001_chat",
+      "reported_by": null,
+      "location": "tea stall area",
+      "content": "Rakesh instructed to delete all messages and warned that police may check the tea stall area.",
+      "evidence": "delete all msgs. police may check that tea stall area",
+      "mentioned_entities": [],
+      "tags": [
+        "communication",
+        "threat"
+      ],
+      "timestamp": "2025-03-15T09:12:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "obs_id": "O10",
+      "time_offset": 47640
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of prior observations",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He had seen that same scooter parked near the tea stall at 13th Main junction two or three times in the last week, in the evenings.",
+      "evidence": "I have seen that same scooter parked near the tea stall at the 13th Main junction two or three times in the last week, in the evenings.",
+      "mentioned_entities": [],
+      "tags": [
+        "movement",
+        "property"
+      ],
+      "timestamp": "",
+      "time_basis": "unknown",
+      "confidence": 0.6,
+      "extraction": "llm",
+      "obs_id": "O11",
+      "time_offset": 0
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of prior observations",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "The same two boys used to stand near the tea stall smoking.",
+      "evidence": "The same two boys used to stand there smoking.",
+      "mentioned_entities": [
+        "unknown_boy_1",
+        "unknown_boy_2"
+      ],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "",
+      "time_basis": "unknown",
+      "confidence": 0.6,
+      "extraction": "llm",
+      "obs_id": "O12",
+      "time_offset": 0
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of observations",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He did not see the number plate of the scooter.",
+      "evidence": "I did not see the number plate.",
+      "mentioned_entities": [],
+      "tags": [
+        "identification"
+      ],
+      "timestamp": "",
+      "time_basis": "unknown",
+      "confidence": 0.6,
+      "extraction": "llm",
+      "obs_id": "O13",
+      "time_offset": 0
+    },
+    {
+      "entity": "Kavitha",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand account of her own movement",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "She then went home.",
+      "evidence": "She then went home.",
+      "mentioned_entities": [],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "",
+      "time_basis": "unknown",
+      "confidence": 0.6,
+      "extraction": "llm",
+      "obs_id": "O14",
+      "time_offset": 0
+    },
+    {
+      "entity": "Manjunath Gowda",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 1.0,
+      "role_reason": "first‑hand statement of ability",
+      "modality": "text",
+      "source": "witness_statement",
+      "source_doc": "FIR_001_witness_statement",
+      "reported_by": null,
+      "location": "unspecified",
+      "content": "He can identify the boy without helmet if he sees him again.",
+      "evidence": "I can identify the boy without helmet if I see him again.",
+      "mentioned_entities": [
+        "unknown_boy_1"
+      ],
+      "tags": [
+        "identification"
+      ],
+      "timestamp": "",
+      "time_basis": "unknown",
+      "confidence": 0.6,
+      "extraction": "llm",
+      "obs_id": "O15",
+      "time_offset": 0
+    }
+  ]
+}

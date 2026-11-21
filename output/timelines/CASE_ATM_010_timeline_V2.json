@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_010",
   "timeline_version": "V2",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:26:52Z",
+  "generated_at": "2026-08-31T08:03:45Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -10,8 +10,8 @@
         "O1"
       ],
       "timestamp": "2024-01-15T10:00:43Z",
-      "location": "remote \u00e2\u20ac\u201d email server log",
-      "location_key": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
+      "location_key": "remote \u2014 email server log",
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "aliases": [
@@ -68,8 +68,8 @@
         "O3"
       ],
       "timestamp": "2024-01-15T10:02:31Z",
-      "location": "remote \u00e2\u20ac\u201d email server log",
-      "location_key": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
+      "location_key": "remote \u2014 email server log",
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "aliases": [
@@ -98,8 +98,8 @@
         "O5"
       ],
       "timestamp": "2024-01-15T10:02:48Z",
-      "location": "remote \u00e2\u20ac\u201d email server log",
-      "location_key": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
+      "location_key": "remote \u2014 email server log",
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "aliases": [
@@ -162,15 +162,15 @@
         "O11"
       ],
       "timestamp": "2024-01-15T10:10:00Z",
-      "location": "remote \u00e2\u20ac\u201d mobile network SMS",
-      "location_key": "remote \u00e2\u20ac\u201d mobile network sms",
+      "location": "remote \u2014 mobile network SMS",
+      "location_key": "remote \u2014 mobile network sms",
       "entity_id": "entity_3",
       "primary_alias": "sms_94",
       "aliases": [
         "sms_94"
       ],
       "modality": "text",
-      "content": "[CORRUPTED] \u00e2\u20ac\u201d File hash mismatch; content integrity unverified.",
+      "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
       "confidence": 0.4915,
       "role": "witness",
       "action_tags": [],
@@ -241,12 +241,12 @@
       "label": "action dependency: ENTER->TAMPER"
     },
     {
-      "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o3",
+      "source": "EVT_entity_2_o6_o7",
+      "target": "EVT_entity_2_o10",
       "edge_type": "CAUSAL",
-      "confidence": 0.85,
+      "confidence": 0.5665,
       "relation": "BEFORE",
-      "label": "local LLM: The suspect\u2019s statement of waiting directly precedes and logically leads to their entry action."
+      "label": "same entity, semantically same location (sim=0.73), sequential"
     }
   ],
   "timeline_graph": {
@@ -258,7 +258,7 @@
         "entity_id": "entity_1",
         "primary_alias": "report_90",
         "confidence": 0.794,
-        "location": "remote \u00e2\u20ac\u201d email server log",
+        "location": "remote \u2014 email server log",
         "modality": "text",
         "content": "At the corner, about to move. (forwarded)",
         "conflict_flag": false,
@@ -288,7 +288,7 @@
         "entity_id": "entity_1",
         "primary_alias": "report_90",
         "confidence": 0.8903,
-        "location": "remote \u00e2\u20ac\u201d email server log",
+        "location": "remote \u2014 email server log",
         "modality": "text",
         "content": "Entered. Starting now.",
         "conflict_flag": false,
@@ -303,7 +303,7 @@
         "entity_id": "entity_1",
         "primary_alias": "report_90",
         "confidence": 0.8874,
-        "location": "remote \u00e2\u20ac\u201d email server log",
+        "location": "remote \u2014 email server log",
         "modality": "text",
         "content": "Reader fitted. No one saw.",
         "conflict_flag": false,
@@ -335,9 +335,9 @@
         "entity_id": "entity_3",
         "primary_alias": "sms_94",
         "confidence": 0.4915,
-        "location": "remote \u00e2\u20ac\u201d mobile network SMS",
+        "location": "remote \u2014 mobile network SMS",
         "modality": "text",
-        "content": "[CORRUPTED] \u00e2\u20ac\u201d File hash mismatch; content integrity unverified.",
+        "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
         "conflict_flag": true,
         "obs_ids": [
           "O11"
@@ -387,10 +387,10 @@
       {
         "source": "EVT_entity_1_o2",
         "target": "EVT_entity_1_o3",
-        "edge_type": "CAUSAL",
-        "confidence": 0.85,
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
         "relation": "BEFORE",
-        "label": "local LLM: The suspect\u2019s statement of waiting directly precedes and logically leads to their entry action."
+        "label": "BEFORE (0.95)"
       },
       {
         "source": "EVT_entity_1_o3",
@@ -415,6 +415,14 @@
         "confidence": 0.95,
         "relation": "BEFORE",
         "label": "BEFORE (0.95)"
+      },
+      {
+        "source": "EVT_entity_2_o6_o7",
+        "target": "EVT_entity_2_o10",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5665,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.73), sequential"
       },
       {
         "source": "EVT_entity_3_o11",
@@ -443,24 +451,24 @@
         "label": "action dependency: APPROACH->TAMPER"
       },
       {
-        "source": "EVT_entity_1_o2",
-        "target": "EVT_entity_1_o3",
-        "edge_type": "CAUSAL",
-        "confidence": 0.85,
-        "relation": "BEFORE",
-        "label": "local LLM: The suspect\u2019s statement of waiting directly precedes and logically leads to their entry action."
-      },
-      {
         "source": "EVT_entity_1_o3",
         "target": "EVT_entity_1_o4_o5",
         "edge_type": "CAUSAL",
         "confidence": 0.8177,
         "relation": "BEFORE",
         "label": "action dependency: ENTER->TAMPER"
+      },
+      {
+        "source": "EVT_entity_2_o6_o7",
+        "target": "EVT_entity_2_o10",
+        "edge_type": "CAUSAL",
+        "confidence": 0.5665,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.73), sequential"
       }
     ],
     "node_count": 7,
-    "edge_count": 8
+    "edge_count": 9
   },
   "uncertainties": [
     {
@@ -522,7 +530,7 @@
       "timestamp": "2024-01-15T10:00:43Z",
       "actor": "report_90",
       "action": "At the corner, about to move. (forwarded)",
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "evidence": [
         "O1"
       ],
@@ -543,8 +551,8 @@
       "event_id": "EVT_entity_1_o3",
       "timestamp": "2024-01-15T10:02:31Z",
       "actor": "report_90",
-      "action": "Entered. Starting now.  [-> local LLM: The suspect\u2019s statement of waiting directly precedes and logically leads to their entry action.]",
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "action": "Entered. Starting now.  [-> action dependency: APPROACH->ENTER]",
+      "location": "remote \u2014 email server log",
       "evidence": [
         "O3"
       ],
@@ -555,7 +563,7 @@
       "timestamp": "2024-01-15T10:02:48Z",
       "actor": "report_90",
       "action": "Reader fitted. No one saw.  [-> action dependency: ENTER->TAMPER]",
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "evidence": [
         "O4",
         "O5"
@@ -578,8 +586,8 @@
       "event_id": "EVT_entity_3_o11",
       "timestamp": "2024-01-15T10:10:00Z",
       "actor": "sms_94",
-      "action": "[CORRUPTED] \u00e2\u20ac\u201d File hash mismatch; content integrity unverified.",
-      "location": "remote \u00e2\u20ac\u201d mobile network SMS",
+      "action": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
+      "location": "remote \u2014 mobile network SMS",
       "evidence": [
         "O11"
       ],
@@ -589,7 +597,7 @@
       "event_id": "EVT_entity_2_o10",
       "timestamp": "2024-01-15T10:10:03Z",
       "actor": "Speaker_N",
-      "action": "Something happened near the ATM I should report (per call log transcript).",
+      "action": "Something happened near the ATM I should report (per call log transcript).  [-> same entity, semantically same location (sim=0.73), sequential]",
       "location": "ATM vicinity, bystander position",
       "evidence": [
         "O10"
@@ -711,47 +719,47 @@
     {
       "event_a": "EVT_entity_1_o1",
       "event_b": "EVT_entity_1_o2",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o2",
+      "event_b": "EVT_entity_1_o3",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o2",
       "event_b": "EVT_entity_1_o4_o5",
-      "reason": "local LLM determined no causal link"
-    },
-    {
-      "event_a": "EVT_entity_2_o6_o7",
-      "event_b": "EVT_entity_2_o10",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_2_o6_o7",
       "event_b": "EVT_entity_3_o11",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_3_o11",
       "event_b": "EVT_entity_2_o10",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
     "stage_1_validation": 0.0,
-    "stage_2_enrichment": 0.001,
+    "stage_2_enrichment": 0.0014,
     "stage_3_ordering": 0.0,
     "stage_4_5_temporal": 0.0,
-    "stage_6_causal": 3.7621,
+    "stage_6_causal": 0.0014,
     "stage_7_uncertainty": 0.0,
-    "stage_8_conflicts": 0.0001,
-    "stage_10_explainability": 0.0001,
+    "stage_8_conflicts": 0.0,
+    "stage_10_explainability": 0.0,
     "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0006,
-    "stage_13_export": 0.0063
+    "stage_12_versioning": 0.0002,
+    "stage_13_export": 0.0029
   },
-  "total_time_sec": 3.7716,
+  "total_time_sec": 0.0067,
   "validation_warnings": [],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
   "output_classification": "AMBIGUOUS",
   "output_classification_reason": "avg_confidence=0.79, conflict_fraction=0.14, unresolved_ratio=0.71 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

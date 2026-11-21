@@ -1,0 +1,54 @@
+{
+  "case_id": "CASE_ATM_001",
+  "domain": "ATM_Robbery",
+  "observations": [
+    {
+      "obs_id": "O1",
+      "entity": "Person_94",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Individual walks towards ATM booth.",
+      "timestamp": "2024-01-15T10:00:58",
+      "time_offset": 58,
+      "confidence": 0.683
+    },
+    {
+      "obs_id": "O2",
+      "entity": "Person_01",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_3",
+      "location": "ATM street frontage, wide-angle coverage",
+      "content": "A person is seen standing near the ATM without transacting.",
+      "timestamp": "2024-01-15T10:03:33",
+      "time_offset": 213,
+      "confidence": 0.798
+    },
+    {
+      "obs_id": "O3",
+      "entity": "Person_01",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Person pulls open the ATM door and proceeds inside.",
+      "timestamp": "2024-01-15T10:04:09",
+      "time_offset": 249,
+      "confidence": 0.811
+    },
+    {
+      "obs_id": "O5",
+      "entity": "Person_01",
+      "role": "suspect",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Individual exits through the ATM door and walks away.",
+      "timestamp": "2024-01-15T10:05:20",
+      "time_offset": 320,
+      "confidence": 0.778
+    }
+  ]
+}

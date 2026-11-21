@@ -1,0 +1,143 @@
+{
+  "case_id": "CASE_FIR_001__fir",
+  "domain": "Text_Evidence",
+  "template": "LLM_Text_Extraction",
+  "fir": {
+    "crime_type": "chain snatching",
+    "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+    "description": "A woman was returning home when a black scooter with two men snatched her gold chain.",
+    "time_window": [
+      0,
+      0
+    ],
+    "roles": {
+      "suspect": 2,
+      "victim": 1,
+      "witness": 1
+    },
+    "incident_datetime": "2025-03-14T20:45:00",
+    "incident_datetime_end": "2025-03-14T20:45:00",
+    "incident_best_estimate": "2025-03-14T20:45:00",
+    "informant": "Kavitha Raghunath",
+    "accused": [
+      "Rider wore a red helmet",
+      "Pillion rider was without helmet, aged about 20-25 years, thin build, wearing a grey hooded jacket"
+    ],
+    "fir_number": "0412/2025",
+    "police_station": "Indiranagar Police Station",
+    "date_of_report": "2025-03-14T22:10:00",
+    "fir_record_id": "CASE_FIR_001_FIR"
+  },
+  "observations": [
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 1.0,
+      "role_reason": "complainant and victim",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road near Sri Lakshmi Provision Store",
+      "content": "Kavitha Raghunath was returning home on foot after buying vegetables from the market on 12th Main Road.",
+      "evidence": "I was returning home on foot after buying vegetables from the market on 12th Main Road.",
+      "mentioned_entities": [
+        "Kavitha Raghunath"
+      ],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "explicit",
+      "confidence": 1.0,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O1",
+      "time_offset": 0
+    },
+    {
+      "entity": "unknown_scooter",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.5,
+      "role_reason": "vehicle involved",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road near Sri Lakshmi Provision Store",
+      "content": "A black scooter came slowly from behind with two young men on it.",
+      "evidence": "a black scooter came slowly from behind with two young men on it.",
+      "mentioned_entities": [
+        "unknown_person_1",
+        "unknown_person_2"
+      ],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "explicit",
+      "confidence": 1.0,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O2",
+      "time_offset": 0
+    },
+    {
+      "entity": "unknown_person_2",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 1.0,
+      "role_reason": "performed snatching",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road near Sri Lakshmi Provision Store",
+      "content": "The pillion rider snatched the gold mangalsutra chain from Kavitha Raghunath's neck.",
+      "evidence": "the person sitting at the back suddenly pulled the gold mangalsutra chain from my neck.",
+      "mentioned_entities": [
+        "Kavitha Raghunath",
+        "unknown_person_2"
+      ],
+      "tags": [
+        "property"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "explicit",
+      "confidence": 1.0,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O3",
+      "time_offset": 0
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 1.0,
+      "role_reason": "suffered injury",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road near Sri Lakshmi Provision Store",
+      "content": "Kavitha Raghunath fell on the road and hurt her left elbow.",
+      "evidence": "I tried to hold the chain and fell down on the road and hurt my left elbow.",
+      "mentioned_entities": [
+        "Kavitha Raghunath"
+      ],
+      "tags": [
+        "injury"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "explicit",
+      "confidence": 1.0,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O4",
+      "time_offset": 0
+    }
+  ]
+}

@@ -43,6 +43,48 @@ log = logging.getLogger("forensynth.run_case")
 MAX_LOOPS = 5
 
 
+def _import_video():
+    """Lazily import the scene-video generator; optional, heavy deps (moviepy/Pillow/numpy)."""
+    try:
+        from scene_reconstruction_v3 import generate_scene_video
+        return generate_scene_video
+    except ImportError as exc:
+        log.warning("[run_case] Scene video generation unavailable: %s", exc)
+        return None
+
+
+def _import_scene_planner():
+    """Lazily import the scene planner, which builds the render-safe scene
+    spec (physical participants vs. report-only evidence sources,
+    already separated) that generate_scene_video() renders."""
+    try:
+        from scene_planner import build_scene_specs, DEFAULT_DB_PATH
+        return build_scene_specs, DEFAULT_DB_PATH
+    except ImportError as exc:
+        log.warning("[run_case] Scene planner unavailable: %s", exc)
+        return None, None
+
+
+def _import_report():
+    """Lazily import the explainability report generator; optional dep (fpdf2)."""
+    try:
+        from explainability_report_v2 import generate_explainability_report
+        return generate_explainability_report
+    except ImportError as exc:
+        log.warning("[run_case] Explainability report generation unavailable: %s", exc)
+        return None
+
+
+def _import_evaluator():
+    """Lazily import the ground-truth evaluator; lives alongside run_case.py."""
+    try:
+        from evaluate import evaluate_case
+        return evaluate_case
+    except ImportError as exc:
+        log.warning("[run_case] Ground-truth evaluation unavailable: %s", exc)
+        return None
+
+
 def _banner(msg: str) -> None:
     print(f"\n{'='*60}")
     print(f"  {msg}")
@@ -199,8 +241,21 @@ def main():
     group.add_argument("--input", help="Path to obs_only JSON (first run)")
     group.add_argument("--case",  help="Case ID already in DB")
     p.add_argument("--no-llm",  action="store_true")
+    p.add_argument("--must-merge", default=None,
+                   help="JSON list of alias pairs the ER agent must cluster "
+                        "into the same entity, applied on the first ER run, "
+                        "e.g. '[[\"Person_14\", \"Speaker_C\"]]'")
+    p.add_argument("--must-not-merge", default=None,
+                   help="JSON list of alias pairs the ER agent must keep as "
+                        "separate entities, applied on the first ER run")
     p.add_argument("--output",  default="./output")
     p.add_argument("--db",      default="./forensynth.db", help="Path to forensynth.db")
+    p.add_argument("--skip-video",  action="store_true", default=False,
+                   help="Skip scene-reconstruction video generation")
+    p.add_argument("--skip-report", action="store_true", default=False,
+                   help="Skip explainability PDF report generation")
+    p.add_argument("--skip-eval",   action="store_true", default=False,
+                   help="Skip ground-truth evaluation")
     args = p.parse_args()
 
     llm = not args.no_llm and bool(os.environ.get("GROQ_API_KEY", ""))
@@ -235,8 +290,18 @@ def main():
     er_ver   = versions["er_version"] or 0
 
     # ── Step 1: ER ────────────────────────────────────────────────────────────
+    initial_constraints = None
+    if args.must_merge or args.must_not_merge:
+        initial_constraints = {
+            "must_merge":     json.loads(args.must_merge) if args.must_merge else [],
+            "must_not_merge": json.loads(args.must_not_merge) if args.must_not_merge else [],
+        }
+
+    er_result = None
     if er_ver == 0:
-        run_er(mem, obs_data, llm, run_version=1, out_dir=out / "er")
+        er_result = run_er(mem, obs_data, llm, run_version=1,
+                           human_constraints=initial_constraints,
+                           out_dir=out / "er")
         er_ver = 1
 
     # ── Main loop ─────────────────────────────────────────────────────────────
@@ -244,6 +309,8 @@ def main():
     tl_ver       = None   # current timeline version
     crit_ver     = None   # current critique version
     prev_decision = None  # full previous Showrunner result for convergence tracking
+    critiques_by_round   = {}  # "critique_c{n}"   -> critique dict, for the explainability report
+    showrunner_by_round  = {}  # "showrunner_c{n}" -> decision dict, for the explainability report
 
     for loop in range(1, MAX_LOOPS + 1):
         next_tl   = f"V{loop}"
@@ -261,12 +328,14 @@ def main():
                                 tl_result=tl_result,
                                 out_dir=out / "critiques")
         crit_ver = next_crit
+        critiques_by_round[f"critique_c{loop}"] = critique
 
         # Showrunner — pass previous decision for convergence tracking
         decision = run_showrunner(mem, case_id, tl_ver, crit_ver,
                                   out_dir=out / "showrunner",
                                   prev_decision=prev_decision)
         prev_decision = decision  # carry forward for next loop
+        showrunner_by_round[f"showrunner_c{loop}"] = decision
         action = decision["action"]
 
         # ── Decide next step ──────────────────────────────────────────────────
@@ -309,6 +378,63 @@ def main():
         if loop == MAX_LOOPS:
             _banner(f"MAX REVISIONS REACHED — {case_id}")
             print(f"  Stopped at V{loop}. Manual review recommended.")
+
+    # ── Post-pipeline outputs: scene video + explainability report ─────────────
+    # Runs once the loop above has stopped — no_action, human_review, or the
+    # C3 version ceiling all fall through to here since none of those paths
+    # re-enter the loop. Everything is passed in from memory; nothing is
+    # re-read from the JSON files already written to disk.
+    pipeline_outputs = {
+        "er":          er_result or {},
+        "timeline_v3": tl_result or {},
+        **critiques_by_round,
+        **showrunner_by_round,
+    }
+
+    if not args.skip_video:
+        generate_scene_video = _import_video()
+        build_scene_specs, scene_db_path = _import_scene_planner()
+        if generate_scene_video and build_scene_specs:
+            _banner(f"Scene Reconstruction Video — {case_id}")
+            # build_scene_specs re-reads the timeline/critique it just saved
+            # to forensynth.db (mem.save_timeline/save_critique already ran
+            # above) -- a fresh, not stale, read -- so that the video is
+            # driven by the same physical-vs-reported classification used
+            # everywhere else, instead of re-deriving it from tl_result.
+            scene_spec = build_scene_specs(case_id, scene_db_path)
+            video_path = generate_scene_video(scene_spec, str(out / "videos"), case_id)
+            print(f"  Video  → {video_path}" if video_path else "  Video generation FAILED — see log.")
+        elif generate_scene_video:
+            log.warning("[run_case] Scene planner unavailable — skipping video for %s", case_id)
+
+    if not args.skip_report:
+        generate_explainability_report = _import_report()
+        if generate_explainability_report:
+            _banner(f"Explainability Report — {case_id}")
+            report_path = generate_explainability_report(pipeline_outputs, str(out / "reports"), case_id)
+            print(f"  Report → {report_path}" if report_path else "  Report generation FAILED — see log.")
+
+    if not args.skip_eval:
+        # Ground-truth evaluation only applies to synthetic cases generated
+        # with a matching GENERATOR_FIXED/cases_atm/{case_id}.json ground
+        # truth file -- skip quietly for any case that doesn't have one.
+        ground_truth_path = Path("GENERATOR_FIXED") / "cases_atm" / f"{case_id}.json"
+        if ground_truth_path.exists():
+            evaluate_case = _import_evaluator()
+            if evaluate_case:
+                _banner(f"Ground Truth Evaluation — {case_id}")
+                # NOTE: the parameter is named timeline_v3_path for interface
+                # compatibility, but we pass tl_ver -- the case's actual
+                # final version -- since most cases converge at V1 or V2
+                # and never reach V3.
+                eval_result = evaluate_case(
+                    case_id=case_id,
+                    ground_truth_path=str(ground_truth_path),
+                    timeline_v3_path=str(out / "timelines" / f"{case_id}_timeline_{tl_ver}.json"),
+                    output_dir=str(out / "evaluation"),
+                )
+                log.info("Evaluation: F1=%s result=%s", eval_result.get("f1_score", "N/A"), eval_result.get("result"))
+                print(f"  Eval   → F1={eval_result.get('f1_score', 'N/A')}  result={eval_result.get('result')}")
 
     # ── Final status ──────────────────────────────────────────────────────────
     mem.print_status(case_id)

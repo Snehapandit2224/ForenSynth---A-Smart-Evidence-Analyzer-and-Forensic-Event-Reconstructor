@@ -1,0 +1,148 @@
+{
+  "final": {
+    "camera_view": "exterior_street_side",
+    "clock_note": "Clock verified via check_clock consistent across clip",
+    "clock_verified": true,
+    "events": [
+      {
+        "action": "enter_atm",
+        "bbox": [
+          0.6,
+          0.29,
+          0.17,
+          0.64
+        ],
+        "certainty": 0.95,
+        "free_content": null,
+        "group": false,
+        "identifiable": true,
+        "people": null,
+        "person": "Individual wearing a pink baseball cap, light blue face mask, dark grey hoodie, black sweatpants with white side stripes, white sneakers, and carrying a black backpack",
+        "ref_time": 0.5,
+        "registry_match": "Person_01",
+        "start": "00:01",
+        "stays_behind": null,
+        "template_index": 5,
+        "visibility": 0.95
+      }
+    ],
+    "footage_issue": null,
+    "image_quality": 0.9,
+    "overlay_camera_label": "CAM 01",
+    "overlay_timestamp_first": "2024-01-15 10:04:08"
+  },
+  "trace": [
+    {
+      "step": 0,
+      "thought": "Check the burned-in timestamp at the bottom-left corner across several times.",
+      "tool": "crop_overlay",
+      "args": {
+        "corner": "bottom-left",
+        "times": [
+          0.0,
+          3.0,
+          6.0
+        ]
+      },
+      "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '| 2024-01-15 10:04:08'  parsed: 2024-01-15 10:04:08\nt=3.0s  OCR: '| 2024-01-15 10:04:11 «ff'  parsed: 2024-01-15 10:04:11\nt=6.0s  OCR: '| 2024-01-15 10:04:14'  parsed: 2024-01-15 10:04:14"
+    },
+    {
+      "step": 1,
+      "thought": "Verify clock consistency using check_clock.",
+      "tool": "check_clock",
+      "args": {
+        "readings": [
+          {
+            "clock": "2024-01-15 10:04:08",
+            "t": 0.0
+          },
+          {
+            "clock": "2024-01-15 10:04:11",
+            "t": 3.0
+          },
+          {
+            "clock": "2024-01-15 10:04:14",
+            "t": 6.0
+          }
+        ]
+      },
+      "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:04:08 (spread 0.0s)."
+    },
+    {
+      "step": 2,
+      "thought": "Check KNOWN PEOPLE to compare with Person_01.",
+      "tool": "known_people",
+      "args": {},
+      "result": "Known people:\nPerson_01: Individual wearing a pink/salmon baseball cap, light blue face mask, dark grey hoodie, black sweatpants with white side stripes, white sneakers, and carrying a black backpack (seen in O2)  [reference still #1]"
+    },
+    {
+      "step": 3,
+      "thought": "Check inside the booth to see if any interaction or waiting is clearly visible or occluded by frosted glass.",
+      "tool": "get_frames",
+      "args": {
+        "crop": [
+          0.45,
+          0.35,
+          0.1,
+          0.45
+        ],
+        "times": [
+          4.5,
+          5.5,
+          6.5,
+          7.5
+        ]
+      },
+      "result": "Frames t=4.5s, t=5.5s, t=6.5s, t=7.5s cropped to [0.45, 0.35, 0.1, 0.45]"
+    },
+    {
+      "step": 4,
+      "thought": "Test validate_draft with enter_atm.",
+      "tool": "validate_draft",
+      "args": {
+        "draft": {
+          "camera_view": "exterior_street_side",
+          "clock_note": "Clock verified via check_clock consistent across clip",
+          "clock_verified": true,
+          "events": [
+            {
+              "action": "enter_atm",
+              "bbox": [
+                0.6,
+                0.29,
+                0.17,
+                0.64
+              ],
+              "certainty": 0.95,
+              "free_content": null,
+              "group": false,
+              "identifiable": true,
+              "people": null,
+              "person": "Individual wearing a pink baseball cap, light blue face mask, dark grey hoodie, black sweatpants with white side stripes, white sneakers, and carrying a black backpack",
+              "ref_time": 0.5,
+              "registry_match": "Person_01",
+              "start": "00:01",
+              "stays_behind": null,
+              "template_index": 5,
+              "visibility": 0.95
+            }
+          ],
+          "footage_issue": null,
+          "image_quality": 0.9,
+          "overlay_camera_label": "CAM 01",
+          "overlay_timestamp_first": "2024-01-15 10:04:08"
+        }
+      },
+      "result": "No problems found."
+    },
+    {
+      "step": 5,
+      "thought": "All checks passed. Providing final verified output.",
+      "final": true,
+      "issues": []
+    }
+  ],
+  "unresolved_issues": [],
+  "verified_clock": "2024-01-15T10:04:08",
+  "tool_calls": 5
+}

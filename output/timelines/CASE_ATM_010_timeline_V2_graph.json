@@ -7,7 +7,7 @@
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "confidence": 0.794,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "At the corner, about to move. (forwarded)",
       "conflict_flag": false,
@@ -37,7 +37,7 @@
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "confidence": 0.8903,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "Entered. Starting now.",
       "conflict_flag": false,
@@ -52,7 +52,7 @@
       "entity_id": "entity_1",
       "primary_alias": "report_90",
       "confidence": 0.8874,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "Reader fitted. No one saw.",
       "conflict_flag": false,
@@ -84,9 +84,9 @@
       "entity_id": "entity_3",
       "primary_alias": "sms_94",
       "confidence": 0.4915,
-      "location": "remote \u00e2\u20ac\u201d mobile network SMS",
+      "location": "remote \u2014 mobile network SMS",
       "modality": "text",
-      "content": "[CORRUPTED] \u00e2\u20ac\u201d File hash mismatch; content integrity unverified.",
+      "content": "[CORRUPTED] \u2014 File hash mismatch; content integrity unverified.",
       "conflict_flag": true,
       "obs_ids": [
         "O11"
@@ -136,10 +136,10 @@
     {
       "source": "EVT_entity_1_o2",
       "target": "EVT_entity_1_o3",
-      "edge_type": "CAUSAL",
-      "confidence": 0.85,
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
       "relation": "BEFORE",
-      "label": "local LLM: The suspect\u2019s statement of waiting directly precedes and logically leads to their entry action."
+      "label": "BEFORE (0.95)"
     },
     {
       "source": "EVT_entity_1_o3",
@@ -164,6 +164,14 @@
       "confidence": 0.95,
       "relation": "BEFORE",
       "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_2_o6_o7",
+      "target": "EVT_entity_2_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5665,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_3_o11",
@@ -192,22 +200,22 @@
       "label": "action dependency: APPROACH->TAMPER"
     },
     {
-      "source": "EVT_entity_1_o2",
-      "target": "EVT_entity_1_o3",
-      "edge_type": "CAUSAL",
-      "confidence": 0.85,
-      "relation": "BEFORE",
-      "label": "local LLM: The suspect\u2019s statement of waiting directly precedes and logically leads to their entry action."
-    },
-    {
       "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o4_o5",
       "edge_type": "CAUSAL",
       "confidence": 0.8177,
       "relation": "BEFORE",
       "label": "action dependency: ENTER->TAMPER"
+    },
+    {
+      "source": "EVT_entity_2_o6_o7",
+      "target": "EVT_entity_2_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5665,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
     }
   ],
   "node_count": 7,
-  "edge_count": 8
+  "edge_count": 9
 }

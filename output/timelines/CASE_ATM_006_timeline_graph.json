@@ -82,7 +82,7 @@
       "entity_id": "entity_3",
       "primary_alias": "sms_93",
       "confidence": 0.8748,
-      "location": "remote â€” mobile network SMS",
+      "location": "remote — mobile network SMS",
       "modality": "text",
       "content": "Two individuals left together quickly. One carrying a bag.",
       "conflict_flag": false,
@@ -109,12 +109,28 @@
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.7032,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
       "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o4",
-      "edge_type": "CAUSAL",
-      "confidence": 0.8,
+      "edge_type": "TEMPORAL",
+      "confidence": 0.95,
       "relation": "BEFORE",
-      "label": "local LLM: Entering the booth enabled the suspect to affix the device."
+      "label": "BEFORE (0.95)"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6885,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
     },
     {
       "source": "EVT_entity_1_o4",
@@ -128,9 +144,9 @@
       "source": "EVT_entity_1_o4",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.7,
+      "confidence": 0.6903,
       "relation": "BEFORE",
-      "label": "local LLM: Affixing a device likely prompted the suspect to leave."
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_2_o6",
@@ -167,22 +183,30 @@
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o4",
+      "source": "EVT_entity_1_o1",
+      "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.8,
+      "confidence": 0.7032,
       "relation": "BEFORE",
-      "label": "local LLM: Entering the booth enabled the suspect to affix the device."
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6885,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
     },
     {
       "source": "EVT_entity_1_o4",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.7,
+      "confidence": 0.6903,
       "relation": "BEFORE",
-      "label": "local LLM: Affixing a device likely prompted the suspect to leave."
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     }
   ],
   "node_count": 6,
-  "edge_count": 7
+  "edge_count": 9
 }

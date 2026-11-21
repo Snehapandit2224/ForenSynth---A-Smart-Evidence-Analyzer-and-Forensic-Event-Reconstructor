@@ -85,7 +85,7 @@
       "entity_id": "entity_2",
       "primary_alias": "email_26",
       "confidence": 0.7686,
-      "location": "remote â€” email server log",
+      "location": "remote — email server log",
       "modality": "text",
       "content": "Two men just ran out of the ATM. Looked suspicious.",
       "conflict_flag": false,
@@ -115,7 +115,7 @@
       "entity_id": "entity_2",
       "primary_alias": "email_26",
       "confidence": 0.819,
-      "location": "remote â€” email server log",
+      "location": "remote — email server log",
       "modality": "text",
       "content": "Complaint submitted: witnessed unauthorised access to the server room after hours.",
       "conflict_flag": false,
@@ -166,9 +166,17 @@
     },
     {
       "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o7_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6984,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.67), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.788,
+      "confidence": 0.8238,
       "relation": "BEFORE",
       "label": "action dependency: LOITER->EXIT"
     },
@@ -221,6 +229,14 @@
       "label": "action dependency: EXIT->OBSERVE"
     },
     {
+      "source": "EVT_entity_3_o11",
+      "target": "EVT_entity_3_o13",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6814,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    },
+    {
       "source": "EVT_entity_2_o14",
       "target": "EVT_entity_3_o13",
       "edge_type": "CAUSAL",
@@ -240,9 +256,17 @@
     },
     {
       "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o7_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6984,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.67), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o10_o9",
       "edge_type": "CAUSAL",
-      "confidence": 0.788,
+      "confidence": 0.8238,
       "relation": "BEFORE",
       "label": "action dependency: LOITER->EXIT"
     },
@@ -271,6 +295,14 @@
       "label": "action dependency: EXIT->OBSERVE"
     },
     {
+      "source": "EVT_entity_3_o11",
+      "target": "EVT_entity_3_o13",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6814,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    },
+    {
       "source": "EVT_entity_2_o14",
       "target": "EVT_entity_3_o13",
       "edge_type": "CAUSAL",
@@ -280,5 +312,5 @@
     }
   ],
   "node_count": 9,
-  "edge_count": 11
+  "edge_count": 13
 }

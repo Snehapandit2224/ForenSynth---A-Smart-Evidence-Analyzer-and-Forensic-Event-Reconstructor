@@ -7,7 +7,7 @@
       "entity_id": "entity_1",
       "primary_alias": "report_20",
       "confidence": 0.8149,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "On my way to the spot now.",
       "conflict_flag": false,
@@ -98,7 +98,7 @@
       "entity_id": "entity_1",
       "primary_alias": "report_20",
       "confidence": 0.8671,
-      "location": "remote \u00e2\u20ac\u201d email server log",
+      "location": "remote \u2014 email server log",
       "modality": "text",
       "content": "Nothing suspicious. Continue.",
       "conflict_flag": false,
@@ -189,7 +189,7 @@
       "source": "EVT_entity_2_o1",
       "target": "EVT_entity_2_o3",
       "edge_type": "CAUSAL",
-      "confidence": 0.6277,
+      "confidence": 0.6563,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->ENTER"
     },
@@ -232,6 +232,14 @@
       "confidence": 0.625,
       "relation": "BEFORE",
       "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_entity_2_o3",
+      "target": "EVT_entity_2_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5368,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_1_o4",
@@ -327,7 +335,7 @@
       "source": "EVT_entity_2_o1",
       "target": "EVT_entity_2_o3",
       "edge_type": "CAUSAL",
-      "confidence": 0.6277,
+      "confidence": 0.6563,
       "relation": "BEFORE",
       "label": "action dependency: APPROACH->ENTER"
     },
@@ -364,6 +372,14 @@
       "label": "action dependency: ENTER->WITHDRAW"
     },
     {
+      "source": "EVT_entity_2_o3",
+      "target": "EVT_entity_2_o9",
+      "edge_type": "CAUSAL",
+      "confidence": 0.5368,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
+    },
+    {
       "source": "EVT_entity_1_o4",
       "target": "EVT_entity_1_o10_o6",
       "edge_type": "CAUSAL",
@@ -381,5 +397,5 @@
     }
   ],
   "node_count": 10,
-  "edge_count": 18
+  "edge_count": 19
 }

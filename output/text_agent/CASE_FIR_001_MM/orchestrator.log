@@ -1,0 +1,42 @@
+2026-10-14 11:48:37,775 [INFO] forensynth.orchestrator - Running fir_agent.py on samples\fir\FIR_001_chain_snatching.txt ...
+2026-10-14 11:48:41,741 [INFO] httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-14 11:48:48,319 [INFO] httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-14 11:48:48,327 [INFO] forensynth.text_agent -   dropped unverified event: One gold mangalsutra chain, approximately 28 grams, was stolen.
+2026-10-14 11:48:48,328 [INFO] forensynth.text_agent -   CASE_FIR_001_MM_FIR part 1 of 1: 18 event(s) extracted, 17 verified
+FIR 0412/2025 @ Indiranagar Police Station | offence: chain snatching | incident: 2025-03-14T20:45:00 | informant: Kavitha Raghunath
+accused: ['Rider wore a red helmet', 'Pillion rider without helmet, aged about 20-25 years, thin build, wearing a grey hooded jacket'] | roles: {'suspect': 2, 'victim': 1, 'witness': 1} | dropped (unverified): 2 | extractor: openai/gpt-oss-20b
+17 FIR-derived observations
+Saved -> output\text_agent\CASE_FIR_001_MM\staging\CASE_FIR_001_MM_fir.json
+         output\text_agent\CASE_FIR_001_MM\staging\CASE_FIR_001_MM__fir_obs_only.json
+2026-10-14 11:48:48,426 [INFO] forensynth.orchestrator - Running text_agent.py on 2 input file(s) ...
+2026-10-14 11:48:49,592 [INFO] httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-10-14 11:48:49,593 [INFO] groq._base_client - Retrying request to /openai/v1/chat/completions in 11.000000 seconds
+2026-10-14 11:49:04,694 [INFO] httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-14 11:49:04,714 [INFO] forensynth.text_agent -   FIR_001_witness_statement part 1 of 1: 10 event(s) extracted, 10 verified
+2026-10-14 11:49:04,793 [INFO] httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-10-14 11:49:04,793 [INFO] groq._base_client - Retrying request to /openai/v1/chat/completions in 50.000000 seconds
+2026-10-14 11:49:59,280 [INFO] httpx - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-14 11:49:59,282 [INFO] forensynth.text_agent -   FIR_001_chat part 1 of 1: 5 event(s) extracted, 5 verified
+15 observations from 2 document(s) (15 LLM-extracted, 0 fallback, 2 LLM call(s)), 4 distinct actors
+Saved -> output\text_agent\CASE_FIR_001_MM\staging\CASE_FIR_001_MM__text_obs_only.json
+2026-10-14 11:49:59,374 [INFO] forensynth.orchestrator - Running audio_agent.py on samples\fir\FIR_001_audio_manifest.json ...
+Loading Whisper 'base' on cpu ...
+[WARNING] Diarization unavailable (No module named 'pyannote')
+          All utterances will be attributed to 'Speaker_Unknown'.
+[1/1] FIR_001_phone_call.wav
+  0%|          | 0/4188 [00:00<?, ?frames/s] 62%|██████▏   | 2600/4188 [00:01<00:01, 1575.54frames/s]100%|██████████| 4188/4188 [00:02<00:00, 1562.94frames/s]100%|██████████| 4188/4188 [00:02<00:00, 1565.27frames/s]
+      transcribed 6 segment(s)
+Role hints   : 6 utterance(s)
+
+Case         : CASE_FIR_001_MM__audio
+Clips        : 1
+Observations : 6
+Speakers     : phone_call_rakesh_Speaker_Unknown_1, phone_call_rakesh_Speaker_Unknown_2, phone_call_rakesh_Speaker_Unknown_3, phone_call_rakesh_Speaker_Unknown_4, phone_call_rakesh_Speaker_Unknown_5, phone_call_rakesh_Speaker_Unknown_6
+Saved        : output\text_agent\CASE_FIR_001_MM\staging\CASE_FIR_001_MM__audio_obs_only.json
+2026-10-14 11:50:09,733 [INFO] forensynth.orchestrator - Adopted 32 LLM role hint(s) into `role`.
+2026-10-14 11:50:09,735 [INFO] forensynth.orchestrator - Merged 3 source(s) -> 38 observations -> output\text_agent\CASE_FIR_001_MM\CASE_FIR_001_MM_obs_only.json
+2026-10-14 11:50:10,028 [INFO] forensynth.memory_store - ForenSynthMemory (SQLite) → C:\Users\suche\Desktop\Capstone\ForenSynth---A-Smart-Evidence-Analyzer-and-Forensic-Event-Reconstructor\output\text_agent\CASE_FIR_001_MM\mm_test.db
+2026-10-14 11:50:10,041 [INFO] forensynth.memory_store - [Generator] Saved CASE_FIR_001_MM (38 obs)
+2026-10-14 11:50:10,042 [INFO] forensynth.orchestrator - Saved merged case CASE_FIR_001_MM to memory store (C:\Users\suche\Desktop\Capstone\ForenSynth---A-Smart-Evidence-Analyzer-and-Forensic-Event-Reconstructor\output\text_agent\CASE_FIR_001_MM\mm_test.db)
+2026-10-14 11:50:10,050 [INFO] forensynth.memory_store - [FIR] Saved CASE_FIR_001_MM_FIR for CASE_FIR_001_MM
+Run:    python pipeline/run_case.py --case CASE_FIR_001_MM --db output/text_agent/CASE_FIR_001_MM/mm_test.db

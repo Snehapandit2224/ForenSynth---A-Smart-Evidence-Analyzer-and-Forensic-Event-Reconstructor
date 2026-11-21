@@ -1,0 +1,5548 @@
+{
+  "case_id": "CASE_FIR_001_MM",
+  "status": "awaiting_human_validation",
+  "error_message": "",
+  "entity_count": 21,
+  "canonical_entities": [
+    {
+      "entity_id": "entity_1",
+      "aliases": [
+        "Rakesh"
+      ],
+      "primary_alias": "Rakesh",
+      "total_mentions": 2,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.9,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "100 ft road",
+        "12th main side"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O1",
+        "O25"
+      ],
+      "earliest_timestamp": "2025-03-14T19:58:00Z",
+      "latest_timestamp": "2025-03-14T20:52:00Z",
+      "time_span_seconds": 3240
+    },
+    {
+      "entity_id": "entity_2",
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_6"
+      ],
+      "primary_alias": "phone_call_rakesh_Speaker_Unknown_6",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.533,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "phone call, Rakesh's mobile (seized)"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O8"
+      ],
+      "earliest_timestamp": "2025-03-14T20:20:34Z",
+      "latest_timestamp": "2025-03-14T20:20:34Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_3",
+      "aliases": [
+        "Unknown"
+      ],
+      "primary_alias": "Unknown",
+      "total_mentions": 3,
+      "confirmed_mentions": [
+        "O16",
+        "O24"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.8002,
+      "confirmed_edges": 1,
+      "candidate_edges": 2,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "12th Main Road, near Sri Lakshmi Provision Store",
+        "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar"
+      ],
+      "roles": [
+        "unknown"
+      ],
+      "sources": [
+        "O14",
+        "O16",
+        "O24"
+      ],
+      "earliest_timestamp": "2025-03-14T20:45:00Z",
+      "latest_timestamp": "2025-03-14T20:45:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_4",
+      "aliases": [
+        "Kavitha Raghunath"
+      ],
+      "primary_alias": "Kavitha Raghunath",
+      "total_mentions": 3,
+      "confirmed_mentions": [
+        "O15",
+        "O18",
+        "O22"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.8266,
+      "confirmed_edges": 3,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "12th Main Road, near Sri Lakshmi Provision Store"
+      ],
+      "roles": [
+        "victim"
+      ],
+      "sources": [
+        "O15",
+        "O18",
+        "O22"
+      ],
+      "earliest_timestamp": "2025-03-14T20:45:00Z",
+      "latest_timestamp": "2025-03-14T20:45:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_5",
+      "aliases": [
+        "unknown_man_2"
+      ],
+      "primary_alias": "unknown_man_2",
+      "total_mentions": 2,
+      "confirmed_mentions": [
+        "O17",
+        "O20"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.8241,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "12th Main Road, near Sri Lakshmi Provision Store"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O17",
+        "O20"
+      ],
+      "earliest_timestamp": "2025-03-14T20:45:00Z",
+      "latest_timestamp": "2025-03-14T20:45:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_6",
+      "aliases": [
+        "unknown_man_1"
+      ],
+      "primary_alias": "unknown_man_1",
+      "total_mentions": 2,
+      "confirmed_mentions": [
+        "O19",
+        "O21"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.8522,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "12th Main Road, near Sri Lakshmi Provision Store"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O19",
+        "O21"
+      ],
+      "earliest_timestamp": "2025-03-14T20:45:00Z",
+      "latest_timestamp": "2025-03-14T20:45:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_7",
+      "aliases": [
+        "Manjunath"
+      ],
+      "primary_alias": "Manjunath",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.675,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "Sri Lakshmi Provision Store"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "O23"
+      ],
+      "earliest_timestamp": "2025-03-14T20:45:00Z",
+      "latest_timestamp": "2025-03-14T20:45:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_8",
+      "aliases": [
+        "Sunil"
+      ],
+      "primary_alias": "Sunil",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.9,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "Shivajinagar"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O26"
+      ],
+      "earliest_timestamp": "2025-03-14T21:20:00Z",
+      "latest_timestamp": "2025-03-14T21:20:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_9",
+      "aliases": [
+        "Kavitha Raghunath"
+      ],
+      "primary_alias": "Kavitha Raghunath",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.9,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "Indiranagar Police Station"
+      ],
+      "roles": [
+        "victim"
+      ],
+      "sources": [
+        "O27"
+      ],
+      "earliest_timestamp": "2025-03-14T21:55:00Z",
+      "latest_timestamp": "2025-03-14T21:55:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_10",
+      "aliases": [
+        "Unknown"
+      ],
+      "primary_alias": "Unknown",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.8,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "Indiranagar Police Station"
+      ],
+      "roles": [
+        "unknown"
+      ],
+      "sources": [
+        "O28"
+      ],
+      "earliest_timestamp": "2025-03-14T21:55:00Z",
+      "latest_timestamp": "2025-03-14T21:55:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_11",
+      "aliases": [
+        "Officer S. Prakash"
+      ],
+      "primary_alias": "Officer S. Prakash",
+      "total_mentions": 2,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.9,
+      "confirmed_edges": 0,
+      "candidate_edges": 1,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+        "Indiranagar Police Station"
+      ],
+      "roles": [
+        "unknown"
+      ],
+      "sources": [
+        "O29",
+        "O31"
+      ],
+      "earliest_timestamp": "2025-03-14T22:10:00Z",
+      "latest_timestamp": "2025-03-14T22:10:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_12",
+      "aliases": [
+        "Manjunath Gowda"
+      ],
+      "primary_alias": "Manjunath Gowda",
+      "total_mentions": 9,
+      "confirmed_mentions": [
+        "O10",
+        "O11",
+        "O12",
+        "O13",
+        "O34",
+        "O35",
+        "O36",
+        "O38",
+        "O9"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.8158,
+      "confirmed_edges": 14,
+      "candidate_edges": 22,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "unspecified"
+      ],
+      "roles": [
+        "witness"
+      ],
+      "sources": [
+        "O10",
+        "O11",
+        "O12",
+        "O13",
+        "O34",
+        "O35",
+        "O36",
+        "O38",
+        "O9"
+      ],
+      "earliest_timestamp": "2025-03-14T20:30:00Z",
+      "latest_timestamp": "2025-03-14T20:30:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_13",
+      "aliases": [
+        "Kavitha Raghunath"
+      ],
+      "primary_alias": "Kavitha Raghunath",
+      "total_mentions": 2,
+      "confirmed_mentions": [
+        "O30",
+        "O32"
+      ],
+      "candidate_mentions": [],
+      "confidence_score": 0.873,
+      "confirmed_edges": 1,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "Kavitha's home"
+      ],
+      "roles": [
+        "victim"
+      ],
+      "sources": [
+        "O30",
+        "O32"
+      ],
+      "earliest_timestamp": "2025-03-14T22:10:00Z",
+      "latest_timestamp": "2025-03-14T22:10:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_14",
+      "aliases": [
+        "Rakesh"
+      ],
+      "primary_alias": "Rakesh",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.9,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "tea stall area"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O33"
+      ],
+      "earliest_timestamp": "2025-03-15T09:12:00Z",
+      "latest_timestamp": "2025-03-15T09:12:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_15",
+      "aliases": [
+        "Kavitha"
+      ],
+      "primary_alias": "Kavitha",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.6,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "unspecified"
+      ],
+      "roles": [
+        "victim"
+      ],
+      "sources": [
+        "O37"
+      ],
+      "earliest_timestamp": "",
+      "latest_timestamp": "",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_16",
+      "aliases": [
+        "Sunil"
+      ],
+      "primary_alias": "Sunil",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.9,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "text"
+      ],
+      "locations": [
+        "unspecified"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O2"
+      ],
+      "earliest_timestamp": "2025-03-14T20:03:00Z",
+      "latest_timestamp": "2025-03-14T20:03:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_17",
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_1"
+      ],
+      "primary_alias": "phone_call_rakesh_Speaker_Unknown_1",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.56,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "phone call, Rakesh's mobile (seized)"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O3"
+      ],
+      "earliest_timestamp": "2025-03-14T20:20:00Z",
+      "latest_timestamp": "2025-03-14T20:20:00Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_18",
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_2"
+      ],
+      "primary_alias": "phone_call_rakesh_Speaker_Unknown_2",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.446,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "phone call, Rakesh's mobile (seized)"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O4"
+      ],
+      "earliest_timestamp": "2025-03-14T20:20:06Z",
+      "latest_timestamp": "2025-03-14T20:20:06Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_19",
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_3"
+      ],
+      "primary_alias": "phone_call_rakesh_Speaker_Unknown_3",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.593,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "phone call, Rakesh's mobile (seized)"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O5"
+      ],
+      "earliest_timestamp": "2025-03-14T20:20:11Z",
+      "latest_timestamp": "2025-03-14T20:20:11Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_20",
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_4"
+      ],
+      "primary_alias": "phone_call_rakesh_Speaker_Unknown_4",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.593,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "phone call, Rakesh's mobile (seized)"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O6"
+      ],
+      "earliest_timestamp": "2025-03-14T20:20:20Z",
+      "latest_timestamp": "2025-03-14T20:20:20Z",
+      "time_span_seconds": 0
+    },
+    {
+      "entity_id": "entity_21",
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_5"
+      ],
+      "primary_alias": "phone_call_rakesh_Speaker_Unknown_5",
+      "total_mentions": 1,
+      "confirmed_mentions": [],
+      "candidate_mentions": [],
+      "confidence_score": 0.533,
+      "confirmed_edges": 0,
+      "candidate_edges": 0,
+      "modalities": [
+        "audio"
+      ],
+      "locations": [
+        "phone call, Rakesh's mobile (seized)"
+      ],
+      "roles": [
+        "suspect"
+      ],
+      "sources": [
+        "O7"
+      ],
+      "earliest_timestamp": "2025-03-14T20:20:26Z",
+      "latest_timestamp": "2025-03-14T20:20:26Z",
+      "time_span_seconds": 0
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "size": 2,
+      "aliases": [
+        "Rakesh"
+      ],
+      "obs_ids": [
+        "O1",
+        "O25"
+      ],
+      "edges": [
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4421,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4369,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4568,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4349,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4359,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.437,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.454,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4388,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4396,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4077,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4697,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4779,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C10",
+      "size": 1,
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_6"
+      ],
+      "obs_ids": [
+        "O8"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4385,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_5",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_4",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4054,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4334,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.437,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_3",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4459,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4077,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.3736,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4323,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C11",
+      "size": 3,
+      "aliases": [
+        "Unknown"
+      ],
+      "obs_ids": [
+        "O14",
+        "O16",
+        "O24"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown",
+          "weight": 0.8002,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown",
+          "weight": 0.7638,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown",
+          "weight": 0.7487,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C12",
+      "size": 3,
+      "aliases": [
+        "Kavitha Raghunath"
+      ],
+      "obs_ids": [
+        "O15",
+        "O18",
+        "O22"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.8249,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.822,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.8322,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C13",
+      "size": 2,
+      "aliases": [
+        "unknown_man_2"
+      ],
+      "obs_ids": [
+        "O17",
+        "O20"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4557,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4534,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4352,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4469,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4334,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4388,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4617,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4342,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4415,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4537,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_2",
+          "weight": 0.8241,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4323,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4409,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C14",
+      "size": 2,
+      "aliases": [
+        "unknown_man_1"
+      ],
+      "obs_ids": [
+        "O19",
+        "O21"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4385,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4404,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.445,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4405,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4507,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4407,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4406,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4454,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown_man_1",
+          "weight": 0.8522,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4329,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4459,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4569,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "unknown_man_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4481,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "unknown_man_1",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C15",
+      "size": 1,
+      "aliases": [
+        "Manjunath"
+      ],
+      "obs_ids": [
+        "O23"
+      ],
+      "edges": [
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "manjunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C16",
+      "size": 1,
+      "aliases": [
+        "Sunil"
+      ],
+      "obs_ids": [
+        "O26"
+      ],
+      "edges": [
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4093,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4108,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.3983,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.3736,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4106,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4051,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C17",
+      "size": 1,
+      "aliases": [
+        "Kavitha Raghunath"
+      ],
+      "obs_ids": [
+        "O27"
+      ],
+      "edges": [
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C18",
+      "size": 1,
+      "aliases": [
+        "Unknown"
+      ],
+      "obs_ids": [
+        "O28"
+      ],
+      "edges": [
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "unknown",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C19",
+      "size": 2,
+      "aliases": [
+        "Officer S. Prakash"
+      ],
+      "obs_ids": [
+        "O29",
+        "O31"
+      ],
+      "edges": [
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.7705,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "unknown",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C2",
+      "size": 9,
+      "aliases": [
+        "Manjunath Gowda"
+      ],
+      "obs_ids": [
+        "O10",
+        "O11",
+        "O12",
+        "O13",
+        "O34",
+        "O35",
+        "O36",
+        "O38",
+        "O9"
+      ],
+      "edges": [
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6266,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6507,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8069,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "kavitha",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8104,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6488,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8099,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.7956,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6304,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6379,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8152,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8191,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6362,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8034,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8306,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6376,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6373,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6398,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6125,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "kavitha",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6166,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6298,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8182,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.7952,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8043,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8326,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8143,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8079,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6304,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6367,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6472,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.642,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.631,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6342,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8465,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.8062,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6176,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.6357,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 1,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "location",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C20",
+      "size": 2,
+      "aliases": [
+        "Kavitha Raghunath"
+      ],
+      "obs_ids": [
+        "O30",
+        "O32"
+      ],
+      "edges": [
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.873,
+          "support": 1,
+          "classifications": {
+            "confirmed": 1,
+            "candidate": 0,
+            "rejected": 0
+          },
+          "hard_negative": false,
+          "reasons": [
+            "entity_coreference",
+            "mention_consistency",
+            "temporal",
+            "location",
+            "context",
+            "lexical"
+          ]
+        },
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "officer_s__prakash",
+          "alias_2": "kavitha_raghunath",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha_raghunath",
+          "alias_2": "officer_s__prakash",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C21",
+      "size": 1,
+      "aliases": [
+        "Rakesh"
+      ],
+      "obs_ids": [
+        "O33"
+      ],
+      "edges": []
+    },
+    {
+      "cluster_id": "C3",
+      "size": 1,
+      "aliases": [
+        "Kavitha"
+      ],
+      "obs_ids": [
+        "O37"
+      ],
+      "edges": [
+        {
+          "alias_1": "kavitha",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "kavitha",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C4",
+      "size": 1,
+      "aliases": [
+        "Sunil"
+      ],
+      "obs_ids": [
+        "O2"
+      ],
+      "edges": [
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.4054,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.445,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4479,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4402,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "kavitha",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4633,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "manjunath_gowda",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4624,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "manjunath_gowda",
+          "alias_2": "sunil",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C5",
+      "size": 1,
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_1"
+      ],
+      "obs_ids": [
+        "O3"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4404,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.445,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4388,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4406,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.454,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4388,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4106,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_1",
+          "weight": 0.4409,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C6",
+      "size": 1,
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_2"
+      ],
+      "obs_ids": [
+        "O4"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4352,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4507,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4349,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4359,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.3983,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4569,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4537,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_2",
+          "weight": 0.4624,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C7",
+      "size": 1,
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_3"
+      ],
+      "obs_ids": [
+        "O5"
+      ],
+      "edges": [
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4557,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_3",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4405,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4479,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4617,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4454,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_3",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_3",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4396,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4779,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_3",
+          "weight": 0.4051,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C8",
+      "size": 1,
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_4"
+      ],
+      "obs_ids": [
+        "O6"
+      ],
+      "edges": [
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4369,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4534,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_3",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.445,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_4",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_4",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4568,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4108,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4329,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4415,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.4633,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_4",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "C9",
+      "size": 1,
+      "aliases": [
+        "phone_call_rakesh_Speaker_Unknown_5"
+      ],
+      "obs_ids": [
+        "O7"
+      ],
+      "edges": [
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4421,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4093,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_5",
+          "alias_2": "phone_call_rakesh_speaker_unknown_6",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4469,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_4",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4407,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "sunil",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4402,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_2",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4342,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_3",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "phone_call_rakesh_speaker_unknown_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.0,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": true,
+          "reasons": []
+        },
+        {
+          "alias_1": "rakesh",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4697,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        },
+        {
+          "alias_1": "unknown_man_1",
+          "alias_2": "phone_call_rakesh_speaker_unknown_5",
+          "weight": 0.4481,
+          "support": 1,
+          "classifications": {
+            "confirmed": 0,
+            "candidate": 0,
+            "rejected": 1
+          },
+          "hard_negative": false,
+          "reasons": []
+        }
+      ]
+    }
+  ],
+  "conflicts_detected": 6,
+  "conflicts": [
+    {
+      "type": "oversized_cluster",
+      "cluster_id": "C2",
+      "size": 9,
+      "threshold": 7.0,
+      "detail": "Cluster C2 oversized (9)."
+    },
+    {
+      "type": "low_confidence",
+      "cluster_id": "C6",
+      "cluster_confidence": 0.446,
+      "detail": "Cluster C6 confidence 0.446 below floor."
+    },
+    {
+      "type": "low_confidence",
+      "cluster_id": "C9",
+      "cluster_confidence": 0.533,
+      "detail": "Cluster C9 confidence 0.533 below floor."
+    },
+    {
+      "type": "low_confidence",
+      "cluster_id": "C10",
+      "cluster_confidence": 0.533,
+      "detail": "Cluster C10 confidence 0.533 below floor."
+    },
+    {
+      "type": "physical_impossibility",
+      "cluster_id": "C11",
+      "detail": "Concurrent different locations at t=2820s in C11."
+    },
+    {
+      "type": "physical_impossibility",
+      "cluster_id": "C19",
+      "detail": "Concurrent different locations at t=7920s in C19."
+    }
+  ],
+  "output_classification": "PARTIAL",
+  "output_classification_reason": "avg_confidence=0.75, conflict_fraction=0.29, low_confidence_fraction=0.14 - resolution is usable but has some flagged or low-confidence clusters worth investigator attention.",
+  "llm_calls_made": 7,
+  "llm_calls_budget": 14,
+  "location_similarity_backend": "embedding",
+  "resplit_log": [],
+  "identity_links": [],
+  "configuration": {
+    "check_duplicates": true,
+    "case_base_time": null,
+    "temporal_window_sec": 300,
+    "max_temporal_gap_sec": 3600,
+    "max_pairs": 500,
+    "confirmed_threshold": 0.8,
+    "candidate_threshold_low": 0.5,
+    "candidate_threshold_high": 0.65,
+    "llm_enabled": true,
+    "groq_model": "openai/gpt-oss-20b",
+    "cross_modal_merge_min": 0.58,
+    "merge_composite_min": 0.55
+  },
+  "total_processing_time_sec": 103.450183,
+  "stage_timings": {
+    "stage_1_intake": 24.288505,
+    "stage_2_normalization": 2e-06,
+    "stage_3_blocking": 0.000978,
+    "stage_4_features": 79.15594,
+    "stage_5_scoring": 0.000858,
+    "stage_6_classification": 0.000535,
+    "stage_7_graph_building": 0.000141,
+    "stage_8_clustering": 0.00054,
+    "stage_9_attachment": 4.7e-05,
+    "stage_10_conflict_detection": 0.000253,
+    "stage_10b_constrained_resplit": 3.3e-05,
+    "stage_11_labeling": 0.001457,
+    "stage_12_packaging": 0.0
+  },
+  "created_at": "2026-10-14T06:21:55Z"
+}

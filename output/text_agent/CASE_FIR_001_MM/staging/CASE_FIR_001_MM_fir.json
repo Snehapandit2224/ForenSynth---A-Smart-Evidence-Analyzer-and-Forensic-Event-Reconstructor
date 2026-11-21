@@ -1,0 +1,151 @@
+{
+  "case_id": "CASE_FIR_001_MM",
+  "fir_id": "CASE_FIR_001_MM_FIR",
+  "source_file": "FIR_001_chain_snatching.txt",
+  "extracted_at": "2026-10-14T06:18:41Z",
+  "extractor": "openai/gpt-oss-20b",
+  "language": "en",
+  "anchors": {
+    "fir_number": {
+      "value": "0412/2025",
+      "evidence": "FIR No.: 0412/2025",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "police_station": {
+      "value": "Indiranagar Police Station",
+      "evidence": "P.S.: Indiranagar Police Station",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "district": {
+      "value": "Bengaluru City",
+      "evidence": "District: Bengaluru City",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "date_of_report": {
+      "value": "2025-03-14T22:10:00",
+      "evidence": "Date and Time of FIR: 14/03/2025 22:10",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "informant": {
+      "father_or_husband_name": "Sri Raghunath Iyer",
+      "age": "52 years",
+      "address": "No. 47, 11th Cross, HAL 2nd Stage, Indiranagar, Bengaluru - 560038",
+      "phone": "98450 XXXXX",
+      "relation_to_incident": "victim",
+      "name": "Kavitha Raghunath",
+      "evidence": "(a) Name: Smt. Kavitha Raghunath\n(b) Husband's name: Sri Raghunath Iyer\n(c) Age: 52 years\n(d) Address: No. 47, 11th Cross, HAL 2nd Stage, Indiranagar, Bengaluru - 560038\n(e) Phone: 98450 XXXXX",
+      "verified": true,
+      "confidence": 1.0
+    }
+  },
+  "claims": {
+    "incident_time": {
+      "start": "2025-03-14T20:45:00",
+      "end": "2025-03-14T20:45:00",
+      "best_estimate": "2025-03-14T20:45:00",
+      "evidence": "Time: approximately 20:45 hrs",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "incident_location": {
+      "value": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+      "evidence": "Place of occurrence: 12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "offence": {
+      "value": "chain snatching",
+      "evidence": "",
+      "verified": false,
+      "confidence": 0.3
+    },
+    "description": {
+      "value": "A woman was returning home on foot when a black scooter with two men snatched her gold mangalsutra chain around 8:45 pm on 14 March 2025 near Sri Lakshmi Provision Store.",
+      "evidence": "",
+      "verified": false,
+      "confidence": 0.3
+    },
+    "legal_sections": {
+      "value": [
+        "Bharatiya Nyaya Sanhita, 2023 - Section 304(2)",
+        "Section 3(5)"
+      ],
+      "evidence": "Acts and Sections: Bharatiya Nyaya Sanhita, 2023 - Section 304(2) (snatching), Section 3(5)",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "delay_in_reporting": {
+      "value": "Complainant was in shock and first went home to inform her husband",
+      "evidence": "Reasons for delay in reporting by the complainant/informant: Complainant was in shock and first went home to inform her husband",
+      "verified": true,
+      "confidence": 1.0
+    },
+    "accused": [
+      {
+        "name": null,
+        "description": "Rider wore a red helmet",
+        "address": null,
+        "is_informant": false,
+        "evidence": "Rider wore a red helmet; pillion rider was without helmet, aged about 20-25 years, thin build, wearing a grey hooded jacket",
+        "verified": true,
+        "confidence": 1.0
+      },
+      {
+        "name": null,
+        "description": "Pillion rider without helmet, aged about 20-25 years, thin build, wearing a grey hooded jacket",
+        "address": null,
+        "is_informant": false,
+        "evidence": "Rider wore a red helmet; pillion rider was without helmet, aged about 20-25 years, thin build, wearing a grey hooded jacket",
+        "verified": true,
+        "confidence": 1.0
+      }
+    ],
+    "victims": [
+      {
+        "name": "Kavitha Raghunath",
+        "description": "victim of chain snatching",
+        "address": "No. 47, 11th Cross, HAL 2nd Stage, Indiranagar, Bengaluru - 560038",
+        "is_informant": true,
+        "evidence": "I, Kavitha Raghunath, ... I was returning home on foot ... the person ... pulled the gold mangalsutra chain from my neck",
+        "verified": true,
+        "confidence": 1.0
+      }
+    ],
+    "witnesses": [
+      {
+        "name": "Manjunath",
+        "description": "shopkeeper who saw the scooter",
+        "address": null,
+        "is_informant": false,
+        "evidence": "The shopkeeper of Sri Lakshmi Provision Store, Sri Manjunath, came running when I shouted and helped me get up. He also saw the scooter going away",
+        "verified": true,
+        "confidence": 1.0
+      }
+    ],
+    "property": [
+      {
+        "item": "gold mangalsutra chain",
+        "value": "Rs. 1,60,000/-",
+        "evidence": "Particulars of properties stolen: One gold mangalsutra chain, approx. 28 grams. Total value of property stolen: Rs. 1,60,000/-",
+        "verified": true,
+        "confidence": 1.0
+      }
+    ],
+    "weapons": []
+  },
+  "dropped": [
+    {
+      "field": "offence",
+      "reason": "evidence quote not found in FIR text (kept, flagged)"
+    },
+    {
+      "field": "description",
+      "reason": "evidence quote not found in FIR text (kept, flagged)"
+    }
+  ],
+  "raw_text": "FIRST INFORMATION REPORT\n(Under Section 173 B.N.S.S.)\n\n1. District: Bengaluru City        P.S.: Indiranagar Police Station        Year: 2025\n   FIR No.: 0412/2025              Date and Time of FIR: 14/03/2025 22:10\n\n2. Acts and Sections: Bharatiya Nyaya Sanhita, 2023 - Section 304(2) (snatching), Section 3(5)\n\n3. Occurrence of offence:\n   (a) Day: Friday        Date: 14/03/2025        Time: approximately 20:45 hrs\n   (b) Information received at P.S.: Date 14/03/2025, Time 21:55 hrs\n   (c) General Diary Reference: Entry No. 37, Time 21:55 hrs\n\n4. Type of information: Written\n\n5. Place of occurrence: 12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage,\n   Indiranagar. Distance from P.S.: approx. 1.5 km, direction East.\n\n6. Complainant / Informant:\n   (a) Name: Smt. Kavitha Raghunath\n   (b) Husband's name: Sri Raghunath Iyer\n   (c) Age: 52 years\n   (d) Address: No. 47, 11th Cross, HAL 2nd Stage, Indiranagar, Bengaluru - 560038\n   (e) Phone: 98450 XXXXX\n\n7. Details of known / suspected / unknown accused with full particulars:\n   Two unknown persons on a black two-wheeler (Honda Dio type), registration number partly\n   seen as \"KA-03 ... 7781\". Rider wore a red helmet; pillion rider was without helmet, aged\n   about 20-25 years, thin build, wearing a grey hooded jacket.\n\n8. Reasons for delay in reporting by the complainant/informant: Complainant was in shock and\n   first went home to inform her husband.\n\n9. Particulars of properties stolen: One gold mangalsutra chain, approx. 28 grams.\n\n10. Total value of property stolen: Rs. 1,60,000/- (approx.)\n\n12. First Information contents:\n\nI, Kavitha Raghunath, residing at the above address, state that on 14/03/2025 at about\n8:45 pm I was returning home on foot after buying vegetables from the market on 12th Main\nRoad. When I reached near Sri Lakshmi Provision Store, a black scooter came slowly from behind\nwith two young men on it. The person sitting at the back suddenly pulled the gold mangalsutra\nchain from my neck. I tried to hold the chain and fell down on the road and hurt my left elbow.\nThe scooter then went very fast towards 100 Feet Road.\n\nThe person who snatched the chain was not wearing a helmet. He was thin and was wearing a grey\njacket with a hood. The person driving the scooter wore a red helmet. I could only see the last\ndigits of the number plate as 7781 and that it started with KA-03.\n\nThe shopkeeper of Sri Lakshmi Provision Store, Sri Manjunath, came running when I shouted and\nhelped me get up. He also saw the scooter going away. After this I went home and told my husband,\nand then we came to the police station.\n\nI request you to take action against the unknown persons and recover my chain.\n\nSignature of complainant: (signed) Kavitha R.\n\n13. Action taken: Since the above information reveals commission of offence(s) u/s as\nmentioned at item No. 2, registered the case and took up the investigation.\n\nSignature of Officer in charge: (signed) S. Prakash, PSI, Indiranagar P.S."
+}

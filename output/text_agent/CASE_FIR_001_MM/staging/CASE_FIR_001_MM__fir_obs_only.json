@@ -1,0 +1,485 @@
+{
+  "case_id": "CASE_FIR_001_MM__fir",
+  "domain": "Text_Evidence",
+  "template": "LLM_Text_Extraction",
+  "fir": {
+    "crime_type": "chain snatching",
+    "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+    "description": "A woman was returning home on foot when a black scooter with two men snatched her gold mangalsutra chain around 8:45 pm on 14 March 2025 near Sri Lakshmi Provision Store.",
+    "time_window": [
+      0,
+      0
+    ],
+    "roles": {
+      "suspect": 2,
+      "victim": 1,
+      "witness": 1
+    },
+    "incident_datetime": "2025-03-14T20:45:00",
+    "incident_datetime_end": "2025-03-14T20:45:00",
+    "incident_best_estimate": "2025-03-14T20:45:00",
+    "informant": "Kavitha Raghunath",
+    "accused": [
+      "Rider wore a red helmet",
+      "Pillion rider without helmet, aged about 20-25 years, thin build, wearing a grey hooded jacket"
+    ],
+    "fir_number": "0412/2025",
+    "police_station": "Indiranagar Police Station",
+    "date_of_report": "2025-03-14T22:10:00",
+    "fir_record_id": "CASE_FIR_001_MM_FIR"
+  },
+  "observations": [
+    {
+      "entity": "Unknown",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.2,
+      "role_reason": "Incident time stated but actor not identified",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+      "content": "The snatching incident occurred at approximately 20:45 on 14 March 2025.",
+      "evidence": "Day: Friday Date: 14/03/2025 Time: approximately 20:45 hrs",
+      "mentioned_entities": [],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "explicit",
+      "confidence": 0.8,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O1",
+      "time_offset": 0
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.95,
+      "role_reason": "She was the one who was snatched and injured",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "Kavitha Raghunath was returning home on foot after buying vegetables from the market on 12th Main Road.",
+      "evidence": "I was returning home on foot after buying vegetables from the market on 12th Main Road.",
+      "mentioned_entities": [
+        "Kavitha Raghunath"
+      ],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "explicit",
+      "confidence": 0.95,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O2",
+      "time_offset": 0
+    },
+    {
+      "entity": "Unknown",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.3,
+      "role_reason": "Scooter movement described but actor not identified",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "A black scooter came slowly from behind with two young men on it.",
+      "evidence": "a black scooter came slowly from behind with two young men on it.",
+      "mentioned_entities": [],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.45,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O3",
+      "time_offset": 0
+    },
+    {
+      "entity": "unknown_man_2",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.9,
+      "role_reason": "Pillion rider performed the snatching",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "The pillion rider pulled the gold mangalsutra chain from Kavitha Raghunath's neck.",
+      "evidence": "the person sitting at the back suddenly pulled the gold mangalsutra chain from my neck.",
+      "mentioned_entities": [
+        "unknown_man_2",
+        "Kavitha Raghunath"
+      ],
+      "tags": [],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.675,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O4",
+      "time_offset": 0
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.95,
+      "role_reason": "She was injured during the incident",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "Kavitha Raghunath tried to hold the chain, fell down on the road, and hurt her left elbow.",
+      "evidence": "I tried to hold the chain and fell down on the road and hurt my left elbow.",
+      "mentioned_entities": [
+        "Kavitha Raghunath"
+      ],
+      "tags": [
+        "injury"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.712,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O5",
+      "time_offset": 0
+    },
+    {
+      "entity": "unknown_man_1",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.9,
+      "role_reason": "Driver accelerated the scooter after the snatching",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "The scooter driver accelerated the scooter towards 100 Feet Road.",
+      "evidence": "The scooter then went very fast towards 100 Feet Road.",
+      "mentioned_entities": [
+        "unknown_man_1"
+      ],
+      "tags": [
+        "movement"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.675,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O6",
+      "time_offset": 0
+    },
+    {
+      "entity": "unknown_man_2",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.9,
+      "role_reason": "Pillion rider described as not wearing helmet and wearing grey jacket",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "The pillion rider was not wearing a helmet, thin, and wearing a grey hooded jacket.",
+      "evidence": "The person who snatched the chain was not wearing a helmet. He was thin and was wearing a grey jacket with a hood.",
+      "mentioned_entities": [
+        "unknown_man_2"
+      ],
+      "tags": [
+        "identification"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.675,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O7",
+      "time_offset": 0
+    },
+    {
+      "entity": "unknown_man_1",
+      "role": "unknown",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.9,
+      "role_reason": "Driver wore a red helmet",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "The scooter driver wore a red helmet.",
+      "evidence": "The person driving the scooter wore a red helmet.",
+      "mentioned_entities": [
+        "unknown_man_1"
+      ],
+      "tags": [
+        "identification"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.675,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O8",
+      "time_offset": 0
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.9,
+      "role_reason": "She observed the number plate",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "Kavitha Raghunath saw the last digits of the scooter's number plate as 7781, starting with KA-03.",
+      "evidence": "I could only see the last digits of the number plate as 7781 and that it started with KA-03.",
+      "mentioned_entities": [
+        "Kavitha Raghunath"
+      ],
+      "tags": [
+        "identification"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.675,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O9",
+      "time_offset": 0
+    },
+    {
+      "entity": "Manjunath",
+      "role": "unknown",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.9,
+      "role_reason": "He helped Kavitha and observed the scooter",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "Sri Lakshmi Provision Store",
+      "content": "Sri Manjunath ran to help Kavitha and saw the scooter going away.",
+      "evidence": "The shopkeeper of Sri Lakshmi Provision Store, Sri Manjunath, came running when I shouted and helped me get up. He also saw the scooter going away.",
+      "mentioned_entities": [
+        "Manjunath",
+        "Kavitha Raghunath"
+      ],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.675,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O10",
+      "time_offset": 0
+    },
+    {
+      "entity": "Unknown",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.2,
+      "role_reason": "Value of stolen property stated",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store",
+      "content": "The total value of the stolen property was approximately Rs. 1,60,000.",
+      "evidence": "Rs. 1,60,000/- (approx.)",
+      "mentioned_entities": [],
+      "tags": [
+        "property"
+      ],
+      "timestamp": "2025-03-14T20:45:00",
+      "time_basis": "unknown",
+      "confidence": 0.6,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O11",
+      "time_offset": 0
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.9,
+      "role_reason": "She and her husband went to the police station",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "Indiranagar Police Station",
+      "content": "Kavitha Raghunath and her husband went to the police station.",
+      "evidence": "and then we came to the police station.",
+      "mentioned_entities": [
+        "Kavitha Raghunath",
+        "Raghunath Iyer"
+      ],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T21:55:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O12",
+      "time_offset": 4200
+    },
+    {
+      "entity": "Unknown",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.2,
+      "role_reason": "Information received at police station noted",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "Indiranagar Police Station",
+      "content": "Information about the incident was received at the police station at 21:55 on 14 March 2025.",
+      "evidence": "Information received at P.S.: Date 14/03/2025, Time 21:55 hrs",
+      "mentioned_entities": [],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T21:55:00",
+      "time_basis": "explicit",
+      "confidence": 0.8,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O13",
+      "time_offset": 4200
+    },
+    {
+      "entity": "Officer S. Prakash",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.3,
+      "role_reason": "Officer registered the FIR, but role not specified in text",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "12th Main Road, near Sri Lakshmi Provision Store, HAL 2nd Stage, Indiranagar",
+      "content": "Officer S. Prakash registered the FIR at 22:10 on 14 March 2025.",
+      "evidence": "FIR No.: 0412/2025 Date and Time of FIR: 14/03/2025 22:10",
+      "mentioned_entities": [
+        "Officer S. Prakash"
+      ],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T22:10:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O14",
+      "time_offset": 5100
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.9,
+      "role_reason": "She told her husband about the incident",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "Kavitha's home",
+      "content": "Kavitha Raghunath went home and told her husband about the incident.",
+      "evidence": "After this I went home and told my husband,",
+      "mentioned_entities": [
+        "Kavitha Raghunath",
+        "Raghunath Iyer"
+      ],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T22:10:00",
+      "time_basis": "document_date",
+      "confidence": 0.68,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O15",
+      "time_offset": 5100
+    },
+    {
+      "entity": "Officer S. Prakash",
+      "role": "unknown",
+      "role_hint": "unknown",
+      "role_hint_confidence": 0.3,
+      "role_reason": "Officer took up investigation",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "Indiranagar Police Station",
+      "content": "Officer S. Prakash registered the case and took up the investigation.",
+      "evidence": "registered the case and took up the investigation.",
+      "mentioned_entities": [
+        "Officer S. Prakash"
+      ],
+      "tags": [],
+      "timestamp": "2025-03-14T22:10:00",
+      "time_basis": "explicit",
+      "confidence": 0.9,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O16",
+      "time_offset": 5100
+    },
+    {
+      "entity": "Kavitha Raghunath",
+      "role": "unknown",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.9,
+      "role_reason": "She explained delay in reporting",
+      "modality": "text",
+      "source": "fir",
+      "source_doc": "CASE_FIR_001_MM_FIR",
+      "reported_by": "Kavitha Raghunath",
+      "location": "Kavitha's home",
+      "content": "Kavitha Raghunath was in shock and first went home to inform her husband before reporting to police.",
+      "evidence": "Complainant was in shock and first went home to inform her husband.",
+      "mentioned_entities": [
+        "Kavitha Raghunath",
+        "Raghunath Iyer"
+      ],
+      "tags": [
+        "communication"
+      ],
+      "timestamp": "2025-03-14T22:10:00",
+      "time_basis": "document_date",
+      "confidence": 0.765,
+      "extraction": "llm",
+      "fir_derived": true,
+      "obs_id": "O17",
+      "time_offset": 5100
+    }
+  ]
+}

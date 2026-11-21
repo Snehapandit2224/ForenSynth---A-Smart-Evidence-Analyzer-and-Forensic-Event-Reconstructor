@@ -1,0 +1,18 @@
+# ForenSynth – Audio Field Agent (agents/field_agents/audio_agent.py)
+# Install with: pip install -r agents/field_agents/requirements-audio.txt
+# Kept separate from the main requirements.txt: these are heavy and only the
+# audio agent needs them.
+
+openai-whisper
+librosa>=0.10
+soundfile>=0.12
+torch>=2.0
+
+# Optional - real speaker diarization. Without it every utterance is
+# attributed to "Speaker_Unknown". Needs HF_TOKEN in .env, and the HuggingFace
+# account behind that token must accept the terms of all three gated repos:
+#   pyannote/segmentation-3.0
+#   pyannote/speaker-diarization-3.1
+#   pyannote/speaker-diarization-community-1   (pulled in by pyannote.audio 4.x)
+# pyannote.audio 3.x does not work with current torchaudio - use 4.x.
+# pyannote.audio>=4.0

@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_011",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:27:24Z",
+  "generated_at": "2026-08-31T08:04:01Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1_o2",
@@ -285,12 +285,68 @@
       "label": "action dependency: APPROACH->ENTER"
     },
     {
+      "source": "EVT_entity_1_o1_o2",
+      "target": "EVT_entity_1_o6",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6931,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.62), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6952,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2",
+      "target": "EVT_entity_1_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6582,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.62), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o1_o2",
+      "target": "EVT_entity_1_o7",
+      "edge_type": "CAUSAL",
+      "confidence": 0.674,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
+    },
+    {
       "source": "EVT_entity_1_o3",
       "target": "EVT_entity_1_o6",
       "edge_type": "CAUSAL",
-      "confidence": 0.7732,
+      "confidence": 0.8083,
       "relation": "BEFORE",
       "label": "action dependency: ENTER->WITHDRAW"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6874,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o8",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6504,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.62), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o3",
+      "target": "EVT_entity_1_o7",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6662,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.73), sequential"
     },
     {
       "source": "EVT_entity_1_o6",
@@ -304,9 +360,17 @@
       "source": "EVT_entity_1_o6",
       "target": "EVT_entity_1_o10",
       "edge_type": "CAUSAL",
-      "confidence": 0.7611,
+      "confidence": 0.7957,
       "relation": "BEFORE",
       "label": "action dependency: WITHDRAW->EXIT"
+    },
+    {
+      "source": "EVT_entity_1_o8",
+      "target": "EVT_entity_1_o10",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6397,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_2_o11_o12_o13",
@@ -468,12 +532,68 @@
         "label": "action dependency: APPROACH->ENTER"
       },
       {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o6",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6931,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.62), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6952,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.65), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6582,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.62), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.674,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.73), sequential"
+      },
+      {
         "source": "EVT_entity_1_o3",
         "target": "EVT_entity_1_o6",
         "edge_type": "CAUSAL",
-        "confidence": 0.7732,
+        "confidence": 0.8083,
         "relation": "BEFORE",
         "label": "action dependency: ENTER->WITHDRAW"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6874,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.65), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6504,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.62), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6662,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.73), sequential"
       },
       {
         "source": "EVT_entity_1_o6",
@@ -495,7 +615,7 @@
         "source": "EVT_entity_1_o6",
         "target": "EVT_entity_1_o10",
         "edge_type": "CAUSAL",
-        "confidence": 0.7611,
+        "confidence": 0.7957,
         "relation": "BEFORE",
         "label": "action dependency: WITHDRAW->EXIT"
       },
@@ -514,6 +634,14 @@
         "confidence": 0.9,
         "relation": "SIMULTANEOUS",
         "label": "SIMULTANEOUS (0.90)"
+      },
+      {
+        "source": "EVT_entity_1_o8",
+        "target": "EVT_entity_1_o10",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6397,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.68), sequential"
       },
       {
         "source": "EVT_entity_1_o7",
@@ -550,12 +678,68 @@
         "label": "action dependency: APPROACH->ENTER"
       },
       {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o6",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6931,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.62), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6952,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.65), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6582,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.62), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o1_o2",
+        "target": "EVT_entity_1_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.674,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.73), sequential"
+      },
+      {
         "source": "EVT_entity_1_o3",
         "target": "EVT_entity_1_o6",
         "edge_type": "CAUSAL",
-        "confidence": 0.7732,
+        "confidence": 0.8083,
         "relation": "BEFORE",
         "label": "action dependency: ENTER->WITHDRAW"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6874,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.65), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o8",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6504,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.62), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o7",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6662,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.73), sequential"
       },
       {
         "source": "EVT_entity_1_o6",
@@ -569,9 +753,17 @@
         "source": "EVT_entity_1_o6",
         "target": "EVT_entity_1_o10",
         "edge_type": "CAUSAL",
-        "confidence": 0.7611,
+        "confidence": 0.7957,
         "relation": "BEFORE",
         "label": "action dependency: WITHDRAW->EXIT"
+      },
+      {
+        "source": "EVT_entity_1_o8",
+        "target": "EVT_entity_1_o10",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6397,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.68), sequential"
       },
       {
         "source": "EVT_entity_2_o11_o12_o13",
@@ -583,7 +775,7 @@
       }
     ],
     "node_count": 9,
-    "edge_count": 10
+    "edge_count": 18
   },
   "uncertainties": [
     {
@@ -658,7 +850,7 @@
       "event_id": "EVT_entity_1_o5",
       "timestamp": "2024-01-15T10:01:52Z",
       "actor": "Person_31",
-      "action": "Person interacts with ATM machine.",
+      "action": "Person interacts with ATM machine.  [-> same entity, semantically same location (sim=0.65), sequential]",
       "location": "ATM kiosk exterior, street-side view",
       "evidence": [
         "O5"
@@ -680,7 +872,7 @@
       "event_id": "EVT_entity_1_o7",
       "timestamp": "2024-01-15T10:02:25Z",
       "actor": "Person_31",
-      "action": "I had no role in watching or monitoring any area.",
+      "action": "I had no role in watching or monitoring any area.  [-> same entity, semantically same location (sim=0.73), sequential]",
       "location": "ATM lobby doorway, entry/exit point",
       "evidence": [
         "O7"
@@ -691,7 +883,7 @@
       "event_id": "EVT_entity_1_o10",
       "timestamp": "2024-01-15T10:02:43Z",
       "actor": "Person_31",
-      "action": "Done in here, moving now (statement recorded under caution).  [-> action dependency: WITHDRAW->EXIT]",
+      "action": "Done in here, moving now (statement recorded under caution).  [-> same entity, semantically same location (sim=0.68), sequential]",
       "location": "near ATM location, mobile network",
       "evidence": [
         "O10"
@@ -860,110 +1052,70 @@
   "unresolved_causal_pairs": [
     {
       "event_a": "EVT_entity_1_o1_o2",
-      "event_b": "EVT_entity_1_o6",
-      "reason": "local LLM returned no result for this pair"
+      "event_b": "EVT_entity_1_o10",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o3",
       "event_b": "EVT_entity_1_o10",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o1_o2",
-      "event_b": "EVT_entity_1_o10",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o3",
-      "event_b": "EVT_entity_1_o7",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o1_o2",
-      "event_b": "EVT_entity_1_o7",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o3",
-      "event_b": "EVT_entity_1_o8",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o6",
       "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o8",
-      "event_b": "EVT_entity_1_o10",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o1_o2",
-      "event_b": "EVT_entity_1_o8",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o6",
       "event_b": "EVT_entity_1_o7",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
-      "event_a": "EVT_entity_1_o3",
-      "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM returned no result for this pair"
+      "event_a": "EVT_entity_1_o5",
+      "event_b": "EVT_entity_1_o8",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o5",
+      "event_b": "EVT_entity_1_o7",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o5",
       "event_b": "EVT_entity_1_o10",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
+    },
+    {
+      "event_a": "EVT_entity_1_o8",
+      "event_b": "EVT_entity_1_o7",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_1_o7",
       "event_b": "EVT_entity_1_o10",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o1_o2",
-      "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o8",
-      "event_b": "EVT_entity_1_o7",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o5",
-      "event_b": "EVT_entity_1_o8",
-      "reason": "local LLM returned no result for this pair"
-    },
-    {
-      "event_a": "EVT_entity_1_o5",
-      "event_b": "EVT_entity_1_o7",
-      "reason": "local LLM returned no result for this pair"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
   "unresolved_entities": [],
   "stage_timings": {
     "stage_1_validation": 0.0003,
-    "stage_2_enrichment": 0.0051,
+    "stage_2_enrichment": 0.0062,
     "stage_3_ordering": 0.0,
     "stage_4_5_temporal": 0.0001,
-    "stage_6_causal": 9.2162,
+    "stage_6_causal": 0.0039,
     "stage_7_uncertainty": 0.0,
     "stage_8_conflicts": 0.0,
     "stage_10_explainability": 0.0,
     "stage_11_narrative": 0.0,
-    "stage_12_versioning": 0.0006,
-    "stage_13_export": 0.0049
+    "stage_12_versioning": 0.0005,
+    "stage_13_export": 0.004
   },
-  "total_time_sec": 9.2285,
+  "total_time_sec": 0.0156,
   "validation_warnings": [
     "[entity_resolved.conflicts[0]] has neither 'cluster_id' nor an explicit obs-id field - this conflict cannot be localised to any event"
   ],
-  "llm_backend_used": "CloudLLMFallback",
-  "llm_calls_made": 1,
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
   "output_classification": "AMBIGUOUS",
-  "output_classification_reason": "avg_confidence=0.85, conflict_fraction=0.00, unresolved_ratio=1.89 (more unresolved pairs than events - a highly interconnected/ambiguous case) - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
+  "output_classification_reason": "avg_confidence=0.85, conflict_fraction=0.00, unresolved_ratio=1.00 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }

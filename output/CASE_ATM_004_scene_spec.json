@@ -1,0 +1,675 @@
+{
+  "case_id": "CASE_ATM_004",
+  "tl_version": "V1",
+  "critique_version": "C1",
+  "total_scenes": 10,
+  "avg_confidence": 0.8058099999999999,
+  "classification": "AMBIGUOUS",
+  "scenes": [
+    {
+      "scene_id": "SCENE_001",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o2"
+      ],
+      "timestamp": "2024-01-15T10:00:39",
+      "location": "ATM booth interior",
+      "participants": [],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "audio",
+          "role": "reporter",
+          "content": "Yeah I'm almost at the machine (per call log transcript)."
+        }
+      ],
+      "display_action": "APPROACH",
+      "raw_content": "Yeah I'm almost at the machine (per call log transcript).",
+      "modality": "audio",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [],
+      "confidence": 0.8181,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": false,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o1",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6006,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o3",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6608,
+          "original_label": "same entity, semantically same location (sim=0.60), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o4",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6641,
+          "original_label": "same entity, semantically same location (sim=0.68), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o5",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.7277,
+          "original_label": "action dependency: APPROACH->ENTER",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6563,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6153,
+          "original_label": "same entity, semantically same location (sim=1.00), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_002",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o1"
+      ],
+      "timestamp": "2024-01-15T10:01:10",
+      "location": "ATM booth entrance, exterior facing",
+      "participants": [],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "video",
+          "role": "reporter",
+          "content": "My movements that day did not take me anywhere near that kiosk."
+        }
+      ],
+      "display_action": "UNKNOWN",
+      "raw_content": "My movements that day did not take me anywhere near that kiosk.",
+      "modality": "video",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [],
+      "confidence": 0.7218,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": false,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o1",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6006,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o3",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6232,
+          "original_label": "same entity, semantically same location (sim=0.65), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o4",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6266,
+          "original_label": "same entity, semantically same location (sim=0.73), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o5",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6074,
+          "original_label": "same entity, semantically same location (sim=0.62), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6187,
+          "original_label": "same entity, semantically same location (sim=1.00), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.5778,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_003",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o3"
+      ],
+      "timestamp": "2024-01-15T10:01:16",
+      "location": "ATM kiosk exterior, street-side view",
+      "participants": [],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "video",
+          "role": "reporter",
+          "content": "The second actor arrives at the ATM vicinity."
+        }
+      ],
+      "display_action": "UNKNOWN",
+      "raw_content": "The second actor arrives at the ATM vicinity.",
+      "modality": "video",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [],
+      "confidence": 0.8762,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": false,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o3",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6608,
+          "original_label": "same entity, semantically same location (sim=0.60), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o3",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6232,
+          "original_label": "same entity, semantically same location (sim=0.65), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o3",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6789,
+          "original_label": "same entity, semantically same location (sim=0.65), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o3",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.638,
+          "original_label": "same entity, semantically same location (sim=0.60), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_004",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o4"
+      ],
+      "timestamp": "2024-01-15T10:01:21",
+      "location": "ATM lobby doorway, entry/exit point",
+      "participants": [
+        {
+          "entity_id": "UNKNOWN_SUBJECT_1",
+          "role": "subject",
+          "action": "flee",
+          "resolved": false
+        }
+      ],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "video",
+          "role": "reporter",
+          "content": "First individual steps through the ATM booth door (poor image quality)."
+        }
+      ],
+      "display_action": "UNKNOWN",
+      "raw_content": "First individual steps through the ATM booth door (poor image quality).",
+      "modality": "video",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [],
+      "confidence": 0.8847,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": false,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o4",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6641,
+          "original_label": "same entity, semantically same location (sim=0.68), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o4",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6266,
+          "original_label": "same entity, semantically same location (sim=0.73), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o4",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6823,
+          "original_label": "same entity, semantically same location (sim=0.73), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o4",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6413,
+          "original_label": "same entity, semantically same location (sim=0.68), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_005",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o5"
+      ],
+      "timestamp": "2024-01-15T10:01:24",
+      "location": "ATM vicinity, intercepted channel",
+      "participants": [],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "audio",
+          "role": "reporter",
+          "content": "I'm in, it's clear (reconstructed from partial recording)."
+        }
+      ],
+      "display_action": "ENTER",
+      "raw_content": "I'm in, it's clear (reconstructed from partial recording).",
+      "modality": "audio",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [
+        {
+          "gap_id": "?",
+          "gap_type": "?",
+          "severity": "warning",
+          "note": ""
+        }
+      ],
+      "confidence": 0.8357,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": true,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o5",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.7277,
+          "original_label": "action dependency: APPROACH->ENTER",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o5",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6074,
+          "original_label": "same entity, semantically same location (sim=0.62), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o5",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6631,
+          "original_label": "same entity, semantically same location (sim=0.62), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o5",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.7019,
+          "original_label": "action dependency: ENTER->WITHDRAW",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_006",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o10_o11_o9"
+      ],
+      "timestamp": "2024-01-15T10:03:03",
+      "location": "ATM booth entrance, exterior facing",
+      "participants": [
+        {
+          "entity_id": "UNKNOWN_SUBJECT_1",
+          "role": "subject",
+          "action": "flee",
+          "resolved": false
+        }
+      ],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "multimodal",
+          "role": "reporter",
+          "content": "Both persons leave the ATM location at pace (poor image quality)."
+        }
+      ],
+      "display_action": "EXIT",
+      "raw_content": "Both persons leave the ATM location at pace (poor image quality).",
+      "modality": "multimodal",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [
+        {
+          "gap_id": "?",
+          "gap_type": "?",
+          "severity": "warning",
+          "note": ""
+        }
+      ],
+      "confidence": 0.8646,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": true,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6563,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6187,
+          "original_label": "same entity, semantically same location (sim=1.00), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o3",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6789,
+          "original_label": "same entity, semantically same location (sim=0.65), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o4",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6823,
+          "original_label": "same entity, semantically same location (sim=0.73), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o5",
+          "target": "EVT_entity_1_o10_o11_o9",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6631,
+          "original_label": "same entity, semantically same location (sim=0.62), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o10_o11_o9",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6335,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_007",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_1_o8"
+      ],
+      "timestamp": "2024-01-15T10:03:22",
+      "location": "ATM booth interior",
+      "participants": [],
+      "evidence_sources": [
+        {
+          "source_id": "Speaker_X",
+          "entity_id": "entity_1",
+          "modality": "audio",
+          "role": "reporter",
+          "content": "Card's in, processing."
+        }
+      ],
+      "display_action": "WITHDRAW",
+      "raw_content": "Card's in, processing.",
+      "modality": "audio",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [],
+      "confidence": 0.7596,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": false,
+      "causal_links": [
+        {
+          "source": "EVT_entity_1_o2",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6153,
+          "original_label": "same entity, semantically same location (sim=1.00), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o1",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.5778,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o3",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.638,
+          "original_label": "same entity, semantically same location (sim=0.60), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o4",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6413,
+          "original_label": "same entity, semantically same location (sim=0.68), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o5",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.7019,
+          "original_label": "action dependency: ENTER->WITHDRAW",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        },
+        {
+          "source": "EVT_entity_1_o10_o11_o9",
+          "target": "EVT_entity_1_o8",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6335,
+          "original_label": "same entity, semantically same location (sim=0.86), sequential",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_008",
+      "scene_type": "text_report",
+      "event_ids": [
+        "EVT_entity_2_o14"
+      ],
+      "timestamp": "2024-01-15T10:03:31",
+      "location": "remote \u2014 email server log",
+      "participants": [
+        {
+          "entity_id": "UNKNOWN_SUBJECT_1",
+          "role": "subject",
+          "action": "flee",
+          "resolved": false
+        }
+      ],
+      "evidence_sources": [
+        {
+          "source_id": "Person_55",
+          "entity_id": "entity_2",
+          "modality": "text",
+          "role": "witness",
+          "content": "Two individuals left together quickly. One carrying a bag. (forwarded)"
+        }
+      ],
+      "display_action": "UNKNOWN",
+      "raw_content": "Two individuals left together quickly. One carrying a bag. (forwarded)",
+      "modality": "text",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [],
+      "confidence": 0.788,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": false,
+      "causal_links": []
+    },
+    {
+      "scene_id": "SCENE_009",
+      "scene_type": "audio_report",
+      "event_ids": [
+        "EVT_entity_2_o13"
+      ],
+      "timestamp": "2024-01-15T10:03:34",
+      "location": "ATM vicinity, bystander position",
+      "participants": [],
+      "evidence_sources": [
+        {
+          "source_id": "Person_55",
+          "entity_id": "entity_2",
+          "modality": "audio",
+          "role": "witness",
+          "content": "They exited the kiosk and separated immediately (per call log transcript)."
+        }
+      ],
+      "display_action": "EXIT",
+      "raw_content": "They exited the kiosk and separated immediately (per call log transcript).",
+      "modality": "audio",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [
+        {
+          "gap_id": "?",
+          "gap_type": "?",
+          "severity": "warning",
+          "note": ""
+        }
+      ],
+      "confidence": 0.7871,
+      "visualizable": false,
+      "status": "reported",
+      "requires_human_review": true,
+      "causal_links": [
+        {
+          "source": "EVT_entity_2_o13",
+          "target": "EVT_entity_2_o12",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6943,
+          "original_label": "action dependency: EXIT->OBSERVE",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    },
+    {
+      "scene_id": "SCENE_010",
+      "scene_type": "physical_event",
+      "event_ids": [
+        "EVT_entity_2_o12"
+      ],
+      "timestamp": "2024-01-15T10:03:56",
+      "location": "ATM lobby doorway, entry/exit point",
+      "participants": [
+        {
+          "entity_id": "entity_2",
+          "primary_alias": "Person_55",
+          "role": "observer",
+          "action": "OBSERVE",
+          "resolved": false,
+          "confidence": 0.7223
+        }
+      ],
+      "evidence_sources": [],
+      "display_action": "OBSERVE",
+      "raw_content": "Person at bus stop observed watching two individuals walk away quickly.",
+      "modality": "video",
+      "location_conflicts": [],
+      "action_issues": [],
+      "critique_gaps": [
+        {
+          "gap_id": "?",
+          "gap_type": "?",
+          "severity": "warning",
+          "note": ""
+        }
+      ],
+      "confidence": 0.7223,
+      "visualizable": true,
+      "status": "observed",
+      "requires_human_review": true,
+      "causal_links": [
+        {
+          "source": "EVT_entity_2_o13",
+          "target": "EVT_entity_2_o12",
+          "relationship": "POSSIBLE_SEQUENCE",
+          "confidence": 0.6943,
+          "original_label": "action dependency: EXIT->OBSERVE",
+          "note": "Causal relationship is unverified; rendered as possible temporal sequence."
+        }
+      ]
+    }
+  ],
+  "unresolved_entities": [],
+  "showrunner_verdict": "human_review"
+}

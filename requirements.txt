@@ -29,3 +29,13 @@ datasets>=2.19
 # ── Text field agent: real NER extraction (CPU-friendly, ~13MB model) ─────────
 # After installing, run: python -m spacy download en_core_web_sm
 spacy>=3.7
+
+# ── Post-pipeline outputs: scene reconstruction video + explainability PDF ────
+moviepy>=2.1.2
+Pillow>=10.0.0
+fpdf2>=2.7.0
+numpy>=1.24.0
+
+# ── Dashboard backend API (pipeline/api.py) ────────────────────────────────────
+fastapi>=0.110
+uvicorn[standard]>=0.29

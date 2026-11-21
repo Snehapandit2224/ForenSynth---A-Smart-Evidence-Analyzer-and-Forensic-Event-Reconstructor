@@ -1,0 +1,130 @@
+{
+  "final": {
+    "camera_view": "lobby_doorway",
+    "clock_note": "Clock verified from overlay at bottom-left corner.",
+    "clock_verified": true,
+    "events": [
+      {
+        "action": "exit_atm",
+        "bbox": [
+          0.32,
+          0.08,
+          0.32,
+          0.9
+        ],
+        "certainty": 0.95,
+        "free_content": null,
+        "group": false,
+        "identifiable": true,
+        "overlay_timestamp_at_start": "2024-01-15 10:05:20",
+        "people": null,
+        "person": "Individual wearing a pink baseball cap, light blue face mask, dark grey hoodie, black sweatpants with white side stripes, white sneakers, carrying a black backpack",
+        "ref_time": 1.75,
+        "registry_match": "Person_01",
+        "start": "00:00",
+        "stays_behind": null,
+        "template_index": 4,
+        "visibility": 0.95
+      }
+    ],
+    "footage_issue": null,
+    "image_quality": 0.9,
+    "overlay_camera_label": "CAM 01",
+    "overlay_timestamp_first": "2024-01-15 10:05:20"
+  },
+  "trace": [
+    {
+      "step": 0,
+      "thought": "Check clock overlay at bottom-left corner.",
+      "tool": "crop_overlay",
+      "args": {
+        "corner": "bottom-left",
+        "times": [
+          0.0,
+          2.0,
+          4.0
+        ]
+      },
+      "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '2024-01-15 10:05:20'  parsed: 2024-01-15 10:05:20\nt=2.0s  OCR: '2024-01-15 10:05:22 .'  parsed: 2024-01-15 10:05:22\nt=4.0s  OCR: '2024-01-15 10:05:24'  parsed: 2024-01-15 10:05:24"
+    },
+    {
+      "step": 1,
+      "thought": "Verify clock consistency.",
+      "tool": "check_clock",
+      "args": {
+        "readings": [
+          {
+            "clock": "2024-01-15 10:05:20",
+            "t": 0.0
+          },
+          {
+            "clock": "2024-01-15 10:05:22",
+            "t": 2.0
+          },
+          {
+            "clock": "2024-01-15 10:05:24",
+            "t": 4.0
+          }
+        ]
+      },
+      "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:05:20 (spread 0.0s)."
+    },
+    {
+      "step": 2,
+      "thought": "Check known people database to confirm identity.",
+      "tool": "known_people",
+      "args": {},
+      "result": "Known people:\nPerson_01: Individual wearing a pink/salmon baseball cap, light blue face mask, dark grey hoodie, black sweatpants with white side stripes, white sneakers, and carrying a black backpack (seen in O2, O3)  [reference still #1]"
+    },
+    {
+      "step": 3,
+      "thought": "Validate draft with validate_draft.",
+      "tool": "validate_draft",
+      "args": {
+        "draft": {
+          "camera_view": "lobby_doorway",
+          "clock_note": "Clock verified from overlay at bottom-left corner.",
+          "clock_verified": true,
+          "events": [
+            {
+              "action": "exit_atm",
+              "bbox": [
+                0.32,
+                0.08,
+                0.32,
+                0.9
+              ],
+              "certainty": 0.95,
+              "free_content": null,
+              "group": false,
+              "identifiable": true,
+              "overlay_timestamp_at_start": "2024-01-15 10:05:20",
+              "people": null,
+              "person": "Individual wearing a pink baseball cap, light blue face mask, dark grey hoodie, black sweatpants with white side stripes, white sneakers, carrying a black backpack",
+              "ref_time": 1.75,
+              "registry_match": "Person_01",
+              "start": "00:00",
+              "stays_behind": null,
+              "template_index": 4,
+              "visibility": 0.95
+            }
+          ],
+          "footage_issue": null,
+          "image_quality": 0.9,
+          "overlay_camera_label": "CAM 01",
+          "overlay_timestamp_first": "2024-01-15 10:05:20"
+        }
+      },
+      "result": "No problems found."
+    },
+    {
+      "step": 4,
+      "thought": "Final answer complete and validated.",
+      "final": true,
+      "issues": []
+    }
+  ],
+  "unresolved_issues": [],
+  "verified_clock": "2024-01-15T10:05:20",
+  "tool_calls": 4
+}

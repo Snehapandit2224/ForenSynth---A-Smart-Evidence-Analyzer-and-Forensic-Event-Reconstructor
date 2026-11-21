@@ -1,0 +1,27 @@
+{
+  "case_id": "CASE_ATM_001",
+  "domain": "ATM_Robbery",
+  "template": "",
+  "fir": {},
+  "observations": [
+    {
+      "obs_id": "AUD1_O1",
+      "entity": "witness_statement_Speaker_Unknown_1",
+      "role": "witness",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I was not paying attention to anyone leaving the area.",
+      "timestamp": "2024-01-15T10:05:39",
+      "time_offset": 0,
+      "confidence": 0.437,
+      "audio_file": "Case001_Audio_Clip1.wav",
+      "segment_end_offset": 4.0,
+      "asr_model": "whisper_baseline",
+      "extracted_by": "AudioAgent_v1",
+      "role_hint": "witness",
+      "role_hint_confidence": 0.9,
+      "role_reason": "The speaker reports their own lack of attention to others leaving the area, indicating an observational statement rather than admission of wrongdoing or victimization."
+    }
+  ]
+}

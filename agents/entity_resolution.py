@@ -147,6 +147,16 @@ CLASSIFICATION_AMBIGUOUS_MIN_LOW_CONFIDENCE_FRACTION: float = 0.50
 # destructive.
 SPLIT_CUT_MAX_WEIGHT: float = 0.60
 
+# -- Identity embeddings (same person across recordings) -----------------------
+# Cosine similarity between two aliases' identity embeddings (voice prints
+# from the Audio Field Agent). At or above IDENTITY_MATCH_MIN the aliases are
+# resolved to one entity; between the two thresholds the pair is only
+# reported (identity_links, decision "candidate") for investigator review.
+# Deliberately conservative: a missed link leaves one person as two entities,
+# a wrong link fuses two different people.
+IDENTITY_MATCH_MIN:     float = 0.70
+IDENTITY_CANDIDATE_MIN: float = 0.50
+
 
 @dataclass
 class Observation:
@@ -161,6 +171,11 @@ class Observation:
     entity_norm:     str   = ""
     time_offset_sec: int   = 0
     _ts_epoch:       float = field(default=0.0, repr=False)
+    # Which recording/sensor produced this observation, and (when the Field
+    # Agent supplies one) a unit-length identity embedding for the entity in
+    # it - a voice print today. See _compute_identity_links().
+    source:             str = ""
+    identity_embedding: Optional[List[float]] = field(default=None, repr=False)
 
 
 @dataclass
@@ -442,12 +457,46 @@ class EntityCoreferenceAgent:
   def _pair_key(id_a: str, id_b: str) -> Tuple[str, str]:
     return (id_a, id_b) if id_a <= id_b else (id_b, id_a)
 
-  @staticmethod
-  def heuristic_coreference(oa: Observation, ob: Observation, temporal_window: int, max_gap: int) -> float:
+  # FIX: two DIFFERENT-alias suspects coordinating at the same robbery
+  # naturally share location/time/topical vocabulary by construction (see
+  # heuristic_coreference below) - the additive heuristic below has no way
+  # to distinguish that from "same person, cross-modal" using only
+  # role/modality/time/location/keyword-overlap features, all of which
+  # score identically high for both scenarios. The LLM system prompt
+  # handles this explicitly ("COORDINATING SUSPECTS ARE DIFFERENT PEOPLE"),
+  # but the heuristic fallback (used whenever the LLM path is unavailable
+  # or rate-limited) had no equivalent check. Content narrating multiple
+  # distinct actors ("the second actor arrives", "both persons leave") is
+  # a direct, unambiguous signal the observation is NOT describing one
+  # lone individual - confirmed against real CASE_ATM_004 data, where
+  # exactly these two phrases on the second suspect's own observations
+  # were driving a false merge with the first suspect's audio mentions.
+  _MULTI_ACTOR_MARKERS: Tuple[str, ...] = (
+      "second actor", "both persons", "both suspects", "two individuals",
+      "two suspects", "two people", "another suspect", "another person",
+      "second individual", "second subject", "other actor", "second suspect",
+  )
+
+  @classmethod
+  def _mentions_multiple_actors(cls, text: Optional[str]) -> bool:
+    t = (text or "").lower()
+    return any(marker in t for marker in cls._MULTI_ACTOR_MARKERS)
+
+  @classmethod
+  def heuristic_coreference(cls, oa: Observation, ob: Observation, temporal_window: int, max_gap: int) -> float:
     if oa.entity_norm == ob.entity_norm:
       return 1.0
-    if oa.role.strip().lower() != ob.role.strip().lower():
+    role_a, role_b = oa.role.strip().lower(), ob.role.strip().lower()
+    if role_a != role_b:
       return 0.12
+    # Scoped to suspect/suspect pairs only: a WITNESS observation
+    # routinely describes "two individuals"/"both persons" *doing the
+    # crime* (that's the suspects, not the witness), so applying this
+    # check role-agnostically wrongly suppressed legitimate same-witness
+    # merges (e.g. one witness's video + audio mentions) whose own content
+    # happened to reference the plural suspects they were describing.
+    if role_a == "suspect" and (cls._mentions_multiple_actors(oa.content) or cls._mentions_multiple_actors(ob.content)):
+      return 0.15
 
     dt = abs(oa.time_offset_sec - ob.time_offset_sec)
     if dt > max_gap:
@@ -728,6 +777,16 @@ class EntityResolutionPipeline:
         and bool(os.environ.get('GROQ_API_KEY', ''))
     )
 
+    if isinstance(human_constraints, dict):
+      # Callers (e.g. run_case.py, loading constraints back out of the DB via
+      # mem.load_er_constraints()) pass a plain dict, not a HumanConstraints
+      # instance -- normalize it here so every attribute access below works
+      # regardless of which shape the caller handed in.
+      human_constraints = HumanConstraints(
+        must_merge=human_constraints.get("must_merge", []),
+        must_not_merge=human_constraints.get("must_not_merge", []),
+        soft_hints=human_constraints.get("soft_hints", {}),
+      )
     self.constraints = human_constraints or HumanConstraints()
     # FIX: previously one shared LLMCallBudget across both agents meant
     # whichever agent ran first (context-scoring) could consume the ENTIRE
@@ -761,6 +820,8 @@ class EntityResolutionPipeline:
     self._pair_features: Dict[Tuple[str, str], PairFeatures] = {}
     self._candidate_data: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     self._canonical_entities: List[Dict[str, Any]] = []
+    self._identity_group: Dict[Tuple[str, str], int] = {}
+    self._identity_links: List[Dict[str, Any]] = []
 
   def run(self, raw_input: Dict[str, Any]) -> Dict[str, Any]:
     pipeline_start = time.perf_counter()
@@ -868,6 +929,8 @@ class EntityResolutionPipeline:
           time_offset_sec=int(item.get("time_offset", 0)),
           _ts_epoch=ts_epoch,
         )
+      obs.source = str(item.get("source", "") or "")
+      obs.identity_embedding = self._parse_identity_embedding(item.get("identity_embedding"))
       if self.check_duplicates:
         fp = f"{obs.entity}|{obs.modality}|{obs.location}|{obs.content}|{obs.timestamp}"
         digest = hashlib.sha256(fp.encode()).hexdigest()
@@ -1026,7 +1089,121 @@ class EntityResolutionPipeline:
       pf.modality = self._feat_modality(oa, ob)
       self._pair_features[key] = pf
 
+  @staticmethod
+  def _parse_identity_embedding(raw: Any) -> Optional[List[float]]:
+    """Unit-normalize a Field Agent's identity embedding; None if absent/invalid."""
+    if not isinstance(raw, (list, tuple)) or not raw:
+      return None
+    try:
+      vec = [float(x) for x in raw]
+    except (TypeError, ValueError):
+      return None
+    norm = sum(x * x for x in vec) ** 0.5
+    if not norm > 0.0:   # also rejects NaN
+      return None
+    return [x / norm for x in vec]
+
+  def _compute_identity_links(self) -> None:
+    """
+    Resolve "same person, different alias" WITHIN one modality, across
+    recordings, from identity embeddings (voice prints).
+
+    A Field Agent names entities per recording (a diarizer's SPEAKER_00 in
+    two calls is two unrelated labels), so one real person legitimately
+    carries a different alias in every recording. Aliases are grouped
+    greedily, strongest similarity first, under one invariant that IS
+    provable: two different aliases from the SAME source are different
+    people - a group never holds two of them.
+
+    Populates self._identity_group ((modality, alias) -> group id, only for
+    aliases linked to at least one other) and self._identity_links (every
+    scored pair with its decision, for the output).
+    """
+    self._identity_group = {}
+    self._identity_links = []
+
+    vectors: Dict[Tuple[str, str], List[List[float]]] = defaultdict(list)
+    sources: Dict[Tuple[str, str], Set[str]] = defaultdict(set)
+    for obs in self.observations:
+      key = (obs.modality, obs.entity_norm)
+      sources[key].add(obs.source)
+      if obs.identity_embedding:
+        vectors[key].append(obs.identity_embedding)
+
+    profiles: Dict[Tuple[str, str], List[float]] = {}
+    for key, vecs in vectors.items():
+      dim = len(vecs[0])
+      mean = [sum(v[i] for v in vecs if len(v) == dim) for i in range(dim)]
+      norm = sum(x * x for x in mean) ** 0.5
+      if norm > 0.0:
+        profiles[key] = [x / norm for x in mean]
+
+    blocked_alias_pairs = {
+      self._canonical_pair(normalize_alias(a), normalize_alias(b))
+      for a, b in self.constraints.must_not_merge
+    }
+    scored: List[Tuple[float, Tuple[str, str], Tuple[str, str]]] = []
+    keys = sorted(profiles)
+    for i, ka in enumerate(keys):
+      for kb in keys[i + 1 :]:
+        if ka[0] != kb[0] or len(profiles[ka]) != len(profiles[kb]):
+          continue
+        if self._canonical_pair(ka[1], kb[1]) in blocked_alias_pairs:
+          continue
+        if sources[ka] & sources[kb]:
+          continue  # same recording: provably different people
+        sim = sum(x * y for x, y in zip(profiles[ka], profiles[kb]))
+        scored.append((sim, ka, kb))
+
+    group_of: Dict[Tuple[str, str], int] = {}
+    members: Dict[int, Set[Tuple[str, str]]] = {}
+
+    def group(key: Tuple[str, str]) -> int:
+      if key not in group_of:
+        gid = len(group_of)
+        group_of[key] = gid
+        members[gid] = {key}
+      return group_of[key]
+
+    scored.sort(key=lambda s: -s[0])   # strongest evidence first
+    for sim, ka, kb in scored:
+      record = {
+        "modality": ka[0],
+        "alias_1": ka[1],
+        "alias_2": kb[1],
+        "similarity": round(sim, 4),
+      }
+      if sim >= IDENTITY_MATCH_MIN:
+        decision = "merged"
+      elif sim >= IDENTITY_CANDIDATE_MIN:
+        decision = "candidate"
+      else:
+        decision = "different"
+      if decision == "merged":
+        ga, gb = group(ka), group(kb)
+        if ga != gb:
+          group_sources_a = set().union(*(sources[k] for k in members[ga]))
+          group_sources_b = set().union(*(sources[k] for k in members[gb]))
+          if group_sources_a & group_sources_b:
+            # would put two speakers of one recording into one entity
+            decision = "rejected_same_source_conflict"
+          else:
+            for k in members[gb]:
+              group_of[k] = ga
+            members[ga] |= members.pop(gb)
+      record["decision"] = decision
+      self._identity_links.append(record)
+
+    self._identity_group = {k: g for k, g in group_of.items() if len(members[g]) > 1}
+    if self._identity_group:
+      log.info("Identity links: %s", [l for l in self._identity_links if l["decision"] == "merged"])
+
+  def _same_identity(self, oa: Observation, ob: Observation) -> bool:
+    ga = self._identity_group.get((oa.modality, oa.entity_norm))
+    return ga is not None and ga == self._identity_group.get((ob.modality, ob.entity_norm))
+
   def _stage_5_scoring(self) -> None:
+    self._compute_identity_links()
     blocked_alias_pairs = {
       self._canonical_pair(normalize_alias(a), normalize_alias(b))
       for a, b in self.constraints.must_not_merge
@@ -1053,10 +1230,20 @@ class EntityResolutionPipeline:
       # Speaker_D/Speaker_Q (both audio) were being merged despite
       # being different real suspects, purely because this invariant was
       # never checked.
+      #
+      # That guarantee is the generator's, not the world's: a real Field
+      # Agent names entities per recording, so one person DOES get two
+      # aliases in one modality. The rule therefore yields to positive
+      # identity evidence (a voice-print match across recordings, see
+      # _compute_identity_links) and stays absolute everywhere else -
+      # including for every case with no identity embeddings at all.
       elif oa.modality == ob.modality and oa.entity_norm != ob.entity_norm:
-        pf.composite = 0.0
-        pf.reasons = []
-        pf.hard_negative = True
+        if self._same_identity(oa, ob):
+          pf.reasons.append("identity_match")
+        else:
+          pf.composite = 0.0
+          pf.reasons = []
+          pf.hard_negative = True
 
   def _stage_6_classification(self) -> None:
     self.edges = []
@@ -1129,6 +1316,19 @@ class EntityResolutionPipeline:
         dt = abs(base.time_offset_sec - other.time_offset_sec)
         if dt <= self.max_temporal_gap_sec:
           uf.union(base.obs_id, other.obs_id)
+
+    # Identity-linked aliases (same voice print across recordings) are one
+    # entity. No temporal gate: recordings of the same person can be days
+    # apart, and blocking never even pairs their observations.
+    first_obs_of_group: Dict[int, str] = {}
+    for obs in self.observations:
+      gid = self._identity_group.get((obs.modality, obs.entity_norm))
+      if gid is None:
+        continue
+      if gid in first_obs_of_group:
+        uf.union(first_obs_of_group[gid], obs.obs_id)
+      else:
+        first_obs_of_group[gid] = obs.obs_id
 
     for edge in self.edges:
       if edge.hard_negative or edge.classification == "rejected":
@@ -1542,6 +1742,9 @@ class EntityResolutionPipeline:
       # overlap, used if the model could not be loaded).
       "location_similarity_backend": get_semantic_scorer().backend_used(),
       "resplit_log": self._resplit_log,
+      # Every same-modality alias pair compared by identity embedding (voice
+      # print), with its cosine similarity and the decision taken.
+      "identity_links": self._identity_links,
       "configuration": {
         "check_duplicates": self.check_duplicates,
         "case_base_time": self.case_base_time,

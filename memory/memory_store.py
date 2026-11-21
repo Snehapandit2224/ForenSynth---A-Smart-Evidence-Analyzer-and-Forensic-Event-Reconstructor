@@ -267,7 +267,7 @@ class ForenSynthMemory:
         self._log_pipeline(case_id, "generator", "save_case", "")
         log.info("[Generator] Saved %s (%d obs)", case_id, len(case.get("observations",[])))
 
-    # ── FIR (agents/field_agent/fir_agent.py) ────────────────────────────────────────
+    # ── FIR (agents/field_agents/text agent/text_agent.py) ────────────────────────────────────────
     def save_fir_record(self, record: Dict[str, Any], summary: Dict[str, Any]) -> None:
         """Store the full FIR record in fir_records (re-extraction replaces
         it) and point the case's fir_json at its summary, so ER's existing
@@ -306,7 +306,7 @@ class ForenSynthMemory:
                     updated_at=datetime('now')
             """, (case_id, summary.get("crime_type", ""), summary.get("location", ""),
                   summary.get("description", ""), _j(summary)))
-        self._log_pipeline(case_id, "fir_agent", "save_fir_record", record["fir_id"])
+        self._log_pipeline(case_id, "text_agent", "save_fir_record", record["fir_id"])
         log.info("[FIR] Saved %s for %s", record["fir_id"], case_id)
 
     def load_fir_record(self, case_id: str) -> Optional[Dict[str, Any]]:

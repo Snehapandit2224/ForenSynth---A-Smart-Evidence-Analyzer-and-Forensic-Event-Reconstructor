@@ -2,7 +2,7 @@
   "case_id": "CASE_ATM_006",
   "timeline_version": "V1",
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-30T14:08:13Z",
+  "generated_at": "2026-08-31T08:01:43Z",
   "events": [
     {
       "event_id": "EVT_entity_1_o1",
@@ -79,9 +79,7 @@
       "content": "Suspect appears to affix a foreign device to the ATM slot.",
       "confidence": 0.8764,
       "role": "suspect",
-      "action_tags": [
-        "APPROACH"
-      ],
+      "action_tags": [],
       "conflict_flag": false,
       "conflict_note": "",
       "reasoning": [
@@ -156,8 +154,8 @@
         "O7"
       ],
       "timestamp": "2024-01-15T10:05:24Z",
-      "location": "remote â€” mobile network SMS",
-      "location_key": "remote â€” mobile network sms",
+      "location": "remote \u2014 mobile network SMS",
+      "location_key": "remote \u2014 mobile network sms",
       "entity_id": "entity_3",
       "primary_alias": "sms_93",
       "aliases": [
@@ -196,20 +194,28 @@
       "label": "same entity, semantically same location (sim=1.00), sequential"
     },
     {
-      "source": "EVT_entity_1_o4",
+      "source": "EVT_entity_1_o1",
       "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.7,
+      "confidence": 0.7032,
       "relation": "BEFORE",
-      "label": "local LLM: Affixing a device likely prompted the suspect to leave."
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     },
     {
       "source": "EVT_entity_1_o3",
-      "target": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o5",
       "edge_type": "CAUSAL",
-      "confidence": 0.8,
+      "confidence": 0.6885,
       "relation": "BEFORE",
-      "label": "local LLM: Entering the booth enabled the suspect to affix the device."
+      "label": "same entity, semantically same location (sim=0.65), sequential"
+    },
+    {
+      "source": "EVT_entity_1_o4",
+      "target": "EVT_entity_1_o5",
+      "edge_type": "CAUSAL",
+      "confidence": 0.6903,
+      "relation": "BEFORE",
+      "label": "same entity, semantically same location (sim=0.68), sequential"
     }
   ],
   "timeline_graph": {
@@ -296,7 +302,7 @@
         "entity_id": "entity_3",
         "primary_alias": "sms_93",
         "confidence": 0.8748,
-        "location": "remote â€” mobile network SMS",
+        "location": "remote \u2014 mobile network SMS",
         "modality": "text",
         "content": "Two individuals left together quickly. One carrying a bag.",
         "conflict_flag": false,
@@ -323,12 +329,28 @@
         "label": "same entity, semantically same location (sim=1.00), sequential"
       },
       {
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.7032,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.68), sequential"
+      },
+      {
         "source": "EVT_entity_1_o3",
         "target": "EVT_entity_1_o4",
-        "edge_type": "CAUSAL",
-        "confidence": 0.8,
+        "edge_type": "TEMPORAL",
+        "confidence": 0.95,
         "relation": "BEFORE",
-        "label": "local LLM: Entering the booth enabled the suspect to affix the device."
+        "label": "BEFORE (0.95)"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6885,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.65), sequential"
       },
       {
         "source": "EVT_entity_1_o4",
@@ -342,9 +364,9 @@
         "source": "EVT_entity_1_o4",
         "target": "EVT_entity_1_o5",
         "edge_type": "CAUSAL",
-        "confidence": 0.7,
+        "confidence": 0.6903,
         "relation": "BEFORE",
-        "label": "local LLM: Affixing a device likely prompted the suspect to leave."
+        "label": "same entity, semantically same location (sim=0.68), sequential"
       },
       {
         "source": "EVT_entity_2_o6",
@@ -381,24 +403,32 @@
         "label": "same entity, semantically same location (sim=1.00), sequential"
       },
       {
-        "source": "EVT_entity_1_o3",
-        "target": "EVT_entity_1_o4",
+        "source": "EVT_entity_1_o1",
+        "target": "EVT_entity_1_o5",
         "edge_type": "CAUSAL",
-        "confidence": 0.8,
+        "confidence": 0.7032,
         "relation": "BEFORE",
-        "label": "local LLM: Entering the booth enabled the suspect to affix the device."
+        "label": "same entity, semantically same location (sim=0.68), sequential"
+      },
+      {
+        "source": "EVT_entity_1_o3",
+        "target": "EVT_entity_1_o5",
+        "edge_type": "CAUSAL",
+        "confidence": 0.6885,
+        "relation": "BEFORE",
+        "label": "same entity, semantically same location (sim=0.65), sequential"
       },
       {
         "source": "EVT_entity_1_o4",
         "target": "EVT_entity_1_o5",
         "edge_type": "CAUSAL",
-        "confidence": 0.7,
+        "confidence": 0.6903,
         "relation": "BEFORE",
-        "label": "local LLM: Affixing a device likely prompted the suspect to leave."
+        "label": "same entity, semantically same location (sim=0.68), sequential"
       }
     ],
     "node_count": 6,
-    "edge_count": 7
+    "edge_count": 9
   },
   "uncertainties": [
     {
@@ -440,7 +470,7 @@
       "event_id": "EVT_entity_1_o4",
       "timestamp": "2024-01-15T10:05:10Z",
       "actor": "Person_68",
-      "action": "Suspect appears to affix a foreign device to the ATM slot.  [-> local LLM: Entering the booth enabled the suspect to affix the device.]",
+      "action": "Suspect appears to affix a foreign device to the ATM slot.  [-> same entity, semantically same location (sim=1.00), sequential]",
       "location": "ATM street frontage, wide-angle coverage",
       "evidence": [
         "O4"
@@ -462,7 +492,7 @@
       "event_id": "EVT_entity_1_o5",
       "timestamp": "2024-01-15T10:05:15Z",
       "actor": "Person_68",
-      "action": "Person departs from the ATM kiosk at pace (poor image quality).  [-> local LLM: Affixing a device likely prompted the suspect to leave.]",
+      "action": "Person departs from the ATM kiosk at pace (poor image quality).  [-> same entity, semantically same location (sim=0.68), sequential]",
       "location": "ATM kiosk exterior, street-side view",
       "evidence": [
         "O5"
@@ -474,7 +504,7 @@
       "timestamp": "2024-01-15T10:05:24Z",
       "actor": "sms_93",
       "action": "Two individuals left together quickly. One carrying a bag.",
-      "location": "remote â€” mobile network SMS",
+      "location": "remote \u2014 mobile network SMS",
       "evidence": [
         "O7"
       ],
@@ -577,24 +607,38 @@
   "unresolved_causal_pairs": [
     {
       "event_a": "EVT_entity_1_o3",
-      "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM determined no causal link"
-    },
-    {
-      "event_a": "EVT_entity_1_o1",
-      "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM determined no causal link"
+      "event_b": "EVT_entity_1_o4",
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_2_o6",
       "event_b": "EVT_entity_1_o5",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     },
     {
       "event_a": "EVT_entity_2_o6",
       "event_b": "EVT_entity_3_o7",
-      "reason": "local LLM determined no causal link"
+      "reason": "no deterministic causal rule matched and no local LLM configured; no causal edge created"
     }
   ],
-  "unresolved_entities": []
+  "unresolved_entities": [],
+  "stage_timings": {
+    "stage_1_validation": 0.0001,
+    "stage_2_enrichment": 0.0016,
+    "stage_3_ordering": 0.0,
+    "stage_4_5_temporal": 0.0001,
+    "stage_6_causal": 0.0041,
+    "stage_7_uncertainty": 0.0,
+    "stage_8_conflicts": 0.0001,
+    "stage_10_explainability": 0.0001,
+    "stage_11_narrative": 0.0001,
+    "stage_12_versioning": 0.0023,
+    "stage_13_export": 0.0095
+  },
+  "total_time_sec": 0.0193,
+  "validation_warnings": [],
+  "llm_backend_used": "NoOpLLMFallback",
+  "llm_calls_made": 0,
+  "output_classification": "AMBIGUOUS",
+  "output_classification_reason": "avg_confidence=0.82, conflict_fraction=0.17, unresolved_ratio=0.50 - at least one signal crossed the ambiguity threshold; treat this reconstruction as low-trust and prioritise investigator review of flagged/unresolved items."
 }
