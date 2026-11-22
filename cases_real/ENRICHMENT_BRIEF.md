@@ -104,7 +104,7 @@ author who must NOT be merged with the witness.
 |---|---|
 | O2, O4, O6, O8, O10 | Keep the terse covert style, timestamps and "(forwarded)" on O4. Add *From:* suspect_1's number, *To:* suspect_2's number. No names. |
 | new | sms from suspect_2's number, 10:01:55: "Clear. Go." Gives the second person a text trail. |
-| new | statement, ~11:30: the bank guard's written statement, signed with name and phone. "Saw two men walk off quickly, one with a backpack", time "around 10, maybe a bit after", didn't see faces. |
+| new | statement, ~11:30: the bank guard's written statement, signed with name and phone. "Saw two men walk off quickly, one with a backpack", time "around 10, maybe a bit after", didn't see faces. The FIR's second witness. |
 
 **Findings this sets up:** the denial against his messages and the footage;
 the second person and the lookout identified through their calls and number;
@@ -139,28 +139,12 @@ footage; the guard's vague time.
 | new | atm_log, 10:02:40: "card reader housing tamper sensor triggered" - independent evidence of the tampering. |
 | new | technician report, 2024-01-16 ~09:15, signed with name and employee ID: "skimming device found fitted over the card slot", with a description. |
 
-**Optional - an FIR:** there is no FIR in the current evidence (the pipeline
-then works from a placeholder). Adding one (see "Optional: an FIR per case"
-below) exercises the FIR checks; e.g. an FIR naming two witnesses when the
-evidence shows one gives the "FIR vs evidence" finding.
+**Keep:** the FIR lists two witnesses; only one exists in the evidence.
 
 **Findings this sets up:** "No one saw" against the footage and the call; the
 forwarded message timed before the act and the camera; the corrupted SMS to
 be flagged; tampering backed by the machine log and the technician; the
 missing second witness; the witness's two recordings linked by voice and name.
-
----
-
-## Optional: an FIR per case
-
-None of the three cases has an FIR, so the pipeline's FIR checks (people,
-roles, time window, location, items, reporting delay) have nothing to check.
-To exercise them, add one FIR text per case (the FIR agent reads it): the
-complainant (named, with phone - a self-identification link), the reported
-time window and location, the people involved by role, items taken, and when
-it was filed. Put one or two realistic discrepancies in it - a time window a
-few minutes off, one witness more than the evidence shows - and leave the
-rest consistent with the video.
 
 ---
 

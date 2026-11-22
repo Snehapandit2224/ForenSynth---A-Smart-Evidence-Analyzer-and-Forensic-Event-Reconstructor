@@ -1,6 +1,6 @@
 {
   "case_id": "CASE_010",
-  "about": "Hand-written answer key for the REAL evidence of case 010 (Evidence Generation/Cases/Case_010): one CCTV clip, two audio recordings, six text documents. HELD OUT: written before any pipeline run on this evidence was looked at. Events and people keep the generator's ids (cases/CASE_ATM_010.json); each evidence item lists everyone in it, the part they play, and the event they show. There is no FIR in this evidence; nothing here is taken from one.",
+  "about": "Hand-written answer key for the REAL evidence of case 010 (Evidence Generation/Cases/Case_010): one CCTV clip, two audio recordings, six text documents. HELD OUT: written before any pipeline run on this evidence was looked at. Events and people keep the generator's ids (cases/CASE_ATM_010.json); each evidence item lists everyone in it, the part they play, and the event they show.",
   "built_from": {
     "audio": "the .wav files themselves (transcribed for this key) and their manifests (start time, source, location)",
     "text": "Text/O*.json (author, channel, timestamp, text)",
@@ -12,7 +12,7 @@
       "role": "suspect",
       "description": "author of the report_90 messages (approach, waiting, entering, fitting a card reader, leaving); in the footage, the person in a black hoodie, black trousers and black baseball cap coming out of the booth",
       "match_appearance": "black hoodie, black trousers, black cap",
-      "identity_note": "Message author <-> the person on camera: no identity evidence; linked in this key only because the person filmed leaving the booth is the only one who could have done what the messages describe. ER should NOT be expected to make this link."
+      "identity_note": "Message author <-> the person on camera: no identity evidence; linked only because the FIR names one suspect and the person filmed leaving the booth is the only candidate."
     },
     "witness_1": {
       "role": "witness",
@@ -22,281 +22,61 @@
     }
   },
   "events": [
-    {
-      "event_id": "E1",
-      "person": "suspect_1",
-      "action": "approach_atm",
-      "time": "2024-01-15T10:00:46",
-      "evidenced_by": [
-        "text_O1"
-      ]
-    },
-    {
-      "event_id": "E2",
-      "person": "suspect_1",
-      "action": "loiter_near_atm",
-      "time": "2024-01-15T10:01:49",
-      "evidenced_by": [
-        "text_O2"
-      ]
-    },
-    {
-      "event_id": "E3",
-      "person": "suspect_1",
-      "action": "enter_atm",
-      "time": "2024-01-15T10:02:18",
-      "evidenced_by": [
-        "text_O3"
-      ]
-    },
-    {
-      "event_id": "E4",
-      "person": "suspect_1",
-      "action": "tamper_atm",
-      "time": "2024-01-15T10:02:48",
-      "evidenced_by": [
-        "text_O4"
-      ],
-      "note": "Only the suspect's own message; nothing films it."
-    },
-    {
-      "event_id": "E5",
-      "person": "suspect_1",
-      "action": "exit_atm",
-      "time": "2024-01-15T10:03:02",
-      "evidenced_by": [
-        "text_O5",
-        "clip1"
-      ]
-    },
-    {
-      "event_id": "E6",
-      "person": "witness_1",
-      "action": "observe_exit",
-      "time": "2024-01-15T10:03:24",
-      "evidenced_by": [
-        "clip1",
-        "audio2"
-      ]
-    },
-    {
-      "event_id": "E7",
-      "person": "witness_1",
-      "action": "report_incident",
-      "time": "2024-01-15T10:10:00",
-      "evidenced_by": [
-        "audio1",
-        "text_O11"
-      ],
-      "note": "text_O11 is corrupted; only audio1 actually evidences the report."
-    }
+    {"event_id": "E1", "person": "suspect_1", "action": "approach_atm",    "time": "2024-01-15T10:00:46", "evidenced_by": ["text_O1"]},
+    {"event_id": "E2", "person": "suspect_1", "action": "loiter_near_atm", "time": "2024-01-15T10:01:49", "evidenced_by": ["text_O2"]},
+    {"event_id": "E3", "person": "suspect_1", "action": "enter_atm",       "time": "2024-01-15T10:02:18", "evidenced_by": ["text_O3"]},
+    {"event_id": "E4", "person": "suspect_1", "action": "tamper_atm",      "time": "2024-01-15T10:02:48", "evidenced_by": ["text_O4"],
+     "note": "Only the suspect's own message; nothing films it."},
+    {"event_id": "E5", "person": "suspect_1", "action": "exit_atm",        "time": "2024-01-15T10:03:02", "evidenced_by": ["text_O5", "clip1"]},
+    {"event_id": "E6", "person": "witness_1", "action": "observe_exit",    "time": "2024-01-15T10:03:24", "evidenced_by": ["clip1", "audio2"]},
+    {"event_id": "E7", "person": "witness_1", "action": "report_incident", "time": "2024-01-15T10:10:00", "evidenced_by": ["audio1", "text_O11"],
+     "note": "text_O11 is corrupted; only audio1 actually evidences the report."}
   ],
   "evidence": {
-    "text_O1": {
-      "modality": "text",
-      "file": "Text/O1.json",
-      "source_doc": "O1",
-      "channel": "email",
-      "window": [
-        "2024-01-15T10:00:43",
-        "2024-01-15T10:00:43"
-      ],
-      "text": "At the corner, about to move. (forwarded)",
-      "people": [
-        {
-          "person": "suspect_1",
-          "part": "author",
-          "event": "E1",
-          "shows": "nearby, about to approach (forwarded: timestamp less reliable)"
-        }
-      ]
-    },
-    "text_O2": {
-      "modality": "text",
-      "file": "Text/O2.json",
-      "source_doc": "O2",
-      "channel": "incident_report",
-      "window": [
-        "2024-01-15T10:01:31",
-        "2024-01-15T10:01:31"
-      ],
-      "text": "Still waiting. Not yet.",
-      "people": [
-        {
-          "person": "suspect_1",
-          "part": "author",
-          "event": "E2",
-          "shows": "waiting near the ATM"
-        }
-      ]
-    },
-    "text_O3": {
-      "modality": "text",
-      "file": "Text/O3.json",
-      "source_doc": "O3",
-      "channel": "email",
-      "window": [
-        "2024-01-15T10:02:31",
-        "2024-01-15T10:02:31"
-      ],
-      "text": "Entered. Starting now.",
-      "people": [
-        {
-          "person": "suspect_1",
-          "part": "author",
-          "event": "E3",
-          "shows": "entered the booth"
-        }
-      ]
-    },
-    "text_O4": {
-      "modality": "text",
-      "file": "Text/O4.json",
-      "source_doc": "O4",
-      "channel": "email",
-      "window": [
-        "2024-01-15T10:02:49",
-        "2024-01-15T10:02:49"
-      ],
-      "text": "Reader fitted. No one saw.",
-      "people": [
-        {
-          "person": "suspect_1",
-          "part": "author",
-          "event": "E4",
-          "shows": "fitted a card reader (skimmer); claims no one saw"
-        }
-      ]
-    },
-    "text_O5": {
-      "modality": "text",
-      "file": "Text/O5.json",
-      "source_doc": "O5",
-      "channel": "email",
-      "window": [
-        "2024-01-15T10:02:48",
-        "2024-01-15T10:02:48"
-      ],
-      "text": "Done here. Moving. (forwarded)",
-      "people": [
-        {
-          "person": "suspect_1",
-          "part": "author",
-          "event": "E5",
-          "shows": "leaving (forwarded: timestamp less reliable)"
-        }
-      ]
-    },
-    "text_O11": {
-      "modality": "text",
-      "file": "Text/O11.json",
-      "source_doc": "O11",
-      "channel": "sms",
-      "window": [
-        "2024-01-15T10:10:00",
-        "2024-01-15T10:10:00"
-      ],
-      "text": "[CORRUPTED] - File hash mismatch; content integrity unverified.",
-      "integrity": "corrupted",
-      "people": [
-        {
-          "person": "witness_1",
-          "part": "author",
-          "event": "E7",
-          "shows": "nothing readable - should be flagged, not used as evidence"
-        }
-      ]
-    },
-    "audio1": {
-      "modality": "audio",
-      "file": "Audio/Case010_Audio_Clip1/Case010_Audio_Clip1.wav",
-      "audio_file": "Case010_Audio_Clip1.wav",
-      "source": "witness_statement",
-      "window": [
-        "2024-01-15T10:10:03",
-        "2024-01-15T10:10:07"
-      ],
-      "transcript": "Something happened near the ATM I should report.",
-      "people": [
-        {
-          "person": "witness_1",
-          "part": "speaker",
-          "event": "E7",
-          "shows": "reporting the incident"
-        }
-      ]
-    },
-    "audio2": {
-      "modality": "audio",
-      "file": "Audio/Case010_Audio_Clip2/Case010_Audio_Clip2.wav",
-      "audio_file": "Case010_Audio_Clip2.wav",
-      "source": "phone_record",
-      "window": [
-        "2024-01-15T10:03:25",
-        "2024-01-15T10:03:30"
-      ],
-      "transcript": "They came out of the booth fast and walked off quickly.",
-      "people": [
-        {
-          "person": "witness_1",
-          "part": "speaker",
-          "event": "E6",
-          "shows": "describing the exit as it happens"
-        },
-        {
-          "person": "suspect_1",
-          "part": "described",
-          "event": "E5",
-          "shows": "the person coming out of the booth"
-        }
-      ]
-    },
-    "clip1": {
-      "modality": "video",
-      "file": "Video/Case010_Clip1.mp4",
-      "camera": "CAM 01",
-      "window": [
-        "2024-01-15T10:03:28",
-        "2024-01-15T10:03:35"
-      ],
-      "quality": 0.44,
-      "people": [
-        {
-          "person": "suspect_1",
-          "part": "actor",
-          "event": "E5",
-          "shows": "black hoodie and cap: comes out of the booth (video agent: exit_atm, Person_03)"
-        },
-        {
-          "person": "witness_1",
-          "part": "actor",
-          "event": "E6",
-          "shows": "light blue shirt, jeans: watches him walk away (video agent: observe_exit, Person_94)"
-        }
-      ]
-    }
+    "text_O1":  {"modality": "text", "file": "Text/O1.json", "source_doc": "O1", "channel": "email",
+                 "window": ["2024-01-15T10:00:43", "2024-01-15T10:00:43"], "text": "At the corner, about to move. (forwarded)",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E1", "shows": "nearby, about to approach (forwarded: timestamp less reliable)"}]},
+    "text_O2":  {"modality": "text", "file": "Text/O2.json", "source_doc": "O2", "channel": "incident_report",
+                 "window": ["2024-01-15T10:01:31", "2024-01-15T10:01:31"], "text": "Still waiting. Not yet.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E2", "shows": "waiting near the ATM"}]},
+    "text_O3":  {"modality": "text", "file": "Text/O3.json", "source_doc": "O3", "channel": "email",
+                 "window": ["2024-01-15T10:02:31", "2024-01-15T10:02:31"], "text": "Entered. Starting now.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E3", "shows": "entered the booth"}]},
+    "text_O4":  {"modality": "text", "file": "Text/O4.json", "source_doc": "O4", "channel": "email",
+                 "window": ["2024-01-15T10:02:49", "2024-01-15T10:02:49"], "text": "Reader fitted. No one saw.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E4", "shows": "fitted a card reader (skimmer); claims no one saw"}]},
+    "text_O5":  {"modality": "text", "file": "Text/O5.json", "source_doc": "O5", "channel": "email",
+                 "window": ["2024-01-15T10:02:48", "2024-01-15T10:02:48"], "text": "Done here. Moving. (forwarded)",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E5", "shows": "leaving (forwarded: timestamp less reliable)"}]},
+    "text_O11": {"modality": "text", "file": "Text/O11.json", "source_doc": "O11", "channel": "sms",
+                 "window": ["2024-01-15T10:10:00", "2024-01-15T10:10:00"], "text": "[CORRUPTED] - File hash mismatch; content integrity unverified.",
+                 "integrity": "corrupted",
+                 "people": [{"person": "witness_1", "part": "author", "event": "E7", "shows": "nothing readable - should be flagged, not used as evidence"}]},
+    "audio1": {"modality": "audio", "file": "Audio/Case010_Audio_Clip1/Case010_Audio_Clip1.wav", "audio_file": "Case010_Audio_Clip1.wav",
+               "source": "witness_statement", "window": ["2024-01-15T10:10:03", "2024-01-15T10:10:07"],
+               "transcript": "Something happened near the ATM I should report.",
+               "people": [{"person": "witness_1", "part": "speaker", "event": "E7", "shows": "reporting the incident"}]},
+    "audio2": {"modality": "audio", "file": "Audio/Case010_Audio_Clip2/Case010_Audio_Clip2.wav", "audio_file": "Case010_Audio_Clip2.wav",
+               "source": "phone_record", "window": ["2024-01-15T10:03:25", "2024-01-15T10:03:30"],
+               "transcript": "They came out of the booth fast and walked off quickly.",
+               "people": [{"person": "witness_1", "part": "speaker", "event": "E6", "shows": "describing the exit as it happens"},
+                          {"person": "suspect_1", "part": "described", "event": "E5", "shows": "the person coming out of the booth"}]},
+    "clip1": {"modality": "video", "file": "Video/Case010_Clip1.mp4", "camera": "CAM 01",
+              "window": ["2024-01-15T10:03:28", "2024-01-15T10:03:35"], "quality": 0.44,
+              "people": [{"person": "suspect_1", "part": "actor", "event": "E5", "shows": "black hoodie and cap: comes out of the booth (video agent: exit_atm, Person_03)"},
+                         {"person": "witness_1", "part": "actor", "event": "E6", "shows": "light blue shirt, jeans: watches him walk away (video agent: observe_exit, Person_94)"}]}
   },
   "findings_an_investigator_should_get": [
-    {
-      "id": "no_one_saw_contradicted",
-      "kind": "statement vs evidence",
-      "detail": "The suspect's message 'Reader fitted. No one saw.' (10:02:49) is contradicted by the bystander filmed watching (10:03:28) and the caller describing the exit (10:03:25)."
-    },
-    {
-      "id": "message_order",
-      "kind": "timing inconsistency",
-      "detail": "'Done here. Moving.' is stamped 10:02:48 - before 'Reader fitted' (10:02:49) and 40 s before the filmed exit (10:03:28). It is a forwarded message; its timestamp should not be trusted over the camera clock."
-    },
-    {
-      "id": "corrupted_sms",
-      "kind": "evidence integrity",
-      "detail": "The 10:10 SMS (O11) failed its hash check; it should be flagged and excluded, not counted as a report."
-    },
-    {
-      "id": "tamper_text_only",
-      "kind": "gap",
-      "detail": "The card reader fitting rests only on the suspect's own message; no footage shows it (the only clip is of the exit)."
-    }
+    {"id": "no_one_saw_contradicted", "kind": "statement vs evidence",
+     "detail": "The suspect's message 'Reader fitted. No one saw.' (10:02:49) is contradicted by the bystander filmed watching (10:03:28) and the caller describing the exit (10:03:25)."},
+    {"id": "message_order", "kind": "timing inconsistency",
+     "detail": "'Done here. Moving.' is stamped 10:02:48 - before 'Reader fitted' (10:02:49) and 40 s before the filmed exit (10:03:28). It is a forwarded message; its timestamp should not be trusted over the camera clock."},
+    {"id": "corrupted_sms", "kind": "evidence integrity",
+     "detail": "The 10:10 SMS (O11) failed its hash check; it should be flagged and excluded, not counted as a report."},
+    {"id": "tamper_text_only", "kind": "gap",
+     "detail": "The card reader fitting rests only on the suspect's own message; no footage shows it (the only clip is of the exit)."},
+    {"id": "second_witness_missing", "kind": "FIR vs evidence",
+     "detail": "The FIR lists two witnesses; the evidence shows one bystander, and both recordings sound like one speaker."}
   ],
   "agent_notes": [
     "Video agent bookkeeping: the log's decisions use obs ids O6 / O17b, while the observation file it wrote uses O17 / O17b for the same two people."
