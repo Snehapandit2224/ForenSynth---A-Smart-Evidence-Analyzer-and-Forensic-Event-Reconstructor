@@ -181,6 +181,25 @@ IDENTITY_CANDIDATE_MIN: float = 0.50
 #   (min speech seconds, required similarity), checked in order
 VOICE_PRINT_SPEECH_BARS: Tuple[Tuple[float, float], ...] = ((8.0, 0.70), (3.0, 0.75), (0.0, 0.80))
 
+# Group support: an alias left on its own by the pairwise bar joins a group
+# of aliases already merged on voice prints when it agrees with the WHOLE
+# group and with nobody else - several independent prints agreeing is
+# stronger evidence than one pair. Case 9's intercepted call scored 0.79 /
+# 0.74 / 0.70 against the suspect's three merged calls (bar 0.80 on its 2 s
+# of speech) and 0.37 or less against every other voice. All must hold:
+#   - the group has at least GROUP_SUPPORT_MIN_MEMBERS aliases
+#   - mean similarity to its members  >= GROUP_SUPPORT_MEAN_MIN
+#   - every member                    >= GROUP_SUPPORT_EACH_MIN
+#   - the best similarity to any alias outside the group is at least
+#     GROUP_SUPPORT_MARGIN below that mean
+#   - exactly one group qualifies, the alias shares no recording with it and
+#     no must_not_merge pair blocks it
+# Only a lone alias joins this way; two groups are never fused by it.
+GROUP_SUPPORT_MIN_MEMBERS: int = 2
+GROUP_SUPPORT_MEAN_MIN:    float = 0.72
+GROUP_SUPPORT_EACH_MIN:    float = 0.65
+GROUP_SUPPORT_MARGIN:      float = 0.20
+
 # -- Identity evidence -------------------------------------------------------------
 # Two DIFFERENT aliases are merged only on evidence that they are the same
 # PERSON: a shared name (see _canonicalise_aliases), a voice print, matching
@@ -1706,10 +1725,65 @@ class EntityResolutionPipeline:
       record["decision"] = decision
       self._identity_links.append(record)
 
+    self._join_by_group_support(profiles, sources, blocked_alias_pairs, group_of, members)
     self._identity_group = {k: g for k, g in group_of.items() if len(members[g]) > 1}
     self._voice_profiles = profiles
     if self._identity_group:
       log.info("Identity links: %s", [l for l in self._identity_links if l["decision"] == "merged"])
+
+  def _join_by_group_support(self, profiles, sources, blocked_alias_pairs, group_of, members) -> None:
+    """Second pass of _compute_identity_links: a lone alias joins a voice-
+    print group it agrees with as a whole and nobody else (GROUP_SUPPORT_*).
+    Repeats until nothing changes, so a joined alias counts for the next.
+    Each join is added to self._identity_links as decision
+    "merged_group_support", with its similarity to every member."""
+    def sim(ka, kb):
+      return sum(x * y for x, y in zip(profiles[ka], profiles[kb]))
+
+    changed = True
+    while changed:
+      changed = False
+      groups = {g: m for g, m in members.items() if len(m) >= GROUP_SUPPORT_MIN_MEMBERS}
+      lone = [k for k in sorted(profiles)
+              if k not in group_of or len(members[group_of[k]]) == 1]
+      for key in lone:
+        qualifying = []
+        for gid, mem in groups.items():
+          if any(m[0] != key[0] or len(profiles[m]) != len(profiles[key]) for m in mem):
+            continue
+          if sources[key] & set().union(*(sources[m] for m in mem)):
+            continue  # shares a recording with the group: a different person
+          if any(self._canonical_pair(key[1], m[1]) in blocked_alias_pairs for m in mem):
+            continue
+          each = {m[1]: sim(key, m) for m in mem}
+          mean = sum(each.values()) / len(each)
+          outside = [sim(key, k) for k in profiles
+                     if k != key and k not in mem and k[0] == key[0] and len(profiles[k]) == len(profiles[key])]
+          best_outside = max(outside, default=0.0)
+          if (mean >= GROUP_SUPPORT_MEAN_MIN and min(each.values()) >= GROUP_SUPPORT_EACH_MIN
+                  and best_outside <= mean - GROUP_SUPPORT_MARGIN):
+            qualifying.append((gid, each, mean, best_outside))
+        if len(qualifying) != 1:
+          continue  # none, or ambiguous between groups
+        gid, each, mean, best_outside = qualifying[0]
+        if key in group_of:                       # its own one-member group
+          members.pop(group_of[key], None)
+        group_of[key] = gid
+        members[gid].add(key)
+        self._identity_links.append({
+          "modality": key[0],
+          "alias_1": key[1],
+          "alias_2": sorted(m[1] for m in members[gid] if m != key),
+          "similarity": round(mean, 4),
+          "group_similarities": {a: round(s, 4) for a, s in sorted(each.items())},
+          "best_outside_group": round(best_outside, 4),
+          "required_similarity": GROUP_SUPPORT_MEAN_MIN,
+          "decision": "merged_group_support",
+        })
+        log.info("Identity link by group support: %s -> %s (mean %.3f, best outside %.3f)",
+                 key[1], sorted(m[1] for m in members[gid] if m != key), mean, best_outside)
+        changed = True
+        break   # groups changed: re-evaluate from the start
 
   def _same_identity(self, oa: Observation, ob: Observation) -> bool:
     ga = self._identity_group.get((oa.modality, oa.entity_norm))

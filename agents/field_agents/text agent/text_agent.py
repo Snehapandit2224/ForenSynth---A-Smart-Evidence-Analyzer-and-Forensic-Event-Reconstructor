@@ -871,12 +871,34 @@ def _field(raw, text: str, dropped: list, name: str, as_datetime: bool = False) 
     return {"value": value, "evidence": ev, "verified": ok, "confidence": conf if ok else round(conf / 2, 3)}
 
 
+def _plain(v):
+    """A person's / item's sub-field as a plain value. The LLM sometimes
+    answers these in the anchor-field shape {"value", "evidence",
+    "confidence"}; str() of that dict ended up as the person's name
+    ("{'value': 'Sri Mohan Das', ...}"). Empty -> None."""
+    if isinstance(v, dict):
+        v = v.get("value")
+    if isinstance(v, str):
+        v = v.strip()
+    return v if v not in (None, "", []) else None
+
+
+def _inner_evidence(entry: dict, *keys: str) -> str:
+    """The quote carried inside a wrapped sub-field, for an entry that has
+    no evidence of its own."""
+    for k in keys:
+        if isinstance(entry.get(k), dict) and entry[k].get("evidence"):
+            return str(entry[k]["evidence"]).strip()
+    return ""
+
+
 def _people(raw_list, text: str, dropped: list, name: str) -> list[dict]:
     out = []
     for p in raw_list or []:
         if not isinstance(p, dict):
             continue
-        ev = str(p.get("evidence") or "").strip()
+        ev = str(p.get("evidence") or "").strip() or _inner_evidence(p, "name", "description")
+        p = {**p, **{k: _plain(p.get(k)) for k in ("name", "description", "address")}}
         label = p.get("name") or p.get("description") or "?"
         if not verify_quote(ev, text):
             dropped.append({"field": name, "entry": label, "reason": "evidence quote not found in FIR text (dropped)"})
@@ -903,9 +925,10 @@ def _people(raw_list, text: str, dropped: list, name: str) -> list[dict]:
 def _items(raw_list, text: str, dropped: list, name: str) -> list[dict]:
     out = []
     for it in raw_list or []:
-        if not isinstance(it, dict) or not it.get("item"):
+        if not isinstance(it, dict) or not _plain(it.get("item")):
             continue
-        ev = str(it.get("evidence") or "").strip()
+        ev = str(it.get("evidence") or "").strip() or _inner_evidence(it, "item", "value")
+        it = {**it, "item": _plain(it.get("item")), "value": _plain(it.get("value"))}
         if not verify_quote(ev, text):
             dropped.append({"field": name, "entry": it.get("item"), "reason": "evidence quote not found (dropped)"})
             continue
