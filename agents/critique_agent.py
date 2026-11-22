@@ -959,6 +959,10 @@ def critique_timeline(
     log.info("Critique — case=%s tl=%s crit=%s revision=%d",
              case_id, tl_ver, critique_version, revision_number)
 
+    # No real FIR (intake's stand-in, its window built from the evidence
+    # itself): every FIR check would be empty or circular - skip them all.
+    if fir and fir.get("placeholder"):
+        fir = None
     events = _enrich_events(timeline.get("events",[]))
     timeline = {**timeline, "events": events}
     ts_map           = _get_ts_map(timeline)

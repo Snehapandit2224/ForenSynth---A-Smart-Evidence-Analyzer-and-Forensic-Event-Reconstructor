@@ -302,6 +302,8 @@ def merge_cases(case_id: str, source_paths: list[Path], fir_summary: dict | None
         "domain": "Multi_Modal",
         "template": "Field_Agent_Orchestrated",
         "fir": {
+            # no FIR in the evidence: a stand-in, never checked against
+            "placeholder": True,
             "crime_type": "unknown - real multi-modal record (field-agent pilot)",
             "location": "multiple sources",
             "time_window": [0, max(o["time_offset"] for o in merged_obs)],
