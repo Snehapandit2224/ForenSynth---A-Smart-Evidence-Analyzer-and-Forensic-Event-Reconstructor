@@ -11,8 +11,8 @@
     ],
     "description": "An individual was seen loitering near an ATM for an extended period before entering the booth. Witnesses reported the person appeared to tamper with the card slot area before leaving hastily. 2 witness(es) have provided statements.",
     "roles": {
-      "suspect": 2,
-      "witness": 2
+      "suspect": 3,
+      "witness": 3
     }
   },
   "observations": [
@@ -35,7 +35,8 @@
       "appearance": "short, yellow kurta, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.871,
-      "action": "COMMUNICATE"
+      "action": "COMMUNICATE",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O5",
@@ -56,7 +57,8 @@
       "appearance": "short, white kurta, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.774,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O1",
@@ -76,7 +78,8 @@
       "appearance": "short, yellow kurta, helmet",
       "role_hint": "victim",
       "role_hint_confidence": 0.87,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O8",
@@ -97,7 +100,8 @@
       "reported_by": "Das",
       "role_hint": "suspect",
       "role_hint_confidence": 0.826,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O4",
@@ -117,7 +121,8 @@
       "appearance": "short, yellow kurta, helmet",
       "role_hint": "unknown",
       "role_hint_confidence": 0.321,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O6",
@@ -202,7 +207,11 @@
         0.1048
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.921
+      "role_hint_confidence": 0.921,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O7",
@@ -287,7 +296,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.756,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ],
   "ground_truth": {
@@ -433,6 +443,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "medium",
       "wrong_hint_rate": 0.1,
       "low_hint_rate": 0.1,
@@ -457,9 +468,9 @@
     },
     "fir_errors": [
       {
-        "type": "suspect_count",
-        "fir_value": 2,
-        "true_value": 3
+        "type": "witness_count",
+        "fir_value": 3,
+        "true_value": 2
       }
     ]
   }

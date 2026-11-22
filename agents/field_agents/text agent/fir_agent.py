@@ -298,6 +298,13 @@ def fir_summary(record: dict) -> dict:
         "incident_best_estimate": it.get("best_estimate"),
         "informant": inf.get("name"),
         "accused": [p["name"] or p["description"] for p in c["accused"]],
+        # people / items / delay the Critique checks against the evidence
+        "accused_people": [{"name": p["name"], "description": p["description"]} for p in c["accused"]],
+        "witnesses": [p["name"] or p["description"] for p in c["witnesses"]],
+        "victims": [p["name"] or p["description"] for p in c["victims"]],
+        "weapons": [i.get("item") for i in c.get("weapons", []) if i.get("item")],
+        "property": [i.get("item") for i in c.get("property", []) if i.get("item")],
+        "delay_in_reporting": _val(c.get("delay_in_reporting")),
         "fir_number": _val(a["fir_number"]),
         "police_station": _val(a["police_station"]),
         "date_of_report": _val(a["date_of_report"]),

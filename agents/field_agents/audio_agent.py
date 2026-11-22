@@ -132,17 +132,28 @@ def setup_diarization_pipeline(hf_token: Optional[str], device: str):
 
 def perform_diarization(audio, pipeline):
     """
-    Returns (segments, voice_prints):
+    Returns (segments, voice_prints, speech_sec):
         segments     [{speaker, start, end}, ...]
         voice_prints {speaker: unit-length embedding} - what lets ER recognise
                      the same person in another recording.
+        speech_sec   {speaker: seconds of that speaker's speech the voice
+                     print was computed from} - how far ER can trust it: a
+                     print from 2-3 s of speech does not reliably tell two
+                     voices apart (CASE 009: a witness scored 0.91 against
+                     a suspect).
+
+    Voice prints are computed with the pipeline's embedding model directly
+    on each speaker's own speech, not taken from the diarization's
+    clustering: the clustering drops speakers active for under 20% of its
+    10 s window (min_active_ratio), so anyone with under ~2 s of speech got
+    no voice print at all.
 
     Both are empty when no pipeline is available: speakers are never
     simulated, since invented speaker turns would reach ER as fabricated
     entities.
     """
     if pipeline is None:
-        return [], {}
+        return [], {}, {}
     import numpy as np
     import torch
 
@@ -158,13 +169,27 @@ def perform_diarization(audio, pipeline):
     ]
 
     voice_prints: Dict[str, List[float]] = {}
-    embeddings = getattr(output, "speaker_embeddings", None)  # one row per label, in labels() order
-    if embeddings is not None:
-        for label, vec in zip(diarization.labels(), embeddings):
-            norm = float(np.linalg.norm(vec))
-            if np.isfinite(norm) and norm > 0:  # NaN row = too little speech to embed
-                voice_prints[label] = [round(float(x), 4) for x in vec / norm]
-    return segments, voice_prints
+    speech_sec: Dict[str, float] = {}
+    embedding = getattr(pipeline, "_embedding", None)
+    for label in diarization.labels():
+        # only this speaker's own speech: turns overlapping another speaker are
+        # left out (they would mix two voices into one print)
+        own = [s for s in segments if s["speaker"] == label and not any(
+            o["speaker"] != label and o["start"] < s["end"] and s["start"] < o["end"] for o in segments)]
+        chunks = [audio[int(s["start"] * SAMPLE_RATE):int(s["end"] * SAMPLE_RATE)] for s in own]
+        chunks = [c for c in chunks if len(c)]
+        if not chunks or embedding is None:
+            continue
+        speech = np.concatenate(chunks).astype(np.float32)
+        if len(speech) < getattr(embedding, "min_num_samples", 1):
+            continue
+        with torch.no_grad():
+            vec = np.asarray(embedding(torch.from_numpy(speech)[None, None]))[0]
+        norm = float(np.linalg.norm(vec))
+        if np.isfinite(norm) and norm > 0:  # NaN = too little speech to embed
+            voice_prints[label] = [round(float(x), 4) for x in vec / norm]
+            speech_sec[label] = round(len(speech) / SAMPLE_RATE, 2)
+    return segments, voice_prints, speech_sec
 
 
 def merge_transcripts_with_speakers(
@@ -231,6 +256,7 @@ def build_observations(
     id_prefix: str = "AUD1",
     case_start: Optional[datetime] = None,
     voice_prints: Optional[Dict[str, List[float]]] = None,
+    voice_speech_sec: Optional[Dict[str, float]] = None,
 ) -> List[Dict[str, Any]]:
     """
     One observation per utterance, in the same shape as the generator's
@@ -246,6 +272,7 @@ def build_observations(
     print as `identity_embedding` for ER to compare across recordings.
     """
     voice_prints = voice_prints or {}
+    voice_speech_sec = voice_speech_sec or {}
     clip_offset = (base_time - case_start).total_seconds() if case_start else 0.0
     observations = []
     for idx, seg in enumerate(segments, 1):
@@ -268,6 +295,7 @@ def build_observations(
         }
         if seg["speaker"] in voice_prints:
             obs["identity_embedding"] = voice_prints[seg["speaker"]]
+            obs["voice_print_speech_sec"] = voice_speech_sec.get(seg["speaker"])
         if seg["speaker"] == UNKNOWN_SPEAKER:
             # No diarization turn covers this segment, so <source>_Speaker_Unknown
             # may be anyone on the recording. ER must not read the shared
@@ -303,13 +331,20 @@ Fields: "evidence" is a short VERBATIM quote from the transcript (required). "co
 neutral third-person past-tense sentence. "event_time" is ISO "YYYY-MM-DDTHH:MM:SS" only if the
 speaker states a time (resolve against the recording start), else null; "time_text" the words used;
 "time_basis" explicit | relative | unknown. "role_hint" suspect | witness | victim | unknown with
-"role_hint_confidence" 0-1. "confidence" 0-1: how specific and first-hand the account is.
+"role_hint_confidence" 0-1. A role is the person's part in the INCIDENT, not in the record: telling, reporting or describing something - including one's own actions - does not make anyone a witness. A witness saw the incident without taking part; someone whose own acts are entering, withdrawing, tampering, keeping lookout or leaving is not a witness because they describe them.
+"confidence" 0-1: how specific and first-hand the account is.
 "action": the kind of act - APPROACH, ENTER, WITHDRAW, TAMPER, LOITER, EXIT, FLEE, STEAL, NAVIGATE,
 WORK, COMMUNICATE, CONFIRM, WATCH (keeping lookout), OBSERVE (seeing something), REPORT (telling
 the police), INTERCEPT - or null. A denial ("I never went inside") gets null.
 
+"speakers": one entry per speaker label who states their OWN name or phone number ("This is Asha
+Rao", "my number is 98450 12345"), or is unambiguously addressed by name and accepts it ("You're
+Ravi Verma?" - "Yes"). Copy the label exactly as written; leave out anyone who does neither. Never
+guess a name.
+
 Return ONLY JSON:
 {"people": [{"name": "...", "aliases": [], "description": "..."}],
+ "speakers": [{"label": "...", "name": null, "phone": null}],
  "observations": [{"actor": "...", "role_hint": "...", "role_hint_confidence": 0.0, "role_reason": "...",
    "content": "...", "evidence": "...", "event_time": null, "time_text": null, "time_basis": "...",
    "location": null, "mentioned_people": [], "tags": [], "action": null, "confidence": 0.0}]}"""
@@ -335,6 +370,7 @@ def extract_events(
     id_prefix: str = "AUD1",
     case_start: Optional[datetime] = None,
     voice_prints: Optional[Dict[str, List[float]]] = None,
+    voice_speech_sec: Optional[Dict[str, float]] = None,
 ) -> Optional[List[Dict[str, Any]]]:
     """
     Turn one recording's transcript into EVENTS with the text agent's
@@ -353,6 +389,7 @@ def extract_events(
     """
     ta = _text_agent()
     voice_prints = voice_prints or {}
+    voice_speech_sec = voice_speech_sec or {}
     if not segments or llm is None or not llm.available:
         return None
     # Plain "Speaker: words" lines, not the chat format ("[time] Sender: text"):
@@ -391,6 +428,22 @@ def extract_events(
             return actor
         hits = [s for s in speakers if s.lower().endswith("_" + actor.lower())]
         return hits[0] if len(hits) == 1 else actor
+
+    # Names / numbers a speaker gives for themselves - checked against the
+    # transcript so a guessed name never becomes identity evidence.
+    speaker_ids: Dict[str, Dict[str, Any]] = {}
+    for sp in raw.get("speakers") or []:
+        if not isinstance(sp, dict) or not sp.get("label"):
+            continue
+        name = str(sp.get("name") or "").strip()
+        phone = str(sp.get("phone") or "").strip()
+        info = {}
+        if name and all(ta.verify_quote(part, lines) for part in name.split()):
+            info["self_identified_as"] = name
+        if phone and ta.verify_quote(phone, lines):
+            info["contact_ids"] = [phone]
+        if info:
+            speaker_ids[speaker_label(str(sp["label"]))] = info
 
     # A person's description, given once, applies to all their events in the
     # recording (the model often describes someone on one event only).
@@ -444,8 +497,11 @@ def extract_events(
             # speaker is the actor
             if actor == speaker and seg["speaker"] in voice_prints:
                 obs["identity_embedding"] = voice_prints[seg["speaker"]]
+                obs["voice_print_speech_sec"] = voice_speech_sec.get(seg["speaker"])
             if seg["speaker"] == UNKNOWN_SPEAKER and actor == speaker:
                 obs["extraction_status"] = "undiarized"
+            if actor == speaker and speaker in speaker_ids:
+                obs.update(speaker_ids[speaker])     # the speaker's own stated name / number
         observations.append(obs)
     return observations
 
@@ -528,11 +584,11 @@ def process_clips(
         audio = preprocess_audio(clip["path"])
         whisper_segments = transcribe(audio, model, language)
         print(f"      transcribed {len(whisper_segments)} segment(s)")
-        diar_segments, voice_prints = perform_diarization(audio, pipeline)
+        diar_segments, voice_prints, voice_speech_sec = perform_diarization(audio, pipeline)
         merged = merge_transcripts_with_speakers(whisper_segments, diar_segments)
         events = extract_events(merged, clip["start_time"], clip["location"], source, audio_file, llm,
                                 id_prefix=f"AUD{n}", case_start=case_start,
-                                voice_prints=voice_prints) if llm is not None else None
+                                voice_prints=voice_prints, voice_speech_sec=voice_speech_sec) if llm is not None else None
         if events is not None:
             print(f"      extracted {len(events)} event(s) from {len(merged)} utterance(s)")
             observations += events
@@ -547,6 +603,7 @@ def process_clips(
             id_prefix=f"AUD{n}",
             case_start=case_start,
             voice_prints=voice_prints,
+            voice_speech_sec=voice_speech_sec,
         )
 
     observations.sort(key=lambda o: o["time_offset"])

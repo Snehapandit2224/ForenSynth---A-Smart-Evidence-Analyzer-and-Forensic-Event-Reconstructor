@@ -11,7 +11,7 @@
     ],
     "description": "An individual was seen loitering near an ATM for an extended period before entering the booth. Witnesses reported the person appeared to tamper with the card slot area before leaving hastily. 2 witness(es) have provided statements.",
     "roles": {
-      "suspect": 2,
+      "suspect": 4,
       "witness": 1
     }
   },
@@ -29,7 +29,8 @@
       "confidence": 0.845,
       "appearance": "short, yellow kurta, helmet",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.829
+      "role_hint_confidence": 0.829,
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O1",
@@ -45,7 +46,8 @@
       "appearance": "yellow kurta",
       "role_hint": "suspect",
       "role_hint_confidence": 0.752,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O8",
@@ -62,7 +64,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "victim",
       "role_hint_confidence": 0.726,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O9",
@@ -78,7 +81,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "victim",
       "role_hint_confidence": 0.874,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O3",
@@ -94,7 +98,8 @@
       "appearance": "short, yellow kurta, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.286,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O5",
@@ -110,7 +115,8 @@
       "appearance": "short, yellow kurta, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.843,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O6",
@@ -190,7 +196,11 @@
         0.0116
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.898
+      "role_hint_confidence": 0.898,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O11",
@@ -207,7 +217,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "victim",
       "role_hint_confidence": 0.722,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O10",
@@ -223,7 +234,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.858,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O7",
@@ -304,7 +316,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.8,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_basis": "explicit"
     }
   ]
 }

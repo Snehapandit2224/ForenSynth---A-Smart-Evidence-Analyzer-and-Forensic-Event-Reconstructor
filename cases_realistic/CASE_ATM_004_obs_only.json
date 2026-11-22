@@ -6,12 +6,12 @@
     "crime_type": "cash machine theft",
     "location": "Koramangala SBI ATM",
     "time_window": [
-      0,
-      746
+      472,
+      1218
     ],
     "description": "A coordinated ATM robbery was reported involving 3 accused individuals. Division of roles was evident from CCTV footage, with one party operating the terminal and another standing guard. 2 eyewitness(es) are on record.",
     "roles": {
-      "suspect": 4,
+      "suspect": 3,
       "witness": 2
     }
   },
@@ -31,7 +31,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.755,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O2",
@@ -112,7 +113,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.789,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O18",
@@ -128,7 +130,8 @@
       "appearance": "stocky, khaki jacket, red cap",
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.883
+      "role_hint_confidence": 0.883,
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O17",
@@ -145,7 +148,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.79,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O16",
@@ -161,7 +165,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.903,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -176,7 +181,11 @@
       "confidence": 0.541,
       "appearance": "black jacket",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.712
+      "role_hint_confidence": 0.712,
+      "time_source": "verified_clock",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O3",
@@ -192,7 +201,8 @@
       "appearance": "stocky, khaki jacket, red cap",
       "role_hint": "suspect",
       "role_hint_confidence": 0.761,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O4",
@@ -208,7 +218,8 @@
       "appearance": "tall, black jacket, helmet",
       "role_hint": "witness",
       "role_hint_confidence": 0.866,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O5",
@@ -224,7 +235,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.209,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O19",
@@ -241,7 +253,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.542,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O11",
@@ -257,7 +270,8 @@
       "appearance": "stocky, khaki jacket, red cap",
       "role_hint": "suspect",
       "role_hint_confidence": 0.842,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O10",
@@ -273,7 +287,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.909,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O9",
@@ -289,7 +304,8 @@
       "appearance": "black jacket",
       "role_hint": "suspect",
       "role_hint_confidence": 0.768,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O8",
@@ -370,7 +386,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.776,
-      "action": "CONFIRM"
+      "action": "CONFIRM",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O14",
@@ -385,7 +402,8 @@
       "confidence": 0.737,
       "role_hint": "witness",
       "role_hint_confidence": 0.765,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O13",
@@ -401,7 +419,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.747,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O12",
@@ -416,7 +435,8 @@
       "confidence": 0.591,
       "appearance": "tall, red jacket",
       "role_hint": "witness",
-      "role_hint_confidence": 0.731
+      "role_hint_confidence": 0.731,
+      "time_source": "overlay_first+offset(unverified)"
     }
   ]
 }

@@ -6,8 +6,8 @@
     "crime_type": "ATM robbery",
     "location": "Koramangala SBI ATM",
     "time_window": [
-      0,
-      0
+      694,
+      1333
     ],
     "description": "A skimming device was recovered from the ATM card slot following a tip-off. Footage confirms 1 suspect(s) had accessed the panel earlier. 2 witness(es) have confirmed their presence at the scene.",
     "roles": {
@@ -35,7 +35,8 @@
       "appearance": "black hoodie",
       "role_hint": "suspect",
       "role_hint_confidence": 0.759,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O8",
@@ -56,7 +57,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.268,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -74,7 +76,8 @@
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.865,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O9",
@@ -94,7 +97,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "witness",
       "role_hint_confidence": 0.867,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O10",
@@ -115,7 +119,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.834,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O4",
@@ -135,7 +140,8 @@
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.804,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O6",
@@ -155,7 +161,11 @@
       ],
       "extraction_status": "undiarized",
       "role_hint": "witness",
-      "role_hint_confidence": 0.547
+      "role_hint_confidence": 0.547,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O5",
@@ -176,7 +186,8 @@
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "witness",
       "role_hint_confidence": 0.763,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O7",
@@ -193,7 +204,8 @@
       "noise_tags": [],
       "role_hint": "witness",
       "role_hint_confidence": 0.805,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O11",
@@ -214,7 +226,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.715,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "document_date"
     }
   ],
   "ground_truth": {
@@ -341,6 +354,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "medium",
       "wrong_hint_rate": 0.1,
       "low_hint_rate": 0.1,
@@ -363,8 +377,8 @@
       {
         "type": "time_window",
         "fir_value": [
-          0,
-          0
+          694,
+          1333
         ],
         "true_value": [
           0,

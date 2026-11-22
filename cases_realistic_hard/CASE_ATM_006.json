@@ -6,12 +6,12 @@
     "crime_type": "ATM robbery",
     "location": "Koramangala SBI ATM",
     "time_window": [
-      0,
-      639
+      417,
+      1056
     ],
     "description": "A skimming device was recovered from the ATM card slot following a tip-off. Footage confirms 1 suspect(s) had accessed the panel earlier. 2 witness(es) have confirmed their presence at the scene.",
     "roles": {
-      "suspect": 2,
+      "suspect": 1,
       "witness": 3
     }
   },
@@ -34,7 +34,8 @@
       ],
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.331
+      "role_hint_confidence": 0.331,
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O7",
@@ -53,7 +54,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.876,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O8",
@@ -74,7 +76,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.771,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -92,7 +95,8 @@
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "victim",
       "role_hint_confidence": 0.763,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O9",
@@ -112,7 +116,8 @@
       "reported_by": "witness_statement_SPEAKER_01",
       "role_hint": "suspect",
       "role_hint_confidence": 0.944,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O10",
@@ -133,7 +138,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.713,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O11",
@@ -154,7 +160,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.738,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O12",
@@ -174,7 +181,8 @@
       "appearance": "stocky, dark hoodie, helmet",
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.718
+      "role_hint_confidence": 0.718,
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O4",
@@ -194,7 +202,8 @@
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.792,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O6",
@@ -279,7 +288,11 @@
         -0.067
       ],
       "role_hint": "victim",
-      "role_hint_confidence": 0.779
+      "role_hint_confidence": 0.779,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O5",
@@ -300,7 +313,8 @@
       "appearance": "stocky, black hoodie, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.737,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
     }
   ],
   "ground_truth": {
@@ -428,6 +442,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "hard",
       "wrong_hint_rate": 0.15,
       "low_hint_rate": 0.15,
@@ -448,14 +463,20 @@
     },
     "fir_errors": [
       {
-        "type": "suspect_count",
-        "fir_value": 2,
-        "true_value": 1
-      },
-      {
         "type": "witness_count",
         "fir_value": 3,
         "true_value": 2
+      },
+      {
+        "type": "time_window",
+        "fir_value": [
+          417,
+          1056
+        ],
+        "true_value": [
+          0,
+          639
+        ]
       }
     ]
   }

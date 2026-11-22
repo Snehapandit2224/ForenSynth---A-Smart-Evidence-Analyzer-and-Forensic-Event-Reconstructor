@@ -37,6 +37,9 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 
 from config import get_observation_location
+from noise import _CONTRADICTION_TEXT_INTEGRITY, _CONTRADICTION_VIDEO_QUALITY
+
+_NOT_DENIALS = set(_CONTRADICTION_VIDEO_QUALITY) | set(_CONTRADICTION_TEXT_INTEGRITY)
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
@@ -59,6 +62,7 @@ class RealismConfig:
     mixed_timezones: bool = False      # some sources write "Z" / "+05:30" times
     fir_errors: bool = False           # the FIR gets some facts wrong
     action_labels: bool = False        # the extractor names each event's action (with mistakes)
+    agent_metadata: bool = False       # time provenance (time_source / time_basis), denial tags
     difficulty: str = "medium"         # scales every rate above
     # derived from difficulty (not CLI flags)
     wrong_hint_rate: float = 0.10
@@ -72,7 +76,7 @@ class RealismConfig:
         return any((self.appearance, self.alias_variants, self.voice_prints, self.hide_roles,
                     self.per_source_labels, self.reported_events, self.undiarized_audio > 0,
                     self.timestamp_gaps > 0, self.mixed_timezones, self.fir_errors,
-                    self.action_labels))
+                    self.action_labels, self.agent_metadata))
 
     def scaled(self) -> "RealismConfig":
         """A copy with every rate scaled by the difficulty."""
@@ -97,7 +101,7 @@ class RealismConfig:
         return cls(appearance=True, alias_variants=True, voice_prints=True, hide_roles=True,
                    per_source_labels=True, reported_events=True, undiarized_audio=0.3,
                    timestamp_gaps=0.15, mixed_timezones=True, fir_errors=True,
-                   action_labels=True, difficulty=difficulty)
+                   action_labels=True, agent_metadata=True, difficulty=difficulty)
 
 
 # ── Vocabularies ──────────────────────────────────────────────────────────────
@@ -399,6 +403,27 @@ def apply_realism(case: dict, cfg: RealismConfig, rng: random.Random) -> dict:
             if not true_label or r < cfg.action_missing_rate:
                 continue
             o["action"] = rng.choice([x for x in labels if x != true_label])                 if r < cfg.action_missing_rate + cfg.action_error_rate else true_label
+
+    # 9c. What the agents say about their own output ──────────────────────
+    #  video:       time_source - the agent saw the burned-in clock tick
+    #               ("verified_clock") unless the clock was unreadable or
+    #               written in another format (the mixed-timezone sources)
+    #  text/audio:  time_basis - a person's own message or speech is timed
+    #               by its record ("explicit"); a witness's report of someone
+    #               else by the witness's estimate ("relative" / "document_date")
+    #  denials:     tagged "denial", as the extractors tag them
+    if cfg.agent_metadata:
+        for o in obs_list:
+            if o["modality"] == "video":
+                unread = not o["timestamp"] or "+" in o["timestamp"] or o["timestamp"].endswith("Z")
+                o["time_source"] = "overlay_first+offset(unverified)" if unread else "verified_clock"
+            else:
+                o["time_basis"] = ("unknown" if not o["timestamp"] else
+                                   rng.choice(["relative", "document_date"]) if o.get("reported_by") else "explicit")
+            # only actual denials: the generator's other "contradictions" are
+            # footage / file-integrity problems ("Footage inconclusive...")
+            if "contradiction" in o.get("noise_tags", []) and o["content"] not in _NOT_DENIALS:
+                o["tags"] = ["denial"]
 
     # 10. FIR errors ──────────────────────────────────────────────────────────
     fir_errors = []

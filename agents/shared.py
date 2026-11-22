@@ -125,6 +125,21 @@ def normalize_alias(alias: Optional[str]) -> str:
     return re.sub(r"[^a-z0-9_]", "_", alias.strip().lower()) or "unknown"
 
 
+def normalize_contact(value: Optional[str]) -> str:
+    """A phone number or email address in one comparable form, or "":
+    "+91 98450-12345" / "098450 12345" -> "9845012345" (last 10 digits);
+    "Asha.Rao@Mail.com" -> "asha.rao@mail.com". Too short to be a number -> ""."""
+    value = str(value or "").strip().lower()
+    if "@" in value:
+        return value if re.fullmatch(r"[^@\s]+@[^@\s]+\.[a-z]{2,}", value) else ""
+    digits = re.sub(r"\D", "", value)
+    return digits[-10:] if len(digits) >= 10 else ""
+
+
+# Phone numbers and email addresses written anywhere in a text.
+CONTACT_PATTERN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d ()-]{8,}\d")
+
+
 # ==============================================================================
 # Modality canonicalization
 # ==============================================================================
@@ -352,6 +367,38 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
 # `action`; the Timeline prefers it over phrase matching.
 ACTION_TAG_VOCABULARY: frozenset = frozenset(ACTION_TAG_FRAGMENTS)
 
+# Snake-case action names (the video agent's vocabulary, the generator's
+# actions) -> the canonical tag.
+ACTION_NAME_TO_TAG: dict[str, str] = {
+    "approach_atm": "APPROACH", "approach_office": "APPROACH", "enter_atm": "ENTER",
+    "enter_office": "ENTER", "withdraw_cash": "WITHDRAW", "exit_atm": "EXIT", "exit_office": "EXIT",
+    "wait_outside": "WATCH", "loiter_near_atm": "LOITER", "tamper_atm": "TAMPER", "flee_scene": "FLEE",
+    "steal_items": "STEAL", "steal_data": "STEAL", "navigate_to_target": "NAVIGATE",
+    "perform_legit_work": "WORK", "observe_exit": "OBSERVE", "report_incident": "REPORT",
+    "initiate_communication": "COMMUNICATE", "respond_to_communication": "COMMUNICATE",
+    "exchange_information": "COMMUNICATE", "coordinate_activity": "COMMUNICATE",
+    "confirm_plan": "CONFIRM", "intercept_communication": "INTERCEPT", "flag_suspicious_comm": "REPORT",
+}
+
+
+def time_reliability(obs: dict) -> float:
+    """How far an observation's timestamp can be trusted, 0-1, from what the
+    field agent says about where it came from:
+      video  time_source: "verified_clock" (a burned-in clock the agent saw
+             tick) 1.0; anything else it read or inferred 0.7.
+      text / audio  time_basis: "explicit" (stated) 1.0, "relative"
+             (worked out from another time) 0.8, "document_date" (only the
+             date the document was written) 0.5, "unknown" 0.4.
+    No timestamp -> 0. No provenance at all (e.g. generator observations)
+    -> 1.0, i.e. trusted as before."""
+    if not str(obs.get("timestamp") or "").strip():
+        return 0.0
+    source = obs.get("time_source")
+    if source:
+        return 1.0 if source == "verified_clock" else 0.7
+    return {"explicit": 1.0, "relative": 0.8, "document_date": 0.5, "unknown": 0.4}.get(
+        obs.get("time_basis"), 1.0)
+
 
 _NEGATION_WORDS = (
     "not", "n't", "never", "didn't", "doesn't", "wasn't", "isn't", "no ",
@@ -439,6 +486,9 @@ def extract_action_tags(content: Optional[str]) -> Set[str]:
     text = clean_content(content).lower()
     if not text:
         return set()
+    # "cash out" / "money out" is taking money out, not a person going out:
+    # without this, "Cash out now." matched the EXIT fragment "out now".
+    text = re.sub(r"\b(cash|money|notes|card)\s+out\b", r"\1 withdrawn", text)
 
     is_negated = any(neg in text for neg in _NEGATION_WORDS)
 

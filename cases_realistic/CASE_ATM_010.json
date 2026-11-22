@@ -11,8 +11,8 @@
     ],
     "description": "The complainant alleges that 1 accused individual(s) loitered near the ATM for an abnormal duration and were observed manipulating the machine before departing. 2 independent witness(es) support this account.",
     "roles": {
-      "suspect": 2,
-      "witness": 2
+      "suspect": 1,
+      "witness": 1
     }
   },
   "observations": [
@@ -34,7 +34,8 @@
         "timestamp_missing"
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.781
+      "role_hint_confidence": 0.781,
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O6",
@@ -55,7 +56,8 @@
       "appearance": "short, maroon hoodie",
       "role_hint": "witness",
       "role_hint_confidence": 0.822,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O12",
@@ -76,7 +78,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.766,
-      "action": "NAVIGATE"
+      "action": "NAVIGATE",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -95,7 +98,8 @@
         "semantic_variation"
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.942
+      "role_hint_confidence": 0.942,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O2",
@@ -114,7 +118,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.826,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O13",
@@ -135,7 +140,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.41,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O3",
@@ -154,7 +160,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.861,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O14",
@@ -175,7 +182,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.869,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O15",
@@ -195,7 +203,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.935,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O5",
@@ -215,7 +224,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.945,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O4",
@@ -232,7 +242,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.84,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -315,7 +326,8 @@
       ],
       "role_hint": "victim",
       "role_hint_confidence": 0.797,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O16",
@@ -336,7 +348,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.768,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O10",
@@ -421,7 +434,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.868,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ],
   "ground_truth": {
@@ -563,6 +577,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "medium",
       "wrong_hint_rate": 0.1,
       "low_hint_rate": 0.1,
@@ -583,9 +598,9 @@
     },
     "fir_errors": [
       {
-        "type": "suspect_count",
-        "fir_value": 2,
-        "true_value": 1
+        "type": "witness_count",
+        "fir_value": 1,
+        "true_value": 2
       }
     ]
   }

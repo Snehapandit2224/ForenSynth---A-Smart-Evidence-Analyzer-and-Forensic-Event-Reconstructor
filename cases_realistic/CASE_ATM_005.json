@@ -7,11 +7,11 @@
     "location": "Whitefield ATM Kiosk",
     "time_window": [
       0,
-      312
+      0
     ],
     "description": "Complaint received regarding a suspect who spent an unusual amount of time at the ATM panel without completing a normal transaction. 1 bystander(s) noted suspicious handling of the machine.",
     "roles": {
-      "suspect": 3,
+      "suspect": 2,
       "witness": 1
     }
   },
@@ -34,7 +34,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.837,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -51,7 +52,8 @@
       "noise_tags": [],
       "appearance": "stocky, grey jacket",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.937
+      "role_hint_confidence": 0.937,
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O2",
@@ -136,7 +138,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.814,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O3",
@@ -155,7 +158,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.747,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O23",
@@ -176,7 +180,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.703,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O8",
@@ -261,7 +266,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.752,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O9",
@@ -278,7 +284,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.948,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -299,7 +306,8 @@
       "appearance": "stocky, grey jacket",
       "role_hint": "suspect",
       "role_hint_confidence": 0.761,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O10",
@@ -319,7 +327,11 @@
       ],
       "appearance": "stocky, grey jacket",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.783
+      "role_hint_confidence": 0.783,
+      "time_source": "verified_clock",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O11",
@@ -402,7 +414,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.935,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O24",
@@ -422,7 +435,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.711,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O12",
@@ -439,7 +453,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.917,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O15",
@@ -456,7 +471,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.711,
-      "action": "INTERCEPT"
+      "action": "INTERCEPT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O14",
@@ -541,7 +557,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.948,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O13",
@@ -562,7 +579,8 @@
       "appearance": "stocky, grey jacket",
       "role_hint": "suspect",
       "role_hint_confidence": 0.747,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O16",
@@ -582,7 +600,11 @@
       ],
       "appearance": "green kurta",
       "role_hint": "witness",
-      "role_hint_confidence": 0.934
+      "role_hint_confidence": 0.934,
+      "time_source": "verified_clock",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O17",
@@ -667,7 +689,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.87,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O19",
@@ -687,7 +710,8 @@
       "appearance": "tall, green kurta, white cap",
       "role_hint": "witness",
       "role_hint_confidence": 0.77,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O20",
@@ -773,7 +797,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.74,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O21",
@@ -792,7 +817,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.846,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ],
   "ground_truth": {
@@ -948,6 +974,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "medium",
       "wrong_hint_rate": 0.1,
       "low_hint_rate": 0.1,
@@ -968,9 +995,15 @@
     },
     "fir_errors": [
       {
-        "type": "suspect_count",
-        "fir_value": 3,
-        "true_value": 2
+        "type": "time_window",
+        "fir_value": [
+          0,
+          0
+        ],
+        "true_value": [
+          0,
+          312
+        ]
       }
     ]
   }

@@ -61,6 +61,20 @@ ROLE_HINTS = {"suspect", "witness", "victim", "unknown"}
 # The Timeline's canonical action tags (agents/shared.py ACTION_TAG_VOCABULARY):
 # the extractor names the kind of act, so the Timeline doesn't have to guess
 # it from phrasing.
+# A record whose body is unavailable or unverified (deleted, corrupted,
+# redacted, metadata-only, truncated, unsent) - the status marker exports put
+# in place of the text.
+_INTEGRITY_MARKER = re.compile(
+    r"^\s*\[(deleted|undelivered|corrupted|redacted|metadata only|forwarded\W+original deleted|partial|draft)\b"
+    r"|hash mismatch|integrity (?:unverified|check failed)|checksum (?:mismatch|failed)", re.I)
+
+# First-person statements that an act did not happen, or not then / not
+# there - checked on the verbatim quote, whatever the LLM tagged.
+_DENIAL_OR_ALIBI = re.compile(
+    r"\b(?:I|we)\b[^.?!]{0,40}?\b(?:never|didn't|did not|wasn't|was not|weren't|were not|haven't|have not)\b"
+    r"|\b(?:left|departed|gone|went home)\b[^.?!]{0,30}?\blong before\b"
+    r"|\b(?:I|we) (?:was|were) (?:at home|elsewhere|not there|somewhere else)\b", re.I)
+
 ACTIONS = ("APPROACH", "ENTER", "WITHDRAW", "TAMPER", "LOITER", "EXIT", "FLEE", "STEAL", "NAVIGATE",
            "WORK", "COMMUNICATE", "CONFIRM", "WATCH", "OBSERVE", "REPORT", "INTERCEPT")
 TIME_BASES = {"explicit", "relative", "document_date", "unknown"}
@@ -386,6 +400,7 @@ Rules:
 - "role_hint": suspect | witness | victim | unknown - your best reading of the actor's role in the
   alleged incident, with "role_hint_confidence" 0-1 and a brief "role_reason". This is a HINT for
   investigators, not a finding: use "unknown" when the text does not support a call.
+  A role is the person's part in the INCIDENT, not in the record: telling, reporting or describing something - including one's own actions - does not make anyone a witness. A witness saw the incident without taking part; someone whose own acts are entering, withdrawing, tampering, keeping lookout or leaving is not a witness because they describe them.
 - "event_time": ISO-8601 "YYYY-MM-DDTHH:MM:SS" if the time can be determined, else null.
   Resolve relative expressions ("around 9 pm", "ten minutes later", "yesterday", "on Sunday night")
   against dates stated elsewhere in the text, else the document date / reference date. If the
@@ -398,7 +413,13 @@ Rules:
 - "tags": any of {sorted(EVENT_TAGS)}.
 - "action": the kind of act, one of {list(ACTIONS)} (WATCH = keeping lookout, LOITER = hanging
   around, OBSERVE = seeing something happen, REPORT = telling police/authorities), or null if
-  none fits. A denial ("I never went inside") gets null, not the act it denies.
+  none fits. A denial ("I never went inside") gets null, not the act it denies. A message that
+  announces or reports an act gets the act it describes, not COMMUNICATE: "Entered." -> ENTER,
+  "Cash out now." -> WITHDRAW, "Done here. Moving." -> EXIT, "Still waiting." -> LOITER,
+  "Reader fitted." -> TAMPER. COMMUNICATE is only for contact that is itself the point
+  ("Call me", "Ping me when you're there"). In such a message the actor is the sender: an
+  object or device it names ("Reader fitted.", "Card working.") is never the actor, and is not
+  listed in "people".
 - "confidence" 0-1: how clear, specific and first-hand the statement is (hearsay, vague or
   hedged text scores lower; precise first-hand detail scores higher).
 - Skip greetings, signatures, boilerplate and anything with no bearing on what happened.
@@ -493,8 +514,18 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str],
     actor = str(raw.get("actor") or "").strip() or doc.get("author") or "unknown_person"
     canon = aliases.get(actor.lower(), actor)
     actor = strip_honorific(canon)
+    # A short message from a known sender with no named subject is the
+    # sender's own act: "Reader fitted." is not done by someone called
+    # Reader, "At the corner, about to move." not by an unknown person.
+    author = doc.get("author")
+    if (author and actor != author and _is_short_message(doc.get("text", ""))
+            and (actor.lower().startswith("unknown") or actor.lower() not in aliases)):
+        actor = author
     role = str(raw.get("role_hint") or "unknown").strip().lower()
     basis = str(raw.get("time_basis") or "unknown").strip().lower()
+    tags = {str(t).lower() for t in (raw.get("tags") or [])} & EVENT_TAGS
+    if _DENIAL_OR_ALIBI.search(evidence):
+        tags.add("denial")
     return {
         "actor": actor,
         "role_hint": role if role in ROLE_HINTS else "unknown",
@@ -507,9 +538,13 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str],
         "location": raw.get("location") or None,
         "mentioned_people": [strip_honorific(aliases.get(str(m).strip().lower(), str(m).strip()))
                              for m in (raw.get("mentioned_people") or []) if str(m).strip()],
-        "tags": sorted({str(t).lower() for t in (raw.get("tags") or [])} & EVENT_TAGS),
+        "tags": sorted(tags),
         "confidence": clamp_conf(raw.get("confidence"), 0.6),
-        "action": a if (a := str(raw.get("action") or "").strip().upper()) in ACTIONS else None,
+        # a denial or alibi states the act did NOT happen (or not then, or not
+        # there): it never carries the act's tag ("I departed long before the
+        # time mentioned" came back as WITHDRAW, then EXIT)
+        "action": None if tags & {"denial", "alibi"} else
+                  a if (a := str(raw.get("action") or "").strip().upper()) in ACTIONS else None,
         "actor_description": (descriptions or {}).get(canon, ""),
     }
 
@@ -620,6 +655,25 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
     Exposed separately so fir_agent.py reuses the exact same extractor."""
     observations, order = [], 0
     for doc in docs:
+        if _INTEGRITY_MARKER.search(doc["text"]):
+            # unavailable / unverified content: one record that it exists, flagged,
+            # never read for events (the LLM found none and it was silently dropped)
+            order += 1
+            ts = doc.get("sent_at")
+            observations.append({
+                "entity": scoped_actor(doc.get("author") or "unknown_sender", doc["doc_id"]),
+                "role": "unknown", "role_hint": "unknown", "role_hint_confidence": 0.0, "role_reason": "",
+                "modality": "text", "source": source_override or doc.get("doc_type_hint") or doc["source"],
+                "source_doc": doc["doc_id"], "reported_by": doc.get("author"),
+                "location": doc.get("location") or "unspecified",
+                "content": doc["text"].strip()[:500], "evidence": doc["text"].strip()[:500],
+                "mentioned_entities": [], "appearance": "", "tags": [],
+                "timestamp": ts.strftime("%Y-%m-%dT%H:%M:%S") if ts else "",
+                "time_basis": "explicit" if ts else "unknown",
+                "confidence": 0.1, "extraction": "integrity_failed", "extraction_status": "integrity_failed",
+                "_order": order,
+            })
+            continue
         extraction = "fallback"
         events, doc_type = None, None
         if llm is not None and llm.available:
@@ -632,9 +686,13 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
         elif doc.get("is_transcript"):
             attach_message_times(doc, events)
         source = source_override or doc_type or doc.get("doc_type_hint") or doc["source"]
+        author_contacts = _author_contacts(doc["text"])
 
         for ev in events:
             order += 1
+            # the sender's number / address identifies the author - only on
+            # the author's own acts, never on people they describe
+            own = author_contacts if author_contacts and ev["actor"] == doc.get("author") else []
             ts, basis = ev["event_time"], ev["time_basis"]
             if ts is None:
                 if doc.get("sent_at"):
@@ -665,9 +723,39 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                 "time_basis": basis,
                 "confidence": round(ev["confidence"] * _TIME_BASIS_FACTOR[basis], 3),
                 "extraction": extraction,
+                **({"contact_ids": own} if own else {}),
                 "_order": order,
             })
     return observations
+
+
+def _is_short_message(text: str) -> bool:
+    """A chat-style message: at most 20 words once From/To/Subject headers
+    are set aside."""
+    body = [ln for ln in (text or "").splitlines()
+            if ln.strip() and not re.match(r"(?i)^\s*(from|to|cc|bcc|subject|date|sender|sent by)\s*:", ln)]
+    return len(" ".join(body).split()) <= 20
+
+
+_CONTACT = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d ()-]{8,}\d")
+
+
+def _author_contacts(text: str) -> list[str]:
+    """Phone numbers / email addresses that are the AUTHOR's: on a From: /
+    Sender: header line, or in the signature (the last three non-empty
+    lines). Numbers elsewhere in the body may be anyone's."""
+    lines = [ln.strip() for ln in (text or "").splitlines() if ln.strip()]
+    others = re.compile(r"(?i)^(to|cc|bcc|recipient|subject|date)\s*:")
+    body = [ln for ln in lines if not others.match(ln) and not re.match(r"(?i)^(from|sender|sent by)\s*:", ln)]
+    # a signature only below a body: in a two-line message the number may be anyone's
+    signature = body[-3:] if len(body) >= 4 else []
+    own = [ln for ln in lines if re.match(r"(?i)^(from|sender|sent by)\s*:", ln)] + signature
+    found = []
+    for ln in own:
+        for m in _CONTACT.findall(ln):
+            if m not in found:
+                found.append(m)
+    return found
 
 
 def build_case(case_id: str, observations: list[dict], description: str, fir: dict | None = None) -> dict:

@@ -662,6 +662,11 @@ def build_er_section(pdf: ExplainabilityPDF, er: dict):
                 f"{caution}"
                 f"Confidence that this grouping is correct: {label} ({conf:.0%})."
             )
+        role, reasons = ent.get("role", "unknown"), ent.get("role_reasons") or []
+        if role != "unknown" or reasons:
+            plain += f"\n\nRole from the evidence: {role}"
+            if reasons:
+                plain += " - " + " / ".join(f'"{safe(r, 120)}"' for r in reasons[:2])
         pdf.plain_box(f"About: {ent.get('primary_alias', 'Unknown')}", plain)
 
         if len(aliases) > 1:
@@ -779,6 +784,13 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
         )
         if content:
             plain += f"\n\nEvidence note: \"{safe(content, 220)}\""
+        # the verbatim words the text / audio extractors based this on
+        quotes = [q for q in ev.get("evidence_quotes") or [] if q and q != content]
+        if quotes:
+            plain += "\n\nIn the source's own words: " + " / ".join(f'"{safe(q, 160)}"' for q in quotes[:3])
+        if ev.get("same_moment_as"):
+            plain += (f"\n\nSame moment as {len(ev['same_moment_as'])} other event(s) by other people "
+                      "(corroborating observations).")
         if conflict:
             plain += (
                 "\n\n[!]  This event has conflicting information across evidence sources. "

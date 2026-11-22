@@ -7,11 +7,11 @@
     "location": "Indiranagar HDFC ATM",
     "time_window": [
       0,
-      0
+      386
     ],
     "description": "Surveillance logs confirm entry by 2 person(s) into the ATM booth during the reported time window. The accused departed prior to security arrival. 2 independent observer(s) corroborate the sequence of events.",
     "roles": {
-      "suspect": 2,
+      "suspect": 3,
       "witness": 2
     }
   },
@@ -34,7 +34,8 @@
       "appearance": "short, maroon sweater, maroon scarf",
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.714
+      "role_hint_confidence": 0.714,
+      "time_basis": "relative"
     },
     {
       "obs_id": "O14",
@@ -55,7 +56,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.836,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O2",
@@ -72,7 +74,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.917,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O1",
@@ -157,7 +160,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.889,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O3",
@@ -242,7 +246,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.894,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O4",
@@ -262,7 +267,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.759,
-      "action": "INTERCEPT"
+      "action": "INTERCEPT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O6",
@@ -278,7 +284,8 @@
       "confidence": 0.751,
       "noise_tags": [],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.79
+      "role_hint_confidence": 0.79,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -363,7 +370,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.901,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O8",
@@ -379,7 +387,8 @@
       "confidence": 0.861,
       "noise_tags": [],
       "role_hint": "witness",
-      "role_hint_confidence": 0.779
+      "role_hint_confidence": 0.779,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O15",
@@ -400,7 +409,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.79,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O10",
@@ -417,7 +427,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.81,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O9",
@@ -502,7 +513,11 @@
         0.1237
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.95
+      "role_hint_confidence": 0.95,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O11",
@@ -523,7 +538,8 @@
       "appearance": "stocky, blue jacket, helmet",
       "role_hint": "witness",
       "role_hint_confidence": 0.875,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O12",
@@ -606,7 +622,8 @@
       ],
       "role_hint": "unknown",
       "role_hint_confidence": 0.545,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O16",
@@ -627,7 +644,8 @@
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.739,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "relative"
     }
   ],
   "ground_truth": {
@@ -773,6 +791,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "medium",
       "wrong_hint_rate": 0.1,
       "low_hint_rate": 0.1,
@@ -795,15 +814,9 @@
     },
     "fir_errors": [
       {
-        "type": "time_window",
-        "fir_value": [
-          0,
-          0
-        ],
-        "true_value": [
-          0,
-          386
-        ]
+        "type": "suspect_count",
+        "fir_value": 3,
+        "true_value": 2
       }
     ]
   }

@@ -11,8 +11,8 @@
     ],
     "description": "A single individual was observed entering an ATM booth and conducting a transaction under suspicious circumstances. 2 bystander(s) reported unusual behaviour before and after the incident.",
     "roles": {
-      "suspect": 2,
-      "witness": 2
+      "suspect": 3,
+      "witness": 3
     }
   },
   "observations": [
@@ -31,7 +31,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.88,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -112,7 +113,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.713,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O2",
@@ -193,7 +195,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.776,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O3",
@@ -273,7 +276,11 @@
         -0.0849
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.856
+      "role_hint_confidence": 0.856,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O9",
@@ -290,7 +297,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "unknown",
       "role_hint_confidence": 0.407,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O5",
@@ -371,7 +379,8 @@
       ],
       "role_hint": "victim",
       "role_hint_confidence": 0.796,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O6",
@@ -387,7 +396,8 @@
       "extraction_status": "undiarized",
       "role_hint": "witness",
       "role_hint_confidence": 0.786,
-      "action": "STEAL"
+      "action": "STEAL",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -403,7 +413,8 @@
       "extraction_status": "undiarized",
       "role_hint": "witness",
       "role_hint_confidence": 0.749,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ]
 }

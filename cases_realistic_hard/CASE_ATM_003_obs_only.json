@@ -6,8 +6,8 @@
     "crime_type": "ATM skimming with assault",
     "location": "Whitefield ATM Kiosk",
     "time_window": [
-      0,
-      0
+      326,
+      671
     ],
     "description": "A coordinated ATM robbery was reported involving 2 accused individuals. Division of roles was evident from CCTV footage, with one party operating the terminal and another standing guard. 2 eyewitness(es) are on record.",
     "roles": {
@@ -30,7 +30,8 @@
       "appearance": "short, brown shirt, white scarf",
       "role_hint": "suspect",
       "role_hint_confidence": 0.77,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O13",
@@ -45,7 +46,8 @@
       "confidence": 0.881,
       "role_hint": "witness",
       "role_hint_confidence": 0.735,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O3",
@@ -60,7 +62,8 @@
       "confidence": 0.69,
       "role_hint": "suspect",
       "role_hint_confidence": 0.919,
-      "action": "COMMUNICATE"
+      "action": "COMMUNICATE",
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O21",
@@ -77,7 +80,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.716,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O2",
@@ -158,7 +162,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.946,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O5",
@@ -239,7 +244,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.807,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O22",
@@ -256,7 +262,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.928,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O7",
@@ -337,7 +344,8 @@
       ],
       "role_hint": "victim",
       "role_hint_confidence": 0.794,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O8",
@@ -352,7 +360,8 @@
       "confidence": 0.75,
       "role_hint": "suspect",
       "role_hint_confidence": 0.812,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O10",
@@ -433,7 +442,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.9,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O24",
@@ -450,7 +460,8 @@
       "reported_by": "phone_record_SPEAKER_01",
       "role_hint": "suspect",
       "role_hint_confidence": 0.896,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O23",
@@ -467,7 +478,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.892,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O12",
@@ -548,7 +560,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.916,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O15",
@@ -629,7 +642,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.71,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O11",
@@ -644,7 +658,8 @@
       "confidence": 0.471,
       "appearance": "short, maroon shirt, white scarf",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.794
+      "role_hint_confidence": 0.794,
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O14",
@@ -659,7 +674,11 @@
       "confidence": 0.497,
       "appearance": "short, maroon shirt, white scarf",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.816
+      "role_hint_confidence": 0.816,
+      "time_source": "verified_clock",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O18",
@@ -740,7 +759,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.847,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O17",
@@ -756,7 +776,8 @@
       "appearance": "short, green hoodie",
       "role_hint": "suspect",
       "role_hint_confidence": 0.938,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O19",
@@ -837,7 +858,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.586,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O25",
@@ -854,7 +876,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.807,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O26",
@@ -871,7 +894,8 @@
       "reported_by": "phone_record_SPEAKER_01",
       "role_hint": "suspect",
       "role_hint_confidence": 0.726,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O20",
@@ -952,7 +976,8 @@
       ],
       "role_hint": "unknown",
       "role_hint_confidence": 0.38,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ]
 }

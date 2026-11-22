@@ -12,7 +12,7 @@
     "description": "The complainant alleges that 1 accused individual(s) loitered near the ATM for an abnormal duration and were observed manipulating the machine before departing. 2 independent witness(es) support this account.",
     "roles": {
       "suspect": 2,
-      "witness": 1
+      "witness": 3
     }
   },
   "observations": [
@@ -28,7 +28,8 @@
       "time_offset": 0,
       "confidence": 0.522,
       "role_hint": "witness",
-      "role_hint_confidence": 0.781
+      "role_hint_confidence": 0.781,
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O4",
@@ -43,7 +44,8 @@
       "confidence": 0.9,
       "role_hint": "suspect",
       "role_hint_confidence": 0.714,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O5",
@@ -57,7 +59,8 @@
       "time_offset": 0,
       "confidence": 0.861,
       "role_hint": "suspect",
-      "role_hint_confidence": 0.486
+      "role_hint_confidence": 0.486,
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O12",
@@ -74,7 +77,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.766,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O1",
@@ -89,7 +93,8 @@
       "confidence": 0.673,
       "role_hint": "suspect",
       "role_hint_confidence": 0.942,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O2",
@@ -104,7 +109,8 @@
       "confidence": 0.741,
       "role_hint": "suspect",
       "role_hint_confidence": 0.826,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O13",
@@ -121,7 +127,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.805,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O3",
@@ -136,7 +143,8 @@
       "confidence": 0.887,
       "role_hint": "witness",
       "role_hint_confidence": 0.861,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O14",
@@ -152,7 +160,8 @@
       "appearance": "short, khaki kurta, brown scarf",
       "reported_by": "phone_record_SPEAKER_00",
       "role_hint": "unknown",
-      "role_hint_confidence": 0.274
+      "role_hint_confidence": 0.274,
+      "time_basis": "relative"
     },
     {
       "obs_id": "O15",
@@ -168,7 +177,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.308,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O7",
@@ -248,7 +258,8 @@
         0.1358
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.821
+      "role_hint_confidence": 0.821,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O6",
@@ -264,7 +275,8 @@
       "appearance": "short, maroon hoodie",
       "role_hint": "witness",
       "role_hint_confidence": 0.822,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O16",
@@ -281,7 +293,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.866,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O10",
@@ -362,7 +375,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.868,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ]
 }

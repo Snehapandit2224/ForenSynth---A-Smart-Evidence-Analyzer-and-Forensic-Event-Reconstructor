@@ -7,7 +7,7 @@
     "location": "Koramangala SBI ATM",
     "time_window": [
       0,
-      294
+      0
     ],
     "description": "Complainant reports being coerced at an ATM by 3 unknown assailant(s) who acted in concert. One suspect operated the machine while the other blocked the entrance. 2 independent witness(es) observed the incident.",
     "roles": {
@@ -34,7 +34,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.841,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O6",
@@ -55,7 +56,8 @@
       "appearance": "tall, yellow t-shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.769,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O2",
@@ -140,7 +142,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.834,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O22",
@@ -161,7 +164,8 @@
       "reported_by": "S. Nair",
       "role_hint": "suspect",
       "role_hint_confidence": 0.87,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O3",
@@ -180,7 +184,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.726,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O23",
@@ -201,7 +206,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.908,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O5",
@@ -286,7 +292,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.905,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O4",
@@ -304,7 +311,8 @@
       "appearance": "stocky, yellow t-shirt, khaki cap",
       "role_hint": "suspect",
       "role_hint_confidence": 0.854,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O10",
@@ -390,7 +398,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.826,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O24",
@@ -411,7 +420,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.791,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O8",
@@ -428,7 +438,8 @@
       "noise_tags": [],
       "role_hint": "suspect",
       "role_hint_confidence": 0.738,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O9",
@@ -446,7 +457,8 @@
       "appearance": "stocky, yellow t-shirt, khaki cap",
       "role_hint": "unknown",
       "role_hint_confidence": 0.253,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O26",
@@ -466,7 +478,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.761,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O7",
@@ -551,7 +564,11 @@
         0.009
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.917
+      "role_hint_confidence": 0.917,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O25",
@@ -572,7 +589,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.94,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O12",
@@ -657,7 +675,8 @@
       ],
       "role_hint": "unknown",
       "role_hint_confidence": 0.333,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O15",
@@ -742,7 +761,8 @@
       ],
       "role_hint": "unknown",
       "role_hint_confidence": 0.258,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O17",
@@ -760,7 +780,8 @@
       "appearance": "stocky, yellow t-shirt, khaki cap",
       "role_hint": "unknown",
       "role_hint_confidence": 0.43,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O20",
@@ -779,7 +800,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.712,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O19",
@@ -864,7 +886,11 @@
         -0.1717
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.42
+      "role_hint_confidence": 0.42,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O18",
@@ -949,7 +975,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.902,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O27",
@@ -969,7 +996,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.909,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O21",
@@ -988,7 +1016,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.912,
-      "action": "CONFIRM"
+      "action": "CONFIRM",
+      "time_basis": "explicit"
     }
   ],
   "ground_truth": {
@@ -1191,6 +1220,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "hard",
       "wrong_hint_rate": 0.15,
       "low_hint_rate": 0.15,
@@ -1218,7 +1248,7 @@
         "type": "time_window",
         "fir_value": [
           0,
-          294
+          0
         ],
         "true_value": [
           0,

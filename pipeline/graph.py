@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import logging
 import operator
 import subprocess
@@ -193,6 +194,94 @@ def audio_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     return {"intake_files": [str(out)] if out else []}
 
 
+def enrich_video_observations(case: Dict[str, Any], run_dir: Path) -> Dict[str, Any]:
+    """Add what the video agent knows but leaves out of *_video_obs.json -
+    it is in *_video_log.json (per clip) and people_registry.json:
+
+      action         decisions[].action, as the canonical tag (APPROACH...):
+                     the agent already resolved it; no need to re-guess it
+                     from the wording
+      time_source    decisions[].timestamp_from - "verified_clock" when it
+                     saw the burned-in clock tick (Timeline trusts it more)
+      video_flags    decisions[].flags (timestamp_unreadable, unidentifiable...)
+      identifiable   decisions[].identifiable - if False the person's label
+                     and look are NOT identity evidence (no appearance set)
+      appearance     decisions[].person, this clip's description (else the
+                     registry's per-label one)
+      footage_quality / footage_issue / camera_view / camera_label /
+      unresolved_checks - from the clip's quality metrics and final answer
+
+    Role: the guess becomes role_hint (see video_intake_node)."""
+    from shared import ACTION_NAME_TO_TAG
+    case_id = case.get("case_id", "")
+    log_path = run_dir / f"{case_id}_video_log.json"
+    reg_path = run_dir / "people_registry.json"
+    clips = json.loads(log_path.read_text(encoding="utf-8")).get("clips", []) if log_path.exists() else []
+    people = json.loads(reg_path.read_text(encoding="utf-8")) if reg_path.exists() else {}
+    decision, clip_of = {}, {}
+    for clip in clips:
+        for d in clip.get("decisions", []):
+            decision[d.get("obs_id")] = d
+            clip_of[d.get("obs_id")] = clip
+    # An observation with no decision under its own id (CASE_ATM_010's log says
+    # O6 / O17b where the observation file says O17 / O17b): find the clip that
+    # mentions its base id anywhere and take the decision in its position there
+    # (O17 -> 1st, O17b -> 2nd), instead of losing the action, clock and look.
+    def _base(oid):
+        m = re.match(r"^([A-Z]+\d+)([a-z]?)$", str(oid or ""))
+        return (m.group(1), ord(m.group(2)) - ord("a") + 1 if m.group(2) else 0) if m else (oid, 0)
+    for obs in case.get("observations", []):
+        oid = obs.get("obs_id")
+        if oid in decision:
+            continue
+        base, pos = _base(oid)
+        for clip in clips:
+            ds = clip.get("decisions", [])
+            if pos < len(ds) and base in {_base(x)[0] for x in clip.get("obs_ids", []) + [d.get("obs_id") for d in ds]}:
+                log.warning("Video log %s: observation %s paired with decision %s by position",
+                            clip.get("clip"), oid, ds[pos].get("obs_id"))
+                decision[oid], clip_of[oid] = ds[pos], clip
+                break
+    for obs in case.get("observations", []):
+        obs["role_hint"] = obs.get("role", "unknown")
+        obs["role"] = "unknown"
+        obs["extraction_status"] = "unverified"
+        d, clip = decision.get(obs.get("obs_id"), {}), clip_of.get(obs.get("obs_id"), {})
+        fa = clip.get("final_answer") or {}
+        identifiable = d.get("identifiable", people.get(obs.get("entity", ""), {}).get("identifiable", True))
+        obs["identifiable"] = bool(identifiable)
+        if d.get("co_entities"):
+            # a group act (two people leaving together) is one observation;
+            # the others in the group, for head-count checks
+            obs["co_entities"] = list(d["co_entities"])
+        tag = ACTION_NAME_TO_TAG.get(str(d.get("action") or ""))
+        if tag:
+            obs["action"] = tag
+        # The agent's role comes from the action it recognised (observe_exit
+        # -> witness), so it is a usable hint when that action was resolved;
+        # without a confidence ER ignored it and every camera entity's role
+        # came out "unknown".
+        obs["role_hint_confidence"] = 0.75 if tag else 0.5
+        if d.get("timestamp_from"):
+            obs["time_source"] = d["timestamp_from"]
+        if d.get("flags"):
+            obs["video_flags"] = list(d["flags"])
+        description = d.get("person") or people.get(obs.get("entity", ""), {}).get("appearance")
+        if identifiable and description:
+            obs["appearance"] = description
+        if clip.get("quality"):
+            obs["footage_quality"] = clip["quality"].get("score")
+        if clip.get("footage_issue") or fa.get("footage_issue"):
+            obs["footage_issue"] = clip.get("footage_issue") or fa.get("footage_issue")
+        if fa.get("camera_view"):
+            obs["camera_view"] = fa["camera_view"]
+        if fa.get("overlay_camera_label"):
+            obs["camera_label"] = fa["overlay_camera_label"]
+        if clip.get("unresolved_checks"):
+            obs["unresolved_checks"] = list(clip["unresolved_checks"])
+    return case
+
+
 def video_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     """Wired in but never selected unless enable_video is set: the video
     agent is unverified (one matched observation in its own evaluation).
@@ -211,18 +300,7 @@ def video_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     if rc != 0 or not src.exists():
         log.warning("video agent failed (exit %s) - continuing without video evidence.", rc)
         return {"intake_files": []}
-    case = json.loads(src.read_text(encoding="utf-8"))
-    # The agent's people registry describes each Person_NN it labelled; ER
-    # compares that `appearance` with other evidence as identity evidence.
-    reg_path = src.parent / "people_registry.json"
-    people = json.loads(reg_path.read_text(encoding="utf-8")) if reg_path.exists() else {}
-    for obs in case.get("observations", []):
-        obs["role_hint"] = obs.get("role", "unknown")
-        obs["role"] = "unknown"
-        obs["extraction_status"] = "unverified"
-        person = people.get(obs.get("entity", ""), {})
-        if person.get("identifiable", True) and person.get("appearance"):
-            obs["appearance"] = person["appearance"]
+    case = enrich_video_observations(json.loads(src.read_text(encoding="utf-8")), src.parent)
     out = _staging(state) / f"{case_id}__video_obs_only.json"
     out.write_text(json.dumps(case, indent=2, ensure_ascii=False), encoding="utf-8")
     return {"intake_files": [str(out)]}

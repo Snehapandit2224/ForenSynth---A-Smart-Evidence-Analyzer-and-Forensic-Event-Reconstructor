@@ -7,11 +7,11 @@
     "location": "MG Road ATM Booth",
     "time_window": [
       0,
-      375
+      0
     ],
     "description": "Complainant reports being coerced at an ATM by 3 unknown assailant(s) who acted in concert. One suspect operated the machine while the other blocked the entrance. 2 independent witness(es) observed the incident.",
     "roles": {
-      "suspect": 2,
+      "suspect": 3,
       "witness": 2
     }
   },
@@ -30,7 +30,8 @@
       "appearance": "short, maroon sweater",
       "role_hint": "suspect",
       "role_hint_confidence": 0.791,
-      "action": "COMMUNICATE"
+      "action": "COMMUNICATE",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O12",
@@ -46,7 +47,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.724,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O13",
@@ -63,7 +65,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.871,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O14",
@@ -80,7 +83,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.706,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O2",
@@ -161,7 +165,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.845,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O3",
@@ -176,7 +181,8 @@
       "confidence": 0.579,
       "appearance": "thin, grey sweater",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.731
+      "role_hint_confidence": 0.731,
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O5",
@@ -191,7 +197,8 @@
       "confidence": 0.566,
       "extraction_status": "undiarized",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.799
+      "role_hint_confidence": 0.799,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O4",
@@ -207,7 +214,8 @@
       "appearance": "short, red sweater",
       "role_hint": "suspect",
       "role_hint_confidence": 0.821,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O6",
@@ -223,7 +231,8 @@
       "appearance": "thin, grey sweater",
       "role_hint": "suspect",
       "role_hint_confidence": 0.765,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O15",
@@ -240,7 +249,8 @@
       "reported_by": "witness_statement_SPEAKER_01",
       "role_hint": "suspect",
       "role_hint_confidence": 0.873,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O16",
@@ -257,7 +267,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.845,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O7",
@@ -273,7 +284,8 @@
       "appearance": "short, maroon sweater",
       "role_hint": "suspect",
       "role_hint_confidence": 0.762,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O10",
@@ -354,7 +366,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.759,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O9",
@@ -370,7 +383,8 @@
       "appearance": "short, maroon sweater",
       "role_hint": "suspect",
       "role_hint_confidence": 0.788,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O17",
@@ -387,7 +401,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.744,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O11",
@@ -403,7 +418,8 @@
       "appearance": "thin, grey sweater",
       "role_hint": "victim",
       "role_hint_confidence": 0.771,
-      "action": "FLEE"
+      "action": "FLEE",
+      "time_source": "verified_clock"
     }
   ]
 }

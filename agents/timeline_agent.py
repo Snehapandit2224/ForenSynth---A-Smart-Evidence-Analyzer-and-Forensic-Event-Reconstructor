@@ -34,7 +34,7 @@ from shared import (
     normalize_alias, normalize_modality, normalize_role, clean_content,
     extract_action_tags, parse_timestamp, epoch_to_iso,
     utc_now_iso, clamp, content_action_keywords, short_summary, deterministic_tiebreak_key,
-    ACTION_TAG_VOCABULARY,
+    ACTION_TAG_VOCABULARY, time_reliability,
 )
 
 try:
@@ -80,6 +80,31 @@ SAME_MOMENT_WINDOW_SEC: int = 60
 # Tags that describe how something was learned, not what happened - two
 # people both "observing" at the same second are not the same moment.
 _FRAME_TAGS = frozenset({"OBSERVE", "REPORT", "COMMUNICATE", "CONFIRM"})
+# Acts that are one act told different ways: a camera's "flee" and a
+# message's "done, moving" are the same leaving; "keeping watch" and
+# "hanging around" the same waiting.
+_ACT_FAMILY = {"EXIT": "leave", "FLEE": "leave", "LOITER": "wait", "WATCH": "wait",
+               "APPROACH": "approach", "NAVIGATE": "approach"}
+
+
+def _same_act(a, b, gap: float) -> List[str]:
+    """What makes two events of different entities one moment ([] if
+    nothing): the same act (or act family - FLEE/EXIT), or - only across
+    modalities and within SIMULTANEOUS_WINDOW_SEC - both observing: a
+    bystander on camera and a caller saying "I saw them leave" seconds later
+    may be one witness. Two observers in the same modality (two callers)
+    are not linked: two different people watching is the common case."""
+    ta, tb = set(a.action_tags) - _FRAME_TAGS, set(b.action_tags) - _FRAME_TAGS
+    shared = ta & tb
+    if shared:
+        return sorted(shared)
+    fam = {_ACT_FAMILY[t] for t in ta if t in _ACT_FAMILY} & {_ACT_FAMILY[t] for t in tb if t in _ACT_FAMILY}
+    if fam:
+        return sorted(f"{x} (same act, told differently)" for x in fam)
+    if (not ta and not tb and "OBSERVE" in a.action_tags and "OBSERVE" in b.action_tags
+            and a.modality != b.modality and gap <= SIMULTANEOUS_WINDOW_SEC):
+        return ["OBSERVE (one onlooker, seen and heard)"]
+    return []
 TEMPORAL_CONFIDENCE_DECAY: float = 0.05  # penalty per hour of gap uncertainty
 
 # FIX: same-location causal check used to require an EXACT location_key
@@ -223,6 +248,17 @@ class RawObservation:
     _ts_epoch:       float = field(default=0.0, repr=False)
     location_key:    str   = ""
     action_tags:     List[str] = field(default_factory=list)
+    # A witness describing someone else's act (the observation's reported_by
+    # is not its entity): its time is the witness's estimate, not a clock.
+    reported:        bool  = False
+    # Field-agent extras (see JsonObservationRepository): how far the
+    # timestamp can be trusted (shared.time_reliability), the extractor's
+    # verdict that this is a denial, and its verbatim evidence quote.
+    time_reliability: float = 1.0
+    denial:          bool  = False
+    evidence:        str   = ""
+    # The message / recording it came from (text: source_doc, audio: file).
+    record:          str   = ""
 
 
 # -- Canonical entity from ER ---------------------------------------------------
@@ -273,6 +309,12 @@ class TimelineEvent:
     # Events of OTHER entities describing the same moment (see
     # _link_same_moment) - corroboration, not a claim they are one person.
     same_moment_as: List[str] = field(default_factory=list)
+
+    # The verbatim quotes (text / audio extractors' `evidence`) behind this
+    # event, for the explainability report.
+    evidence_quotes: List[str] = field(default_factory=list)
+    # every supporting observation is one the extractor marked a denial
+    denial: bool = False
 
     # Versioning hook
     version:       str = "V1"
@@ -387,6 +429,7 @@ class TimelineVersion:
                 "conflict_note": ev.conflict_note,
                 "reasoning":     ev.reasoning,
                 "same_moment_as": ev.same_moment_as,
+                "evidence_quotes": ev.evidence_quotes,
                 "version":       ev.version,
             }
 
@@ -933,6 +976,37 @@ class ClusterableObservation:
     modality: str
     confidence: float
     action_tags: Set[str] = field(default_factory=set)
+    reported: bool = False
+    time_reliability: float = 1.0
+    denial: bool = False
+    record: str = ""
+
+
+def _event_time(members: List["ClusterableObservation"]) -> float:
+    """
+    An event's time, from its most reliable timed observations.
+
+    It used to be the confidence-weighted mean of every member, so once a
+    witness's report ("he came out of the booth fast" - timed by the
+    witness's own sense of time, often a minute off) joined a camera's
+    exit, the estimate pulled the event away from the camera clock.
+
+    Now the members are ranked - the person's own observation before a
+    report about them, then by modality reliability (video > audio > text) -
+    and only the best-ranked tier is averaged (by confidence). Undated
+    members never count.
+    """
+    timed = [m for m in members if m.ts_epoch > 0]
+    if not timed:
+        return 0.0
+    # a verified clock / stated time beats an inferred one or a document date
+    rank = lambda m: (m.reported, -round(m.time_reliability, 2), -_modality_reliability(m.modality))
+    best = min(rank(m) for m in timed)
+    tier = [m for m in timed if rank(m) == best]
+    weight = sum(m.confidence for m in tier)
+    if weight <= 0:
+        return sum(m.ts_epoch for m in tier) / len(tier)
+    return sum(m.ts_epoch * m.confidence for m in tier) / weight
 
 
 @dataclass
@@ -962,6 +1036,15 @@ def _is_denial(content: str) -> bool:
     return bool(_DENIAL.search(content or ""))
 
 
+def _separate_statements(a: ClusterableObservation, b: ClusterableObservation) -> bool:
+    """Two different messages or recordings by the same person are two
+    statements about two moments ("Entered." then, 20s later, "Reader
+    fitted.") - unlike a camera and a witness seeing one instant, they do not
+    become one event just for being close in time."""
+    return (a.modality == b.modality and a.modality in ("text", "audio")
+            and bool(a.record) and bool(b.record) and a.record != b.record)
+
+
 def compute_compatibility(a: ClusterableObservation, b: ClusterableObservation) -> float:
     """
     Compatibility score in [0, 1] between two SAME-ENTITY observations,
@@ -988,7 +1071,7 @@ def compute_compatibility(a: ClusterableObservation, b: ClusterableObservation) 
 
     # A denial is a statement about the act, not another sighting of it:
     # "I never went inside" must not become part of the entry it denies.
-    if _is_denial(a.content) != _is_denial(b.content):
+    if (a.denial or _is_denial(a.content)) != (b.denial or _is_denial(b.content)):
         return 0.0
 
     # Untagged is "unknown action", not "different action": one side without
@@ -998,10 +1081,21 @@ def compute_compatibility(a: ClusterableObservation, b: ClusterableObservation) 
     # Only near-simultaneous ones, though: a person's consecutive acts (walk
     # up, then go in, 40s later) must not blur into one event because one of
     # them went untagged.
-    shared_tags = a.action_tags & b.action_tags
+    # Frame tags (communicate / report / observe / confirm) say how something
+    # was conveyed, not what happened: one person's "On my way", "Cash out
+    # now" and "Done here" are all COMMUNICATE, two minutes apart, and are
+    # three acts - sharing a frame tag counts like having no tag at all.
+    tags_a, tags_b = a.action_tags - _FRAME_TAGS, b.action_tags - _FRAME_TAGS
+    if _separate_statements(a, b) and not (tags_a & tags_b):
+        # two messages / recordings are one event only when they report the
+        # same act - a second apart at the same place ("Done here." then
+        # "Reader fitted. No one saw.") time and place alone used to merge them
+        return 0.0
+    shared_tags = tags_a & tags_b
     if shared_tags:
         action_score = 1.0
-    elif (not a.action_tags or not b.action_tags) and gap is not None and gap <= SIMULTANEOUS_WINDOW_SEC:
+    elif ((not tags_a or not tags_b) and gap is not None and gap <= SIMULTANEOUS_WINDOW_SEC
+          and not _separate_statements(a, b)):
         action_score = 0.5
     else:
         action_score = 0.0
@@ -1070,11 +1164,27 @@ def cluster_observations(
         uf = _UnionFind(ids)
         by_id = {o.obs_id: o for o in group}
 
+        # Timed observations group first. An undated one then joins the ONE
+        # group it fits best: grouping is transitive, and an undated clip
+        # that fit both a 10:00 camera exit and a 10:04 witness report used
+        # to chain them into a single event four minutes wide - the time
+        # gate can't stop a pair where one side has no time.
         for i in range(len(group)):
             for j in range(i + 1, len(group)):
+                if (group[i].ts_epoch > 0) != (group[j].ts_epoch > 0):
+                    continue
                 score = compute_compatibility(group[i], group[j])
                 if score >= threshold:
                     uf.union(group[i].obs_id, group[j].obs_id)
+        for u in (o for o in group if o.ts_epoch <= 0):
+            best, best_score = None, threshold
+            for o in group:
+                if o.ts_epoch > 0:
+                    score = compute_compatibility(u, o)
+                    if score >= best_score:
+                        best, best_score = o, score
+            if best is not None:
+                uf.union(u.obs_id, best.obs_id)
 
         components: Dict[str, List[str]] = {}
         for obs_id in ids:
@@ -1083,14 +1193,9 @@ def cluster_observations(
 
         for root, member_ids in sorted(components.items()):
             members = [by_id[i] for i in sorted(member_ids)]
-            valid_epochs = [m.ts_epoch for m in members if m.ts_epoch > 0]
-            confidences = [m.confidence for m in members]
-            rep_ts = (
-                sum(e * c for e, c in zip(valid_epochs, confidences[: len(valid_epochs)]))
-                / sum(confidences[: len(valid_epochs)])
-                if valid_epochs and sum(confidences[: len(valid_epochs)]) > 0
-                else (valid_epochs[0] if valid_epochs else 0.0)
-            )
+            # (the old weighted mean also paired timestamps with the wrong
+            # confidences whenever a member was undated - see _event_time)
+            rep_ts = _event_time(members)
             loc_key = next((m.location_key for m in members if m.location_key), "")
             action_tags: Set[str] = set()
             for m in members:
@@ -2174,10 +2279,25 @@ class JsonObservationRepository(ObservationRepository):
             obs = self._obs.get(str(item.get("obs_id", "")).strip())
             if obs is None:
                 continue
+            obs.reported = bool(item.get("reported_by")) and str(item["reported_by"]) != obs.entity
+            obs.time_reliability = time_reliability(item)
+            obs.denial = bool({"denial", "alibi"} & set(item.get("tags") or []))
+            obs.evidence = str(item.get("evidence") or "")
+            obs.record = str(item.get("source_doc") or item.get("audio_file") or "")
             action = str(item.get("action") or "").strip().upper()
-            if action in ACTION_TAG_VOCABULARY:
+            if obs.denial:
+                # a denial asserts the act did NOT happen: "I departed long
+                # before" must not become an EXIT
+                obs.action_tags = []
+            elif action in ("REPORT", "COMMUNICATE", "CONFIRM"):
+                # a message's frame says how it was conveyed: keep reading the
+                # words for what the sender did ("Reader fitted." -> TAMPER).
+                # Not OBSERVE: in "watching two people leave" the leaving is
+                # theirs, not the observer's.
+                obs.action_tags = sorted({action} | (set(obs.action_tags) - _FRAME_TAGS))
+            elif action in ACTION_TAG_VOCABULARY:
                 obs.action_tags = [action]
-            elif item.get("reported_by") and str(item["reported_by"]) != obs.entity:
+            elif obs.reported:
                 obs.action_tags = [t for t in obs.action_tags if t not in ("OBSERVE", "REPORT")]
 
 
@@ -2593,6 +2713,7 @@ class TimelineAgent:
         result["llm_calls_made"] = getattr(self._llm, "calls_made", 0)
         result["excluded_edges"] = excluded_applied
         result["same_moment_links"] = same_moment_links
+        result["moments"] = self._build_moments(events)
 
         classification, reason = self._classify_output(
             events, unresolved_temporal, unresolved_causal, conflicts_summary
@@ -2622,9 +2743,10 @@ class TimelineAgent:
                 gap = b.ts_epoch - a.ts_epoch
                 if gap > SAME_MOMENT_WINDOW_SEC:
                     break
-                if a.entity_id == b.entity_id or _is_denial(a.content) or _is_denial(b.content):
+                if a.entity_id == b.entity_id or _is_denial(a.content) or _is_denial(b.content) \
+                        or a.denial or b.denial:
                     continue
-                shared = (set(a.action_tags) & set(b.action_tags)) - _FRAME_TAGS
+                shared = _same_act(a, b, gap)
                 if not shared:
                     continue
                 a.same_moment_as.append(b.event_id)
@@ -2632,6 +2754,50 @@ class TimelineAgent:
                 links.append({"events": [a.event_id, b.event_id], "entities": [a.entity_id, b.entity_id],
                               "gap_sec": round(gap, 1), "shared_actions": sorted(shared)})
         return links
+
+    @staticmethod
+    def _build_moments(events: List[TimelineEvent]) -> List[Dict[str, Any]]:
+        """The timeline as MOMENTS: events joined by same-moment links (through
+        other events too) are one moment with every source that shows it - a
+        camera exit, the caller who described it and the "Done, moving"
+        message. People stay separate inside it (no identity is claimed);
+        the moment takes the time of its most trustworthy record (camera
+        clock first). Unlinked events are moments of their own."""
+        by_id = {e.event_id: e for e in events}
+        parent = {e.event_id: e.event_id for e in events}
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+        for e in events:
+            for other in e.same_moment_as:
+                if other in parent:
+                    parent[find(e.event_id)] = find(other)
+        groups: Dict[str, List[TimelineEvent]] = {}
+        for e in events:
+            groups.setdefault(find(e.event_id), []).append(e)
+        moments = []
+        for members in groups.values():
+            anchor = max(members, key=lambda e: (e.ts_epoch > 0, _modality_reliability(e.modality), e.confidence))
+            moments.append({
+                "timestamp": anchor.timestamp,
+                "ts_epoch": anchor.ts_epoch,
+                "event_ids": [e.event_id for e in members],
+                "obs_ids": [o for e in members for o in e.obs_ids],
+                "entities": sorted({e.entity_id for e in members}),
+                "sources": sorted({e.primary_alias for e in members}),
+                "modalities": sorted({m for e in members for m in str(e.modality).split(",") if m}),
+                "action_tags": sorted({t for e in members for t in e.action_tags}),
+                "content": anchor.content,
+                "confidence": round(max(e.confidence for e in members), 3),
+                "denial": all(e.denial for e in members),
+            })
+        moments.sort(key=lambda m: (m["ts_epoch"] <= 0, m["ts_epoch"], m["event_ids"][0]))
+        for i, m in enumerate(moments, 1):
+            m["moment_id"] = f"M{i}"
+        return moments
 
     def _classify_output(
         self,
@@ -2778,7 +2944,9 @@ class TimelineAgent:
                 obs.obs_id in conflict_obs_ids
                 or (ent is not None and ent.entity_id in conflict_entity_ids)
             )
-            temporal_certainty = 1.0 if ts_epoch > 0 else 0.50
+            # how far the time can be trusted (verified clock, stated time,
+            # or only the document's date), not just whether there is one
+            temporal_certainty = max(obs.time_reliability, 0.5) if ts_epoch > 0 else 0.50
             conflict_penalty = WEIGHT_CONFLICT_PENALTY if in_conflict else 0.0
 
             confidence = clamp(
@@ -2813,6 +2981,8 @@ class TimelineAgent:
                          else (ent.role if ent else "unknown")),
                 "in_conflict": in_conflict,
                 "action_tags": action_tags,
+                "evidence": obs.evidence,
+                "denial": obs.denial,
             }
 
             clusterable.append(ClusterableObservation(
@@ -2824,6 +2994,10 @@ class TimelineAgent:
                 modality=obs.modality,
                 confidence=confidence,
                 action_tags=action_tags,
+                reported=obs.reported,
+                time_reliability=obs.time_reliability,
+                denial=obs.denial,
+                record=obs.record,
             ))
 
         # -- Stage 4/5: cluster + reconstruct -----------------------------------
@@ -2908,6 +3082,8 @@ class TimelineAgent:
                 ),
                 reasoning=reasoning,
                 action_tags=sorted(ec.action_tags),
+                evidence_quotes=list(dict.fromkeys(m["evidence"] for m in members if m["evidence"])),
+                denial=all(m["denial"] for m in members),
                 version="V1",
             ))
 

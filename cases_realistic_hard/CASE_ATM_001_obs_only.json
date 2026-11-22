@@ -7,12 +7,12 @@
     "location": "Indiranagar HDFC ATM",
     "time_window": [
       0,
-      528
+      0
     ],
     "description": "Deponent reports that 1 accused person(s) were seen pacing near the ATM kiosk for an extended duration before accessing the card reader. 1 bystander(s) noted the suspicious conduct and have filed statements.",
     "roles": {
       "suspect": 2,
-      "witness": 2
+      "witness": 1
     }
   },
   "observations": [
@@ -30,7 +30,8 @@
       "appearance": "thin, grey sweater, helmet",
       "role_hint": "witness",
       "role_hint_confidence": 0.805,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O5",
@@ -46,7 +47,8 @@
       "appearance": "thin, white sweater, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.561,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O6",
@@ -61,7 +63,8 @@
       "confidence": 0.611,
       "appearance": "short, white jacket, red cap",
       "role_hint": "witness",
-      "role_hint_confidence": 0.825
+      "role_hint_confidence": 0.825,
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O1",
@@ -77,7 +80,8 @@
       "appearance": "thin, white sweater, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.361,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O9",
@@ -94,7 +98,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.728,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O10",
@@ -111,7 +116,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.882,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O11",
@@ -128,7 +134,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.709,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O3",
@@ -144,7 +151,8 @@
       "appearance": "thin, white sweater, helmet",
       "role_hint": "suspect",
       "role_hint_confidence": 0.797,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O12",
@@ -161,7 +169,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.86,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O13",
@@ -176,7 +185,8 @@
       "confidence": 0.647,
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.888
+      "role_hint_confidence": 0.888,
+      "time_basis": "relative"
     },
     {
       "obs_id": "O7",
@@ -256,7 +266,11 @@
         -0.1447
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.71
+      "role_hint_confidence": 0.71,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O8",
@@ -271,7 +285,8 @@
       "confidence": 0.706,
       "role_hint": "witness",
       "role_hint_confidence": 0.737,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "explicit"
     }
   ]
 }

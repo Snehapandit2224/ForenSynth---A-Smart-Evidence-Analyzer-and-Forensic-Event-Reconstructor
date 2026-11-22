@@ -6,13 +6,13 @@
     "crime_type": "cash machine theft",
     "location": "MG Road ATM Booth",
     "time_window": [
-      671,
-      1461
+      761,
+      1551
     ],
     "description": "A single individual was observed entering an ATM booth and conducting a transaction under suspicious circumstances. 2 bystander(s) reported unusual behaviour before and after the incident.",
     "roles": {
       "suspect": 3,
-      "witness": 3
+      "witness": 1
     }
   },
   "observations": [
@@ -100,7 +100,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.793,
-      "action": "NAVIGATE"
+      "action": "NAVIGATE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O2",
@@ -184,7 +185,8 @@
         0.1995
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.583
+      "role_hint_confidence": 0.583,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O8",
@@ -205,7 +207,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.736,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O9",
@@ -226,7 +229,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "witness",
       "role_hint_confidence": 0.788,
-      "action": "NAVIGATE"
+      "action": "NAVIGATE",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O10",
@@ -247,7 +251,8 @@
       "reported_by": "witness_statement_SPEAKER_01",
       "role_hint": "suspect",
       "role_hint_confidence": 0.772,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O11",
@@ -268,7 +273,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.733,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O3",
@@ -288,7 +294,11 @@
       ],
       "extraction_status": "undiarized",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.782
+      "role_hint_confidence": 0.782,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O5",
@@ -309,7 +319,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.844,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O12",
@@ -330,7 +341,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "unknown",
       "role_hint_confidence": 0.397,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O6",
@@ -415,7 +427,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.85,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -499,7 +512,8 @@
         0.0027
       ],
       "role_hint": "witness",
-      "role_hint_confidence": 0.791
+      "role_hint_confidence": 0.791,
+      "time_basis": "explicit"
     }
   ],
   "ground_truth": {
@@ -646,6 +660,7 @@
       "mixed_timezones": true,
       "fir_errors": true,
       "action_labels": true,
+      "agent_metadata": true,
       "difficulty": "hard",
       "wrong_hint_rate": 0.15,
       "low_hint_rate": 0.15,
@@ -671,14 +686,14 @@
     "fir_errors": [
       {
         "type": "witness_count",
-        "fir_value": 3,
+        "fir_value": 1,
         "true_value": 2
       },
       {
         "type": "time_window",
         "fir_value": [
-          671,
-          1461
+          761,
+          1551
         ],
         "true_value": [
           0,

@@ -60,6 +60,21 @@ Metrics on the matched pairs:
             links to the matched event as one moment (same_moment_as), nor
             events made only of denials. Both versions are reported; the
             verdict uses the raw F1.
+  event_purity / n_conflated / precision_pure / f1_pure - an event built
+            from observations of SEVERAL true events (one person's
+            approach, withdrawal and exit messages fused into one) still
+            "matches" its majority event, and the other true events can be
+            matched through other observations, so plain precision and
+            recall never see the fusion. An event's purity is the share of
+            its observations that belong to its majority event;
+            precision_pure counts each matched event by its purity
+            (event_purity is the mean over all events, n_conflated the
+            events below 1.0). Reported alongside; the verdict is unchanged.
+  moment_precision / moment_recall / moment_f1 / moment_time_err_sec - the
+            same matching on the timeline's MOMENTS (events joined by
+            same-moment links count once: a camera exit, the caller who
+            described it and the sender's "Done, moving" are one moment).
+            Moments made only of denials are not counted as claims.
 
 Usage:
     python pipeline/evaluate.py --case CASE_ATM_001 \\
@@ -212,6 +227,25 @@ def _match_by_provenance(gt_events, pipeline_events, obs_to_gt_event):
     return pairs, covered, missed, unobservable, duplicates
 
 
+def _moment_scores(moments, gt_events, obs_to_gt_event, denial_obs) -> Dict[str, Any]:
+    """Precision / recall / F1 over the timeline's moments (see the module
+    docstring). Empty when the timeline has no moments or no provenance."""
+    if not moments or not obs_to_gt_event:
+        return {"moment_precision": None, "moment_recall": None, "moment_f1": None,
+                "moment_time_err_sec": None, "n_moments": len(moments or [])}
+    claims = [m for m in moments if not (m.get("obs_ids") and all(o in denial_obs for o in m["obs_ids"]))]
+    pairs, covered, _missed, _unobs, _dups = _match_by_provenance(gt_events, claims, obs_to_gt_event)
+    n_gt = len(gt_events)
+    recall = (len(pairs) + 0.5 * len(covered)) / n_gt if n_gt else 0.0
+    precision = len(pairs) / len(claims) if claims else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    deltas = [d for d in (_delta(_parse_ts(m.get("timestamp", "")), _parse_ts(g.get("timestamp", "")))
+                          for g, m in pairs) if d is not None]
+    return {"moment_precision": round(precision, 4), "moment_recall": round(recall, 4),
+            "moment_f1": round(f1, 4), "n_moments": len(moments),
+            "moment_time_err_sec": round(sum(deltas) / len(deltas), 2) if deltas else None}
+
+
 def _er_entity_identity(pipeline_events, obs_truth) -> Dict[str, str]:
     """ER entity id -> the person most of its observations belong to."""
     votes: Dict[str, Counter] = {}
@@ -326,6 +360,13 @@ def evaluate_case(
                 "pipeline_confidence":  p.get("confidence"),
             })
 
+        purity = []
+        for p in pipeline_events:
+            c = Counter(obs_to_gt_event[o] for o in p.get("obs_ids") or [] if o in obs_to_gt_event)
+            purity.append(max(c.values()) / sum(c.values()) if c else None)
+        purity_of = {id(p): pu for p, pu in zip(pipeline_events, purity)}
+        known_purity = [pu for pu in purity if pu is not None]
+
         n_gt, n_pipeline, n_matched = len(gt_events), len(pipeline_events), len(rows)
         n_covered = len(covered)
         n_observable = n_gt - len(unobservable)
@@ -335,6 +376,9 @@ def evaluate_case(
         f1         = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
         n_claims   = n_pipeline - n_linked - n_denial
         precision_linked = (n_matched / n_claims) if n_claims else 0.0
+        matched_purity = sum(purity_of.get(id(p)) or 1.0 for _, p in pairs) if obs_to_gt_event else float(n_matched)
+        precision_pure = (matched_purity / n_pipeline) if n_pipeline else 0.0
+        f1_pure = (2 * precision_pure * recall / (precision_pure + recall)) if (precision_pure + recall) else 0.0
         f1_linked  = (2 * precision_linked * recall / (precision_linked + recall))             if (precision_linked + recall) else 0.0
 
         action_acc = (sum(r["action_match"] for r in rows) / n_matched) if n_matched else 0.0
@@ -368,6 +412,11 @@ def evaluate_case(
             "entity_accuracy":           round(entity_acc, 4),
             "precision":                 round(precision, 4),
             "f1_score":                  round(f1, 4),
+            **_moment_scores(tl_data.get("moments"), gt_events, obs_to_gt_event, denial_obs),
+            "event_purity":              round(sum(known_purity) / len(known_purity), 4) if known_purity else None,
+            "n_conflated":               sum(1 for pu in known_purity if pu < 1.0),
+            "precision_pure":            round(precision_pure, 4),
+            "f1_pure":                   round(f1_pure, 4),
             "confidence_calibration": {
                 "correlation": None if confidence_corr is None else round(confidence_corr, 4),
                 "n_samples":   len(conf_pairs),

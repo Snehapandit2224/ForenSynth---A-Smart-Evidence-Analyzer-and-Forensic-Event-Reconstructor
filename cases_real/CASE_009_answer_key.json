@@ -1,0 +1,94 @@
+{
+  "case_id": "CASE_009",
+  "about": "Hand-written answer key for the REAL evidence of case 009 (Evidence Generation/Cases/Case_009): one CCTV clip, five audio recordings, five text documents. HELD OUT: written before any pipeline run on this evidence was looked at. Events and people keep the generator's ids (cases/CASE_ATM_009.json); each evidence item lists everyone in it, the part they play, and the event they show.",
+  "built_from": {
+    "audio": "transcripts from the audio agent's run (Whisper base) and the manifests (start time, source, location). Clip 5 is the re-recorded version (2026-11-22, a different voice from the suspect's).",
+    "text": "Text/O*.json (author, channel, timestamp, text)",
+    "video": "the video agent's own log (agents/field_agents/video_agent/runs/CASE_ATM_009/CASE_ATM_009_video_log.json) - NOT checked against the clip by a person. Scoring the video agent against this part cannot catch the video agent's own mistakes.",
+    "voices": "voice prints computed directly on each speaker's speech (pyannote wespeaker-resnet34): clips 1-4 score 0.70-0.81 against each other, the re-recorded clip 5 scores 0.03-0.12 against all of them - a different speaker. Clips 1-4 have only 1.5-3.2 s of speech each, so their mutual match is weak evidence; it is consistent with one speaker, not proof."
+  },
+  "people": {
+    "suspect_1": {
+      "role": "suspect",
+      "description": "the narrator: author of every text (report_20) and the low male-range voice of audio clips 1-4; in the footage, presumably one of the two people leaving",
+      "match_appearance": "black cap, black hoodie, dark trousers, black shoes",
+      "identity_note": "Text author <-> voice: linked only by the content continuing one story (on my way / I can see the ATM / in the enclosure / inside), not by identity evidence. Voice clips 1-4: same voice (rough check). Voice/text <-> either person on camera: no evidence. Which of the two people leaving is suspect_1 cannot be told from the evidence; this key assigns the one in the black cap by convention."
+    },
+    "suspect_2": {
+      "role": "suspect",
+      "description": "the second person leaving with suspect_1: grey long-sleeve shirt, dark trousers, black backpack",
+      "match_appearance": "grey long-sleeve shirt, dark trousers, black backpack",
+      "identity_note": "Appears only in the footage (video agent's Person_42, a co-person with no observation of its own). FIR lists two suspects."
+    },
+    "witness_1": {
+      "role": "witness",
+      "description": "bystander on the pavement in a light blue shirt and dark trousers, watching the two leave; and the voice of audio clip 5 (a different speaker from clips 1-4)",
+      "match_appearance": "light blue shirt, dark trousers",
+      "identity_note": "Bystander on camera <-> clip-5 speaker: linked only by what they describe (two people leaving in a hurry, seconds apart), not by identity evidence."
+    }
+  },
+  "events": [
+    {"event_id": "E1", "person": "suspect_1", "action": "approach_atm",  "time": "2024-01-15T10:00:21", "evidenced_by": ["text_O2", "audio1"]},
+    {"event_id": "E2", "person": "suspect_1", "action": "enter_atm",     "time": "2024-01-15T10:00:40", "evidenced_by": ["audio2", "text_O4"]},
+    {"event_id": "E3", "person": "suspect_1", "action": "withdraw_cash", "time": "2024-01-15T10:01:27", "evidenced_by": ["text_O6"]},
+    {"event_id": "E4", "person": "suspect_1", "action": "wait_outside",  "time": "2024-01-15T10:02:01", "evidenced_by": ["audio3", "text_O8"],
+     "note": "Only the narrator's own words; they read as a lookout watching the entrance, which may really be suspect_2's part - the evidence does not say."},
+    {"event_id": "E5", "person": "suspect_1", "action": "exit_atm",      "time": "2024-01-15T10:02:19", "evidenced_by": ["text_O10", "audio4", "clip1"],
+     "note": "The footage shows two people leaving together (suspect_1 and suspect_2). audio4 is a denial about this departure."},
+    {"event_id": "E6", "person": "witness_1", "action": "observe_exit",  "time": "2024-01-15T10:02:48", "evidenced_by": ["clip1", "audio5"]}
+  ],
+  "evidence": {
+    "text_O2":  {"modality": "text", "file": "Text/O2.json", "source_doc": "O2", "channel": "email",
+                 "window": ["2024-01-15T10:00:22", "2024-01-15T10:00:22"], "text": "On my way to the spot now.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E1", "shows": "on the way to the ATM"}]},
+    "text_O4":  {"modality": "text", "file": "Text/O4.json", "source_doc": "O4", "channel": "incident_report",
+                 "window": ["2024-01-15T10:00:48", "2024-01-15T10:00:48"], "text": "Inside. Booth is empty. (forwarded)",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E2", "shows": "inside the booth (forwarded message: its timestamp is less reliable)"}]},
+    "text_O6":  {"modality": "text", "file": "Text/O6.json", "source_doc": "O6", "channel": "incident_report",
+                 "window": ["2024-01-15T10:01:29", "2024-01-15T10:01:29"], "text": "Card working. Cash out now.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E3", "shows": "withdrawing cash"}]},
+    "text_O8":  {"modality": "text", "file": "Text/O8.json", "source_doc": "O8", "channel": "email",
+                 "window": ["2024-01-15T10:02:02", "2024-01-15T10:02:02"], "text": "Nothing suspicious. Continue.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E4", "shows": "keeping watch / giving the all-clear"}]},
+    "text_O10": {"modality": "text", "file": "Text/O10.json", "source_doc": "O10", "channel": "incident_report",
+                 "window": ["2024-01-15T10:02:20", "2024-01-15T10:02:20"], "text": "Done here. Moving.",
+                 "people": [{"person": "suspect_1", "part": "author", "event": "E5", "shows": "leaving"}]},
+    "audio1": {"modality": "audio", "file": "Audio/Case009_Audio_Clip1/Case009_Audio_Clip1.wav", "audio_file": "Case009_Audio_Clip1.wav",
+               "source": "phone_record", "window": ["2024-01-15T10:00:34", "2024-01-15T10:00:36"],
+               "transcript": "I can see the ATM now.",
+               "people": [{"person": "suspect_1", "part": "speaker", "event": "E1", "shows": "approaching, ATM in sight"}]},
+    "audio2": {"modality": "audio", "file": "Audio/Case009_Audio_Clip2/Case009_Audio_Clip2.wav", "audio_file": "Case009_Audio_Clip2.wav",
+               "source": "intercepted_call", "window": ["2024-01-15T10:00:44", "2024-01-15T10:00:46"],
+               "transcript": "In the enclosure now, all good.",
+               "people": [{"person": "suspect_1", "part": "speaker", "event": "E2", "shows": "inside the booth"}]},
+    "audio3": {"modality": "audio", "file": "Audio/Case009_Audio_Clip3/Case009_Audio_Clip3.wav", "audio_file": "Case009_Audio_Clip3.wav",
+               "source": "mic_booth", "window": ["2024-01-15T10:01:52", "2024-01-15T10:01:55"],
+               "transcript": "I've got eyes on the ATM entrance.",
+               "people": [{"person": "suspect_1", "part": "speaker", "event": "E4", "shows": "watching the entrance (recorded by the booth-interior mic)"}]},
+    "audio4": {"modality": "audio", "file": "Audio/Case009_Audio_Clip4/Case009_Audio_Clip4.wav", "audio_file": "Case009_Audio_Clip4.wav",
+               "source": "phone_record", "window": ["2024-01-15T10:02:25", "2024-01-15T10:02:29"],
+               "transcript": "I departed that location long before the time mentioned.",
+               "people": [{"person": "suspect_1", "part": "speaker", "event": "E5", "shows": "a denial: claims to have left long before"}]},
+    "audio5": {"modality": "audio", "file": "Audio/Case009_Audio_Clip5/Case009_Audio_Clip5.wav", "audio_file": "Case009_Audio_Clip5.wav",
+               "source": "phone_record", "window": ["2024-01-15T10:02:49", "2024-01-15T10:02:53"],
+               "transcript": "I noticed them leave the ATM in a hurry.",
+               "people": [{"person": "witness_1", "part": "speaker", "event": "E6", "shows": "a witness describing the two leaving"}]},
+    "clip1": {"modality": "video", "file": "Video/Case009_Clip1.mp4", "camera": "CAM 01",
+              "window": ["2024-01-15T10:02:41", "2024-01-15T10:02:50"], "quality": 0.43,
+              "people": [{"person": "suspect_1", "part": "actor", "event": "E5", "shows": "black cap and hoodie: leaves the ATM area (video agent: flee_scene, Person_76)"},
+                         {"person": "suspect_2", "part": "actor", "event": "E5", "shows": "grey shirt, backpack: leaves together with him (video agent: Person_42, no observation of its own)"},
+                         {"person": "witness_1", "part": "actor", "event": "E6", "shows": "light blue shirt: stays on the pavement watching them go (video agent: observe_exit, Person_30)"}]}
+  },
+  "findings_an_investigator_should_get": [
+    {"id": "departure_denial_contradicted", "kind": "statement vs evidence",
+     "detail": "audio4 (10:02:25) says they left 'long before the time mentioned', in the same voice as clips 1-3, while that narrator's own messages put them at the ATM until 10:02:20 ('Done here. Moving.') and the footage shows two people leaving at 10:02:41."},
+    {"id": "second_person", "kind": "gap",
+     "detail": "The footage shows two people leaving together; all the narration comes from one person. The second person (grey shirt, backpack) appears only on camera - consistent with the FIR's two suspects, but nothing says who they are or what they did."},
+    {"id": "lookout_ambiguity", "kind": "ambiguity",
+     "detail": "'Card working. Cash out now.' (10:01:29) and then 'I've got eyes on the ATM entrance' (10:01:52) and 'Nothing suspicious. Continue.' (10:02:02) read as a lookout's words; whether the narrator or the second person kept watch is not established."},
+    {"id": "witness_corroborates", "kind": "corroboration",
+     "detail": "A different voice (audio5, 10:02:49) describes them leaving in a hurry, matching the bystander filmed watching at 10:02:41-50."},
+    {"id": "low_quality_footage", "kind": "evidence quality",
+     "detail": "The only clip has a low quality score (0.43); appearance details from it are less reliable."}
+  ]
+}

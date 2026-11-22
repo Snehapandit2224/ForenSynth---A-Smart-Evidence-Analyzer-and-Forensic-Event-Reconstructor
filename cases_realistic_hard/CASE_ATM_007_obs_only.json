@@ -6,13 +6,13 @@
     "crime_type": "ATM skimming with assault",
     "location": "Whitefield ATM Kiosk",
     "time_window": [
-      0,
-      118
+      459,
+      994
     ],
     "description": "A complaint has been filed alleging that the accused affixed a foreign device to the ATM card slot before fleeing. 1 eyewitness(es) observed the suspect(s) at the machine during the relevant time window.",
     "roles": {
-      "suspect": 3,
-      "witness": 2
+      "suspect": 2,
+      "witness": 1
     }
   },
   "observations": [
@@ -30,7 +30,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.71,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O2",
@@ -110,7 +111,11 @@
         0.1084
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.778
+      "role_hint_confidence": 0.778,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O15",
@@ -127,7 +132,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.818,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O3",
@@ -143,7 +149,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.832,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O18",
@@ -160,7 +167,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.877,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O6",
@@ -241,7 +249,8 @@
       ],
       "role_hint": "victim",
       "role_hint_confidence": 0.807,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O17",
@@ -258,7 +267,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "witness",
       "role_hint_confidence": 0.764,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O16",
@@ -274,7 +284,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.859,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O8",
@@ -355,7 +366,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.937,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O10",
@@ -371,7 +383,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.861,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -387,7 +400,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.823,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O9",
@@ -403,7 +417,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "witness",
       "role_hint_confidence": 0.703,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O12",
@@ -418,7 +433,8 @@
       "confidence": 0.669,
       "role_hint": "suspect",
       "role_hint_confidence": 0.71,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O19",
@@ -434,7 +450,8 @@
       "reported_by": "witness_statement_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.915,
-      "action": "NAVIGATE"
+      "action": "NAVIGATE",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O11",
@@ -450,7 +467,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.781,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O14",
@@ -465,7 +483,8 @@
       "confidence": 0.781,
       "role_hint": "witness",
       "role_hint_confidence": 0.754,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O13",
@@ -546,7 +565,8 @@
       ],
       "role_hint": "victim",
       "role_hint_confidence": 0.751,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ]
 }

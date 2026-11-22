@@ -533,6 +533,342 @@ def _check_entity_contradictions(er_result: Optional[Dict], observations: List[D
     return issues
 
 
+
+# ── Checks from field-agent extras and the FIR's claims ──────────────────────
+# Investigator notes (info): they point at something to look at, none of
+# them is something a re-run could fix.
+
+_PHYSICAL_ACTS = {"APPROACH", "ENTER", "EXIT", "TAMPER", "WITHDRAW", "FLEE", "STEAL",
+                  "LOITER", "WATCH", "NAVIGATE"}
+STATEMENT_WINDOW_SEC = 900
+
+
+def _acts(o: Dict) -> set:
+    from shared import extract_action_tags
+    action = str(o.get("action") or "").upper()
+    if action and action not in ("REPORT", "COMMUNICATE", "CONFIRM"):
+        return {action}             # OBSERVE included: the act watched is someone else's
+    # no act, or only how it was conveyed (REPORT...): read the words too
+    found = set(extract_action_tags(o.get("evidence") or o.get("content") or ""))
+    return found | ({action} if action else set())
+
+
+def _check_statements_vs_evidence(er_result: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """A denial or alibi (the extractors' `tags`) while other evidence of the
+    SAME entity shows them physically doing something around that time - a
+    statement contradicted by the evidence. Investigative value, not a
+    reconstruction defect (see the coherence prompt), so info."""
+    entity_of = {o: e.get("entity_id") for e in (er_result or {}).get("canonical_entities", [])
+                 for o in e.get("sources", [])}
+    by_entity: Dict[str, List[Dict]] = {}
+    for o in observations:
+        if str(o.get("obs_id")) in entity_of:
+            by_entity.setdefault(entity_of[str(o["obs_id"])], []).append(o)
+    issues = []
+    for o in observations:
+        said = {"denial", "alibi"} & set(o.get("tags") or [])
+        ent = entity_of.get(str(o.get("obs_id")))
+        if not said or not ent:
+            continue
+        t = o.get("time_offset") if o.get("timestamp") else None
+        contra = [x for x in by_entity.get(ent, [])
+                  if x is not o and not ({"denial", "alibi"} & set(x.get("tags") or []))
+                  and x.get("modality") in ("video", "audio") and _acts(x) & _PHYSICAL_ACTS
+                  and (t is None or not x.get("timestamp")
+                       or abs((x.get("time_offset") or 0) - t) <= STATEMENT_WINDOW_SEC)]
+        if contra:
+            x = contra[0]
+            issues.append(CritiqueIssue(
+                check="statement_contradicted", severity="info",
+                detail=(f"{o.get('entity')} gives a {'/'.join(sorted(said))} "
+                        f"(\"{(o.get('evidence') or o.get('content') or '')[:90]}\"), but {x.get('modality')} "
+                        f"evidence of the same person shows {'/'.join(sorted(_acts(x) & _PHYSICAL_ACTS))} "
+                        f"(\"{(x.get('content') or '')[:70]}\")."),
+                affected_events=[]))
+    return issues
+
+
+# ── Evidence consistency: what the records say against each other ────────────
+
+# One act is a moment of a few seconds; two records of "the same" exit further
+# apart than this, both on trustworthy clocks, are two exits or clocks that
+# disagree.
+REPEAT_MIN_GAP_SEC = 20
+# A claim about who was there (how many left, that no one saw) is checked
+# against the footage and other records within this window.
+CLAIM_WINDOW_SEC = 120
+_SCENE_ACTS = {"ENTER", "EXIT", "WITHDRAW", "TAMPER"}
+_MOVE_FAMILY = {"EXIT": "leave", "FLEE": "leave", "ENTER": "enter", "APPROACH": "approach"}
+_COUNT_WORDS = {"two": 2, "both": 2, "three": 3, "four": 4, "five": 5, "2": 2, "3": 3, "4": 4, "5": 5}
+_COUNT_CLAIM = re.compile(
+    r"\b(two|both|three|four|five|[2-5])\s+(?:of them|individuals|people|persons|men|women|guys|"
+    r"suspects|males|females|figures)\b", re.I)
+_SINGLE_CLAIM = re.compile(r"\b(?:only (?:him|her|one)|(?:he|she) was alone|by (?:him|her)self|"
+                           r"nobody else|no one else|no-one else)\b", re.I)
+_UNSEEN_CLAIM = re.compile(r"\b(?:no one|nobody|no-one)\b[^.?!]{0,20}?\b(?:saw|seen|noticed|watching|around)\b",
+                           re.I)
+
+
+def _epoch(o: Dict) -> Optional[float]:
+    try:
+        return datetime.fromisoformat(str(o.get("timestamp")).replace("Z", "")).timestamp()
+    except (TypeError, ValueError):
+        return None
+
+
+def _said(o: Dict) -> str:
+    return f"{o.get('evidence') or ''} {o.get('content') or ''}"
+
+
+def _by_entity(er_result: Optional[Dict], observations: List[Dict]) -> Dict[str, List[Dict]]:
+    entity_of = {o: e.get("entity_id") for e in (er_result or {}).get("canonical_entities", [])
+                 for o in e.get("sources", [])}
+    out: Dict[str, List[Dict]] = {}
+    for o in observations:
+        if str(o.get("obs_id")) in entity_of:
+            out.setdefault(entity_of[str(o["obs_id"])], []).append(o)
+    return out
+
+
+def _check_act_sequence(er_result: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """One person's own records, in time order, against the order acts must
+    happen in: in before out, no second exit without re-entering, nothing
+    done inside after leaving. Catches the same exit filmed twice half a
+    minute apart (two exits, or cameras whose clocks disagree) and a message
+    stamped "done, leaving" before the one reporting the act inside.
+    Only records with a trustworthy time (time_reliability >= 0.7) and no
+    denial count; a stated time of a forwarded message is still named."""
+    from shared import time_reliability
+    issues = []
+    for ent, members in _by_entity(er_result, observations).items():
+        # a message's own sent time (time_basis document_date) is when the
+        # sender reported the act "now" - good enough to order messages
+        steps = sorted(((_epoch(o), o) for o in members
+                        if _epoch(o) is not None
+                        and (time_reliability(o) >= 0.7
+                             or (o.get("modality") == "text" and o.get("time_basis") == "document_date"))
+                        and not ({"denial", "alibi"} & set(o.get("tags") or []))
+                        and _acts(o) & _SCENE_ACTS), key=lambda s: s[0])
+        state, last = None, {}
+        for t, o in steps:
+            acts = _acts(o) & _SCENE_ACTS
+            problem = None
+            if "EXIT" in acts:
+                prev = last.get("EXIT")
+                if state == "out" and prev and prev[1].get("source") != o.get("source") \
+                        and t - prev[0] >= REPEAT_MIN_GAP_SEC:
+                    problem = (f"leaves twice with no re-entry recorded in between: {prev[1].get('obs_id')} "
+                               f"({prev[1].get('source')}, {prev[1].get('timestamp')}) and {o.get('obs_id')} "
+                               f"({o.get('source')}, {o.get('timestamp')}), {int(t - prev[0])}s apart - "
+                               "either a re-entry is missing or the two sources' clocks disagree")
+                state, last["EXIT"] = "out", (t, o)
+            elif "ENTER" in acts:
+                prev = last.get("ENTER")
+                if state == "in" and prev and prev[1].get("source") != o.get("source") \
+                        and t - prev[0] >= REPEAT_MIN_GAP_SEC:
+                    problem = (f"enters twice with no exit recorded in between: {prev[1].get('obs_id')} "
+                               f"({prev[1].get('timestamp')}) and {o.get('obs_id')} ({o.get('timestamp')})")
+                state, last["ENTER"] = "in", (t, o)
+            elif state == "out" and "EXIT" in last:
+                prev = last["EXIT"][1]
+                problem = (f"{'/'.join(sorted(acts))} recorded at {o.get('timestamp')} ({o.get('obs_id')}) "
+                           f"after leaving at {prev.get('timestamp')} ({prev.get('obs_id')}), with no re-entry - "
+                           "one of the two timestamps is wrong (a forwarded or late-logged message?)")
+            if problem:
+                issues.append(CritiqueIssue(
+                    check="act_sequence_inconsistent", severity="info",
+                    detail=f"{o.get('entity')} ({ent}) {problem}.",
+                    affected_events=[]))
+    return issues
+
+
+def _check_claims_vs_evidence(er_result: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """Claims ABOUT the scene checked against other records of it:
+      - "no one saw" while someone else is recorded watching (OBSERVE) or
+        reporting it around then,
+      - a head-count ("two individuals left together", "only him") against
+        how many different people the footage shows doing that act then.
+    Investigator notes: the claim may be a lie, a mistake, or about another
+    moment."""
+    entity_of = {o: e.get("entity_id") for e in (er_result or {}).get("canonical_entities", [])
+                 for o in e.get("sources", [])}
+    who = lambda o: entity_of.get(str(o.get("obs_id")), o.get("entity"))
+    timed = [(o, _epoch(o)) for o in observations if _epoch(o) is not None]
+    issues = []
+    for o, t in timed:
+        text = _said(o)
+        if _UNSEEN_CLAIM.search(text):
+            onlookers = [x for x, tx in timed if who(x) != who(o) and abs(tx - t) <= CLAIM_WINDOW_SEC
+                         and _acts(x) & {"OBSERVE", "REPORT"}
+                         and not ({"denial", "alibi"} & set(x.get("tags") or []))]
+            if onlookers:
+                x = onlookers[0]
+                issues.append(CritiqueIssue(
+                    check="claim_contradicted", severity="info",
+                    detail=(f"{o.get('entity')} claims no one saw (\"{(o.get('evidence') or o.get('content'))[:80]}\", "
+                            f"{o.get('timestamp')}), but {x.get('modality')} {x.get('obs_id')} records "
+                            f"{x.get('entity')} watching or reporting at {x.get('timestamp')} "
+                            f"(\"{(x.get('content') or '')[:70]}\")."),
+                    affected_events=[]))
+        m = _COUNT_CLAIM.search(text)
+        claimed = _COUNT_WORDS[m.group(1).lower()] if m else (1 if _SINGLE_CLAIM.search(text) else None)
+        families = {_MOVE_FAMILY[a] for a in _acts(o) if a in _MOVE_FAMILY}
+        if claimed is None or not families or o.get("modality") == "video":
+            continue
+        shown = [x for x, tx in timed if x.get("modality") == "video" and abs(tx - t) <= CLAIM_WINDOW_SEC
+                 and families & {_MOVE_FAMILY[a] for a in _acts(x) if a in _MOVE_FAMILY}]
+        if not shown:
+            continue
+        people = set()
+        for x in shown:
+            people.add(who(x))
+            people.update(x.get("co_entities") or [])
+        if len(people) != claimed:
+            issues.append(CritiqueIssue(
+                check="headcount_mismatch", severity="info",
+                detail=(f"{o.get('modality')} {o.get('obs_id')} ({o.get('entity')}) says {claimed} "
+                        f"{'person' if claimed == 1 else 'people'} ({'/'.join(sorted(families))}): "
+                        f"\"{(o.get('evidence') or o.get('content'))[:80]}\"; the footage around then shows "
+                        f"{len(people)} ({', '.join(x.get('obs_id') for x in shown)})."),
+                affected_events=[]))
+    return issues
+
+
+def _independent(observations: List[Dict]) -> List[Dict]:
+    return [o for o in observations if not o.get("fir_derived")]
+
+
+def _check_fir_items(fir: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """Weapons / property the FIR claims against what the evidence's tags
+    show (and the other way round)."""
+    if not fir:
+        return []
+    issues = []
+    obs = _independent(observations)
+    for label, claimed, tags in (("weapon", fir.get("weapons") or [], {"weapon"}),
+                                 ("property", fir.get("property") or [], {"property", "money"})):
+        seen = [o for o in obs if tags & set(o.get("tags") or [])]
+        if claimed and not seen:
+            issues.append(CritiqueIssue(
+                check=f"fir_{label}_uncorroborated", severity="info",
+                detail=f"The FIR claims {label}(s) {claimed}; no independent evidence mentions any."))
+        elif seen and not claimed and ("weapons" in fir if label == "weapon" else "property" in fir):
+            issues.append(CritiqueIssue(
+                check=f"evidence_{label}_not_in_fir", severity="info",
+                detail=(f"{len(seen)} observation(s) mention a {label} (e.g. "
+                        f"\"{(seen[0].get('evidence') or seen[0].get('content') or '')[:80]}\"); the FIR lists none.")))
+    return issues
+
+
+def _name_words(text: str) -> set:
+    return {w for w in re.findall(r"[a-z]+", (text or "").lower()) if len(w) > 2}
+
+
+def _check_fir_people(fir: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """Everyone the FIR names - accused, witnesses, victims - should appear in
+    independent evidence: by name (an observation's actor or the people it
+    mentions), or for an unnamed accused by a matching description."""
+    if not fir:
+        return []
+    from entity_resolution import EntityResolutionPipeline as _ER
+    obs = _independent(observations)
+    named = set()
+    for o in obs:
+        named |= _name_words(o.get("entity", ""))
+        for m in o.get("mentioned_entities") or []:
+            named |= _name_words(m)
+    descriptions = [_ER._parse_appearance(o.get("appearance") or "") for o in obs if o.get("appearance")]
+    people = [("accused", p.get("name"), p.get("description")) for p in fir.get("accused_people") or []]
+    people += [(r, n, None) for r in ("witness", "victim") for n in fir.get(f"{r}es" if r == "witness" else f"{r}s") or []]
+    issues = []
+    for role, name, description in people:
+        if name and _name_words(name):
+            if not _name_words(name) & named:
+                issues.append(CritiqueIssue(
+                    check="fir_person_unverified", severity="info",
+                    detail=f"The FIR names {role} '{name}'; no independent evidence names or mentions them."))
+        elif description:
+            pd = _ER._parse_appearance(description)
+            if any(k != "extra" for k in pd) and not any(
+                    (lambda r: not r[1] and r[0] >= 0.4)(_ER._compare_appearance(pd, d)) for d in descriptions):
+                issues.append(CritiqueIssue(
+                    check="fir_person_unverified", severity="info",
+                    detail=f"The FIR describes an unnamed {role} ('{description}'); no evidence shows anyone matching."))
+    return issues
+
+
+FIR_LOCATION_MIN_SIMILARITY = 0.35
+
+
+def _check_fir_location(fir: Optional[Dict], observations: List[Dict]) -> List[CritiqueIssue]:
+    """The FIR's incident location against where the evidence was recorded."""
+    place = str((fir or {}).get("location") or "").strip()
+    if not place or place.lower() in ("unspecified", "multiple sources"):
+        return []
+    from shared import semantic_location_similarity
+    locations = {str(o.get("location") or "").strip() for o in _independent(observations)}
+    locations = {l for l in locations if l and l.lower() not in ("unspecified",)}
+    if not locations:
+        return []
+    best = max(semantic_location_similarity(place.lower(), l.lower()) for l in locations)
+    if best >= FIR_LOCATION_MIN_SIMILARITY:
+        return []
+    return [CritiqueIssue(
+        check="fir_location_mismatch", severity="info",
+        detail=(f"The FIR places the incident at '{place}'; none of the {len(locations)} evidence locations "
+                f"resembles it (best similarity {best:.2f})."))]
+
+
+def _check_fir_delay(fir: Optional[Dict]) -> List[CritiqueIssue]:
+    delay = (fir or {}).get("delay_in_reporting")
+    return [CritiqueIssue(check="fir_reporting_delay", severity="info",
+                          detail=f"The FIR records a delay in reporting: {delay}.")] if delay else []
+
+
+def _check_video_quality(observations: List[Dict]) -> List[CritiqueIssue]:
+    """What the video agent itself flagged: footage problems, an unreadable or
+    unverified clock, people it couldn't identify, checks it left open."""
+    issues = []
+    for o in observations:
+        if o.get("modality") != "video":
+            continue
+        problems = list(o.get("video_flags") or [])
+        if o.get("footage_issue"):
+            problems.append(f"footage issue: {o['footage_issue']}")
+        if isinstance(o.get("footage_quality"), (int, float)) and o["footage_quality"] < 0.3:
+            problems.append(f"low footage quality ({o['footage_quality']:.2f})")
+        if o.get("unresolved_checks"):
+            problems.append(f"unresolved checks: {', '.join(map(str, o['unresolved_checks']))}")
+        if problems:
+            issues.append(CritiqueIssue(
+                check="video_evidence_quality", severity="info",
+                detail=f"Video observation {o.get('obs_id')} ({o.get('entity')}): " + "; ".join(problems) + "."))
+    return issues
+
+# A record whose content is unavailable or unverified: deleted, corrupted,
+# redacted, metadata-only, truncated, unsent. Matched on the bracketed status
+# marker exports put in place of the body, or flagged by the text agent.
+_INTEGRITY_MARKER = re.compile(
+    r"^\s*\[(deleted|undelivered|corrupted|redacted|metadata only|forwarded\W+original deleted|partial|draft)\b"
+    r"|hash mismatch|integrity (?:unverified|check failed)|checksum (?:mismatch|failed)", re.I)
+
+
+def _check_evidence_integrity(observations: List[Dict]) -> List[CritiqueIssue]:
+    """Records whose content cannot be trusted as written. They are reported
+    rather than silently used or dropped: a corrupted message is still a
+    record that something was sent."""
+    issues = []
+    for o in observations:
+        if o.get("extraction_status") == "integrity_failed" or _INTEGRITY_MARKER.search(str(o.get("content") or "")):
+            issues.append(CritiqueIssue(
+                check="evidence_integrity", severity="warning",
+                detail=f"{o.get('modality', 'evidence')} record {o.get('obs_id')} ({o.get('entity')}, "
+                       f"{o.get('timestamp') or 'undated'}) has unavailable or unverified content: "
+                       f"\"{str(o.get('content'))[:120]}\". Do not treat it as evidence of what it would say; "
+                       f"verify against the original source."))
+    return issues
+
+
 FIR_WINDOW_MARGIN_SEC = 60
 FIR_WINDOW_MIN_INSIDE = 0.5
 
@@ -653,6 +989,15 @@ def critique_timeline(
         ("fir_role_unverified",   _check_fir_unverified(er_result)),
         ("entity_internal_contradiction", _check_entity_contradictions(er_result, observations or [])),
         ("fir_time_contradiction", _check_fir_time(fir, observations or [])),
+        ("statement_contradicted", _check_statements_vs_evidence(er_result, observations or [])),
+        ("act_sequence_inconsistent", _check_act_sequence(er_result, observations or [])),
+        ("claims_vs_evidence",    _check_claims_vs_evidence(er_result, observations or [])),
+        ("fir_items",             _check_fir_items(fir, observations or [])),
+        ("fir_person_unverified", _check_fir_people(fir, observations or [])),
+        ("fir_location_mismatch", _check_fir_location(fir, observations or [])),
+        ("fir_reporting_delay",   _check_fir_delay(fir)),
+        ("video_evidence_quality", _check_video_quality(observations or [])),
+        ("evidence_integrity",     _check_evidence_integrity(observations or [])),
     ]:
         checks_run.append(name)
         if isinstance(results, list): issues.extend(results)

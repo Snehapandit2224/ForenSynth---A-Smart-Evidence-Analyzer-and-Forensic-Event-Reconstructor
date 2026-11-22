@@ -11,8 +11,8 @@
     ],
     "description": "A complaint has been filed alleging that the accused affixed a foreign device to the ATM card slot before fleeing. 1 eyewitness(es) observed the suspect(s) at the machine during the relevant time window.",
     "roles": {
-      "suspect": 4,
-      "witness": 1
+      "suspect": 3,
+      "witness": 2
     }
   },
   "observations": [
@@ -30,7 +30,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.786,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O2",
@@ -110,7 +111,11 @@
         0.0171
       ],
       "role_hint": "suspect",
-      "role_hint_confidence": 0.857
+      "role_hint_confidence": 0.857,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O3",
@@ -126,7 +131,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.8,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O6",
@@ -207,7 +213,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.717,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O15",
@@ -224,7 +231,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.804,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O17",
@@ -241,7 +249,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.931,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O8",
@@ -257,7 +266,8 @@
       "extraction_status": "undiarized",
       "role_hint": "suspect",
       "role_hint_confidence": 0.846,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O10",
@@ -338,7 +348,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.935,
-      "action": "COMMUNICATE"
+      "action": "COMMUNICATE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -354,7 +365,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.933,
-      "action": "TAMPER"
+      "action": "TAMPER",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O16",
@@ -370,7 +382,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.76,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O9",
@@ -386,7 +399,8 @@
       "appearance": "thin, navy shirt",
       "role_hint": "suspect",
       "role_hint_confidence": 0.747,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_source": "verified_clock"
     },
     {
       "obs_id": "O12",
@@ -401,7 +415,8 @@
       "confidence": 0.669,
       "role_hint": "witness",
       "role_hint_confidence": 0.746,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O11",
@@ -482,7 +497,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.82,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O14",
@@ -497,7 +513,8 @@
       "confidence": 0.781,
       "role_hint": "witness",
       "role_hint_confidence": 0.872,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O13",
@@ -578,7 +595,8 @@
       ],
       "role_hint": "witness",
       "role_hint_confidence": 0.737,
-      "action": "REPORT"
+      "action": "REPORT",
+      "time_basis": "explicit"
     }
   ]
 }

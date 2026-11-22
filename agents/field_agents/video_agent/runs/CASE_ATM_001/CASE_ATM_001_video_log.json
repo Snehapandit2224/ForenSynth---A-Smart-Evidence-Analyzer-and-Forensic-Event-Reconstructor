@@ -1,16 +1,16 @@
 {
   "case_id": "CASE_ATM_001",
-  "updated_utc": "2026-10-14T08:50:56.853009+00:00",
+  "updated_utc": "2026-11-05T08:11:49.937029+00:00",
   "anchor": "2024-01-15T10:00:00",
-  "model": "gemini:gemini-3.7-flash@4fps:agent-v2",
+  "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
   "clips": [
     {
       "clip": "O1.mp4",
       "obs_ids": [
         "O1"
       ],
-      "model": "gemini:gemini-3.8-flash@4fps:agent-v2",
-      "cached": false,
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
+      "cached": true,
       "quality": {
         "score": 0.392,
         "usable": true,
@@ -25,12 +25,14 @@
       },
       "footage_issue": null,
       "verified_clock_at_first_frame": "2024-01-15T10:00:58",
-      "tool_calls": 3,
+      "tool_calls": 4,
+      "api_calls": 2,
       "unresolved_checks": [],
       "agent_trace": [
         {
           "step": 0,
-          "thought": "Read overlay clock at bottom-left corner.",
+          "call": 1,
+          "thought": "Checking the burned-in clock overlay, inspecting frames to clarify the person's action, and validating the draft output.",
           "tool": "crop_overlay",
           "args": {
             "corner": "bottom-left",
@@ -44,21 +46,22 @@
         },
         {
           "step": 1,
-          "thought": "Verify consistency of clock readings.",
+          "call": 1,
+          "thought": "Checking the burned-in clock overlay, inspecting frames to clarify the person's action, and validating the draft output.",
           "tool": "check_clock",
           "args": {
             "readings": [
               {
-                "clock": "2024-01-15 10:00:58",
-                "t": 0.0
+                "t": 0.0,
+                "clock": "2024-01-15 10:00:58"
               },
               {
-                "clock": "2024-01-15 10:01:01",
-                "t": 3.0
+                "t": 3.0,
+                "clock": "2024-01-15 10:01:01"
               },
               {
-                "clock": "2024-01-15 10:01:05",
-                "t": 7.0
+                "t": 7.0,
+                "clock": "2024-01-15 10:01:05"
               }
             ]
           },
@@ -66,68 +69,121 @@
         },
         {
           "step": 2,
-          "thought": "Check known people database to see if there are matches.",
-          "tool": "known_people",
-          "args": {},
-          "result": "No people seen yet in this case."
+          "call": 1,
+          "thought": "Checking the burned-in clock overlay, inspecting frames to clarify the person's action, and validating the draft output.",
+          "tool": "get_frames",
+          "args": {
+            "times": [
+              1.0,
+              3.0,
+              5.0,
+              7.0
+            ]
+          },
+          "result": "Frames t=1.0s, t=3.0s, t=5.0s, t=7.0s"
         },
         {
           "step": 3,
+          "call": 1,
+          "thought": "Checking the burned-in clock overlay, inspecting frames to clarify the person's action, and validating the draft output.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "overlay_camera_label": "CAM 01",
+              "overlay_timestamp_first": "2024-01-15 10:00:58",
+              "camera_view": "exterior_street_side",
+              "footage_issue": null,
+              "image_quality": 0.9,
+              "clock_verified": true,
+              "clock_note": "Clock ticks clearly at 1-second intervals in bottom-left corner.",
+              "events": [
+                {
+                  "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+                  "identifiable": true,
+                  "registry_match": null,
+                  "action": "approach_atm",
+                  "template_index": 1,
+                  "free_content": null,
+                  "start": "00:00",
+                  "overlay_timestamp_at_start": "2024-01-15 10:00:58",
+                  "certainty": 0.95,
+                  "visibility": 0.95,
+                  "ref_time": 3.0,
+                  "bbox": [
+                    0.55,
+                    0.28,
+                    0.44,
+                    0.72
+                  ],
+                  "group": false,
+                  "stays_behind": null,
+                  "people": null
+                }
+              ]
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 4,
+          "call": 2,
+          "thought": "Clock verified, frame details inspected, draft validated.",
           "final": true,
-          "forced": true,
           "issues": []
         }
       ],
       "final_answer": {
+        "overlay_camera_label": "CAM 01",
+        "overlay_timestamp_first": "2024-01-15 10:00:58",
         "camera_view": "exterior_street_side",
-        "clock_note": "Consistent 1-second increments verified against video timestamps.",
-        "clock_verified": true,
-        "events": [
-          {
-            "action": "approach_atm",
-            "bbox": [
-              0.51,
-              0.26,
-              0.17,
-              0.71
-            ],
-            "certainty": 0.95,
-            "free_content": null,
-            "group": false,
-            "identifiable": true,
-            "overlay_timestamp_at_start": "2024-01-15 10:00:58",
-            "people": null,
-            "person": "individual wearing a pink cap, surgical mask, grey hoodie, black track pants with white side stripe, white sneakers, and black backpack",
-            "ref_time": 3.0,
-            "registry_match": null,
-            "start": "00:00",
-            "stays_behind": null,
-            "template_index": 1,
-            "visibility": 0.95
-          }
-        ],
         "footage_issue": null,
         "image_quality": 0.9,
-        "overlay_camera_label": "CAM 01",
-        "overlay_timestamp_first": "2024-01-15 10:00:58"
+        "clock_verified": true,
+        "clock_note": "Clock ticks clearly at 1-second intervals in bottom-left corner.",
+        "events": [
+          {
+            "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+            "identifiable": true,
+            "registry_match": null,
+            "action": "approach_atm",
+            "template_index": 1,
+            "free_content": null,
+            "start": "00:00",
+            "overlay_timestamp_at_start": "2024-01-15 10:00:58",
+            "certainty": 0.95,
+            "visibility": 0.95,
+            "ref_time": 3.0,
+            "bbox": [
+              0.55,
+              0.28,
+              0.44,
+              0.72
+            ],
+            "group": false,
+            "stays_behind": null,
+            "people": null
+          }
+        ]
       },
       "decisions": [
         {
           "obs_id": "O1",
           "action": "approach_atm",
           "source_from": "overlay_label",
-          "timestamp_from": "verified_clock+offset",
+          "timestamp_from": "verified_clock",
           "flags": [],
-          "person": "individual wearing a pink cap, surgical mask, grey hoodie, black track pants with white side stripe, white sneakers, and black backpack",
+          "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
           "identifiable": true
         }
       ]
     },
     {
       "clip": "O2.mp4",
-      "obs_ids": [],
-      "model": "gemini:gemini-3.7-flash@4fps:agent-v2",
-      "cached": false,
+      "obs_ids": [
+        "O2"
+      ],
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
+      "cached": true,
       "quality": {
         "score": 0.445,
         "usable": true,
@@ -142,43 +198,43 @@
       },
       "footage_issue": null,
       "verified_clock_at_first_frame": "2024-01-15T10:03:34",
-      "tool_calls": 3,
-      "unresolved_checks": [
-        "camera: overlay label not recognised and camera_view not one of the listed views",
-        "events must be a list"
-      ],
+      "tool_calls": 4,
+      "api_calls": 2,
+      "unresolved_checks": [],
       "agent_trace": [
         {
           "step": 0,
-          "thought": "Read overlay clock at bottom-left across the clip.",
+          "call": 1,
+          "thought": "I will verify the overlay timestamp using check_clock and crop_overlay, check known_people, and validate the draft event for Person_94 loitering outside the ATM booth.",
           "tool": "crop_overlay",
           "args": {
             "corner": "bottom-left",
             "times": [
-              0.0,
-              3.0,
-              6.0
+              0,
+              3,
+              7
             ]
           },
-          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '= 2024-01-15 10:03:34'  parsed: 2024-01-15 10:03:34\nt=3.0s  OCR: '= 2024-01-15 10:03:37'  parsed: 2024-01-15 10:03:37\nt=6.0s  OCR: '= 2024-01-15 10:03:40'  parsed: 2024-01-15 10:03:40"
+          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '= 2024-01-15 10:03:34'  parsed: 2024-01-15 10:03:34\nt=3.0s  OCR: '= 2024-01-15 10:03:37'  parsed: 2024-01-15 10:03:37\nt=7.0s  OCR: '= 2024-01-15 10:03:41'  parsed: 2024-01-15 10:03:41"
         },
         {
           "step": 1,
-          "thought": "Check clock readings with check_clock tool.",
+          "call": 1,
+          "thought": "I will verify the overlay timestamp using check_clock and crop_overlay, check known_people, and validate the draft event for Person_94 loitering outside the ATM booth.",
           "tool": "check_clock",
           "args": {
             "readings": [
               {
-                "clock": "2024-01-15 10:03:34",
-                "t": 0.0
+                "t": 0,
+                "clock": "2024-01-15 10:03:34"
               },
               {
-                "clock": "2024-01-15 10:03:37",
-                "t": 3.0
+                "t": 3,
+                "clock": "2024-01-15 10:03:37"
               },
               {
-                "clock": "2024-01-15 10:03:40",
-                "t": 6.0
+                "t": 7,
+                "clock": "2024-01-15 10:03:41"
               }
             ]
           },
@@ -186,30 +242,520 @@
         },
         {
           "step": 2,
-          "thought": "Check known people database to confirm Person_94 match.",
+          "call": 1,
+          "thought": "I will verify the overlay timestamp using check_clock and crop_overlay, check known_people, and validate the draft event for Person_94 loitering outside the ATM booth.",
           "tool": "known_people",
           "args": {},
-          "result": "Known people:\nPerson_94: individual wearing a pink cap, surgical mask, grey hoodie, black track pants with white side stripe, white sneakers, and black backpack (seen in O1)  [reference still #1]"
+          "result": "Known people:\nPerson_94: individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack (seen in O1)  [reference still #1]"
         },
         {
           "step": 3,
+          "call": 1,
+          "thought": "I will verify the overlay timestamp using check_clock and crop_overlay, check known_people, and validate the draft event for Person_94 loitering outside the ATM booth.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "overlay_camera_label": "CAM 03",
+              "overlay_timestamp_first": "2024-01-15 10:03:34",
+              "camera_view": "exterior_street_side",
+              "footage_issue": null,
+              "image_quality": 0.9,
+              "clock_verified": true,
+              "clock_note": "Clock verified consistently at 10:03:34, 10:03:37, and 10:03:41.",
+              "events": [
+                {
+                  "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+                  "identifiable": true,
+                  "registry_match": "Person_94",
+                  "action": "loiter_near_atm",
+                  "template_index": 1,
+                  "free_content": null,
+                  "start": "00:00",
+                  "overlay_timestamp_at_start": "2024-01-15 10:03:34",
+                  "certainty": 0.95,
+                  "visibility": 0.95,
+                  "ref_time": 3.5,
+                  "bbox": [
+                    0.68,
+                    0.28,
+                    0.1,
+                    0.65
+                  ],
+                  "group": false,
+                  "stays_behind": null,
+                  "people": null
+                }
+              ]
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 4,
+          "call": 2,
+          "thought": "The clock verification was successful and draft validation passed without errors. Reporting final answer.",
           "final": true,
-          "forced": true,
-          "issues": [
-            "camera: overlay label not recognised and camera_view not one of the listed views",
-            "events must be a list"
-          ]
+          "issues": []
         }
       ],
-      "final_answer": {},
-      "decisions": []
+      "final_answer": {
+        "overlay_camera_label": "CAM 03",
+        "overlay_timestamp_first": "2024-01-15 10:03:34",
+        "camera_view": "exterior_street_side",
+        "footage_issue": null,
+        "image_quality": 0.9,
+        "clock_verified": true,
+        "clock_note": "Clock verified consistently at 10:03:34, 10:03:37, and 10:03:41.",
+        "events": [
+          {
+            "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+            "identifiable": true,
+            "registry_match": "Person_94",
+            "action": "loiter_near_atm",
+            "template_index": 1,
+            "free_content": null,
+            "start": "00:00",
+            "overlay_timestamp_at_start": "2024-01-15 10:03:34",
+            "certainty": 0.95,
+            "visibility": 0.95,
+            "ref_time": 3.5,
+            "bbox": [
+              0.68,
+              0.28,
+              0.1,
+              0.65
+            ],
+            "group": false,
+            "stays_behind": null,
+            "people": null
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "obs_id": "O2",
+          "action": "loiter_near_atm",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock",
+          "flags": [],
+          "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+          "identifiable": true
+        }
+      ]
+    },
+    {
+      "clip": "O5.mp4",
+      "obs_ids": [
+        "O5"
+      ],
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
+      "cached": true,
+      "quality": {
+        "score": 0.376,
+        "usable": true,
+        "sharpness": 0.167,
+        "noise": 0.901,
+        "flicker": 0.933,
+        "brightness": 1.0,
+        "width": 1920,
+        "height": 1080,
+        "fps": 30.0,
+        "duration": 4.833333
+      },
+      "footage_issue": null,
+      "verified_clock_at_first_frame": "2024-01-15T10:05:20",
+      "tool_calls": 5,
+      "api_calls": 2,
+      "unresolved_checks": [],
+      "agent_trace": [
+        {
+          "step": 0,
+          "call": 1,
+          "thought": "Execute overlay checks, clock verification, registry comparison, and validate draft output.",
+          "tool": "crop_overlay",
+          "args": {
+            "corner": "bottom-left",
+            "times": [
+              0.0,
+              2.0,
+              4.0
+            ]
+          },
+          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '2024-01-15 10:05:20'  parsed: 2024-01-15 10:05:20\nt=2.0s  OCR: '2024-01-15 10:05:22 .'  parsed: 2024-01-15 10:05:22\nt=4.0s  OCR: '2024-01-15 10:05:24'  parsed: 2024-01-15 10:05:24"
+        },
+        {
+          "step": 1,
+          "call": 1,
+          "thought": "Execute overlay checks, clock verification, registry comparison, and validate draft output.",
+          "tool": "crop_overlay",
+          "args": {
+            "corner": "top-left",
+            "times": [
+              0.0
+            ]
+          },
+          "result": "Enlarged top-left crops:\nt=0.0s  OCR: 'camer VO'  parsed: none"
+        },
+        {
+          "step": 2,
+          "call": 1,
+          "thought": "Execute overlay checks, clock verification, registry comparison, and validate draft output.",
+          "tool": "check_clock",
+          "args": {
+            "readings": [
+              {
+                "t": 0.0,
+                "clock": "2024-01-15 10:05:20"
+              },
+              {
+                "t": 1.0,
+                "clock": "2024-01-15 10:05:21"
+              },
+              {
+                "t": 2.0,
+                "clock": "2024-01-15 10:05:22"
+              },
+              {
+                "t": 3.0,
+                "clock": "2024-01-15 10:05:23"
+              },
+              {
+                "t": 4.0,
+                "clock": "2024-01-15 10:05:24"
+              }
+            ]
+          },
+          "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:05:20 (spread 0.0s)."
+        },
+        {
+          "step": 3,
+          "call": 1,
+          "thought": "Execute overlay checks, clock verification, registry comparison, and validate draft output.",
+          "tool": "known_people",
+          "args": {},
+          "result": "Known people:\nPerson_94: individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack (seen in O1, O2, O3, O3b)  [reference still #1]"
+        },
+        {
+          "step": 4,
+          "call": 1,
+          "thought": "Execute overlay checks, clock verification, registry comparison, and validate draft output.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "overlay_camera_label": "CAM 01",
+              "overlay_timestamp_first": "2024-01-15 10:05:20",
+              "camera_view": "lobby_doorway",
+              "footage_issue": null,
+              "image_quality": 0.95,
+              "clock_verified": true,
+              "clock_note": "Clock starts at 10:05:20 and increments consistently by 1 second every second.",
+              "events": [
+                {
+                  "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+                  "identifiable": true,
+                  "registry_match": "Person_94",
+                  "action": "exit_atm",
+                  "template_index": 0,
+                  "free_content": null,
+                  "start": "00:00",
+                  "overlay_timestamp_at_start": "2024-01-15 10:05:20",
+                  "certainty": 1.0,
+                  "visibility": 1.0,
+                  "ref_time": 2.0,
+                  "bbox": [
+                    0.52,
+                    0.45,
+                    0.23,
+                    0.52
+                  ],
+                  "group": false,
+                  "stays_behind": null,
+                  "people": null
+                }
+              ]
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 5,
+          "call": 2,
+          "thought": "The clock checks were verified and draft validation passed. Constructing final output.",
+          "final": true,
+          "issues": []
+        }
+      ],
+      "final_answer": {
+        "overlay_camera_label": "CAM 01",
+        "overlay_timestamp_first": "2024-01-15 10:05:20",
+        "camera_view": "lobby_doorway",
+        "footage_issue": null,
+        "image_quality": 0.95,
+        "clock_verified": true,
+        "clock_note": "Clock starts at 10:05:20 and increments consistently by 1 second every second.",
+        "events": [
+          {
+            "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+            "identifiable": true,
+            "registry_match": "Person_94",
+            "action": "exit_atm",
+            "template_index": 0,
+            "free_content": null,
+            "start": "00:00",
+            "overlay_timestamp_at_start": "2024-01-15 10:05:20",
+            "certainty": 1.0,
+            "visibility": 1.0,
+            "ref_time": 2.0,
+            "bbox": [
+              0.52,
+              0.45,
+              0.23,
+              0.52
+            ],
+            "group": false,
+            "stays_behind": null,
+            "people": null
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "obs_id": "O5",
+          "action": "exit_atm",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock",
+          "flags": [],
+          "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+          "identifiable": true
+        }
+      ]
+    },
+    {
+      "clip": "O6.mp4",
+      "obs_ids": [
+        "O6",
+        "O6b"
+      ],
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
+      "cached": false,
+      "quality": {
+        "score": 0.514,
+        "usable": true,
+        "sharpness": 0.277,
+        "noise": 1.0,
+        "flicker": 0.951,
+        "brightness": 1.0,
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "duration": 6.958333
+      },
+      "footage_issue": null,
+      "verified_clock_at_first_frame": "2024-01-15T10:05:50",
+      "tool_calls": 4,
+      "api_calls": 2,
+      "unresolved_checks": [],
+      "agent_trace": [
+        {
+          "step": 0,
+          "call": 1,
+          "thought": "I will check the overlay clock, check known people to confirm identity, and validate the draft.",
+          "tool": "crop_overlay",
+          "args": {
+            "corner": "bottom-left",
+            "times": [
+              0,
+              2,
+              5
+            ]
+          },
+          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '2024-01-15 10:05:50'  parsed: 2024-01-15 10:05:50\nt=2.0s  OCR: '2024-01-15 10:05:52'  parsed: 2024-01-15 10:05:52\nt=5.0s  OCR: '2024-01-15 10:05:55 |'  parsed: 2024-01-15 10:05:55"
+        },
+        {
+          "step": 1,
+          "call": 1,
+          "thought": "I will check the overlay clock, check known people to confirm identity, and validate the draft.",
+          "tool": "check_clock",
+          "args": {
+            "readings": [
+              {
+                "clock": "2024-01-15 10:05:50",
+                "t": 0
+              },
+              {
+                "clock": "2024-01-15 10:05:52",
+                "t": 2
+              },
+              {
+                "clock": "2024-01-15 10:05:55",
+                "t": 5
+              }
+            ]
+          },
+          "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:05:50 (spread 0.0s)."
+        },
+        {
+          "step": 2,
+          "call": 1,
+          "thought": "I will check the overlay clock, check known people to confirm identity, and validate the draft.",
+          "tool": "known_people",
+          "args": {},
+          "result": "Known people:\nPerson_94: individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack (seen in O1, O2, O3, O3b, O5)  [reference still #1]"
+        },
+        {
+          "step": 3,
+          "call": 1,
+          "thought": "I will check the overlay clock, check known people to confirm identity, and validate the draft.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "camera_view": "exterior_street_side",
+              "clock_note": "Clock in bottom-left corner advances steadily from 10:05:50 to 10:05:56.",
+              "clock_verified": true,
+              "events": [
+                {
+                  "action": "exit_atm",
+                  "bbox": [
+                    0.495,
+                    0.264,
+                    0.245,
+                    0.66
+                  ],
+                  "certainty": 0.95,
+                  "free_content": null,
+                  "group": false,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:05:50",
+                  "people": null,
+                  "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, carrying a black backpack",
+                  "ref_time": 1.5,
+                  "registry_match": "Person_94",
+                  "start": "00:00",
+                  "stays_behind": null,
+                  "template_index": 4,
+                  "visibility": 0.95
+                },
+                {
+                  "action": "observe_exit",
+                  "bbox": [
+                    0.142,
+                    0.448,
+                    0.138,
+                    0.505
+                  ],
+                  "certainty": 0.9,
+                  "free_content": null,
+                  "group": false,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:05:50",
+                  "people": null,
+                  "person": "woman wearing a yellow tunic with shawl and carrying a green bag",
+                  "ref_time": 1.5,
+                  "registry_match": null,
+                  "start": "00:00",
+                  "stays_behind": true,
+                  "template_index": 4,
+                  "visibility": 0.9
+                }
+              ],
+              "footage_issue": null,
+              "image_quality": 0.9,
+              "overlay_camera_label": "CAM 03",
+              "overlay_timestamp_first": "2024-01-15 10:05:50"
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 4,
+          "call": 2,
+          "thought": "The clock was verified as consistent, Person_94 was matched to known people, and the draft passed validation cleanly.",
+          "final": true,
+          "issues": []
+        }
+      ],
+      "final_answer": {
+        "overlay_camera_label": "CAM 03",
+        "overlay_timestamp_first": "2024-01-15 10:05:50",
+        "camera_view": "exterior_street_side",
+        "footage_issue": null,
+        "image_quality": 0.9,
+        "clock_verified": true,
+        "clock_note": "Clock in bottom-left corner advances steadily from 10:05:50 to 10:05:56.",
+        "events": [
+          {
+            "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, carrying a black backpack",
+            "identifiable": true,
+            "registry_match": "Person_94",
+            "action": "exit_atm",
+            "template_index": 4,
+            "free_content": null,
+            "start": "00:00",
+            "overlay_timestamp_at_start": "2024-01-15 10:05:50",
+            "certainty": 0.95,
+            "visibility": 0.95,
+            "ref_time": 1.5,
+            "bbox": [
+              0.495,
+              0.264,
+              0.245,
+              0.66
+            ],
+            "group": false,
+            "stays_behind": null,
+            "people": null
+          },
+          {
+            "person": "woman wearing a yellow tunic with shawl and carrying a green bag",
+            "identifiable": true,
+            "registry_match": null,
+            "action": "observe_exit",
+            "template_index": 4,
+            "free_content": null,
+            "start": "00:00",
+            "overlay_timestamp_at_start": "2024-01-15 10:05:50",
+            "certainty": 0.9,
+            "visibility": 0.9,
+            "ref_time": 1.5,
+            "bbox": [
+              0.142,
+              0.448,
+              0.138,
+              0.505
+            ],
+            "group": false,
+            "stays_behind": true,
+            "people": null
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "obs_id": "O6",
+          "action": "exit_atm",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock",
+          "flags": [],
+          "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, carrying a black backpack",
+          "identifiable": true
+        },
+        {
+          "obs_id": "O6b",
+          "action": "observe_exit",
+          "source_from": "overlay_label",
+          "timestamp_from": "verified_clock",
+          "flags": [],
+          "person": "woman wearing a yellow tunic with shawl and carrying a green bag",
+          "identifiable": true
+        }
+      ]
     },
     {
       "clip": "O3.mp4",
       "obs_ids": [
         "O3"
       ],
-      "model": "gemini:gemini-3.7-flash@4fps:agent-v2",
+      "model": "gemini:gemini-3.5-flash@4fps:agent-v3",
       "cached": false,
       "quality": {
         "score": 0.486,
@@ -225,89 +771,131 @@
       },
       "footage_issue": null,
       "verified_clock_at_first_frame": "2024-01-15T10:04:08",
-      "tool_calls": 3,
+      "tool_calls": 4,
+      "api_calls": 2,
       "unresolved_checks": [],
       "agent_trace": [
         {
           "step": 0,
-          "thought": "Check the bottom-left overlay timestamp at multiple points in the clip.",
+          "call": 1,
+          "thought": "Check clock overlay, verify known people match, and validate draft answer.",
           "tool": "crop_overlay",
           "args": {
             "corner": "bottom-left",
             "times": [
-              0.0,
-              3.0,
-              7.0
+              0,
+              3,
+              6
             ]
           },
-          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '| 2024-01-15 10:04:08'  parsed: 2024-01-15 10:04:08\nt=3.0s  OCR: '| 2024-01-15 10:04:11 «ff'  parsed: 2024-01-15 10:04:11\nt=7.0s  OCR: '| 2024-01-15 10:04:15'  parsed: 2024-01-15 10:04:15"
+          "result": "Enlarged bottom-left crops:\nt=0.0s  OCR: '| 2024-01-15 10:04:08'  parsed: 2024-01-15 10:04:08\nt=3.0s  OCR: '| 2024-01-15 10:04:11 «ff'  parsed: 2024-01-15 10:04:11\nt=6.0s  OCR: '| 2024-01-15 10:04:14'  parsed: 2024-01-15 10:04:14"
         },
         {
           "step": 1,
-          "thought": "Read camera label from top-left.",
-          "tool": "crop_overlay",
-          "args": {
-            "corner": "top-left",
-            "times": [
-              0.0
-            ]
-          },
-          "result": "Enlarged top-left crops:\nt=0.0s  OCR: 'camer “ON'  parsed: none"
-        },
-        {
-          "step": 2,
-          "thought": "Check clock consistency.",
+          "call": 1,
+          "thought": "Check clock overlay, verify known people match, and validate draft answer.",
           "tool": "check_clock",
           "args": {
             "readings": [
               {
                 "clock": "2024-01-15 10:04:08",
-                "t": 0.0
+                "t": 0
               },
               {
                 "clock": "2024-01-15 10:04:11",
-                "t": 3.0
+                "t": 3
               },
               {
-                "clock": "2024-01-15 10:04:15",
-                "t": 7.0
+                "clock": "2024-01-15 10:04:14",
+                "t": 6
               }
             ]
           },
           "result": "CONSISTENT: clock ticks with the video. Clock at first frame = 2024-01-15T10:04:08 (spread 0.0s)."
         },
         {
+          "step": 2,
+          "call": 1,
+          "thought": "Check clock overlay, verify known people match, and validate draft answer.",
+          "tool": "known_people",
+          "args": {},
+          "result": "Known people:\nPerson_94: individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack (seen in O1, O2, O5, O6)  [reference still #1]\nPerson_01: woman wearing a yellow tunic with shawl and carrying a green bag (seen in O6b)  [reference still #2]"
+        },
+        {
           "step": 3,
+          "call": 1,
+          "thought": "Check clock overlay, verify known people match, and validate draft answer.",
+          "tool": "validate_draft",
+          "args": {
+            "draft": {
+              "camera_view": "exterior_street_side",
+              "clock_note": "Clock display clearly visible at bottom-left and advances consistently 1 second per second.",
+              "clock_verified": true,
+              "events": [
+                {
+                  "action": "enter_atm",
+                  "bbox": [
+                    0.605,
+                    0.301,
+                    0.181,
+                    0.638
+                  ],
+                  "certainty": 0.95,
+                  "free_content": null,
+                  "group": false,
+                  "identifiable": true,
+                  "overlay_timestamp_at_start": "2024-01-15 10:04:08",
+                  "people": null,
+                  "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
+                  "ref_time": 1.0,
+                  "registry_match": "Person_94",
+                  "start": "00:00",
+                  "stays_behind": null,
+                  "template_index": 0,
+                  "visibility": 0.95
+                }
+              ],
+              "footage_issue": null,
+              "image_quality": 0.9,
+              "overlay_camera_label": "CAM 01",
+              "overlay_timestamp_first": "2024-01-15 10:04:08"
+            }
+          },
+          "result": "No problems found."
+        },
+        {
+          "step": 4,
+          "call": 2,
+          "thought": "Validated draft answer passes all field checks. Finalizing output.",
           "final": true,
-          "forced": true,
           "issues": []
         }
       ],
       "final_answer": {
         "camera_view": "exterior_street_side",
-        "clock_note": "Clock ticks consistently with video time, verified at 0.0s, 3.0s, and 7.0s.",
+        "clock_note": "Clock display clearly visible at bottom-left and advances consistently 1 second per second.",
         "clock_verified": true,
         "events": [
           {
             "action": "enter_atm",
             "bbox": [
-              0.52,
-              0.3,
-              0.13,
-              0.62
+              0.605,
+              0.301,
+              0.181,
+              0.638
             ],
             "certainty": 0.95,
             "free_content": null,
             "group": false,
             "identifiable": true,
-            "overlay_timestamp_at_start": "2024-01-15 10:04:09",
+            "overlay_timestamp_at_start": "2024-01-15 10:04:08",
             "people": null,
-            "person": "individual wearing a pink cap, surgical mask, grey hoodie, black track pants with white side stripe, white sneakers, and black backpack",
+            "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
             "ref_time": 1.0,
             "registry_match": "Person_94",
-            "start": "00:01",
+            "start": "00:00",
             "stays_behind": null,
-            "template_index": 5,
+            "template_index": 0,
             "visibility": 0.95
           }
         ],
@@ -321,9 +909,9 @@
           "obs_id": "O3",
           "action": "enter_atm",
           "source_from": "overlay_label",
-          "timestamp_from": "verified_clock+offset",
+          "timestamp_from": "verified_clock",
           "flags": [],
-          "person": "individual wearing a pink cap, surgical mask, grey hoodie, black track pants with white side stripe, white sneakers, and black backpack",
+          "person": "individual wearing a pink cap, face mask, grey hoodie, black track pants with white stripes, white sneakers, and carrying a black backpack",
           "identifiable": true
         }
       ]

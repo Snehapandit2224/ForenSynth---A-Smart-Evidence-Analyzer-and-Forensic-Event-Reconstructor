@@ -142,6 +142,9 @@ def parse_args() -> argparse.Namespace:
     real.add_argument("--action-labels", action="store_true",
                       help="Each observation names its action (APPROACH, ENTER...) as the extractors "
                            "do - mostly right, sometimes missing or wrong.")
+    real.add_argument("--agent-metadata", action="store_true",
+                      help="Time provenance as the agents report it (video time_source, text/audio "
+                           "time_basis) and denial tags.")
     real.add_argument("--realistic", action="store_true",
                       help="All of the above at standard rates.")
     real.add_argument("--difficulty", choices=["easy", "medium", "hard"], default="medium",
@@ -162,7 +165,8 @@ def realism_config(args: argparse.Namespace) -> RealismConfig | None:
         hide_roles=args.hide_roles, per_source_labels=args.per_source_labels,
         reported_events=args.reported_events, undiarized_audio=args.undiarized_audio,
         timestamp_gaps=args.timestamp_gaps, mixed_timezones=args.mixed_timezones,
-        fir_errors=args.fir_errors, action_labels=args.action_labels, difficulty=args.difficulty,
+        fir_errors=args.fir_errors, action_labels=args.action_labels,
+        agent_metadata=args.agent_metadata, difficulty=args.difficulty,
     )
     return cfg if cfg.enabled() else None
 

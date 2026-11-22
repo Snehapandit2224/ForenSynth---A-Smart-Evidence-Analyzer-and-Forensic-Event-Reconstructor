@@ -7,12 +7,12 @@
     "location": "Indiranagar HDFC ATM",
     "time_window": [
       0,
-      386
+      0
     ],
     "description": "Surveillance logs confirm entry by 2 person(s) into the ATM booth during the reported time window. The accused departed prior to security arrival. 2 independent observer(s) corroborate the sequence of events.",
     "roles": {
-      "suspect": 3,
-      "witness": 1
+      "suspect": 1,
+      "witness": 2
     }
   },
   "observations": [
@@ -31,7 +31,8 @@
       "reported_by": "phone_record_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.708,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O4",
@@ -46,7 +47,8 @@
       "confidence": 0.765,
       "role_hint": "victim",
       "role_hint_confidence": 0.848,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "unknown"
     },
     {
       "obs_id": "O14",
@@ -63,7 +65,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.941,
-      "action": "ENTER"
+      "action": "ENTER",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O2",
@@ -78,7 +81,8 @@
       "confidence": 0.745,
       "role_hint": "victim",
       "role_hint_confidence": 0.771,
-      "action": "APPROACH"
+      "action": "APPROACH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O1",
@@ -93,7 +97,8 @@
       "confidence": 0.421,
       "extraction_status": "undiarized",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.762
+      "role_hint_confidence": 0.762,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O3",
@@ -108,7 +113,8 @@
       "confidence": 0.433,
       "extraction_status": "undiarized",
       "role_hint": "suspect",
-      "role_hint_confidence": 0.762
+      "role_hint_confidence": 0.762,
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O6",
@@ -123,7 +129,8 @@
       "confidence": 0.751,
       "role_hint": "suspect",
       "role_hint_confidence": 0.853,
-      "action": "WITHDRAW"
+      "action": "WITHDRAW",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O7",
@@ -204,7 +211,8 @@
       ],
       "role_hint": "suspect",
       "role_hint_confidence": 0.888,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O16",
@@ -221,7 +229,8 @@
       "reported_by": "witness_statement_SPEAKER_00",
       "role_hint": "suspect",
       "role_hint_confidence": 0.848,
-      "action": "WATCH"
+      "action": "WATCH",
+      "time_basis": "document_date"
     },
     {
       "obs_id": "O8",
@@ -236,7 +245,8 @@
       "confidence": 0.861,
       "role_hint": "unknown",
       "role_hint_confidence": 0.531,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O15",
@@ -253,7 +263,8 @@
       "reported_by": "phone_record_Speaker_Unknown",
       "role_hint": "suspect",
       "role_hint_confidence": 0.864,
-      "action": "LOITER"
+      "action": "LOITER",
+      "time_basis": "relative"
     },
     {
       "obs_id": "O10",
@@ -268,7 +279,8 @@
       "confidence": 0.705,
       "role_hint": "suspect",
       "role_hint_confidence": 0.487,
-      "action": "EXIT"
+      "action": "EXIT",
+      "time_basis": "explicit"
     },
     {
       "obs_id": "O9",
@@ -283,7 +295,11 @@
       "confidence": 0.343,
       "extraction_status": "undiarized",
       "role_hint": "witness",
-      "role_hint_confidence": 0.727
+      "role_hint_confidence": 0.727,
+      "time_basis": "explicit",
+      "tags": [
+        "denial"
+      ]
     },
     {
       "obs_id": "O11",
@@ -299,7 +315,8 @@
       "appearance": "blue jacket",
       "role_hint": "witness",
       "role_hint_confidence": 0.794,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_source": "overlay_first+offset(unverified)"
     },
     {
       "obs_id": "O12",
@@ -315,7 +332,8 @@
       "extraction_status": "undiarized",
       "role_hint": "witness",
       "role_hint_confidence": 0.766,
-      "action": "OBSERVE"
+      "action": "OBSERVE",
+      "time_basis": "explicit"
     }
   ]
 }

@@ -31,7 +31,7 @@ import networkx as nx
 from shared import (
     NormalizedObservation, normalize_case, get_normalized_observation_store,
     set_normalized_observation_store, get_semantic_scorer, semantic_location_similarity,
-    normalize_alias, normalize_modality, normalize_role, clean_content,
+    normalize_alias, normalize_contact, normalize_modality, normalize_role, clean_content,
     extract_action_tags, parse_timestamp, epoch_to_iso,
 )
 
@@ -96,6 +96,14 @@ CROSS_MODAL_MERGE_MIN_HEURISTIC: float = 0.88
 OVERSIZED_CLUSTER_FACTOR: float = 3.0
 TEMPORAL_WINDOW_SEC:      int   = 300
 MAX_TEMPORAL_GAP_SEC:     int   = 3600
+# Identical names / labels: the same alias in one case is the same person
+# across a far longer span than different labels are linked over (an email
+# at 10:05, an FIR statement at 11:25, a follow-up call next day). Undiarized
+# recording labels are never merged by name at all.
+SAME_ALIAS_MAX_GAP_SEC:   int   = 7 * 24 * 3600
+# ...but past a day, only a specific name (two words) is trusted alone; a
+# single first name or a generic label needs the same phone/email or voice.
+SAME_ALIAS_PLAIN_GAP_SEC: int   = 24 * 3600
 MAX_PAIRS:                int   = 500
 # FIX: reduced from 40. The chunk that failed needed 6586 tokens against
 # a 6000 TPM free-tier cap - i.e. the old size sat right at the edge of
@@ -154,8 +162,24 @@ SPLIT_CUT_MAX_WEIGHT: float = 0.60
 # reported (identity_links, decision "candidate") for investigator review.
 # Deliberately conservative: a missed link leaves one person as two entities,
 # a wrong link fuses two different people.
+# Two different video labels on the same camera within this many seconds are
+# two people in view at once - never one person.
+SEEN_TOGETHER_SEC: int = 3
+
+# Acts that make someone a participant in the scene, not an onlooker: a
+# "witness" role hint on an observation of one of these is not counted.
+PARTICIPANT_ACTIONS = frozenset({"APPROACH", "ENTER", "WITHDRAW", "TAMPER", "LOITER", "EXIT", "FLEE",
+                                 "STEAL", "WATCH"})
+
 IDENTITY_MATCH_MIN:     float = 0.70
 IDENTITY_CANDIDATE_MIN: float = 0.50
+# A voice print from little speech is a weaker signal: on 2-3 s of speech,
+# different voices can score as high as one voice does on longer recordings.
+# The merge bar rises as the speech behind the SHORTER of the two prints
+# falls (the field agent reports it as voice_print_speech_sec). Prints with
+# no reported duration keep IDENTITY_MATCH_MIN.
+#   (min speech seconds, required similarity), checked in order
+VOICE_PRINT_SPEECH_BARS: Tuple[Tuple[float, float], ...] = ((8.0, 0.70), (3.0, 0.75), (0.0, 0.80))
 
 # -- Identity evidence -------------------------------------------------------------
 # Two DIFFERENT aliases are merged only on evidence that they are the same
@@ -203,11 +227,45 @@ _APPEARANCE_BUILD = {"tall", "short", "thin", "slim", "fat", "heavy", "stocky", 
 # Descriptions are parsed into slots and compared slot by slot.
 _APPEARANCE_SLOTS = {
     "top":    {"hoodie", "jacket", "shirt", "tshirt", "t-shirt", "kurta", "saree", "sari", "sweater",
-               "coat", "uniform", "dupatta"},
+               "coat", "uniform", "dupatta", "dress", "blouse"},
     "head":   {"cap", "hat", "helmet", "scarf", "turban", "mask"},
-    "bottom": {"jeans", "trousers", "pants", "shorts", "lungi", "dhoti"},
+    "bottom": {"jeans", "trousers", "pants", "shorts", "lungi", "dhoti", "skirt", "leggings"},
+    "feet":   {"shoes", "boots", "sandals"},
 }
 _SAME_GARMENT = [{"shirt", "tshirt", "t-shirt"}, {"saree", "sari"}, {"cap", "hat"}, {"pants", "trousers"}]
+# Garments people mix up when describing someone ("dark jacket" for a grey
+# hoodie): half a match, never a conflict.
+_NEAR_GARMENTS = [{"hoodie", "jacket", "sweater", "coat"}, {"shirt", "tshirt", "t-shirt", "kurta", "blouse"},
+                  {"trousers", "pants", "jeans"}, {"shoes", "boots"}]
+# Other words for the same thing, mapped onto the vocabulary above before
+# parsing, so a description is read the same however it is worded.
+_APPEARANCE_ALIASES = {
+    # colours
+    "gray": "grey", "charcoal": "grey", "ash": "grey", "mustard": "yellow", "gold": "golden",
+    "burgundy": "maroon", "wine": "maroon", "olive": "green", "cream": "white", "off-white": "white",
+    "ivory": "white", "tan": "khaki", "crimson": "red", "scarlet": "red", "violet": "purple",
+    "lilac": "purple", "rose": "pink", "teal": "blue", "turquoise": "blue", "indigo": "navy",
+    # garments
+    "hoody": "hoodie", "sweatshirt": "hoodie", "jumper": "sweater", "pullover": "sweater",
+    "cardigan": "sweater", "tee": "tshirt", "t-shirt": "tshirt", "tunic": "kurta", "kameez": "kurta",
+    "joggers": "trousers", "trackpants": "trousers", "track-pants": "trousers", "slacks": "trousers",
+    "pants": "trousers", "sari": "saree", "sneakers": "shoes", "sneaker": "shoes", "trainers": "shoes",
+    "shoe": "shoes", "boot": "boots", "chappals": "sandals", "slippers": "sandals",
+    "flip-flops": "sandals", "beanie": "hat", "headscarf": "scarf", "balaclava": "mask",
+    "shawl": "dupatta", "stole": "dupatta", "rucksack": "backpack", "handbag": "bag", "purse": "bag",
+    "tote": "bag", "spectacles": "glasses", "specs": "glasses", "moustache": "mustache",
+    # build / age
+    "elderly": "old", "older": "old", "aged": "old", "younger": "young", "teenage": "young",
+    "teenager": "young", "skinny": "thin", "lean": "thin", "chubby": "heavy", "overweight": "heavy",
+    "plump": "heavy", "well-built": "stocky",
+}
+# Gender words - nouns only (a pronoun in a statement is as likely the
+# speaker's). Read only when the description doesn't hedge.
+_GENDER_WORDS = {
+    "man": "male", "men": "male", "male": "male", "gentleman": "male", "boy": "male", "guy": "male",
+    "woman": "female", "women": "female", "female": "female", "lady": "female", "girl": "female",
+}
+_HEDGES = re.compile(r"\b(maybe|possibly|perhaps|might|could|unsure|not sure|probably|looked like|seemed)\b")
 # Shades a witness confuses: counted as half a match, never as a conflict.
 _NEAR_COLOURS = [{"black", "navy", "dark"}, {"navy", "blue"}, {"red", "maroon"}, {"maroon", "brown"},
                  {"grey", "gray", "white", "silver"}, {"grey", "gray", "dark"}, {"green", "khaki"},
@@ -223,7 +281,7 @@ _OPPOSITE_BUILDS = [frozenset(p) for p in (("tall", "short"), ("thin", "stocky")
 # same moment. Any conflict - different voices, a different cap, tall vs short,
 # conflicting stated roles, an investigator's must_not_merge - rules a pair out.
 IDENTITY_MERGE_SCORE: float = 1.0
-APPEARANCE_SLOT_WEIGHT = {"top": 0.4, "head": 0.4, "bottom": 0.3, "build": 0.2}
+APPEARANCE_SLOT_WEIGHT = {"top": 0.4, "head": 0.4, "bottom": 0.3, "build": 0.2, "feet": 0.2, "hair": 0.2}
 APPEARANCE_EXTRA_WEIGHT: float = 0.2   # per shared accessory/mark (backpack, beard...), max 2
 WEAK_NAME_SCORE: float = 0.5           # surname only: "Kumar"
 INITIAL_NAME_SCORE: float = 1.0        # initial + surname matching ONE full name: "R. Kumar" - as strong as a name
@@ -256,6 +314,7 @@ class Observation:
     # it - a voice print today. See _compute_identity_links().
     source:             str = ""
     identity_embedding: Optional[List[float]] = field(default=None, repr=False)
+    voice_print_speech_sec: Optional[float] = None
     # The FIR's own narrative: it may not confirm the FIR's claims.
     fir_derived:        bool = False
     # Audio with no speaker diarization: one alias covers everyone on the
@@ -265,6 +324,17 @@ class Observation:
     # for the entity's role after grouping, never to keep people apart.
     role_hint:          str = "unknown"
     role_hint_conf:     float = 0.0
+    # The field agent's action tag (ENTER, OBSERVE, ...), if it gave one.
+    action:             str = ""
+    # Others the field agent saw in the same group act (video: two people
+    # leaving together) - provably different people from this one.
+    co_entities:        List[str] = field(default_factory=list)
+    # Identity the record itself gives: a name the speaker/author states for
+    # themselves (or is unambiguously addressed by), and phone numbers /
+    # email addresses that are theirs (a message's sender number, a number
+    # given in a call). Shared by two labels -> one person.
+    self_identified_as: str = ""
+    contact_ids:        List[str] = field(default_factory=list)
     # Free-text description of the person (clothing, build) when the field
     # agent has one - identity evidence across modalities.
     appearance:         str = ""
@@ -272,6 +342,11 @@ class Observation:
     # someone else ("a man in a black hoodie ran") rather than their own act
     # or speech - such a person is not a speaker of that recording.
     reported_by:        str = ""
+    # Text / audio extractor extras: people the observation MENTIONS (not
+    # its actor), the document it came from, and why the role was hinted.
+    mentioned:          List[str] = field(default_factory=list)
+    source_doc:         str = ""
+    role_reason:        str = ""
 
     @property
     def dated(self) -> bool:
@@ -879,12 +954,19 @@ class EntityResolutionPipeline:
     self.case_base_time = cfg.get("case_base_time", None)
     self.temporal_window_sec = cfg.get("temporal_window_sec", TEMPORAL_WINDOW_SEC)
     self.max_temporal_gap_sec = cfg.get("max_temporal_gap_sec", MAX_TEMPORAL_GAP_SEC)
+    self.same_alias_max_gap_sec = cfg.get("same_alias_max_gap_sec", SAME_ALIAS_MAX_GAP_SEC)
     self.max_pairs = cfg.get("max_pairs", MAX_PAIRS)
     self.confirmed_threshold = cfg.get("confirmed_threshold", CONFIRMED_THRESHOLD)
     self.candidate_threshold_low = cfg.get("candidate_threshold_low", CANDIDATE_THRESHOLD_LOW)
     self.candidate_threshold_high = cfg.get("candidate_threshold_high", CANDIDATE_THRESHOLD_HIGH)
     self.llm_enabled = llm_enabled
     self.require_identity_evidence = cfg.get("require_identity_evidence", REQUIRE_IDENTITY_EVIDENCE)
+    # Off by default: re-splitting a cluster because the FIR names more people
+    # treats the FIR's head-count as fact, though FIR claims are what the
+    # evidence is supposed to TEST. With merges already requiring identity
+    # evidence it only split real people when the FIR was wrong (ER recall
+    # on the realistic sets 0.462 -> 0.503 without it, no new wrong merges).
+    self.fir_resplit = cfg.get("fir_resplit", False)
     # Track whether real LLM is active so Stage 8 can use the conservative
     # merge threshold when only heuristics run.
     self._llm_actually_active = (
@@ -1054,15 +1136,27 @@ class EntityResolutionPipeline:
         )
       obs.source = str(item.get("source", "") or "")
       obs.identity_embedding = self._parse_identity_embedding(item.get("identity_embedding"))
+      try:
+        obs.voice_print_speech_sec = float(item["voice_print_speech_sec"])
+      except (KeyError, TypeError, ValueError):
+        obs.voice_print_speech_sec = None
       obs.fir_derived = bool(item.get("fir_derived"))
       obs.undiarized = item.get("extraction_status") == "undiarized"
       obs.role_hint = normalize_role(str(item.get("role_hint") or "unknown"))
+      obs.action = str(item.get("action") or "").strip().upper()
+      obs.co_entities = [normalize_alias(str(c)) for c in (item.get("co_entities") or []) if str(c).strip()]
+      stated = str(item.get("self_identified_as") or "").strip()
+      obs.self_identified_as = normalize_alias(stated) if stated else ""
+      obs.contact_ids = sorted({normalize_contact(c) for c in (item.get("contact_ids") or [])} - {""})
       try:
         obs.role_hint_conf = float(item.get("role_hint_confidence") or 0.0)
       except (TypeError, ValueError):
         obs.role_hint_conf = 0.0
       obs.appearance = str(item.get("appearance") or "")
       obs.reported_by = str(item.get("reported_by") or "")
+      obs.mentioned = [normalize_alias(str(m)) for m in (item.get("mentioned_entities") or []) if str(m).strip()]
+      obs.source_doc = str(item.get("source_doc") or "")
+      obs.role_reason = str(item.get("role_reason") or "")
       if self.check_duplicates:
         fp = f"{obs.entity}|{obs.modality}|{obs.location}|{obs.content}|{obs.timestamp}"
         digest = hashlib.sha256(fp.encode()).hexdigest()
@@ -1163,19 +1257,35 @@ class EntityResolutionPipeline:
     {"top": ("black", "hoodie"), "head": ("red", "cap"), "build": "tall", "extra": set()}.
     A colour word applies to the next garment named."""
     out: Dict[str, Any] = {"extra": set()}
-    colour = None
-    for w in re.findall(r"[a-z][a-z-]*", (text or "").lower()):
-      if w in _APPEARANCE_COLOURS:
-        colour = w
-        continue
-      slot = next((sl for sl, items in _APPEARANCE_SLOTS.items() if w in items), None)
-      if slot:
-        out.setdefault(slot, (colour, w))
-        colour = None
-      elif w in _APPEARANCE_BUILD:
-        out.setdefault("build", w)
-      elif w in _APPEARANCE_ITEMS:
-        out["extra"].add(w)
+    text = (text or "").lower()
+    genders = set()
+    # A colour belongs to a garment in the same phrase only: in "grey hair,
+    # mustard kurta" the grey is the hair's, not the kurta's.
+    for phrase in re.split(r"[,;/()]|\band\b|\bwith\b|\bcarrying\b|\bwearing\b", text):
+      colour = None
+      for w in re.findall(r"[a-z][a-z-]*", phrase):
+        w = _APPEARANCE_ALIASES.get(w, w)
+        if w in _APPEARANCE_COLOURS:
+          colour = w
+          continue
+        if w == "hair":
+          if colour:
+            out.setdefault("hair", colour)
+          colour = None
+          continue
+        if w in _GENDER_WORDS:
+          genders.add(_GENDER_WORDS[w])
+          continue
+        slot = next((sl for sl, items in _APPEARANCE_SLOTS.items() if w in items), None)
+        if slot:
+          out.setdefault(slot, (colour, w))
+          colour = None
+        elif w in _APPEARANCE_BUILD:
+          out.setdefault("build", w)
+        elif w in _APPEARANCE_ITEMS:
+          out["extra"].add(w)
+    if len(genders) == 1 and not _HEDGES.search(text):
+      out["gender"] = genders.pop()
     return out
 
   @staticmethod
@@ -1193,6 +1303,13 @@ class EntityResolutionPipeline:
     score, conflict = 0.0, False
     near = lambda a, b: a == b or any(a in g and b in g for g in _NEAR_COLOURS)
     same_item = lambda a, b: a == b or any(a in g and b in g for g in _SAME_GARMENT)
+    near_item = lambda a, b: any(a in g and b in g for g in _NEAR_GARMENTS)
+    # stated plainly on both sides, a man is not a woman: a veto, never a match
+    # on its own (half of everyone shares it)
+    if pa.get("gender") and pb.get("gender") and pa["gender"] != pb["gender"]:
+      conflict = True
+    if pa.get("hair") and pb.get("hair") and not near(pa["hair"], pb["hair"]):
+      conflict = True                      # grey hair vs black hair
     for slot, base_weight in APPEARANCE_SLOT_WEIGHT.items():
       if slot not in pa or slot not in pb:
         continue
@@ -1205,8 +1322,18 @@ class EntityResolutionPipeline:
         elif frozenset({pa["build"], pb["build"]}) in _OPPOSITE_BUILDS:
           conflict = True
         continue
+      if slot == "hair":
+        if near(pa["hair"], pb["hair"]):
+          score += weight if pa["hair"] == pb["hair"] else weight / 2
+        continue
       (ca, ia), (cb, ib) = pa[slot], pb[slot]
       if not same_item(ia, ib):
+        if near_item(ia, ib):
+          # "dark jacket" for a grey hoodie: half the garment, colours still
+          # checked - but only as support, never a conflict
+          if not ca or not cb or near(ca, cb):
+            score += weight / 4
+          continue
         conflict = True                    # a cap is not a helmet
       elif ca and cb:
         if ca == cb:
@@ -1230,16 +1357,18 @@ class EntityResolutionPipeline:
     return not conflict and score >= WEAK_APPEARANCE_MIN
 
   def _identity_evidence(self, oa: Observation, ob: Observation) -> str:
-    """Why two observations are the same PERSON, or "" if nothing says so.
-    Investigator must_merge is applied separately (_apply_must_merge)."""
+    """Why two observations are the same PERSON outright, or "" - for the
+    merge paths that look at one pair at a time (confirmed-edge groups,
+    singleton attachment). Only a shared label or a voice print: appearance,
+    names and their vetoes (different voices, mentioned people, one
+    document's distinct labels, must_not_merge...) are weighed in
+    _identity_pass, which checks whole groups - a pairwise appearance match
+    here used to merge past those vetoes. Investigator must_merge is
+    applied separately (_apply_must_merge)."""
     if oa.entity_norm == ob.entity_norm and not (oa.undiarized or ob.undiarized):
       return "same_alias"
     if self._same_identity(oa, ob):
       return "voice_print"
-    score, conflict = self._compare_appearance(self._parse_appearance(oa.appearance),
-                                               self._parse_appearance(ob.appearance))
-    if not conflict and score >= IDENTITY_MERGE_SCORE:
-      return "appearance"
     return ""
 
   def _cluster_role(self, members: List[str], independent_only: bool = False) -> Tuple[str, str, bool]:
@@ -1257,6 +1386,11 @@ class EntityResolutionPipeline:
       if role and role != "unknown":
         asserted[role] += 1
       elif o.role_hint != "unknown" and o.role_hint_conf >= ROLE_HINT_MIN_CONF:
+        # someone seen or heard DOING the act (entering, leaving, tampering)
+        # is not shown to be a witness by it - extractors read "reporting
+        # my own actions" as witnessing
+        if o.role_hint == "witness" and o.action in PARTICIPANT_ACTIONS:
+          continue
         hinted[o.role_hint] += o.role_hint_conf
     votes = asserted or hinted
     if not votes:
@@ -1264,6 +1398,20 @@ class EntityResolutionPipeline:
     role = max(sorted(votes), key=lambda r: votes[r])
     conflict = any(not self._roles_compatible(role, r) for r in votes)
     return role, ("observation" if asserted else "role_hint"), conflict
+
+  def _same_alias_ok(self, oa: Observation, ob: Observation, dt: Optional[int]) -> bool:
+    """Two observations under the SAME name: one person if within
+    same_alias_max_gap_sec. Beyond SAME_ALIAS_PLAIN_GAP_SEC (a day) a name
+    alone is only trusted when it is specific - two words, like "Kavya Rao";
+    "Ramesh" or "the guard" on different days may be two people, and then
+    a second signal is needed (the same phone/email, or the same voice)."""
+    if dt is None or dt <= SAME_ALIAS_PLAIN_GAP_SEC:
+      return True
+    if dt > self.same_alias_max_gap_sec:
+      return False
+    words = [w for w in oa.entity_norm.split("_") if w.isalpha() and len(w) > 1]
+    return (len(words) >= 2 or bool(set(oa.contact_ids) & set(ob.contact_ids))
+            or self._same_identity(oa, ob))
 
   def _norm(self, alias: str) -> str:
     """normalize_alias() for a constraint's alias, followed through the text
@@ -1475,11 +1623,18 @@ class EntityResolutionPipeline:
 
     vectors: Dict[Tuple[str, str], List[List[float]]] = defaultdict(list)
     sources: Dict[Tuple[str, str], Set[str]] = defaultdict(set)
+    # seconds of speech behind each alias's print (None = not reported)
+    speech: Dict[Tuple[str, str], Optional[float]] = {}
     for obs in self.observations:
       key = (obs.modality, obs.entity_norm)
       sources[key].add(obs.source)
       if obs.identity_embedding:
         vectors[key].append(obs.identity_embedding)
+        sec = obs.voice_print_speech_sec
+        if key not in speech:
+          speech[key] = sec
+        elif speech[key] is not None:
+          speech[key] = None if sec is None else max(speech[key], sec)
 
     profiles: Dict[Tuple[str, str], List[float]] = {}
     for key, vecs in vectors.items():
@@ -1524,7 +1679,13 @@ class EntityResolutionPipeline:
         "alias_2": kb[1],
         "similarity": round(sim, 4),
       }
-      if sim >= IDENTITY_MATCH_MIN:
+      match_min = IDENTITY_MATCH_MIN
+      if speech.get(ka) is not None and speech.get(kb) is not None:
+        shorter = min(speech[ka], speech[kb])
+        match_min = next(bar for floor, bar in VOICE_PRINT_SPEECH_BARS if shorter >= floor)
+        record["speech_sec"] = round(shorter, 2)
+        record["required_similarity"] = match_min
+      if sim >= match_min:
         decision = "merged"
       elif sim >= IDENTITY_CANDIDATE_MIN:
         decision = "candidate"
@@ -1694,11 +1855,16 @@ class EntityResolutionPipeline:
       obs_group = [o for o in obs_group if not o.undiarized]
       if len(obs_group) < 2:
         continue
-      base = obs_group[0]
-      for other in obs_group[1:]:
-        dt = self._dt(base, other)
-        if dt is None or dt <= self.max_temporal_gap_sec:
-          uf.union(base.obs_id, other.obs_id)
+      # Identical names get their own, much longer gap (same_alias_max_gap_sec):
+      # one person's email at 10:05 and their FIR statement at 11:25 used to
+      # stay two people under the 1-hour limit meant for DIFFERENT labels.
+      # Consecutive observations are compared (in time order), so a chain of
+      # sightings links up instead of each being measured from the first.
+      obs_group = sorted(obs_group, key=lambda o: (not o.dated, o.time_offset_sec, o.obs_id))
+      for prev, other in zip(obs_group, obs_group[1:]):
+        dt = self._dt(prev, other)
+        if self._same_alias_ok(prev, other, dt):
+          uf.union(prev.obs_id, other.obs_id)
 
     # Identity-linked aliases (same voice print across recordings) are one
     # entity. No temporal gate: recordings of the same person can be days
@@ -1724,8 +1890,9 @@ class EntityResolutionPipeline:
       composite = edge.weight
 
       if oa.entity_norm == ob.entity_norm and not (oa.undiarized or ob.undiarized):
-        # Same alias can move across locations during an incident.
-        if temporal_ok and composite >= MERGE_COMPOSITE_MIN:
+        # Same alias can move across locations during an incident, and is
+        # held to the identical-name gap, not the different-label one.
+        if self._same_alias_ok(oa, ob, dt) and composite >= MERGE_COMPOSITE_MIN:
           uf.union(edge.obs_id_1, edge.obs_id_2)
       elif self.require_identity_evidence:
         # Different aliases: merged only on weighed identity evidence, in
@@ -1776,7 +1943,20 @@ class EntityResolutionPipeline:
       if o.undiarized:
         continue   # a shared label for a whole recording identifies nobody
       u = units.setdefault(o.entity_norm, {"obs": [], "apps": [], "dated": [], "roles": set(),
-                                           "voice": set(), "sources": set()})
+                                           "voice": set(), "sources": set(), "mentions": set(),
+                                           "docs": set(), "seen": [], "co": set(),
+                                           "names": set(), "contacts": set()})
+      # people this observation mentions (as the actor's counterparts) and
+      # the document it was read from (canonical names, see _norm)
+      u["mentions"] |= {self._alias_canon.get(m, m) for m in o.mentioned}
+      if o.modality == "text" and o.source_doc:
+        u["docs"].add(o.source_doc)
+      if o.modality == "video" and o.dated:
+        u["seen"].append((o.source, o.time_offset_sec))   # on this camera at this moment
+      u["co"] |= {self._alias_canon.get(c, c) for c in o.co_entities}
+      if o.self_identified_as:
+        u["names"].add(self._alias_canon.get(o.self_identified_as, o.self_identified_as))
+      u["contacts"] |= set(o.contact_ids)
       u["obs"].append(o.obs_id)
       parsed = self._parse_appearance(o.appearance)
       if any(k != "extra" for k in parsed) and parsed not in u["apps"]:
@@ -1813,6 +1993,14 @@ class EntityResolutionPipeline:
         return True
       if ua["sources"] & ub["sources"]:
         return True                        # two speakers of one recording
+      if a in ub["mentions"] or b in ua["mentions"]:
+        return True                        # "Ramesh said Suresh was there": two people
+      if ua["docs"] & ub["docs"]:
+        return True                        # the extractor gave them different labels in one document
+      if a in ub["co"] or b in ua["co"]:
+        return True                        # seen together in one group act
+      if any(sa == sb and abs(ta - tb) <= SEEN_TOGETHER_SEC for sa, ta in ua["seen"] for sb, tb in ub["seen"]):
+        return True                        # two labels on one camera at the same moment: two people
       for ka in ua["voice"]:
         for kb in ub["voice"]:
           va, vb = profiles[ka], profiles[kb]
@@ -1843,6 +2031,13 @@ class EntityResolutionPipeline:
       """(score, reasons, appearance part) - co-occurrence only adds to
       evidence that is already there."""
       reasons, score = [], 0.0
+      ua, ub = units[a], units[b]
+      if b in ua["names"] or a in ub["names"] or ua["names"] & ub["names"]:
+        score += IDENTITY_MERGE_SCORE
+        reasons.append("stated name")
+      if ua["contacts"] & ub["contacts"]:
+        score += IDENTITY_MERGE_SCORE
+        reasons.append("same phone/email: " + ", ".join(sorted(ua["contacts"] & ub["contacts"])))
       wa, wb = self._weak_name.get(a), self._weak_name.get(b)
       if (wa and wa[0] == b) or (wb and wb[0] == a):
         weight = (wa if wa and wa[0] == b else wb)[1]
@@ -1901,11 +2096,16 @@ class EntityResolutionPipeline:
       but it is two different descriptions - look-alikes in the same
       t-shirt, not one person."""
       def agree(pa, pb):
+        if pa.get("gender") and pb.get("gender") and pa["gender"] != pb["gender"]:
+          return False
         for sl in APPEARANCE_SLOT_WEIGHT:
           if sl in pa and sl in pb:
             va, vb = pa[sl], pb[sl]
             if sl == "build":
               if va != vb:
+                return False
+            elif sl == "hair":
+              if va != vb and not any(va in g and vb in g for g in _NEAR_COLOURS):
                 return False
             elif va[1] != vb[1] and not any(va[1] in g and vb[1] in g for g in _SAME_GARMENT):
               return False
@@ -2224,7 +2424,7 @@ class EntityResolutionPipeline:
     this also correctly declines rather than risk cutting the wrong edge).
     """
     self._resplit_log = []
-    if not self.fir_role_counts:
+    if not self.fir_role_counts or not self.fir_resplit:
       return
 
     role_to_clusters: Dict[str, Dict[str, List[str]]] = defaultdict(dict)
@@ -2380,6 +2580,8 @@ class EntityResolutionPipeline:
         "roles": sorted({o.role for o in obs_list}),
         # role as an output of grouping: see _cluster_role
         **dict(zip(("role", "role_source", "role_conflict"), self._cluster_role(members))),
+        # the extractors' stated reasons for the role hints (explainability)
+        "role_reasons": list(dict.fromkeys(o.role_reason for o in obs_list if o.role_reason))[:3],
         "sources": sorted({o.obs_id for o in obs_list}),
         "earliest_timestamp": fmt_ts(min(epochs) if epochs else 0),
         "latest_timestamp": fmt_ts(max(epochs) if epochs else 0),
