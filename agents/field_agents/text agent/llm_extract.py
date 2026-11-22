@@ -55,8 +55,24 @@ QUOTE_MATCH_THRESHOLD = 90
 TPM_LIMIT = int(os.environ.get("GROQ_TPM_LIMIT", "8000"))
 
 
-def _norm(text: str) -> str:
-    text = text.lower().replace("’", "'").replace("“", '"').replace("”", '"')
+def as_text(value) -> str:
+    """An LLM field as plain text. Some models wrap a value as
+    {"value": ..., "evidence": ...} or return a list where a string was
+    asked for; this keeps the checks below from crashing on that."""
+    if value is None:
+        return ""
+    if isinstance(value, dict):
+        for key in ("value", "text", "description", "name"):
+            if key in value:
+                return as_text(value[key])
+        return " ".join(as_text(v) for v in value.values())
+    if isinstance(value, (list, tuple)):
+        return " ".join(as_text(v) for v in value)
+    return str(value)
+
+
+def _norm(text) -> str:
+    text = as_text(text).lower().replace("’", "'").replace("“", '"').replace("”", '"')
     return re.sub(r"\s+", " ", text).strip()
 
 

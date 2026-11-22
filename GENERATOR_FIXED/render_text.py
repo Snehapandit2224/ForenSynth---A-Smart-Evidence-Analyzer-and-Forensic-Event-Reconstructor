@@ -297,9 +297,19 @@ def render_fir(case: dict, chars: dict, informant_eid: str | None, person: dict,
     para2 = ("I saw " + "; then I saw ".join(sights) + "." if sights else
              "I saw some persons near the ATM kiosk behaving in a suspicious manner.")
     leavers = {e["entity_id"] for e in evs if e["action"] in ("exit_atm", "flee_scene")} or set(suspects)
-    para2 += (f" The {'two' if len(leavers) == 2 else len(leavers)} persons left together in a hurry."
-              if len(leavers) > 1 else
-              f" {chars[next(iter(leavers))]['he'].capitalize()} left in a hurry.")
+    # Accused the FIR lists (and describes below) but who do nothing in the
+    # sightings - e.g. CASE_ATM_009's second man, seen on CCTV leaving with the
+    # first: say they were there, or the FIR describes a person it never saw.
+    unseen = [eid for eid in suspects if eid not in named and eid not in leavers]
+    if len(leavers) > 1:
+        para2 += f" The {'two' if len(leavers) == 2 else len(leavers)} persons left together in a hurry."
+    else:
+        lead = next(iter(leavers))
+        company = ""
+        if unseen:
+            company = ", together with " + " and ".join(
+                "another man" if chars[eid]["gender"] == "male" else "another woman" for eid in unseen)
+        para2 += f" {chars[lead]['he'].capitalize()} left in a hurry{company}."
     if len(suspects) == 1:
         desc = f"{chars[suspects[0]]['he'].capitalize()} was {chars[suspects[0]]['look']}."
     else:
@@ -416,12 +426,18 @@ def case_text_dir(out_root: Path, cid: str) -> Path:
     return out_root / cid / "text"
 
 
-def render_case(path: Path, out_root: Path) -> tuple[str, Path, dict]:
+def render_case(path: Path, out_root: Path, looks: dict | None = None) -> tuple[str, Path, dict]:
     case = json.loads(path.read_text(encoding="utf-8"))
     cid = case["case_id"]
     out = case_text_dir(out_root, cid)
     out.mkdir(parents=True, exist_ok=True)
     chars = build_characters(case)
+    # How people actually look in the rendered video, when it differs from the
+    # character sheet (Veo doesn't always follow the prompt): the FIR's
+    # description of the accused must match the CCTV, or nothing can link them.
+    for eid, look in ((looks or {}).get(cid) or {}).items():
+        if eid in chars:
+            chars[eid]["look"] = look
     informant_eid = pick_informant(case)
     if informant_eid:
         person = make_person(cid, informant_eid, chars[informant_eid]["gender"])
@@ -489,6 +505,9 @@ def main():
     ap.add_argument("--db", default=str(ROOT / "forensynth.db"))
     ap.add_argument("--no-llm", action="store_true", help="with --run: no Groq calls, fallback extraction")
     ap.add_argument("--adopt-role-hints", action="store_true", help="passed through to the orchestrator")
+    ap.add_argument("--looks", help='JSON {"CASE_ATM_009": {"suspect_1": "a man in a black cap ...", ...}}: '
+                                    "how people appear in the case's rendered video, overriding the "
+                                    "character sheet in the FIR")
     args = ap.parse_args()
 
     if args.case:
@@ -504,7 +523,8 @@ def main():
 
     failed = []
     for p in paths:
-        cid, out, manifest = render_case(p.resolve(), Path(args.out))
+        looks = json.loads(Path(args.looks).read_text(encoding="utf-8")) if args.looks else None
+        cid, out, manifest = render_case(p.resolve(), Path(args.out), looks)
         if args.run and run_agents(cid, out, manifest, args) != 0:
             failed.append(cid)
     print(f"\nDone. Output in {args.out}" + (f"  |  agent runs failed: {failed}" if failed else ""))

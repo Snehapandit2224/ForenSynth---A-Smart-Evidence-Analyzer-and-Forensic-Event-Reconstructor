@@ -58,15 +58,23 @@ import hashlib
 import itertools
 import json
 import logging
+import os
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from llm_extract import (GROQ_MODEL, GroqJSON, chunk_text, clamp_conf,  # noqa: E402
+from llm_extract import (GROQ_MODEL, GroqJSON, as_text, chunk_text, clamp_conf,  # noqa: E402
                          strip_honorific, ungrounded_words, verify_quote)
+
+# The text agent's default model. gpt-oss-20b (GROQ_MODEL, still the default
+# for the other agents) kept writing FIR testimony from the informant's side
+# ("Kavya saw a man go inside") instead of naming the man as the actor, and
+# its output varied run to run; gpt-oss-120b followed the testimony rule
+# consistently on the same FIR. Override with --model or TEXT_AGENT_MODEL.
+TEXT_MODEL = os.environ.get("TEXT_AGENT_MODEL", "openai/gpt-oss-120b")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s")
 log = logging.getLogger("forensynth.text_agent")
@@ -118,6 +126,8 @@ def _to_naive(dt: datetime | None) -> datetime | None:
 
 
 def _parse_dt(value) -> datetime | None:
+    if isinstance(value, (dict, list, tuple)):     # {"value": "..."} from some models
+        value = as_text(value)
     if value in (None, ""):
         return None
     if isinstance(value, datetime):
@@ -141,11 +151,42 @@ def _parse_dt(value) -> datetime | None:
     return None
 
 
+_CLOSINGS = {"regards", "best regards", "kind regards", "warm regards", "thanks", "thank you",
+             "many thanks", "sincerely", "yours sincerely", "yours faithfully", "yours truly",
+             "cheers", "best", "best wishes"}
+_NAME_WORD = r"(?:[A-Z][a-z]+(?:-[A-Z][a-z]+)?|[A-Z]\.)"
+_HONORIFIC = r"(?:(?:Sri|Shri|Smt|Kum|Mr|Mrs|Ms|Dr)\.?\s+)?"
+_SIGNATURE_LINE = re.compile(rf"(?:[-–—~]+\s*)?({_HONORIFIC}{_NAME_WORD}(?:\s+{_NAME_WORD}){{0,3}})")
+
+
+def signature_name(text: str) -> str | None:
+    """The name a message is signed with, read by code (never the LLM), so
+    the link between a sender alias and a person is verbatim in the text:
+    the LAST line must be just a name, either dash-led ("- Kavya Rao") or
+    right after a closing line ("Regards," / "Kavya Rao")."""
+    lines = [ln.strip() for ln in str(text or "").strip().splitlines() if ln.strip()]
+    if len(lines) < 2:
+        return None
+    last, prev = lines[-1], lines[-2].lower().rstrip(",.!")
+    m = _SIGNATURE_LINE.fullmatch(last)
+    if not m:
+        return None
+    name = m.group(1)
+    if name.lower().rstrip(".") in _CLOSINGS:
+        return None
+    if not (last[0] in "-–—~" or prev in _CLOSINGS):
+        return None
+    return strip_honorific(name)
+
+
 def _doc(doc_id, text, author=None, sent_at=None, doc_type_hint=None, source=None, location=None) -> dict:
+    signed = signature_name(text) if author else None
     return {
         "doc_id": doc_id, "text": text.strip(), "author": author,
         "sent_at": _parse_dt(sent_at), "doc_type_hint": doc_type_hint,
         "source": source or doc_type_hint or "text_document", "location": location,
+        # the sender alias and the name it signs with: one person, proven by the text
+        "signed_as": signed if signed and signed.lower() != str(author).lower() else None,
     }
 
 
@@ -186,12 +227,21 @@ def _is_conversation(recs: list[dict]) -> bool:
 
 def _conversation_doc(stem: str, recs: list[dict]) -> dict:
     recs = sorted(recs, key=lambda r: r["sent_at"])
-    lines = [f"[{r['sent_at'].strftime('%Y-%m-%d %H:%M')}] {r['author']}: {r['text']}" for r in recs]
+    # Seconds kept when the export has them: minute-only times made messages
+    # sent 10:02:31 / 10:02:48 / 10:02:49 look simultaneous.
+    fmt = lambda t: t.strftime("%Y-%m-%d %H:%M:%S" if t.second else "%Y-%m-%d %H:%M")
+    lines = [f"[{fmt(r['sent_at'])}] {r['author']}: {r['text']}" for r in recs]
     d = _doc(stem, "\n".join(lines), author=None, sent_at=recs[0]["sent_at"],
              doc_type_hint=recs[0]["doc_type"] or "chat", source=recs[0]["source"] or "chat",
              location=recs[0]["location"])
     d["is_transcript"] = True
     d["messages"] = [(r["sent_at"], r["author"], r["text"]) for r in recs]
+    # per sender: the one name their messages are signed with (none if they disagree)
+    signed: dict[str, set] = {}
+    for r in recs:
+        if (n := signature_name(r["text"])) and n.lower() != str(r["author"]).lower():
+            signed.setdefault(r["author"], set()).add(n)
+    d["signed_by_sender"] = {a: next(iter(ns)) for a, ns in signed.items() if len(ns) == 1}
     return d
 
 
@@ -402,12 +452,14 @@ Rules:
   In a message transcript (lines like "[YYYY-MM-DD HH:MM] Sender: text") the sender is the actor
   of what they say, and that line's bracketed time is when the message was sent - EXCEPT in an
   audio_transcript (next rule).
-- A recorded call or interview (declared_type "audio_transcript") is testimony: when a speaker
-  describes what someone else did ("a man in a black jacket went inside"), output THAT event with
-  that person as the actor (their name, or an unnamed label like "unknown_man_1") - not "the
-  speaker said ...". The speaker is the actor only of what they did themselves ("I was standing
-  outside"). Questions an interviewer asks are not events - skip them. The chat rule below
-  ("X messaged that ...") does NOT apply to an audio_transcript.
+- A recorded call or interview (declared_type "audio_transcript"), an FIR (declared_type "fir")
+  and a witness statement are testimony. Each thing the speaker describes someone else doing is
+  an event whose actor is THE PERSON WHO DID IT (their name, or an unnamed label such as
+  "unknown_man_1"). Example: "I saw a man going inside the kiosk" -> actor "unknown_man_1",
+  content "unknown_man_1 went inside the ATM kiosk.", evidence "I saw a man going inside the
+  kiosk". The speaker is the actor only of what they did themselves ("I was walking on the
+  footpath" -> actor = the speaker). Questions an interviewer asks are not events - skip them.
+  The chat rule below ("X messaged that ...") does not apply to testimony.
 - "content": one neutral sentence describing the event, third person, past tense. For a chat
   message that only reports or plans something, describe the message (e.g. "Rakesh messaged that
   ..."), and set event_time to the message time.
@@ -423,6 +475,12 @@ Rules:
   "around 8:30 or 8:40 in the night"), else null. "time_basis": explicit (stated outright) |
   relative (computed from another time) | document_date (only the document's own date is known)
   | unknown.
+- In an FIR the document date is when the FIR was REGISTERED, usually after the incident. An
+  incident event with no time of its own takes the incident time narrated before it, with
+  time_basis "relative" (a man loitering, entering and leaving after "at about 10 o'clock" ->
+  about 10:00). Skip the complaint formalities (no connection to the parties, giving this
+  complaint, asking police to act, signatures, the officer registering the case): the FIR record
+  already holds them. A report made during the incident (e.g. calling 112) is an event.
 - "location": where it happened, as written, else null.
 - "tags": any of {sorted(EVENT_TAGS)}.
 - "action": the kind of act, one of {list(ACTIONS)} (WATCH = keeping lookout, LOITER = hanging
@@ -467,7 +525,7 @@ def _descriptions(people: list, chunk: str) -> dict[str, str]:
     out = {}
     for p in people or []:
         if isinstance(p, dict) and p.get("name"):
-            desc = str(p.get("description") or "").strip()
+            desc = as_text(p.get("description")).strip()
             if desc and ungrounded_words(desc, chunk):
                 log.info("  dropped ungrounded description for %s: %.60s", p["name"], desc)
                 desc = ""
@@ -540,6 +598,16 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str],
     tags = {str(t).lower() for t in (raw.get("tags") or [])} & EVENT_TAGS
     if _DENIAL_OR_ALIBI.search(evidence):
         tags.add("denial")
+    event_time = _fix_meridiem(_parse_dt(raw.get("event_time")), raw.get("time_text"))
+    time_text = as_text(raw.get("time_text")).strip()
+    if event_time is not None and basis == "explicit" and not (time_text and verify_quote(time_text, chunk)):
+        # "Explicit" means stated in the text. Without a stated time the model
+        # is rounding the document's own timestamp (an email sent 10:02:31
+        # came back as "explicit 10:02:00", so four emails looked
+        # simultaneous) or guessing - fall back to the document date instead.
+        log.info("  explicit time %s not stated in the text (%r) - using the document date: %.60s",
+                 event_time.isoformat(), time_text, raw.get("content"))
+        event_time, basis = None, "unknown"
     return {
         "actor": actor,
         "role_hint": role if role in ROLE_HINTS else "unknown",
@@ -547,7 +615,7 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str],
         "role_reason": str(raw.get("role_reason") or "")[:300],
         "content": str(raw.get("content") or evidence)[:2000],
         "evidence": evidence[:500],
-        "event_time": _fix_meridiem(_parse_dt(raw.get("event_time")), raw.get("time_text")),
+        "event_time": event_time,
         "time_basis": basis if basis in TIME_BASES else "unknown",
         "location": raw.get("location") or None,
         "mentioned_people": [strip_honorific(aliases.get(str(m).strip().lower(), str(m).strip()))
@@ -622,11 +690,13 @@ def attach_message_times(doc: dict, events: list[dict]) -> None:
     the message its evidence quote comes from - otherwise a whole chat
     collapses onto one timestamp."""
     for ev in events:
-        if ev["event_time"] is not None and ev["time_basis"] != "document_date":
-            continue
+        given = ev["event_time"] if ev["time_basis"] != "document_date" else None
         for sent_at, _author, msg in doc["messages"]:
             if verify_quote(ev["evidence"], msg):
-                ev["event_time"], ev["time_basis"] = sent_at, "explicit"
+                # The message's own time wins when the model gave none, or
+                # gave that same time rounded to the minute.
+                if given is None or abs((given - sent_at).total_seconds()) < 60:
+                    ev["event_time"], ev["time_basis"] = sent_at, "explicit"
                 break
 
 
@@ -849,6 +919,11 @@ def build_fir_record(case_id: str, text: str, raw: dict, extractor: str, source_
     anchors = {f: _field(raw.get(f), text, dropped, f, as_datetime=(f == "date_of_report")) for f in ANCHOR_FIELDS}
 
     inf = raw.get("informant")
+    if isinstance(inf, dict):
+        # Some models wrap each sub-field as {"value": ..., "evidence": ...};
+        # the record keeps plain values (fir_summary lower()s the relation).
+        inf = {k: (v.get("value") if isinstance(v, dict) and k != "evidence" else v)
+               for k, v in inf.items()}
     if isinstance(inf, dict) and inf.get("name"):
         ok = verify_quote(inf.get("evidence"), text)
         if not ok:
@@ -866,6 +941,9 @@ def build_fir_record(case_id: str, text: str, raw: dict, extractor: str, source_
 
     claims: dict = {}
     it = raw.get("incident_time")
+    if isinstance(it, dict):
+        # a model may wrap each value as {"value": ...}
+        it = {k: (as_text(v) if k in ("start", "end", "best_estimate") else v) for k, v in it.items()}
     if isinstance(it, dict) and (it.get("start") or it.get("end")):
         start, end = _parse_dt(it.get("start")), _parse_dt(it.get("end"))
         start, end = start or end, end or start
@@ -960,7 +1038,7 @@ def fir_summary(record: dict) -> dict:
 def process_fir(case_id: str, text: str, source_file: str, llm: GroqJSON) -> tuple[dict, dict, list[dict]]:
     """FIR text -> (record, case-level `fir` summary, fir_derived observations)."""
     raw = llm.ask(_FIR_SYSTEM_PROMPT, f"--- FIR TEXT START ---\n{text}\n--- FIR TEXT END ---", max_tokens=8192)
-    extractor = GROQ_MODEL if raw is not None else "regex_fallback"
+    extractor = llm.model if raw is not None else "regex_fallback"
     if raw is None:
         log.warning("LLM unavailable - FIR record built from labelled form fields only.")
         raw = _regex_fallback(text)
@@ -973,6 +1051,8 @@ def process_fir(case_id: str, text: str, source_file: str, llm: GroqJSON) -> tup
     doc = _doc(f"{case_id}_FIR", text, author=summary.get("informant"),
                sent_at=_parse_dt(summary.get("date_of_report")),
                doc_type_hint="fir", source="fir", location=summary.get("location"))
+    doc["incident_at"] = _parse_dt(summary.get("incident_datetime"))
+    doc["incident_end"] = _parse_dt(summary.get("incident_datetime_end"))
     obs = extract_observations([doc], llm, reference_date=ref, source_override="fir")
     for o in obs:
         o["fir_derived"] = True
@@ -984,6 +1064,62 @@ def process_fir(case_id: str, text: str, source_file: str, llm: GroqJSON) -> tup
 # =============================================================================
 # 4. Assemble obs_only case
 # =============================================================================
+
+# Standard FIR complaint / registration wording - not incident events; the FIR
+# record already holds who reported and when. Matched on an event's evidence quote.
+_FIR_FORMALITY = re.compile(
+    r"no connection with|giving (?:this|the) complaint|request you to (?:take|register)|"
+    r"take (?:necessary |legal )?action against|registered the case|took up (?:the )?investigation|"
+    r"signature of|reasons? for delay|came to the police station|"
+    r"lodg(?:e|ed|ing) (?:this|the|a|my) complaint|"
+    # form header fields quoted as if they were events (registration time, GD entry)
+    r"date and time of (?:fir|report|registration)|information received at|general diary", re.I)
+
+
+def _same_person(a: str | None, b: str | None) -> bool:
+    norm = lambda x: re.sub(r"\s+", " ", (strip_honorific(x) or "").lower()).strip()
+    return bool(a and b) and norm(a) == norm(b)
+
+
+def _fir_event_time(ev: dict, ts, basis: str, last_ts, doc: dict):
+    """An FIR's document date is its REGISTRATION time, often hours after the
+    incident. An event in the informant's account with no time of its own (or
+    only that document date) carries forward the last incident time stated
+    before it in the FIR ("at about 10 o'clock ... then I saw ..."), else the
+    FIR's incident time - not the registration time, which would put the
+    whole incident an hour late and split its people from other evidence.
+    Only the informant's own complaint (action REPORT, actor = informant)
+    keeps the registration time; anything else the model put ON the
+    registration time (the security staff telling the informant something,
+    a passer-by seeing them leave) is an incident event and is re-anchored
+    too. Returns (ts, basis, last_ts)."""
+    registered = doc.get("sent_at")
+    own_complaint = ev.get("action") == "REPORT" and _same_person(ev.get("actor"), doc.get("author"))
+    if ts is not None and basis in ("explicit", "relative"):
+        if not (registered and ts == registered and not own_complaint):
+            return ts, basis, ts
+    elif own_complaint:
+        return ts, basis, last_ts
+    anchor = last_ts or doc.get("incident_at")
+    if anchor is None:
+        return ts, basis, last_ts
+    return anchor, "relative", last_ts
+
+
+def _known_as(actor: str, doc: dict) -> list[str]:
+    """The actor's other proven name: a sender alias <-> the name its message
+    is signed with (see signature_name). ER treats it like the same name."""
+    pairs = dict(doc.get("signed_by_sender") or {})
+    if doc.get("author") and doc.get("signed_as"):
+        pairs[doc["author"]] = doc["signed_as"]
+    a = str(actor or "").strip().lower()
+    for alias, name in pairs.items():
+        if a == str(alias).lower():
+            return [name]
+        if a == name.lower():
+            return [alias]
+    return []
+
 
 def extract_observations(docs: list[dict], llm: GroqJSON | None,
                          reference_date: datetime | None = None,
@@ -1024,13 +1160,22 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
             attach_message_times(doc, events)
         source = source_override or doc_type or doc.get("doc_type_hint") or doc["source"]
         author_contacts = _author_contacts(doc["text"])
+        is_fir = doc.get("doc_type_hint") == "fir"
+        last_ts = None                # FIR: the last incident time stated so far
 
+        if is_fir:
+            kept = [ev for ev in events if not _FIR_FORMALITY.search(ev.get("evidence") or "")]
+            if len(kept) < len(events):
+                log.info("  dropped %d FIR complaint formality line(s)", len(events) - len(kept))
+            events = kept
         for ev in events:
             order += 1
             # the sender's number / address identifies the author - only on
             # the author's own acts, never on people they describe
             own = author_contacts if author_contacts and ev["actor"] == doc.get("author") else []
             ts, basis = ev["event_time"], ev["time_basis"]
+            if is_fir:
+                ts, basis, last_ts = _fir_event_time(ev, ts, basis, last_ts, doc)
             if ts is None:
                 if doc.get("sent_at"):
                     ts, basis = doc["sent_at"], "document_date"
@@ -1049,6 +1194,7 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                 "source": source,
                 "source_doc": doc["doc_id"],
                 "reported_by": doc.get("author"),
+                **({"known_as": k} if (k := _known_as(ev["actor"], doc)) else {}),
                 "location": ev["location"] or doc.get("location") or "unspecified",
                 "content": ev["content"],
                 "evidence": ev["evidence"],
@@ -1063,6 +1209,9 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                 **({"contact_ids": own} if own else {}),
                 "_order": order,
             })
+        if is_fir and extraction == "llm":   # fallback paragraphs are form sections, not events
+            _spread_fir_times([o for o in observations if o["source_doc"] == doc["doc_id"]],
+                              doc.get("incident_end"))
     return observations
 
 
@@ -1093,6 +1242,49 @@ def _author_contacts(text: str) -> list[str]:
             if m not in found:
                 found.append(m)
     return found
+
+
+FIR_SPREAD_MAX_STEP = timedelta(seconds=60)
+
+
+def _spread_fir_times(obs: list[dict], window_end: datetime | None) -> None:
+    """An FIR narrates the incident in order ("hanging around ... then going
+    inside ... then coming out") but usually gives one time for all of it.
+    Several events on the SAME timestamp read as simultaneous, and the
+    Timeline merges one person's same-moment observations into a single
+    event - loiter, enter and exit would collapse into one. So events sharing
+    a timestamp are spaced in narrative order from that time towards the NEXT
+    time the FIR states (e.g. "at around 10:10 I called 112"), or the end of
+    its incident window if none follows - at most FIR_SPREAD_MAX_STEP apart,
+    since the window's end is often a later act (the 112 call), not the end
+    of these events. Marked time_basis "relative" with a time_note. With no
+    later time to bound them, they are left as they are."""
+    groups: dict[str, list[dict]] = {}
+    for o in obs:
+        if o["timestamp"]:
+            groups.setdefault(o["timestamp"], []).append(o)
+    stated = sorted(t for t in (_parse_dt(k) for k in groups) if t)
+    for ts_str, group in groups.items():
+        start = _parse_dt(ts_str)
+        if len(group) < 2 or start is None:
+            continue
+        later = [t for t in stated if t > start]
+        if window_end and window_end > start:
+            later.append(window_end)
+        if not later:
+            continue
+        bound = min(later)
+        group.sort(key=lambda o: o["_order"])
+        step = min((bound - start) / len(group), FIR_SPREAD_MAX_STEP)
+        for i, o in enumerate(group):
+            old = o["time_basis"]
+            o["timestamp"] = (start + step * i).strftime("%Y-%m-%dT%H:%M:%S")
+            o["time_basis"] = "relative"
+            o["time_note"] = (f"interpolated: event {i + 1} of {len(group)} narrated in order from "
+                              f"{ts_str}, {int(step.total_seconds())} s apart, before the next "
+                              f"stated time {bound.strftime('%Y-%m-%dT%H:%M:%S')}")
+            o["confidence"] = round(o["confidence"] / _TIME_BASIS_FACTOR[old]
+                                    * _TIME_BASIS_FACTOR["relative"], 3)
 
 
 def _fir_window(fir: dict, base: datetime | None, obs: list[dict]) -> list[int]:
@@ -1151,7 +1343,7 @@ def main() -> None:
                                              "has no date of its own (default: the FIR's incident date)")
     ap.add_argument("--sample-size", type=int, default=5000, help="Enron rows to scan")
     ap.add_argument("--no-llm", action="store_true", help="Skip the LLM, use the paragraph/regex fallback")
-    ap.add_argument("--model", default=GROQ_MODEL)
+    ap.add_argument("--model", default=TEXT_MODEL, help=f"Groq model (default {TEXT_MODEL})")
     args = ap.parse_args()
 
     paths = list(args.input) + ([args.fir] if args.fir and args.fir not in args.input else [])
