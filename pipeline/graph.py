@@ -306,6 +306,38 @@ def video_intake_node(state: ForenSynthState) -> Dict[str, Any]:
     return {"intake_files": [str(out)]}
 
 
+def find_video_run(folder: Path) -> Optional[Path]:
+    """The video agent's run folder for a case: the one holding a
+    *_video_obs.json (with its *_video_log.json and people_registry.json
+    beside it). `folder` may be that folder or a parent of it."""
+    folder = Path(folder)
+    hits = sorted(folder.glob("*_video_obs.json")) or sorted(folder.rglob("*_video_obs.json"))
+    return hits[0].parent if hits else None
+
+
+def video_logs_intake_node(state: ForenSynthState) -> Dict[str, Any]:
+    """Video from the video agent's SAVED run (its observations, log and
+    people registry) instead of the clips: the agent is not run again. The
+    same enrichment as a fresh run (enrich_video_observations): action,
+    verified clock, appearance, footage quality, group members."""
+    case_id = state["case_id"]
+    run_dir = find_video_run(Path(state["evidence"]["video_logs"]))
+    if run_dir is None:
+        log.warning("No *_video_obs.json under %s - continuing without video evidence.",
+                    state["evidence"]["video_logs"])
+        return {"intake_files": []}
+    src = sorted(run_dir.glob("*_video_obs.json"))[0]
+    raw = json.loads(src.read_text(encoding="utf-8"))
+    # the log / registry are named after the case id the agent ran under
+    raw_case = raw.get("case_id") or src.name[: -len("_video_obs.json")]
+    case = enrich_video_observations({**raw, "case_id": raw_case}, run_dir)
+    _staging(state).mkdir(parents=True, exist_ok=True)
+    out = _staging(state) / f"{case_id}__video_obs_only.json"
+    out.write_text(json.dumps(case, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"  Video  : {len(case.get('observations', []))} observation(s) from the saved run in {run_dir}")
+    return {"intake_files": [str(out)]}
+
+
 def merge_evidence_node(state: ForenSynthState) -> Dict[str, Any]:
     """One case from every source: the orchestrator's merge (chronological
     interleave, single obs_id renumbering, ground-truth fields stripped),
@@ -511,7 +543,9 @@ def route_modalities(state: ForenSynthState) -> List[str]:
         nodes.append("text_intake")
     if ev.get("audio_manifest"):
         nodes.append("audio_intake")
-    if ev.get("video") and state.get("enable_video"):
+    if ev.get("video_logs"):
+        nodes.append("video_logs_intake")        # the saved run, not the clips
+    elif ev.get("video") and state.get("enable_video"):
         nodes.append("video_intake")
     return nodes or ["merge_evidence"]
 
@@ -542,6 +576,7 @@ def build_graph(checkpointer=None):
     g.add_node("text_intake", text_intake_node)
     g.add_node("audio_intake", audio_intake_node)
     g.add_node("video_intake", video_intake_node)
+    g.add_node("video_logs_intake", video_logs_intake_node)
     g.add_node("merge_evidence", merge_evidence_node)
     g.add_node("load_case", load_case_node)
     g.add_node("er", er_node)
@@ -554,10 +589,10 @@ def build_graph(checkpointer=None):
     g.add_node("report", report_node)
     g.add_node("eval", eval_node)
 
-    modality_nodes = ["text_intake", "audio_intake", "video_intake", "merge_evidence"]
+    modality_nodes = ["text_intake", "audio_intake", "video_intake", "video_logs_intake", "merge_evidence"]
     g.add_conditional_edges(START, route_start, ["fir_intake", "load_case"] + modality_nodes)
     g.add_conditional_edges("fir_intake", route_modalities, modality_nodes)
-    for node in ("text_intake", "audio_intake", "video_intake"):
+    for node in ("text_intake", "audio_intake", "video_intake", "video_logs_intake"):
         g.add_edge(node, "merge_evidence")
     g.add_edge("merge_evidence", "load_case")
     g.add_edge("load_case", "er")

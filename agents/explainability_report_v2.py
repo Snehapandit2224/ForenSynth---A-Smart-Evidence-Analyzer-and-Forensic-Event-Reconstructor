@@ -767,7 +767,9 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
         pdf.cell(20, 5, f"EVENT {i}")
         pdf.set_font(FONT_NAME, "", 8.5)
         pdf.cell(30, 5, f"  {t}")
-        pdf.cell(0,  5, f"  {entity}  ·  {safe(location, 50)}")
+        basis = ev.get("basis", "observed")
+        basis_tag = {"observed": "OBSERVED", "reported": "REPORTED", "claim": "FIR CLAIM"}.get(basis, basis.upper())
+        pdf.cell(0,  5, f"  {entity}  ·  {safe(location, 40)}  ·  {basis_tag}")
         pdf.set_text_color(*C_TEXT)
         pdf.set_y(y0 + 10)
 
@@ -776,10 +778,25 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
 
         # ── Plain English ─────────────────────────────────────────────────────
         action_desc = action_to_plain(tags)
+        verb = {"observed": "was recorded", "reported": "was reported",
+                "claim": "is claimed in the FIR"}.get(basis, "was recorded")
+        corroboration = ev.get("corroboration", 0)
+        backers = ev.get("corroborated_by") or []
+        how = {"observed": "Recorded directly (a camera, a log, or the person's own account).",
+               "reported": "Reported by someone describing another person's act - not seen directly.",
+               "claim": "Stated only in the FIR (the complainant's account), tested against the other evidence."
+               }.get(basis, "")
+        if corroboration:
+            backing = (f"Backed by {corroboration} other independent source(s)"
+                       + (f": {', '.join(safe(b, 40) for b in backers[:4])}." if backers else "."))
+        else:
+            backing = "UNCORROBORATED: no other independent source shows this."
         plain = (
-            f"{entity} was captured {action_desc} at:\n"
+            f"{entity} {verb} {action_desc} at:\n"
             f"{location}\n\n"
             f"Time: {t}   Evidence type: {modality.title()}\n"
+            f"How this is known: {how}\n"
+            f"{backing}\n"
             f"Supporting evidence item(s): {', '.join(obs_ids)}"
         )
         if content:
@@ -804,6 +821,7 @@ def build_timeline_section(pdf: ExplainabilityPDF, tl: dict):
             f"obs_ids       : {', '.join(obs_ids)}",
             f"action_tags   : {', '.join(tags) if tags else 'none detected'}",
             f"confidence    : {conf:.4f}  ->  {label}",
+            f"basis         : {basis}   corroboration: {corroboration}",
             f"modality      : {modality}   role: {role}",
             f"conflict_flag : {conflict}",
         ]

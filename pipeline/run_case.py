@@ -78,6 +78,9 @@ def main():
                          "or folders of per-recording *manifest*.json")
     ev.add_argument("--obs-files", nargs="+", help="Ready-made obs_only files to merge in")
     ev.add_argument("--video", help="A video clip, or a folder of a case's clips (video agent)")
+    ev.add_argument("--video-logs", dest="video_logs",
+                    help="The video agent's saved run for this case (the folder with *_video_obs.json, "
+                         "*_video_log.json, people_registry.json) - used instead of re-running it on clips")
     ev.add_argument("--enable-video", action="store_true",
                     help="Actually run the video agent on --video (unverified; off by default)")
     ev.add_argument("--adopt-role-hints", action="store_true",
@@ -106,7 +109,7 @@ def main():
     out = Path(args.output)
     evidence = {"fir": args.fir, "text": args.text_inputs,
                 "audio_manifest": args.audio_manifest, "obs_files": args.obs_files,
-                "video": args.video}
+                "video": args.video, "video_logs": args.video_logs}
     if any(evidence.values()):
         if not args.case:
             p.error("raw evidence needs --case <new case id>")

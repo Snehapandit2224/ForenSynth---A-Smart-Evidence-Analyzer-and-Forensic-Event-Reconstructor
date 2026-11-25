@@ -1,0 +1,564 @@
+{
+  "case_id": "CASE_ATM_021",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Suspicious_Exit",
+  "fir": {
+    "crime_type": "ATM robbery",
+    "location": "Koramangala SBI ATM",
+    "time_window": [
+      0,
+      0
+    ],
+    "description": "A skimming device was recovered from the ATM card slot following a tip-off. Footage confirms 3 suspect(s) had accessed the panel earlier. 2 witness(es) have confirmed their presence at the scene.",
+    "roles": {
+      "suspect": 3,
+      "witness": 2
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O10",
+      "event_ref": "E5",
+      "entity": "R. Das",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Out now. Walk. (partial extract)",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.665,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation",
+        "timestamp_missing"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.723,
+      "action": "EXIT",
+      "time_basis": "unknown"
+    },
+    {
+      "obs_id": "O14",
+      "event_ref": "E4",
+      "entity": "unknown_man_1@complaint_register",
+      "role": "unknown",
+      "modality": "text",
+      "source": "complaint_register",
+      "location": "local police station, complaint desk",
+      "content": "A man in a red hoodie was fiddling with the card slot.",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.586,
+      "noise_tags": [
+        "reported_event",
+        "timestamp_missing"
+      ],
+      "appearance": "red hoodie",
+      "reported_by": "Sunita Menon",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.842,
+      "action": "TAMPER",
+      "time_basis": "unknown"
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E2",
+      "entity": "camera_2_Person_48",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "I arrived and transacted immediately — no waiting.",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.435,
+      "noise_tags": [
+        "contradiction",
+        "temporal_noise",
+        "timestamp_missing"
+      ],
+      "appearance": "red hoodie",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.797,
+      "time_source": "overlay_first+offset(unverified)",
+      "tags": [
+        "denial"
+      ]
+    },
+    {
+      "obs_id": "O5",
+      "event_ref": "E3",
+      "entity": "cctv_atm_Person_80",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_atm",
+      "location": "ATM booth interior, card reader and keypad area",
+      "content": "Suspect enters ATM booth (captured on footage).",
+      "timestamp": "",
+      "time_offset": 0,
+      "confidence": 0.793,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation",
+        "timestamp_missing"
+      ],
+      "appearance": "short, red hoodie, maroon cap",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.781,
+      "action": "ENTER",
+      "time_source": "overlay_first+offset(unverified)"
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E1",
+      "entity": "Rahul",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Walking up to it now. Clear? (forwarded)",
+      "timestamp": "2024-01-15T15:30:43+05:30",
+      "time_offset": 43,
+      "confidence": 0.752,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.436,
+      "action": "APPROACH",
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "camera_1_Person_13",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_1",
+      "location": "ATM booth entrance, exterior facing",
+      "content": "Subject is seen nearing the ATM from the main road (partially obscured).",
+      "timestamp": "2024-01-15T15:30:53+05:30",
+      "time_offset": 53,
+      "confidence": 0.771,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "appearance": "short, red hoodie, maroon cap",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.592,
+      "action": "REPORT",
+      "time_source": "overlay_first+offset(unverified)"
+    },
+    {
+      "obs_id": "O13",
+      "event_ref": "E1",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I saw a short man in a red hoodie and a maroon cap heading towards the ATM.",
+      "timestamp": "2024-01-15T10:01:11",
+      "time_offset": 71,
+      "confidence": 0.641,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, red hoodie, maroon cap",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.778,
+      "action": "APPROACH",
+      "time_basis": "relative"
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E3",
+      "entity": "R. Das",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Inside. Booth is empty.",
+      "timestamp": "2024-01-15T15:32:58+05:30",
+      "time_offset": 178,
+      "confidence": 0.828,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "role_hint": "victim",
+      "role_hint_confidence": 0.765,
+      "action": "STEAL",
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E4",
+      "entity": "cctv_entrance_Person_38",
+      "role": "unknown",
+      "modality": "video",
+      "source": "cctv_entrance",
+      "location": "ATM lobby doorway, entry/exit point",
+      "content": "A suspect was observed making unexplained contact with the ATM card panel.",
+      "timestamp": "2024-01-15T10:04:01Z",
+      "time_offset": 241,
+      "confidence": 0.885,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "appearance": "short, red hoodie, maroon cap",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.847,
+      "time_source": "overlay_first+offset(unverified)"
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E4",
+      "entity": "Rahul",
+      "role": "unknown",
+      "modality": "text",
+      "source": "email_log",
+      "location": "remote — email server log",
+      "content": "Device placed. Looks stock.",
+      "timestamp": "2024-01-15T15:34:05+05:30",
+      "time_offset": 245,
+      "confidence": 0.888,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.859,
+      "action": "TAMPER",
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E5",
+      "entity": "camera_2_Person_48",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_2",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "Individual leaves ATM booth (wide-angle view).",
+      "timestamp": "2024-01-15T15:34:23+05:30",
+      "time_offset": 263,
+      "confidence": 0.842,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "appearance": "red hoodie",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.801,
+      "action": "EXIT",
+      "time_source": "overlay_first+offset(unverified)"
+    },
+    {
+      "obs_id": "O15",
+      "confidence": 0.636,
+      "event_ref": "E5",
+      "entity": "camera_2_Person_48",
+      "role": "unknown",
+      "modality": "video",
+      "source": "camera_9",
+      "location": "ATM kiosk exterior, street-side view",
+      "content": "Subject is seen leaving the ATM area.",
+      "timestamp": "2024-01-15T10:05:03",
+      "time_offset": 303,
+      "action": "EXIT",
+      "time_source": "verified_clock",
+      "noise_tags": [
+        "scenario_double_exit"
+      ]
+    },
+    {
+      "obs_id": "O12",
+      "event_ref": "E7",
+      "entity": "witness_statement_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I'd like to speak to an officer about what I saw at the kiosk (per call log transcript).",
+      "timestamp": "2024-01-15T10:07:40",
+      "time_offset": 460,
+      "confidence": 0.883,
+      "noise_tags": [
+        "temporal_noise",
+        "semantic_variation"
+      ],
+      "identity_embedding": [
+        0.0336,
+        -0.0478,
+        0.224,
+        0.2188,
+        0.1454,
+        0.0794,
+        0.0017,
+        0.0731,
+        0.1021,
+        0.0801,
+        0.1139,
+        -0.1922,
+        0.0521,
+        0.1055,
+        -0.1778,
+        -0.1944,
+        0.0779,
+        -0.0681,
+        -0.1428,
+        -0.2,
+        0.0212,
+        -0.0685,
+        -0.0117,
+        0.0975,
+        -0.0588,
+        0.0431,
+        -0.1133,
+        -0.0601,
+        0.0151,
+        0.2291,
+        0.0758,
+        0.1208,
+        0.1605,
+        -0.011,
+        -0.0544,
+        0.0673,
+        -0.1783,
+        0.3006,
+        0.0746,
+        0.0397,
+        0.0795,
+        0.0293,
+        0.07,
+        0.2716,
+        -0.0014,
+        0.0767,
+        -0.08,
+        0.0946,
+        0.0352,
+        -0.0023,
+        -0.0779,
+        0.1027,
+        0.1276,
+        -0.0528,
+        -0.1697,
+        0.1874,
+        -0.1581,
+        -0.0925,
+        -0.0128,
+        0.2379,
+        -0.0051,
+        -0.1579,
+        -0.2091,
+        0.0739
+      ],
+      "role_hint": "witness",
+      "role_hint_confidence": 0.77,
+      "action": "REPORT",
+      "time_basis": "explicit"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_08",
+          "text": "email_45"
+        },
+        "all_aliases": [
+          "R. Das",
+          "Rahul",
+          "camera_1_Person_13",
+          "camera_2_Person_48",
+          "cctv_atm_Person_80",
+          "cctv_entrance_Person_38",
+          "unknown_man_1@complaint_register",
+          "unknown_man_1@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "suspect_2",
+        "role": "suspect",
+        "aliases": {
+          "video": "Person_30"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "suspect_3",
+        "role": "suspect",
+        "aliases": {
+          "audio": "Speaker_Z",
+          "text": "sms_22"
+        },
+        "all_aliases": []
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_U"
+        },
+        "all_aliases": [
+          "witness_statement_SPEAKER_00"
+        ]
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "text": "report_43"
+        },
+        "all_aliases": []
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:50",
+        "time_offset": 50
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "loiter_near_atm",
+        "timestamp": "2024-01-15T10:02:41",
+        "time_offset": 161
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:03:05",
+        "time_offset": 185
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "tamper_atm",
+        "timestamp": "2024-01-15T10:03:59",
+        "time_offset": 239
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:04:11",
+        "time_offset": 251
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:04:18",
+        "time_offset": 258
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:07:37",
+        "time_offset": 457
+      }
+    ],
+    "entity_mapping": {
+      "R. Das": "suspect_1",
+      "Rahul": "suspect_1",
+      "camera_1_Person_13": "suspect_1",
+      "camera_2_Person_48": "suspect_1",
+      "cctv_atm_Person_80": "suspect_1",
+      "cctv_entrance_Person_38": "suspect_1",
+      "unknown_man_1@complaint_register": "suspect_1",
+      "unknown_man_1@witness_statement": "suspect_1",
+      "witness_statement_SPEAKER_00": "witness_1"
+    },
+    "obs_entity": {
+      "O10": "suspect_1",
+      "O14": "suspect_1",
+      "O3": "suspect_1",
+      "O5": "suspect_1",
+      "O2": "suspect_1",
+      "O1": "suspect_1",
+      "O13": "suspect_1",
+      "O6": "suspect_1",
+      "O7": "suspect_1",
+      "O8": "suspect_1",
+      "O9": "suspect_1",
+      "O15": "suspect_1",
+      "O12": "witness_1"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.2,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.6,
+      "undiarized_audio": 0.3,
+      "timestamp_gaps": 0.15,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "agent_metadata": true,
+      "scenarios": true,
+      "scenario_rate": 0.5,
+      "difficulty": "medium",
+      "wrong_hint_rate": 0.1,
+      "low_hint_rate": 0.1,
+      "tz_source_rate": 0.5,
+      "fir_error_count": 1,
+      "action_error_rate": 0.1,
+      "action_missing_rate": 0.1
+    },
+    "appearance": {
+      "suspect_1": "short, red hoodie, maroon cap",
+      "suspect_2": "stocky, navy sweater, helmet",
+      "suspect_3": "stocky, yellow shirt, maroon scarf",
+      "witness_1": "tall, maroon hoodie, navy scarf",
+      "witness_2": "tall, maroon jacket, grey cap"
+    },
+    "names": {
+      "suspect_1": "Rahul Das",
+      "suspect_2": "Ramesh Das",
+      "suspect_3": "Kiran Das",
+      "witness_1": "Meena Das",
+      "witness_2": "Sunita Menon"
+    },
+    "fir_errors": [
+      {
+        "type": "time_window",
+        "fir_value": [
+          0,
+          0
+        ],
+        "true_value": [
+          0,
+          543
+        ]
+      }
+    ],
+    "expected_findings": [
+      {
+        "check": "act_sequence_inconsistent",
+        "scenario": "double_exit",
+        "event": "E5"
+      }
+    ]
+  }
+}

@@ -313,6 +313,130 @@ def fir_summary(record: dict) -> dict:
 
 
 # =============================================================================
+# Timing the FIR's claims
+# =============================================================================
+
+# Acts at the scene. An FIR claim of one of these happened during the
+# incident; anything else (the bank's later notice, a request for action,
+# the complainant's belief) keeps the time the extractor gave it.
+_SCENE_ACTS = {"APPROACH", "ENTER", "WITHDRAW", "TAMPER", "LOITER", "EXIT", "FLEE", "STEAL", "ASSAULT",
+               "WATCH", "OBSERVE", "NAVIGATE", "WORK"}
+_RECEIVED = re.compile(r"Information received at P\.?\s*S\.?\s*:?\s*Date\s*:?\s*(\d{1,2}/\d{1,2}/\d{4})\s*,?\s*"
+                       r"Time\s*:?\s*(\d{1,2}[:.]\d{2})", re.I)
+
+
+def _report_time(text: str, summary: dict) -> tuple[datetime | None, str]:
+    """When the complainant reported to the police: the FIR's "Information
+    received at P.S." line, else the FIR's own date and time."""
+    m = _RECEIVED.search(text)
+    if m:
+        try:
+            return datetime.strptime(f"{m.group(1)} {m.group(2).replace('.', ':')}", "%d/%m/%Y %H:%M"), m.group(0)
+        except ValueError:
+            pass
+    return _parse_dt(summary.get("date_of_report")), ""
+
+
+def place_fir_claims(obs: list[dict], summary: dict, text: str) -> list[dict]:
+    """Times for the FIR's statements, which the extractor dates by the FIR's
+    filing time or the window's first second when the FIR gives no time:
+
+      - a claim about the scene (pacing, working on the reader, leaving, an
+        assault, a bystander watching) happened inside the FIR's incident
+        window. One the FIR times exactly inside it keeps that time; the rest
+        are placed in the window in the order the FIR tells them, marked
+        time_basis "window" with the window itself (claim_window) - a
+        placement, not a time; the Timeline links them by act within it.
+      - the complainant reporting to the police is its own observation, timed
+        by "Information received at P.S." (re-timed if the extractor made
+        one, created if not).
+    Everything else is left as extracted."""
+    start, end = _parse_dt(summary.get("incident_datetime")), _parse_dt(summary.get("incident_datetime_end"))
+    informant = summary.get("informant")
+
+    reported_at, quote = _report_time(text, summary)
+    reports = [o for o in obs if informant and o.get("entity") == informant and o.get("action") == "REPORT"]
+    if reported_at:
+        stamp = reported_at.strftime("%Y-%m-%dT%H:%M:%S")
+        for o in reports:
+            o["timestamp"], o["time_basis"] = stamp, "explicit"
+            o["evidence"] = quote or o.get("evidence", "")
+        if not reports and informant and obs:
+            template = obs[0]
+            obs.append({**template, "entity": informant, "role_hint": "unknown", "role_hint_confidence": 0.0,
+                        "role_reason": "", "content": f"{informant} reported the incident to the police.",
+                        "evidence": quote, "mentioned_entities": [], "appearance": "", "action": "REPORT",
+                        "tags": [], "timestamp": stamp, "time_basis": "explicit", "confidence": 0.8,
+                        "_order": max(o.get("_order", 0) for o in obs) + 1})
+
+    if not start:
+        return obs
+    end = end if end and end >= start else start
+    window = [start.strftime("%Y-%m-%dT%H:%M:%S"), end.strftime("%Y-%m-%dT%H:%M:%S")]
+    claims = sorted((o for o in obs if o.get("action") in _SCENE_ACTS and o not in reports),
+                    key=lambda o: o.get("_order", 0))
+    untimed = []
+    for o in claims:
+        o["claim_window"] = window
+        t = _parse_dt(o.get("timestamp"))
+        if not (t and start < t < end):
+            untimed.append(o)
+    span = (end - start).total_seconds()
+    for i, o in enumerate(untimed, start=1):
+        t = start + (end - start) * (i / (len(untimed) + 1)) if span else start
+        o["timestamp"], o["time_basis"] = t.strftime("%Y-%m-%dT%H:%M:%S"), "window"
+    return obs
+
+
+_CONTACT = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d ()-]{8,}\d")
+_ROLE_OF_LIST = {"accused": "suspect", "witnesses": "witness", "victims": "victim"}
+
+
+def attach_fir_identities(obs: list[dict], record: dict) -> list[dict]:
+    """What the FIR record knows about each person - description, phone,
+    email - onto the FIR observations of that person, where ER can use it
+    as identity evidence (it only compares what is ON observations; in the
+    record alone, "pink cap, face mask, grey hooded sweatshirt ..." never
+    reached the CCTV's Person_94).
+
+      - a NAMED person: the observations whose actor is that name.
+      - an UNNAMED person: only when the FIR has exactly one unnamed person
+        in that role, onto its unknown-person observations with that role
+        hint. With two unnamed accused, which observation is which is a
+        guess - nothing is attached.
+    A description is only added where the observation has none; contacts are
+    phone numbers / emails written in that person's own FIR entry."""
+    claims = record.get("claims") or {}
+    for list_name, role in _ROLE_OF_LIST.items():
+        people = claims.get(list_name) or []
+        unnamed = [p for p in people if not p.get("name")]
+        for p in people:
+            words = f"{p.get('description') or ''} {p.get('evidence') or ''}"
+            contacts = sorted(set(_CONTACT.findall(words)))
+            if p.get("name"):
+                name = p["name"].strip().lower()
+                targets = [o for o in obs if str(o.get("entity", "")).strip().lower() == name]
+            elif len(unnamed) == 1:
+                targets = [o for o in obs if str(o.get("entity", "")).lower().startswith("unknown")
+                           and o.get("role_hint") == role]
+            else:
+                targets = []
+            for o in targets:
+                if p.get("description") and not o.get("appearance"):
+                    o["appearance"] = p["description"]
+                if contacts:
+                    o["contact_ids"] = sorted(set(o.get("contact_ids") or []) | set(contacts))
+                o["fir_identity"] = list_name
+    informant = (record.get("anchors") or {}).get("informant") or {}
+    phone = str(informant.get("phone") or "")
+    if informant.get("name") and _CONTACT.search(phone):
+        for o in obs:
+            if str(o.get("entity", "")).strip().lower() == informant["name"].strip().lower():
+                o["contact_ids"] = sorted(set(o.get("contact_ids") or []) | {phone})
+    return obs
+
+
+# =============================================================================
 # Main entry
 # =============================================================================
 
@@ -332,6 +456,8 @@ def process_fir(case_id: str, text: str, source_file: str, llm: GroqJSON) -> tup
     doc = _doc(f"{case_id}_FIR", text, author=informant, sent_at=_parse_dt(summary.get("date_of_report")),
                doc_type_hint="fir", source="fir", location=summary.get("location"))
     obs = extract_observations([doc], llm, reference_date=ref, source_override="fir")
+    obs = place_fir_claims(obs, summary, text)
+    obs = attach_fir_identities(obs, record)
     for o in obs:
         o["fir_derived"] = True
     if not obs:

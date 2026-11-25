@@ -43,6 +43,9 @@ EVIDENCE_KINDS = {
     "text":  {".txt", ".md", ".eml", ".json"},   # text_agent.py inputs
     "audio": AUDIO_EXTENSIONS,                   # audio_agent.py
     "video": {".mp4", ".mov", ".webm", ".mkv"},  # video agent (unverified)
+    "fir":   {".txt"},                           # fir_agent.py - anchors the case
+    "video_logs": {".json"},                     # the video agent's saved run (obs, log, people registry)
+    "ground_truth": {".json"},                   # the case's ground truth - scored after the run, if given
 }
 _SAFE_ID       = re.compile(r"[A-Za-z0-9_-]{1,64}")
 _SAFE_FILENAME = re.compile(r"[A-Za-z0-9 ._()-]{1,128}")
@@ -96,6 +99,9 @@ class RunCaseRequest(BaseModel):
     audio: list[AudioClip] = []
     video_files: list[str] = []
     analyse_video: bool = False      # video agent is unverified: off unless asked
+    fir_file: Optional[str] = None   # the FIR (.txt): anchors the case (time window, people, place)
+    video_log_files: list[str] = []  # the video agent's saved run - used INSTEAD of analysing clips
+    ground_truth_file: Optional[str] = None  # the case's ground truth: the run is scored against it
     no_llm: bool = False
     must_merge: Optional[list[list[str]]] = None
     must_not_merge: Optional[list[list[str]]] = None
@@ -160,8 +166,9 @@ def _build_result(case_id: str, obs_data: dict, no_llm: bool) -> dict:
 
     er_entities = []
     for ent in er.get("canonical_entities", []):
+        # ER outputs one `role` per entity (its older output had a `roles` list)
         roles = ent.get("roles") or []
-        er_entities.append({**ent, "role": roles[0] if roles else "unknown"})
+        er_entities.append({**ent, "role": ent.get("role") or (roles[0] if roles else "unknown")})
 
     return {
         "case_id":  case_id,
@@ -388,22 +395,32 @@ def run_case(req: RunCaseRequest):
     obs_paths = [_evidence_path(req.case_id, "obs", f) for f in req.obs_files]
     text_paths = [_evidence_path(req.case_id, "text", f) for f in req.text_files]
     video_paths = [_evidence_path(req.case_id, "video", f) for f in req.video_files]
+    fir_path = _evidence_path(req.case_id, "fir", req.fir_file) if req.fir_file else None
+    gt_path = _evidence_path(req.case_id, "ground_truth", req.ground_truth_file) if req.ground_truth_file else None
+    video_log_paths = [_evidence_path(req.case_id, "video_logs", f) for f in req.video_log_files]
+    if video_log_paths and not any(p.name.endswith("_video_obs.json") for p in video_log_paths):
+        raise HTTPException(status_code=400, detail="The video logs need the run's *_video_obs.json "
+                                                    "(with its *_video_log.json and people_registry.json).")
     for clip in req.audio:
         _evidence_path(req.case_id, "audio", clip.filename)
         if not clip.start_time.strip() or not clip.location.strip():
             raise HTTPException(status_code=400, detail=f"{clip.filename}: start time and location are required")
 
-    run_video = bool(video_paths) and req.analyse_video
+    # the saved run replaces analysing the clips
+    run_video = bool(video_paths) and req.analyse_video and not video_log_paths
     warnings: list[str] = []
-    if video_paths and not run_video:
+    if video_paths and video_log_paths:
+        warnings.append("Video logs given: the saved video-agent run was used, the clips were not analysed.")
+    elif video_paths and not run_video:
         warnings.append(f"{len(video_paths)} video clip(s) stored but not analysed "
                         "(video agent is unverified - tick 'Analyse video' to run it).")
-    if not (obs_paths or text_paths or req.audio or run_video):
-        raise HTTPException(status_code=400, detail="No evidence to analyse: add an obs_only file, "
-                                                    "text documents, audio recordings, or enable video analysis.")
+    if not (obs_paths or text_paths or req.audio or run_video or video_log_paths or fir_path):
+        raise HTTPException(status_code=400, detail="No evidence to analyse: add an FIR, an obs_only file, "
+                                                    "text documents, audio recordings, video logs, "
+                                                    "or enable video analysis.")
 
     cmd = [PYTHON, RUN_CASE, "--output", str(_root / "output")]
-    raw_evidence = bool(text_paths or req.audio or run_video)
+    raw_evidence = bool(text_paths or req.audio or run_video or video_log_paths or fir_path)
     if len(obs_paths) == 1 and not raw_evidence:
         case_id = json.loads(obs_paths[0].read_text(encoding="utf-8-sig")).get("case_id") or req.case_id
         if case_id != req.case_id:
@@ -412,6 +429,10 @@ def run_case(req: RunCaseRequest):
     else:
         case_id = req.case_id
         cmd += ["--case", case_id]
+        if fir_path:
+            cmd += ["--fir", str(fir_path)]
+        if video_log_paths:
+            cmd += ["--video-logs", str(_evidence_dir(case_id, "video_logs").resolve())]
         if obs_paths:
             cmd += ["--obs-files", *map(str, obs_paths)]
         if text_paths:
@@ -427,7 +448,7 @@ def run_case(req: RunCaseRequest):
             manifest_path = audio_dir / "clips.json"
             manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
             cmd += ["--audio-manifest", str(manifest_path)]
-        if video_paths:
+        if video_paths and not video_log_paths:
             cmd += ["--video", str(_evidence_dir(case_id, "video").resolve())]
             if run_video:
                 cmd.append("--enable-video")
@@ -462,5 +483,28 @@ def run_case(req: RunCaseRequest):
         "audio_files": [Path(c.filename).name for c in req.audio],
         "video_files": [p.name for p in video_paths],
         "video_analysed": run_video,
+        "fir_file": fir_path.name if fir_path else None,
+        "video_log_files": [p.name for p in video_log_paths],
+        "ground_truth_file": gt_path.name if gt_path else None,
     }
+    if gt_path:
+        result["evaluation"], result["evaluation_error"] = _evaluate(
+            case_id, gt_path, {c.filename: c.start_time for c in req.audio},
+            _evidence_dir(case_id, "video_logs") if video_log_paths else None)
     return result
+
+
+def _evaluate(case_id: str, gt_path: Path, audio_starts: dict, video_logs: Optional[Path]):
+    """Score the run that just finished against the uploaded ground truth
+    (pipeline/evaluate_traced.py). Returns (evaluation, error) - a failure to
+    score never fails the run itself."""
+    try:
+        if str(_root / "pipeline") not in sys.path:
+            sys.path.insert(0, str(_root / "pipeline"))
+        from evaluate_traced import score_run
+        gt_case = json.loads(gt_path.read_text(encoding="utf-8-sig"))
+        if "ground_truth" not in gt_case or "observations" not in gt_case:
+            return None, f"{gt_path.name} is not a ground-truth file (needs 'ground_truth' and 'observations')."
+        return score_run(_root / "output", case_id, gt_case, None, video_logs, audio_starts), None
+    except Exception as exc:   # report it on the page, keep the run's results
+        return None, f"Evaluation failed: {exc}"

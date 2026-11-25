@@ -111,6 +111,10 @@ ACTION_TAGS: Dict[str, Set[str]] = {
     "perform_legit_work": {"WORK"},
     "observe_exit": {"OBSERVE", "EXIT"},
     "report_incident": {"REPORT"},
+    # real-case answer keys (FIR events): arriving at / being near the ATM,
+    # and an assault - no ASSAULT tag exists yet, so a reading as STEAL misses
+    "arrive_at_atm": {"APPROACH", "ENTER", "NAVIGATE"}, "be_near_atm": {"APPROACH", "LOITER", "OBSERVE"},
+    "assault": {"ASSAULT"},
     "initiate_communication": {"COMMUNICATE"}, "respond_to_communication": {"COMMUNICATE"},
     "exchange_information": {"COMMUNICATE"}, "coordinate_activity": {"COMMUNICATE"},
     "confirm_plan": {"CONFIRM", "COMMUNICATE"},

@@ -144,7 +144,7 @@ html,body{height:100%;background:var(--graphite);color:var(--text-primary);font-
 /* ── Input Zone ──────────────────────────────────────── */
 .input-zone{
   padding:24px 24px 0;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
 }
 @media (max-width:1200px){.input-zone{grid-template-columns:1fr 1fr;}}
 .ev-group:empty{display:none;}
@@ -838,6 +838,37 @@ input[type=file]{display:none;}
           <input type="file" id="dir_video" webkitdirectory multiple onchange="addEvidence('video', event.target.files); event.target.value='';"/>
         </div>
 
+        <div class="drop-card" id="drop_fir"
+             onclick="document.getElementById('file_fir').click()"
+             ondragover="handleDragOver(event,'drop_fir')"
+             ondragleave="handleDragLeave('drop_fir')"
+             ondrop="handleEvidenceDrop(event,'fir')">
+          <div class="drop-label">Raw Evidence</div>
+          <div class="drop-icon">📋</div>
+          <div class="drop-title">FIR</div>
+          <div class="drop-hint">Drop the FIR <code style="font-size:10px;color:var(--tobacco);">.txt</code> or its folder<br/>Anchors the case: time window, place, people → FIR Agent</div>
+          <div class="drop-filename" id="name_fir">—</div>
+          <button type="button" class="drop-folder-btn" title="Pick the folder holding the FIR (an FIR_*.txt inside is used)"
+                  onclick="event.stopPropagation(); document.getElementById('dir_fir').click()">📁 Add folder</button>
+          <input type="file" id="file_fir" accept=".txt" onchange="addEvidence('fir', event.target.files); event.target.value='';"/>
+          <input type="file" id="dir_fir" webkitdirectory multiple onchange="addEvidence('fir', event.target.files); event.target.value='';"/>
+        </div>
+        <div class="drop-card" id="drop_video_logs"
+             onclick="document.getElementById('dir_video_logs').click()"
+             ondragover="handleDragOver(event,'drop_video_logs')"
+             ondragleave="handleDragLeave('drop_video_logs')"
+             ondrop="handleEvidenceDrop(event,'video_logs')">
+          <div class="drop-label">Raw Evidence</div>
+          <div class="drop-icon">🗂</div>
+          <div class="drop-title">Video Logs</div>
+          <div class="drop-hint">Pick the video agent's run folder for the case<br/><code style="font-size:10px;color:var(--tobacco);">*_video_obs.json · *_video_log.json · people_registry.json</code><br/>Used instead of analysing the clips</div>
+          <div class="drop-filename" id="name_video_logs">—</div>
+          <button type="button" class="drop-folder-btn" title="Pick the run folder (e.g. agents/field_agents/video_agent/runs/CASE_ATM_001)"
+                  onclick="event.stopPropagation(); document.getElementById('dir_video_logs').click()">📁 Add folder</button>
+          <input type="file" id="file_video_logs" accept=".json" multiple onchange="addEvidence('video_logs', event.target.files); event.target.value='';"/>
+          <input type="file" id="dir_video_logs" webkitdirectory multiple onchange="addEvidence('video_logs', event.target.files); event.target.value='';"/>
+        </div>
+
       </div>
 
       <!-- Evidence details (shown once any evidence is added) -->
@@ -855,6 +886,21 @@ input[type=file]{display:none;}
           </div>
           <div class="constraint-hint">A single obs_only file on its own keeps its own case ID (so ground-truth evaluation still applies).</div>
 
+          <div class="constraint-row">
+            <div class="constraint-label">Ground truth</div>
+            <div style="flex:1;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <input type="file" id="file_gt" accept=".json" style="display:none"
+                     onchange="setGroundTruth(event.target.files); event.target.value='';"/>
+              <button type="button" class="drop-folder-btn" style="margin:0;"
+                      onclick="document.getElementById('file_gt').click()">Choose file</button>
+              <span id="name_gt" style="font-size:11px;color:var(--text-dim);">Optional</span>
+              <button type="button" class="audio-clip-remove" id="clear_gt" title="Remove" style="display:none;"
+                      onclick="setGroundTruth([])">✕</button>
+            </div>
+          </div>
+          <div class="constraint-hint">The case's ground-truth file (e.g. CASE_ATM_001.json). If given, the run is scored against it - see the Evaluation tab.</div>
+
+          <div id="evList_fir" class="ev-group"></div>
           <div id="evList_obs" class="ev-group"></div>
           <div id="evList_text" class="ev-group"></div>
 
@@ -869,6 +915,7 @@ input[type=file]{display:none;}
             <div class="constraint-hint" style="padding-left:0;">Audio alone cannot tell when or where it was recorded. A clip's <code>*_Manifest.json</code> (dropped with it, or in its folder) fills these in; check them before running. Speakers are labelled per recording; ER links the same person across recordings by voice.</div>
           </div>
 
+          <div id="evList_video_logs" class="ev-group"></div>
           <div id="evList_video" class="ev-group"></div>
           <div id="videoToggleRow" class="config-row" style="display:none;">
             <div class="config-item">
@@ -983,6 +1030,7 @@ input[type=file]{display:none;}
           <button class="output-tab" onclick="switchTab('showrunner',this)">Showrunner</button>
           <button class="output-tab" onclick="switchTab('iterlog',this)">Iter Log</button>
           <button class="output-tab" onclick="switchTab('outputs',this)">Outputs</button>
+          <button class="output-tab" onclick="switchTab('evaluation',this)">Evaluation</button>
         </div>
         <div id="outputCaseBadge" style="margin-left:auto;"></div>
       </div>
@@ -1037,6 +1085,11 @@ input[type=file]{display:none;}
         </div>
       </div>
 
+      <!-- Evaluation tab (scores against the ground truth, when one was given) -->
+      <div class="tab-panel" id="tab-evaluation">
+        <div class="explain-grid" id="evaluationBody"></div>
+      </div>
+
       <!-- Outputs tab (post-pipeline video + report) -->
       <div class="tab-panel" id="tab-outputs">
         <div class="explain-grid" id="postOutputsGrid"></div>
@@ -1059,13 +1112,19 @@ let currentResult = null;
 let cases = [];
 // Evidence for the case being built. audio entries carry the start time and
 // location the Audio Agent needs; the rest are plain File objects.
-const evidence = { obs: [], text: [], audio: [], video: [] };
+const evidence = { fir: [], obs: [], text: [], audio: [], video: [], video_logs: [] };
 const EV_RULES = {
   obs:   { re: /\.json$/i,                  exts: '.json',                     label: 'Observations (obs_only)', noun: 'obs file' },
   text:  { re: /\.(txt|md|eml|json)$/i,      exts: '.txt .md .eml .json',       label: 'Text documents',          noun: 'document' },
   audio: { re: /\.(wav|mp3|m4a|flac|ogg)$/i, exts: '.wav .mp3 .m4a .flac .ogg', label: 'Audio recordings',        noun: 'recording' },
   video: { re: /\.(mp4|mov|webm|mkv)$/i,     exts: '.mp4 .mov .webm .mkv',      label: 'Video clips',             noun: 'clip' },
+  fir:   { re: /\.txt$/i,                    exts: '.txt',                      label: 'FIR',                     noun: 'FIR' },
+  video_logs: { re: /(_video_obs|_video_log|people_registry)\.json$/i,
+           exts: '*_video_obs.json, *_video_log.json, people_registry.json',
+           label: 'Video logs (saved video-agent run)', noun: 'log file' },
 };
+// An FIR picked up with a case's text folder goes to the FIR card, not the Text Agent.
+const FIR_NAME = /^fir[_ .-]/i;
 
 // ── Mock DB — persists across page interactions in sessionStorage ──────────
 function loadCases() {
@@ -1216,8 +1275,22 @@ function evName(kind, item) { return kind === 'audio' ? item.file.name : item.na
 async function addEvidence(kind, fileList) {
   const rule = EV_RULES[kind];
   // audio manifests are not text evidence - skip them when a whole case folder is picked
-  const picked = Array.from(fileList || []).filter(f => rule.re.test(f.name) &&
-                                                       !(kind === 'text' && /manifest/i.test(f.name)));
+  let picked = Array.from(fileList || []).filter(f => rule.re.test(f.name) &&
+                                                     !(kind === 'text' && /manifest/i.test(f.name)));
+  if (kind === 'text') {
+    const firs = picked.filter(f => FIR_NAME.test(f.name) && /\.txt$/i.test(f.name));
+    if (firs.length) {
+      picked = picked.filter(f => !firs.includes(f));
+      await addEvidence('fir', firs);
+      if (!picked.length) return;
+    }
+  }
+  if (kind === 'fir') {
+    // one FIR per case: from a folder, the FIR_*.txt; else the (last) .txt given
+    const named = picked.filter(f => FIR_NAME.test(f.name));
+    picked = (named.length ? named : picked).slice(-1);
+    evidence.fir = [];
+  }
   if (!picked.length) {
     showToast('Unsupported File', `${rule.label} must be ${rule.exts}.`, true);
     return;
@@ -1244,7 +1317,9 @@ async function addEvidence(kind, fileList) {
   if (!idInput.value.trim()) idInput.value = defaultCaseId();
   renderEvidencePanel();
   const extra = kind === 'audio' ? ' — set start time and location.' :
-                kind === 'video' ? ' — stored; analysed only if video analysis is on.' : '.';
+                kind === 'video' ? ' — stored; analysed only if video analysis is on (or replaced by video logs).' :
+                kind === 'fir' ? ' — the case is anchored on it.' :
+                kind === 'video_logs' ? ' — the saved video-agent run is used instead of the clips.' : '.';
   showToast('Evidence Added', `${added} ${rule.noun}(s) added${extra}`);
 }
 
@@ -1275,7 +1350,7 @@ function renderEvidencePanel() {
     document.getElementById('name_' + kind).textContent = n ? `${n} ${EV_RULES[kind].noun}${n > 1 ? 's' : ''}` : '—';
   }
   // plain file lists: obs, text, video
-  for (const kind of ['obs', 'text', 'video']) {
+  for (const kind of ['fir', 'obs', 'text', 'video', 'video_logs']) {
     const box = document.getElementById('evList_' + kind);
     box.textContent = '';
     if (!evidence[kind].length) continue;
@@ -1284,7 +1359,9 @@ function renderEvidencePanel() {
     box.appendChild(t);
     evidence[kind].forEach((f, i) => box.appendChild(fileRow(f.name, () => removeEvidence(kind, i))));
   }
-  document.getElementById('videoToggleRow').style.display = evidence.video.length ? '' : 'none';
+  // with the saved video-agent run, the clips are not analysed - no switch to show
+  document.getElementById('videoToggleRow').style.display =
+    evidence.video.length && !evidence.video_logs.length ? '' : 'none';
   // audio rows need a start time and a location each
   document.getElementById('evGroup_audio').style.display = evidence.audio.length ? '' : 'none';
   const list = document.getElementById('audioClipList');
@@ -1324,9 +1401,12 @@ function validateEvidence() {
   if (!/^[A-Za-z0-9_-]{1,64}$/.test(caseId)) return "Case ID may only contain letters, digits, '_' and '-'.";
   const incomplete = evidence.audio.find(c => !c.start || !c.location.trim());
   if (incomplete) return `Set the start time and location for ${incomplete.file.name}.`;
-  const analysable = evidence.obs.length || evidence.text.length || evidence.audio.length ||
+  if (evidence.video_logs.length && !evidence.video_logs.some(f => /_video_obs\.json$/i.test(f.name)))
+    return 'The video logs need the run\'s *_video_obs.json (pick the whole run folder).';
+  const analysable = evidence.fir.length || evidence.obs.length || evidence.text.length || evidence.audio.length ||
+                     evidence.video_logs.length ||
                      (evidence.video.length && document.getElementById('analyseVideo').checked);
-  if (!analysable) return 'Video alone is only analysed when "Analyse video" is on: add other evidence or enable it.';
+  if (!analysable) return 'Video alone is only analysed when "Analyse video" is on: add other evidence, video logs, or enable it.';
   return '';
 }
 
@@ -1335,6 +1415,7 @@ async function uploadEvidence(caseId) {
   for (const kind of Object.keys(EV_RULES)) {
     for (const item of evidence[kind]) jobs.push([kind, kind === 'audio' ? item.file : item]);
   }
+  if (groundTruthFile) jobs.push(['ground_truth', groundTruthFile]);
   for (let i = 0; i < jobs.length; i++) {
     const [kind, f] = jobs[i];
     setProgress(100, `Uploading evidence ${i + 1} of ${jobs.length}: ${f.name}`);
@@ -1433,8 +1514,10 @@ async function runPipeline() {
 
   try {
     await uploadEvidence(caseId);
-    const agents = [evidence.text.length && 'Text Agent', evidence.audio.length && 'Audio Agent',
-                    evidence.video.length && analyseVideo && 'Video Agent'].filter(Boolean);
+    const agents = [evidence.fir.length && 'FIR Agent', evidence.text.length && 'Text Agent',
+                    evidence.audio.length && 'Audio Agent',
+                    evidence.video_logs.length ? 'saved video run' : (evidence.video.length && analyseVideo && 'Video Agent')
+                   ].filter(Boolean);
     setProgress(100, (agents.length ? `${agents.join(' + ')} extracting evidence, then ` : 'Running ')
                      + 'ER → Timeline → Critique → Showrunner (audio can take a few minutes)…');
 
@@ -1449,6 +1532,9 @@ async function runPipeline() {
                                           source: c.source.trim() || null })),
         video_files: evidence.video.map(f => f.name),
         analyse_video: analyseVideo,
+        fir_file: evidence.fir.length ? evidence.fir[evidence.fir.length - 1].name : null,
+        ground_truth_file: groundTruthFile ? groundTruthFile.name : null,
+        video_log_files: evidence.video_logs.map(f => f.name),
         no_llm: noLlm,
         must_merge: mustMerge === 'PARSE_ERROR' ? null : mustMerge,
         must_not_merge: mustNotMerge === 'PARSE_ERROR' ? null : mustNotMerge,
@@ -1489,6 +1575,7 @@ function renderOutput(r) {
   renderShowrunner(r);
   renderIterLog(r);
   renderPostOutputs(r);
+  renderEvaluation(r);
   renderOutputCaseBadge(r);
 }
 
@@ -1695,6 +1782,65 @@ function renderIterLog(r) {
         </tr>`).join('')}
       </tbody>
     </table>`;
+}
+
+// ── Ground truth (optional): the run is scored against it ─────────────────
+let groundTruthFile = null;
+async function setGroundTruth(fileList) {
+  const f = Array.from(fileList || [])[0] || null;
+  if (f) {
+    try {
+      const data = JSON.parse(await f.text());
+      if (!data.ground_truth || !Array.isArray(data.observations)) throw new Error('not ground truth');
+    } catch {
+      showToast('Not a ground-truth file', `${f.name} needs "ground_truth" and "observations".`, true);
+      return;
+    }
+  }
+  groundTruthFile = f;
+  document.getElementById('name_gt').textContent = f ? f.name : 'Optional';
+  document.getElementById('clear_gt').style.display = f ? '' : 'none';
+}
+
+function renderEvaluation(r) {
+  const body = document.getElementById('evaluationBody');
+  const esc = v => String(v ?? '—').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  if (r.evaluation_error) {
+    body.innerHTML = `<div class="explain-card"><div class="explain-title">Evaluation</div>
+      <div style="color:var(--text-dim);font-size:12px;">${esc(r.evaluation_error)}</div></div>`;
+    return;
+  }
+  const ev = r.evaluation;
+  if (!ev) {
+    body.innerHTML = `<div class="explain-card"><div class="explain-title">Evaluation</div>
+      <div style="color:var(--text-dim);font-size:12px;line-height:1.6;">No ground truth was given for this run.
+      Add the case's ground-truth file (e.g. CASE_ATM_001.json) under Case Evidence before running to score it here.</div></div>`;
+    return;
+  }
+  const fmt = v => (typeof v === 'number' && !Number.isInteger(v)) ? v.toFixed(3) : esc(v);
+  const rows = ev.scores.map(s => `<tr><td style="padding:6px 10px;border-bottom:1px solid rgba(128,128,128,.2);">${esc(s.metric)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid rgba(128,128,128,.2);text-align:right;font-variant-numeric:tabular-nums;">${fmt(s.value)}</td></tr>`).join('');
+  const list = (label, items) => items && items.length ? `<div style="margin-top:6px;"><b>${label}:</b> ${items.map(esc).join(', ')}</div>` : '';
+  const merges = (ev.wrong_merges || []).map(m => m.join(' + '));
+  const findings = (ev.findings || []).map(f => `<li style="margin:4px 0;"><code>${esc(f.check)}</code> ${esc(f.detail)}</li>`).join('');
+  const untracedFir = (ev.untraced || []).filter(u => u.fir).length;
+  const untracedOther = (ev.untraced || []).length - untracedFir;
+  body.innerHTML = `
+    <div class="explain-card">
+      <div class="explain-title">Scores against the ground truth</div>
+      <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">${rows}</table></div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text-dim);line-height:1.6;">
+        ${list('Missed events', ev.missed)}${list('Half credit (merged into another event)', ev.half_credit)}
+        ${list('Unobservable (no evidence of them)', ev.unobservable)}${list('ER wrong merges', merges)}
+        <div style="margin-top:6px;">${(ev.traced || []).length} observations traced to the ground truth;
+        ${untracedFir} from the FIR (no ground-truth observation)${untracedOther ? `, ${untracedOther} other untraced` : ''}.
+        Scored on ${esc(ev.timeline_file)} and ${esc(ev.er_file)}.</div>
+      </div>
+    </div>
+    <div class="explain-card">
+      <div class="explain-title">Critique findings (${(ev.findings || []).length})</div>
+      <ul style="margin:0;padding-left:18px;font-size:12px;line-height:1.5;">${findings || '<li>None</li>'}</ul>
+    </div>`;
 }
 
 function renderPostOutputs(r) {

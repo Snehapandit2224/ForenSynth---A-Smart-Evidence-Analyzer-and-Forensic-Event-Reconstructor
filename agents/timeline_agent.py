@@ -87,6 +87,23 @@ _ACT_FAMILY = {"EXIT": "leave", "FLEE": "leave", "LOITER": "wait", "WATCH": "wai
                "APPROACH": "approach", "NAVIGATE": "approach"}
 
 
+# A report or claim nothing independent backs up keeps at most this
+# confidence: one email saying "two people left" must not score like a camera.
+UNCORROBORATED_CONFIDENCE_CAP: float = 0.6
+
+
+def _basis(members: List[Dict[str, Any]]) -> str:
+    """How an event is known: "claim" if only the FIR states it, "reported"
+    if every source describes someone else's act (a witness, an email about
+    the people seen), else "observed" (a camera, a log, a person's account
+    of their own act)."""
+    if all(m.get("fir") for m in members):
+        return "claim"
+    if all(m.get("reported") or m.get("fir") for m in members):
+        return "reported"
+    return "observed"
+
+
 def _same_act(a, b, gap: float) -> List[str]:
     """What makes two events of different entities one moment ([] if
     nothing): the same act (or act family - FLEE/EXIT), or - only across
@@ -259,6 +276,8 @@ class RawObservation:
     evidence:        str   = ""
     # The message / recording it came from (text: source_doc, audio: file).
     record:          str   = ""
+    # An FIR claim timed only by the incident window: the window (epochs).
+    claim_window:    Optional[Tuple[float, float]] = None
 
 
 # -- Canonical entity from ER ---------------------------------------------------
@@ -315,6 +334,18 @@ class TimelineEvent:
     evidence_quotes: List[str] = field(default_factory=list)
     # every supporting observation is one the extractor marked a denial
     denial: bool = False
+    # every supporting observation is an FIR claim timed only by the
+    # incident window: (start, end) epochs - its timestamp is a placement
+    claim_window: Optional[Tuple[float, float]] = None
+    # How the event is known (see _basis): "observed" - recorded directly (a
+    # camera, a log, a person's account of their own act); "reported" -
+    # someone describing another person's act; "claim" - only the FIR says so.
+    basis: str = "observed"
+    # Independent records (not the FIR) behind the event and behind the events
+    # of its moment, other than its own: 0 = nothing else backs it up.
+    sources: List[str] = field(default_factory=list)
+    corroboration: int = 0
+    corroborated_by: List[str] = field(default_factory=list)
 
     # Versioning hook
     version:       str = "V1"
@@ -430,6 +461,11 @@ class TimelineVersion:
                 "reasoning":     ev.reasoning,
                 "same_moment_as": ev.same_moment_as,
                 "evidence_quotes": ev.evidence_quotes,
+                "basis":         ev.basis,
+                "corroboration": ev.corroboration,
+                "corroborated_by": ev.corroborated_by,
+                "claim_window":  [epoch_to_iso(t) for t in ev.claim_window] if ev.claim_window else None,
+                "denial":        ev.denial,
                 "version":       ev.version,
             }
 
@@ -2284,6 +2320,14 @@ class JsonObservationRepository(ObservationRepository):
             obs.denial = bool({"denial", "alibi"} & set(item.get("tags") or []))
             obs.evidence = str(item.get("evidence") or "")
             obs.record = str(item.get("source_doc") or item.get("audio_file") or "")
+            if not obs.record and obs.modality == "video" and item.get("source"):
+                # a camera is one record source: two cameras showing the same
+                # exit are two independent sources, one camera's two clips one
+                obs.record = f"video:{item['source']}"
+            cw = item.get("claim_window")
+            if item.get("time_basis") == "window" and isinstance(cw, (list, tuple)) and len(cw) == 2:
+                lo, hi = parse_timestamp(cw[0]), parse_timestamp(cw[1])
+                obs.claim_window = (lo, hi) if lo > 0 and hi >= lo else None
             action = str(item.get("action") or "").strip().upper()
             if obs.denial:
                 # a denial asserts the act did NOT happen: "I departed long
@@ -2624,6 +2668,7 @@ class TimelineAgent:
             # -- Stage 6b: Same-moment links across entities ------------------------
             same_moment_links = self._link_same_moment(events)
             log.info("Stage 6b complete - %d same-moment link(s)", len(same_moment_links))
+            self._assess_corroboration(events)
 
             # -- Stage 7: Uncertainty Modelling (confidence already embedded in Stage 2) --
             stage_timings["stage_7_uncertainty"] = 0.0
@@ -2753,7 +2798,65 @@ class TimelineAgent:
                 b.same_moment_as.append(a.event_id)
                 links.append({"events": [a.event_id, b.event_id], "entities": [a.entity_id, b.entity_id],
                               "gap_sec": round(gap, 1), "shared_actions": sorted(shared)})
+
+        # An FIR claim timed only by the incident window ("he worked on the
+        # card reader", sometime 10:00-10:06): its timestamp is a placement,
+        # so the 60s rule can't find its moment. It joins the ONE event of
+        # another entity, with the same act, inside the window - the nearest
+        # to its placement (two camera exits in the window stay two moments).
+        for a in timed:
+            if not a.claim_window or a.denial:
+                continue
+            lo, hi = a.claim_window
+            fits = [(abs(b.ts_epoch - a.ts_epoch), b) for b in timed
+                    if b.entity_id != a.entity_id and not b.claim_window and not b.denial
+                    and not _is_denial(b.content) and lo <= b.ts_epoch <= hi
+                    and _same_act(a, b, 0)]
+            if not fits:
+                continue
+            _, b = min(fits, key=lambda f: (f[0], f[1].event_id))
+            if b.event_id in a.same_moment_as:
+                continue
+            a.same_moment_as.append(b.event_id)
+            b.same_moment_as.append(a.event_id)
+            links.append({"events": [a.event_id, b.event_id], "entities": [a.entity_id, b.entity_id],
+                          "gap_sec": round(abs(b.ts_epoch - a.ts_epoch), 1),
+                          "shared_actions": _same_act(a, b, 0),
+                          "within_claim_window": True})
         return links
+
+    @staticmethod
+    def _assess_corroboration(events: List[TimelineEvent]) -> None:
+        """For each event, the independent records behind its moment (its own
+        and those of every event linked to it as the same moment, through
+        others too), the FIR excluded - it never corroborates itself.
+        corroboration = how many records other than the event's own back it.
+        A report or FIR claim that nothing else backs keeps its record but its
+        confidence is capped at UNCORROBORATED_CONFIDENCE_CAP."""
+        by_id = {e.event_id: e for e in events}
+        parent = {e.event_id: e.event_id for e in events}
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+        for e in events:
+            for other in e.same_moment_as:
+                if other in parent:
+                    parent[find(e.event_id)] = find(other)
+        moment_sources: Dict[str, Set[str]] = {}
+        for e in events:
+            moment_sources.setdefault(find(e.event_id), set()).update(e.sources)
+        for e in events:
+            others = sorted(moment_sources[find(e.event_id)] - set(e.sources))
+            e.corroborated_by = others
+            # several records inside one event corroborate each other too
+            e.corroboration = len(others) + max(0, len(e.sources) - 1)
+            if e.basis in ("reported", "claim") and e.corroboration == 0 and not e.denial:
+                if e.confidence > UNCORROBORATED_CONFIDENCE_CAP:
+                    e.confidence = UNCORROBORATED_CONFIDENCE_CAP
+                e.reasoning.append(f"uncorroborated {e.basis}: no other independent source shows it")
 
     @staticmethod
     def _build_moments(events: List[TimelineEvent]) -> List[Dict[str, Any]]:
@@ -2793,6 +2896,9 @@ class TimelineAgent:
                 "content": anchor.content,
                 "confidence": round(max(e.confidence for e in members), 3),
                 "denial": all(e.denial for e in members),
+                "basis": ("observed" if any(e.basis == "observed" for e in members)
+                          else "reported" if any(e.basis == "reported" for e in members) else "claim"),
+                "independent_sources": sorted({s for e in members for s in e.sources}),
             })
         moments.sort(key=lambda m: (m["ts_epoch"] <= 0, m["ts_epoch"], m["event_ids"][0]))
         for i, m in enumerate(moments, 1):
@@ -2983,6 +3089,13 @@ class TimelineAgent:
                 "action_tags": action_tags,
                 "evidence": obs.evidence,
                 "denial": obs.denial,
+                "claim_window": obs.claim_window,
+                "reported": obs.reported,
+                "fir": obs.obs_id in (fir_derived or set()),
+                # the record it came from - one message, one recording, one
+                # camera - so two observations of one record never count as
+                # two independent sources
+                "record": obs.record or f"{obs.modality}:{primary_alias}",
             }
 
             clusterable.append(ClusterableObservation(
@@ -3084,6 +3197,10 @@ class TimelineAgent:
                 action_tags=sorted(ec.action_tags),
                 evidence_quotes=list(dict.fromkeys(m["evidence"] for m in members if m["evidence"])),
                 denial=all(m["denial"] for m in members),
+                claim_window=(members[0]["claim_window"]
+                              if all(m["claim_window"] for m in members) else None),
+                basis=_basis(members),
+                sources=sorted({m["record"] for m in members if not m["fir"]}),
                 version="V1",
             ))
 

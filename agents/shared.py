@@ -302,6 +302,12 @@ ACTION_TAG_FRAGMENTS: dict[str, tuple[str, ...]] = {
         "walking away rapidly", "at pace", "rushed away", "ran off", "running away", "ran away",
         "sped off", "ran towards",
     ),
+    # An attack on a person - "attacked me" used to fall into STEAL, the
+    # nearest act there was.
+    "ASSAULT": (
+        "assault", "assaulted", "attacked", "attacking", "hit me", "hit him", "hit her", "punched",
+        "beat me", "beat him", "beat her", "pushed me", "pushed him", "pushed her", "slapped",
+    ),
     "STEAL": (
         "steal", "stole", "stolen", "got the files", "got the folders", "documents are in the bag",
         "grabbed everything", "items secured", "usb is in", "usb full", "copying", "copy complete",
@@ -373,7 +379,7 @@ ACTION_NAME_TO_TAG: dict[str, str] = {
     "approach_atm": "APPROACH", "approach_office": "APPROACH", "enter_atm": "ENTER",
     "enter_office": "ENTER", "withdraw_cash": "WITHDRAW", "exit_atm": "EXIT", "exit_office": "EXIT",
     "wait_outside": "WATCH", "loiter_near_atm": "LOITER", "tamper_atm": "TAMPER", "flee_scene": "FLEE",
-    "steal_items": "STEAL", "steal_data": "STEAL", "navigate_to_target": "NAVIGATE",
+    "steal_items": "STEAL", "steal_data": "STEAL", "assault": "ASSAULT", "assault_person": "ASSAULT", "navigate_to_target": "NAVIGATE",
     "perform_legit_work": "WORK", "observe_exit": "OBSERVE", "report_incident": "REPORT",
     "initiate_communication": "COMMUNICATE", "respond_to_communication": "COMMUNICATE",
     "exchange_information": "COMMUNICATE", "coordinate_activity": "COMMUNICATE",
@@ -396,7 +402,9 @@ def time_reliability(obs: dict) -> float:
     source = obs.get("time_source")
     if source:
         return 1.0 if source == "verified_clock" else 0.7
-    return {"explicit": 1.0, "relative": 0.8, "document_date": 0.5, "unknown": 0.4}.get(
+    # "window": only an incident window is known (an FIR's "between 10:00
+    # and 10:06") - the timestamp is a placement inside it, not a time.
+    return {"explicit": 1.0, "relative": 0.8, "document_date": 0.5, "window": 0.4, "unknown": 0.4}.get(
         obs.get("time_basis"), 1.0)
 
 
@@ -426,6 +434,7 @@ _ACTION_TAG_CANONICAL_EXAMPLES: dict[str, tuple[str, ...]] = {
     "EXIT":        ("The suspect exits the booth, leaving the enclosed space.",),
     "FLEE":        ("The suspect flees the scene in a hurry, running away quickly.",),
     "STEAL":       ("The suspect steals items, taking documents or files without permission.",),
+    "ASSAULT":     ("The suspect attacks a person, hitting or pushing them.",),
     "NAVIGATE":    ("The suspect moves through the building, passing through corridors toward a destination.",),
     "WORK":        ("The person is doing ordinary work, unrelated to any suspicious activity.",),
     "COMMUNICATE": ("The person communicates with someone else, sending a message or making contact.",),

@@ -59,6 +59,7 @@ from typing import Any, Dict, List, Optional
 AGENT_VERSION = "AudioAgent_v1"
 MODEL_VERSION = "whisper_baseline"
 SAMPLE_RATE = 16000  # Whisper requires 16 kHz mono
+AUDIO_EXTENSIONS = {".wav", ".mp3", ".m4a", ".flac", ".ogg"}  # recordings the agent reads
 UNKNOWN_SPEAKER = "Speaker_Unknown"
 
 
@@ -333,9 +334,10 @@ speaker states a time (resolve against the recording start), else null; "time_te
 "time_basis" explicit | relative | unknown. "role_hint" suspect | witness | victim | unknown with
 "role_hint_confidence" 0-1. A role is the person's part in the INCIDENT, not in the record: telling, reporting or describing something - including one's own actions - does not make anyone a witness. A witness saw the incident without taking part; someone whose own acts are entering, withdrawing, tampering, keeping lookout or leaving is not a witness because they describe them.
 "confidence" 0-1: how specific and first-hand the account is.
-"action": the kind of act - APPROACH, ENTER, WITHDRAW, TAMPER, LOITER, EXIT, FLEE, STEAL, NAVIGATE,
+"action": the kind of act - APPROACH, ENTER, WITHDRAW, TAMPER, LOITER, EXIT, FLEE, STEAL, ASSAULT, NAVIGATE,
 WORK, COMMUNICATE, CONFIRM, WATCH (keeping lookout), OBSERVE (seeing something), REPORT (telling
 the police), INTERCEPT - or null. A denial ("I never went inside") gets null.
+A statement that the RESULT of an act was found or noticed ("something is attached to the card slot", "cash is missing from the machine", "the lock was broken") is its own observation of that act (TAMPER, STEAL, ...): actor = whoever did it if the text says, else "unknown_person"; time = when it was found or reported; tag it "result". Seeing a place while heading to it ("I can see the ATM now") is APPROACH; keeping an eye out for others ("eyes on the entrance", "nothing suspicious, continue") is WATCH. "No one saw" / "nobody was around" is a claim about witnesses: no action and NOT a denial.
 
 "speakers": one entry per speaker label who states their OWN name or phone number ("This is Asha
 Rao", "my number is 98450 12345"), or is unambiguously addressed by name and accepts it ("You're
@@ -633,6 +635,15 @@ def load_manifest(path: Path) -> List[Dict[str, Any]]:
         clip_path = Path(e["path"])
         if not clip_path.is_absolute():
             clip_path = path.parent / clip_path
+        if not clip_path.is_file():
+            # A wrong file name in the manifest silently dropped a case's audio
+            # (the pipeline carries on without it). When the manifest's folder
+            # holds exactly one recording, that is the one it describes.
+            audio = [p for p in path.parent.iterdir() if p.suffix.lower() in AUDIO_EXTENSIONS]
+            if len(audio) == 1:
+                print(f"[WARNING] {path.name}: '{e['path']}' not found - using the folder's only "
+                      f"recording, {audio[0].name}")
+                clip_path = audio[0]
         clips.append({
             "path": str(clip_path),
             "start_time": parse_base_time(e["start_time"]),

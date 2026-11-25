@@ -34,7 +34,7 @@ from __future__ import annotations
 import math
 import random
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from config import get_observation_location
 from noise import _CONTRADICTION_TEXT_INTEGRITY, _CONTRADICTION_VIDEO_QUALITY
@@ -63,6 +63,8 @@ class RealismConfig:
     fir_errors: bool = False           # the FIR gets some facts wrong
     action_labels: bool = False        # the extractor names each event's action (with mistakes)
     agent_metadata: bool = False       # time provenance (time_source / time_basis), denial tags
+    scenarios: bool = False            # plant situations the Critique should report (expected_findings)
+    scenario_rate: float = 0.5         # chance each scenario is planted in a case
     difficulty: str = "medium"         # scales every rate above
     # derived from difficulty (not CLI flags)
     wrong_hint_rate: float = 0.10
@@ -76,7 +78,7 @@ class RealismConfig:
         return any((self.appearance, self.alias_variants, self.voice_prints, self.hide_roles,
                     self.per_source_labels, self.reported_events, self.undiarized_audio > 0,
                     self.timestamp_gaps > 0, self.mixed_timezones, self.fir_errors,
-                    self.action_labels, self.agent_metadata))
+                    self.action_labels, self.agent_metadata, self.scenarios))
 
     def scaled(self) -> "RealismConfig":
         """A copy with every rate scaled by the difficulty."""
@@ -92,6 +94,7 @@ class RealismConfig:
         c.tz_source_rate = cap(self.tz_source_rate)
         c.action_error_rate = cap(self.action_error_rate)
         c.action_missing_rate = cap(self.action_missing_rate)
+        c.scenario_rate = cap(self.scenario_rate)
         c.fir_error_count = 2 if self.difficulty == "hard" else 1
         return c
 
@@ -205,6 +208,116 @@ def _with_tz(ts: str, style: str) -> str:
 
 
 # ── Main transform ────────────────────────────────────────────────────────────
+
+def _utc(ts: str) -> datetime:
+    """A timestamp as naive UTC - how the pipeline reads it: "10:00:58Z" and
+    "15:30:58+05:30" are one instant, and a planted record written without a
+    suffix must name that instant, not the +05:30 wall clock."""
+    t = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    return t.astimezone(timezone.utc).replace(tzinfo=None) if t.tzinfo else t
+
+
+def _plant_scenarios(obs_list: list[dict], events: dict, cfg: "RealismConfig", rng: random.Random,
+                     domain: str) -> list[dict]:
+    """Situations real evidence contains and the Critique should report, each
+    planted with probability cfg.scenario_rate, so cases WITHOUT one measure
+    false alarms. Returns the findings the Critique should give:
+
+      double_exit     the suspect's exit seen again on another camera 25-45s
+                      later -> act_sequence_inconsistent
+      miscount        an emailed tip miscounting the people leaving (two when
+                      the footage shows one, one when it shows two)
+                      -> headcount_mismatch
+      result_early    a staff note "something is attached to the card slot",
+                      timed before anyone is recorded entering
+                      -> result_before_act (with the same probability it is
+                      timed after the tampering instead: a control, no finding)
+      no_one_saw      the suspect's own message "Done. No one saw." while a
+                      witness is recorded watching -> claim_contradicted"""
+    found: list[dict] = []
+    nid = [max(int(o["obs_id"].lstrip("O")) for o in obs_list if o["obs_id"][1:].isdigit()) + 1]
+    when = lambda o: _utc(o["timestamp"])
+
+    def add(**kw) -> None:
+        o = {"obs_id": f"O{nid[0]}", "confidence": round(rng.uniform(0.6, 0.85), 3), **kw}
+        o["time_offset"] = max(0, int(o["time_offset"]))
+        obs_list.append(o)
+        nid[0] += 1
+
+    # never build on a record carrying the generator's contradiction noise (a
+    # camera record whose text is a denial is no record of the act)
+    timed = [o for o in obs_list if o["timestamp"] and o["_kind"] == "own"
+             and "contradiction" not in o.get("noise_tags", [])]
+    of_event = lambda eid, mod: [o for o in timed if o.get("event_ref") == eid and o["modality"] == mod]
+    evs = sorted(events.values(), key=lambda e: e["time_offset"])
+    leaves = [e for e in evs if e["action"] in ("exit_atm", "flee_scene") and e["role"] == "suspect"
+              and of_event(e["event_id"], "video")]
+
+    if leaves and rng.random() < cfg.scenario_rate:                       # double exit
+        ev = rng.choice(leaves)
+        v = of_event(ev["event_id"], "video")[0]
+        gap = rng.randint(25, 45)
+        add(event_ref=ev["event_id"], entity=v["entity"], role=v["role"], modality="video", source="camera_9",
+            location=v["location"], content="Subject is seen leaving the ATM area.",
+            timestamp=(when(v) + timedelta(seconds=gap)).isoformat(), time_offset=v["time_offset"] + gap,
+            action=_ACTION_LABEL[ev["action"]], time_source="verified_clock",
+            noise_tags=["scenario_double_exit"], _true=v["_true"], _kind="own")
+        found.append({"check": "act_sequence_inconsistent", "scenario": "double_exit", "event": ev["event_id"]})
+
+    if leaves and rng.random() < cfg.scenario_rate:                       # miscounting tip
+        ev = rng.choice(leaves)
+        v = of_event(ev["event_id"], "video")[0]
+        t = when(v)
+        shown = {o["_true"] for o in timed if o["modality"] == "video"
+                 and events.get(o.get("event_ref"), {}).get("action") in ("exit_atm", "flee_scene")
+                 and abs((when(o) - t).total_seconds()) <= 120}
+        text = ("Two individuals left the ATM together in a hurry." if len(shown) == 1
+                else "Only one man left the ATM, nobody else with him.")
+        delay = rng.randint(10, 30)
+        add(event_ref=ev["event_id"], entity="unknown_people_1@email_tip", role="suspect", modality="text",
+            source="email_tip", location=get_observation_location(domain, "text", "email_log"),
+            content=text, evidence=text, reported_by="tip_sender", action=_ACTION_LABEL[ev["action"]],
+            timestamp=(t + timedelta(seconds=delay)).isoformat(), time_offset=v["time_offset"] + delay,
+            time_basis="explicit", noise_tags=["scenario_miscount"], _true=ev["entity_id"], _kind="reported")
+        found.append({"check": "headcount_mismatch", "scenario": "miscount", "event": ev["event_id"]})
+
+    tampers = [e for e in evs if e["action"] == "tamper_atm"]
+    enters = [o for e in evs if e["action"] == "enter_atm" for o in of_event(e["event_id"], "video")]
+    if tampers and enters and rng.random() < cfg.scenario_rate:            # result reported early / control
+        ev = tampers[0]
+        first = min(enters, key=when)
+        early = rng.random() < 0.5
+        if early:
+            t = when(first) - timedelta(seconds=rng.randint(90, 240))
+        else:
+            done = _utc(ev["timestamp"])
+            t = done + timedelta(seconds=rng.randint(60, 180))
+        text = "Security staff: something has been attached to the ATM card slot."
+        add(event_ref=ev["event_id"], entity="unknown_person@staff_note", role="suspect", modality="text",
+            source="staff_note", location=get_observation_location(domain, "text", "incident_report"),
+            content=text, evidence=text, reported_by="security_staff", action="TAMPER", tags=["result"],
+            timestamp=t.isoformat(), time_offset=first["time_offset"] + (t - when(first)).total_seconds(),
+            time_basis="explicit", noise_tags=["scenario_result_early" if early else "scenario_result_control"],
+            _true=ev["entity_id"], _kind="reported")
+        if early:
+            found.append({"check": "result_before_act", "scenario": "result_early", "event": ev["event_id"]})
+
+    watching = [o for o in timed if o["modality"] == "video"
+                and events.get(o.get("event_ref"), {}).get("action") == "observe_exit"]
+    own_text = [o for o in timed if o["modality"] == "text" and o["_true"].startswith("suspect")
+                and not o.get("reported_by")]
+    if watching and own_text and rng.random() < cfg.scenario_rate:        # "no one saw"
+        w = rng.choice(watching)
+        mine = rng.choice(own_text)
+        t = when(w) - timedelta(seconds=rng.randint(10, 60))
+        add(event_ref=mine["event_ref"], entity=mine["entity"], role="suspect", modality="text",
+            source=mine["source"], location=mine["location"], content="Done. No one saw.",
+            evidence="Done. No one saw.", timestamp=t.isoformat(),
+            time_offset=w["time_offset"] + (t - when(w)).total_seconds(), time_basis="explicit",
+            noise_tags=["scenario_no_one_saw"], _true=mine["_true"], _kind="own")
+        found.append({"check": "claim_contradicted", "scenario": "no_one_saw", "event": mine["event_ref"]})
+    return found
+
 
 def apply_realism(case: dict, cfg: RealismConfig, rng: random.Random) -> dict:
     cfg = cfg.scaled()
@@ -425,6 +538,9 @@ def apply_realism(case: dict, cfg: RealismConfig, rng: random.Random) -> dict:
             if "contradiction" in o.get("noise_tags", []) and o["content"] not in _NOT_DENIALS:
                 o["tags"] = ["denial"]
 
+    # 9d. Investigative scenarios ─────────────────────────────────────────────
+    expected_findings = _plant_scenarios(obs_list, events, cfg, rng, domain) if cfg.scenarios else []
+
     # 10. FIR errors ──────────────────────────────────────────────────────────
     fir_errors = []
     if cfg.fir_errors:
@@ -462,6 +578,8 @@ def apply_realism(case: dict, cfg: RealismConfig, rng: random.Random) -> dict:
         gt["names"] = {eid: f"{f} {l}" for eid, (f, l) in names.items()}
     if fir_errors:
         gt["fir_errors"] = fir_errors
+    if cfg.scenarios:
+        gt["expected_findings"] = expected_findings
     for e in gt["entities"]:
         e["all_aliases"] = sorted(a for a, ids in by_alias.items() if e["entity_id"] in ids)
 

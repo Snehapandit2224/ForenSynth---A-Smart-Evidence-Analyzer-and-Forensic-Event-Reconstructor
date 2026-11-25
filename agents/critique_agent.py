@@ -384,7 +384,14 @@ def _check_llm_coherence(timeline: Dict, llm: CritiqueLLM,
 
 # ── Checks — original ─────────────────────────────────────────────────────────
 
-def _check_missing_links(entity_sequences: Dict) -> List[CritiqueIssue]:
+def _check_missing_links(entity_sequences: Dict, events: Optional[List[Dict]] = None) -> List[CritiqueIssue]:
+    """A step that should sit between two of one person's acts but isn't
+    recorded (entered ... left, nothing in between). Every act that would
+    fit is named - the evidence doesn't say WHICH one happened, so naming
+    one ("STEAL missing") asserted something nothing showed. When another
+    source shows one of those acts inside the gap (an ATM log's card-reader
+    fault, an FIR claim), it is pointed to instead of calling the step
+    missing."""
     issues = []
     for entity_id, seq in entity_sequences.items():
         for i in range(len(seq)-1):
@@ -393,28 +400,40 @@ def _check_missing_links(entity_sequences: Dict) -> List[CritiqueIssue]:
             tags_b: List[str] = ev_b.get("action_tags",[])
             all_inter: set = set()
             for mid in seq[i+1:]: all_inter.update(mid.get("action_tags",[]))
-            for tag_a in tags_a:
-                for req in _MUST_PRECEDE.get(tag_a,set()):
-                    if req in (set(tags_b)|all_inter): continue
-                    matching = [tb for tb in tags_b if tb in _MUST_PRECEDE.get(req,set())]
-                    if not matching: continue
-                    ts_a = ev_a.get("ts_epoch",0.0) or 0.0
-                    ts_b = ev_b.get("ts_epoch",0.0) or 0.0
-                    window = ts_b-ts_a if ts_b>ts_a else 0.0
-                    # Info: a missing observation can't be produced by
-                    # re-running the timeline (it used to route there and
-                    # loop until the score flatlined). Surfaced to the
-                    # investigator via unresolvable_gaps instead.
-                    issues.append(CritiqueIssue(
-                        check="missing_linking_event", severity="info",
-                        detail=(f"Rule chain '{tag_a}->{req}->{matching[0]}' broken for "
-                                f"{entity_id}: '{req}' missing between "
-                                f"{ev_a['event_id']} and {ev_b['event_id']}"
-                                +(f" ({window:.0f}s)." if window else ".")+
-                                " ER may have missed an observation cluster."),
-                        affected_events=[ev_a["event_id"],ev_b["event_id"]],
-                    ))
-                    break
+            for tag_a in sorted(tags_a):
+                bridging = sorted(req for req in _MUST_PRECEDE.get(tag_a, set())
+                                  if req not in (set(tags_b) | all_inter)
+                                  and any(tb in _MUST_PRECEDE.get(req, set()) for tb in tags_b))
+                if not bridging:
+                    continue
+                ts_a = ev_a.get("ts_epoch",0.0) or 0.0
+                ts_b = ev_b.get("ts_epoch",0.0) or 0.0
+                window = ts_b-ts_a if ts_b>ts_a else 0.0
+                then = sorted(tb for tb in tags_b if any(tb in _MUST_PRECEDE.get(r, set()) for r in bridging))[0]
+                elsewhere = [e for e in (events or []) if e.get("entity_id") != entity_id
+                             and ts_a <= (e.get("ts_epoch") or 0.0) <= ts_b
+                             and set(e.get("action_tags") or []) & set(bridging)]
+                # Info: a missing observation can't be produced by
+                # re-running the timeline (it used to route there and
+                # loop until the score flatlined). Surfaced to the
+                # investigator via unresolvable_gaps instead.
+                if elsewhere:
+                    e = elsewhere[0]
+                    detail = (f"{entity_id}: nothing of its own recorded between {tag_a} ({ev_a['event_id']}) and "
+                              f"{then} ({ev_b['event_id']})" + (f", {window:.0f}s" if window else "") +
+                              f"; another source shows {'/'.join(sorted(set(e.get('action_tags') or []) & set(bridging)))} "
+                              f"in that gap ({e.get('event_id')}, {e.get('primary_alias') or e.get('entity_id')}) - "
+                              "possibly the same act, by this person; identity not established.")
+                else:
+                    detail = (f"{entity_id}: nothing recorded between {tag_a} ({ev_a['event_id']}) and {then} "
+                              f"({ev_b['event_id']})" + (f", {window:.0f}s" if window else "") +
+                              f" - one of {'/'.join(bridging)} would be expected there; no evidence shows which, "
+                              "or whether anything happened.")
+                issues.append(CritiqueIssue(
+                    check="missing_linking_event", severity="info", detail=detail,
+                    affected_events=[ev_a["event_id"],ev_b["event_id"]],
+                ))
+                break
     return issues
 
 def _check_narrative_breaks(timeline: Dict, ts_map: Dict[str,float]) -> List[CritiqueIssue]:
@@ -597,7 +616,7 @@ REPEAT_MIN_GAP_SEC = 20
 # A claim about who was there (how many left, that no one saw) is checked
 # against the footage and other records within this window.
 CLAIM_WINDOW_SEC = 120
-_SCENE_ACTS = {"ENTER", "EXIT", "WITHDRAW", "TAMPER"}
+_SCENE_ACTS = {"ENTER", "EXIT", "FLEE", "WITHDRAW", "TAMPER"}
 _MOVE_FAMILY = {"EXIT": "leave", "FLEE": "leave", "ENTER": "enter", "APPROACH": "approach"}
 _COUNT_WORDS = {"two": 2, "both": 2, "three": 3, "four": 4, "five": 5, "2": 2, "3": 3, "4": 4, "5": 5}
 _COUNT_CLAIM = re.compile(
@@ -610,10 +629,28 @@ _UNSEEN_CLAIM = re.compile(r"\b(?:no one|nobody|no-one)\b[^.?!]{0,20}?\b(?:saw|s
 
 
 def _epoch(o: Dict) -> Optional[float]:
-    try:
-        return datetime.fromisoformat(str(o.get("timestamp")).replace("Z", "")).timestamp()
-    except (TypeError, ValueError):
-        return None
+    """The pipeline's own reading of a timestamp: "10:00:58Z", "15:30:58+05:30"
+    and a plain "10:00:58" are one instant (shared.parse_timestamp). Reading
+    them separately put a "+05:30" record hours away from a plain one."""
+    from shared import parse_timestamp
+    t = parse_timestamp(o.get("timestamp") or "")
+    return t if t > 0 else None
+
+
+def _span(o: Dict, t: float) -> Tuple[float, float]:
+    """The stretch of time a claim is about: an FIR claim timed only by the
+    incident window ("between 10:00 and 10:06") is about the whole window -
+    its timestamp is a placement; anything else, CLAIM_WINDOW_SEC either side."""
+    window = o.get("claim_window")
+    if o.get("time_basis") == "window" and isinstance(window, (list, tuple)) and len(window) == 2:
+        try:
+            from shared import parse_timestamp
+            lo, hi = (parse_timestamp(str(w)) for w in window)
+            if lo > 0 and hi >= lo:
+                return lo, hi
+        except ValueError:
+            pass
+    return t - CLAIM_WINDOW_SEC, t + CLAIM_WINDOW_SEC
 
 
 def _said(o: Dict) -> str:
@@ -643,15 +680,22 @@ def _check_act_sequence(er_result: Optional[Dict], observations: List[Dict]) -> 
     for ent, members in _by_entity(er_result, observations).items():
         # a message's own sent time (time_basis document_date) is when the
         # sender reported the act "now" - good enough to order messages
-        steps = sorted(((_epoch(o), o) for o in members
+        # the FIR's account is a claim, not a record of the act: its "came out
+        # at about 10:05" against the camera's 10:05:20 is not a second exit
+        steps = sorted(((_epoch(o), o) for o in _independent(members)
                         if _epoch(o) is not None
                         and (time_reliability(o) >= 0.7
                              or (o.get("modality") == "text" and o.get("time_basis") == "document_date"))
                         and not ({"denial", "alibi"} & set(o.get("tags") or []))
+                        # a witness telling what someone else did is timed by
+                        # the witness's estimate, often a minute off - not a
+                        # record of when the act happened
+                        and not (o.get("reported_by") and o.get("reported_by") != o.get("entity"))
                         and _acts(o) & _SCENE_ACTS), key=lambda s: s[0])
         state, last = None, {}
         for t, o in steps:
-            acts = _acts(o) & _SCENE_ACTS
+            # fleeing is a way of leaving: a second flight counts as a second exit
+            acts = {"EXIT" if a == "FLEE" else a for a in _acts(o) & _SCENE_ACTS}
             problem = None
             if "EXIT" in acts:
                 prev = last.get("EXIT")
@@ -695,11 +739,13 @@ def _check_claims_vs_evidence(er_result: Optional[Dict], observations: List[Dict
     who = lambda o: entity_of.get(str(o.get("obs_id")), o.get("entity"))
     timed = [(o, _epoch(o)) for o in observations if _epoch(o) is not None]
     issues = []
+    counted: set = set()
     for o, t in timed:
         text = _said(o)
+        lo, hi = _span(o, t)
         if _UNSEEN_CLAIM.search(text):
-            onlookers = [x for x, tx in timed if who(x) != who(o) and abs(tx - t) <= CLAIM_WINDOW_SEC
-                         and _acts(x) & {"OBSERVE", "REPORT"}
+            onlookers = [x for x, tx in timed if who(x) != who(o) and lo <= tx <= hi
+                         and "OBSERVE" in _acts(x)
                          and not ({"denial", "alibi"} & set(x.get("tags") or []))]
             if onlookers:
                 x = onlookers[0]
@@ -715,7 +761,7 @@ def _check_claims_vs_evidence(er_result: Optional[Dict], observations: List[Dict
         families = {_MOVE_FAMILY[a] for a in _acts(o) if a in _MOVE_FAMILY}
         if claimed is None or not families or o.get("modality") == "video":
             continue
-        shown = [x for x, tx in timed if x.get("modality") == "video" and abs(tx - t) <= CLAIM_WINDOW_SEC
+        shown = [x for x, tx in timed if x.get("modality") == "video" and lo <= tx <= hi
                  and families & {_MOVE_FAMILY[a] for a in _acts(x) if a in _MOVE_FAMILY}]
         if not shown:
             continue
@@ -723,7 +769,11 @@ def _check_claims_vs_evidence(er_result: Optional[Dict], observations: List[Dict
         for x in shown:
             people.add(who(x))
             people.update(x.get("co_entities") or [])
-        if len(people) != claimed:
+        # one document is one claim: an email split into two observations
+        # ("two individuals left" / "one carrying a bag") is reported once
+        doc = (o.get("modality"), str(o.get("source_doc") or o.get("audio_file") or o.get("obs_id")).split("#")[0])
+        if len(people) != claimed and doc not in counted:
+            counted.add(doc)
             issues.append(CritiqueIssue(
                 check="headcount_mismatch", severity="info",
                 detail=(f"{o.get('modality')} {o.get('obs_id')} ({o.get('entity')}) says {claimed} "
@@ -731,6 +781,79 @@ def _check_claims_vs_evidence(er_result: Optional[Dict], observations: List[Dict
                         f"\"{(o.get('evidence') or o.get('content'))[:80]}\"; the footage around then shows "
                         f"{len(people)} ({', '.join(x.get('obs_id') for x in shown)})."),
                 affected_events=[]))
+    return issues
+
+
+# Acts that leave something behind a later report can find: a device on the
+# card slot, cash gone, a lock broken.
+_RESULT_ACTS = {"TAMPER", "STEAL", "WITHDRAW"}
+# How far apart two records' clocks can be, by how their time was known
+# (shared.time_reliability): a camera's verified clock vs a log, a message's
+# sent time, a witness's estimate.
+def _clock_slack(reliability: float) -> float:
+    return 15.0 if reliability >= 0.95 else 60.0 if reliability >= 0.7 else 300.0 if reliability >= 0.5 else 900.0
+
+
+def _check_result_before_act(observations: List[Dict]) -> List[CritiqueIssue]:
+    """A RESULT of an act reported before anyone could have done it: "something
+    is attached to the card slot" at 10:04:00 when the first recorded entry is
+    10:04:08. Either it was done earlier (an earlier visit, someone else) or
+    one of the two times is off. Across people - unlike the act-order check -
+    and weighed by how far each time can be trusted: beyond both clocks'
+    slack it is an inconsistency; within it, the order is unclear."""
+    from shared import time_reliability
+    results = [o for o in observations if "result" in (o.get("tags") or [])
+               and _acts(o) & _RESULT_ACTS and _epoch(o) is not None]
+    entries = [o for o in _independent(observations) if "ENTER" in _acts(o) and _epoch(o) is not None
+               and not ({"denial", "alibi"} & set(o.get("tags") or []))
+               and not (o.get("reported_by") and o.get("reported_by") != o.get("entity"))]
+    if not results or not entries:
+        return []
+    first = min(entries, key=_epoch)
+    issues = []
+    for r in results:
+        gap = _epoch(first) - _epoch(r)
+        if gap <= 0:
+            continue
+        slack = _clock_slack(time_reliability(r)) + _clock_slack(time_reliability(first))
+        verdict = ("the gap is larger than both records' timing uncertainty" if gap > slack else
+                   f"the gap is within the two records' timing uncertainty (about {slack:.0f}s), so the order is unclear")
+        issues.append(CritiqueIssue(
+            check="result_before_act", severity="info",
+            detail=(f"\"{(r.get('evidence') or r.get('content') or '')[:90]}\" ({r.get('modality')} {r.get('obs_id')}, "
+                    f"{r.get('timestamp')}) reports {'/'.join(sorted(_acts(r) & _RESULT_ACTS))} as already done, "
+                    f"{gap:.0f}s before the first recorded entry ({first.get('entity')}, {first.get('modality')} "
+                    f"{first.get('obs_id')}, {first.get('timestamp')}); {verdict}. Either it was done earlier - an "
+                    "earlier visit, or someone else - or one of the two times is off."),
+            affected_events=[]))
+    return issues
+
+
+_FRAME_ACTS = {"COMMUNICATE", "CONFIRM", "REPORT"}
+
+
+def _check_uncorroborated(timeline: Dict) -> List[CritiqueIssue]:
+    """Events only a report or the FIR states, with no other independent
+    source behind them (the Timeline's basis / corroboration): one email's
+    "two individuals left", the FIR's assault. Kept in the timeline - they
+    are evidence - but named for the investigator, with whether the people
+    in them appear anywhere other than in reports."""
+    events = timeline.get("events", []) or []
+    seen_directly = {e.get("entity_id") for e in events if e.get("basis") == "observed"}
+    issues = []
+    for e in events:
+        acts = set(e.get("action_tags") or []) - _FRAME_ACTS
+        if e.get("basis") not in ("reported", "claim") or e.get("corroboration", 0) or e.get("denial") or not acts:
+            continue
+        who = e.get("primary_alias") or e.get("entity_id")
+        source = "claimed only by the FIR" if e.get("basis") == "claim" else "reported by one source"
+        unknown = "" if e.get("entity_id") in seen_directly else \
+            f"; {who} appears only in reports - not linked to anyone seen or heard directly"
+        issues.append(CritiqueIssue(
+            check="uncorroborated_report", severity="info",
+            detail=(f"{who} {'/'.join(sorted(acts))} at {e.get('timestamp')} ({e.get('event_id')}) is {source}; "
+                    f"no other independent source shows it{unknown}."),
+            affected_events=[e.get("event_id")]))
     return issues
 
 
@@ -982,7 +1105,7 @@ def critique_timeline(
 
     # Original checks
     for name, results in [
-        ("missing_linking_event", _check_missing_links(entity_sequences)),
+        ("missing_linking_event", _check_missing_links(entity_sequences, events)),
         ("narrative_break",       _check_narrative_breaks(timeline, ts_map)),
         ("role_count_mismatch",   _check_role_count(timeline)),
         ("low_confidence_event",  _check_low_confidence(timeline)),
@@ -992,6 +1115,8 @@ def critique_timeline(
         ("statement_contradicted", _check_statements_vs_evidence(er_result, observations or [])),
         ("act_sequence_inconsistent", _check_act_sequence(er_result, observations or [])),
         ("claims_vs_evidence",    _check_claims_vs_evidence(er_result, observations or [])),
+        ("result_before_act",     _check_result_before_act(observations or [])),
+        ("uncorroborated_report", _check_uncorroborated(timeline)),
         ("fir_items",             _check_fir_items(fir, observations or [])),
         ("fir_person_unverified", _check_fir_people(fir, observations or [])),
         ("fir_location_mismatch", _check_fir_location(fir, observations or [])),

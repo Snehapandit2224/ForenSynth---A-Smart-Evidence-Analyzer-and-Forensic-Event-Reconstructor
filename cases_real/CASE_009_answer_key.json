@@ -1,6 +1,6 @@
 {
   "case_id": "CASE_009",
-  "about": "Hand-written answer key for the REAL evidence of case 009 (Evidence Generation/Cases/Case_009): one CCTV clip, five audio recordings, five text documents. HELD OUT: written before any pipeline run on this evidence was looked at. Events and people keep the generator's ids (cases/CASE_ATM_009.json); each evidence item lists everyone in it, the part they play, and the event they show.",
+  "about": "Hand-written answer key for the REAL evidence of case 009 (Evidence Generation/Cases/Case_009): one CCTV clip, five audio recordings, five text documents. HELD OUT: written before any pipeline run on this evidence was looked at. Events and people keep the generator's ids (cases/CASE_ATM_009.json); each evidence item lists everyone in it, the part they play, and the event they show. The FIR (Evidence Generation 2/Cases/Case_009/Text/FIR_CASE_ATM_009.txt) is an evidence item like any other: every statement in it is mapped from the FIR's own sentences - to an event other evidence also shows, to an event only the FIR states (marked single source), or to context / procedure (the bank's later notice, the officer registering the case, the request for action), which is neither a true event nor an error.",
   "built_from": {
     "audio": "transcripts from the audio agent's run (Whisper base) and the manifests (start time, source, location). Clip 5 is the re-recorded version (2026-11-22, a different voice from the suspect's).",
     "text": "Text/O*.json (author, channel, timestamp, text)",
@@ -25,70 +25,466 @@
       "description": "bystander on the pavement in a light blue shirt and dark trousers, watching the two leave; and the voice of audio clip 5 (a different speaker from clips 1-4)",
       "match_appearance": "light blue shirt, dark trousers",
       "identity_note": "Bystander on camera <-> clip-5 speaker: linked only by what they describe (two people leaving in a hurry, seconds apart), not by identity evidence."
+    },
+    "witness_2": {
+      "role": "witness",
+      "description": "a second onlooker named only by the FIR ('two other persons ... near the booth'); not identifiable in any other evidence",
+      "match_appearance": ""
+    },
+    "victim_1": {
+      "role": "victim",
+      "description": "Anitha Rao, 38, complainant",
+      "match_appearance": "",
+      "identity_note": "Anitha Rao: the complainant. Appears only in the FIR - no clip, recording or message shows them."
     }
   },
   "events": [
-    {"event_id": "E1", "person": "suspect_1", "action": "approach_atm",  "time": "2024-01-15T10:00:21", "evidenced_by": ["text_O2", "audio1"]},
-    {"event_id": "E2", "person": "suspect_1", "action": "enter_atm",     "time": "2024-01-15T10:00:40", "evidenced_by": ["audio2", "text_O4"]},
-    {"event_id": "E3", "person": "suspect_1", "action": "withdraw_cash", "time": "2024-01-15T10:01:27", "evidenced_by": ["text_O6"]},
-    {"event_id": "E4", "person": "suspect_1", "action": "wait_outside",  "time": "2024-01-15T10:02:01", "evidenced_by": ["audio3", "text_O8"],
-     "note": "Only the narrator's own words; they read as a lookout watching the entrance, which may really be suspect_2's part - the evidence does not say."},
-    {"event_id": "E5", "person": "suspect_1", "action": "exit_atm",      "time": "2024-01-15T10:02:19", "evidenced_by": ["text_O10", "audio4", "clip1"],
-     "note": "The footage shows two people leaving together (suspect_1 and suspect_2). audio4 is a denial about this departure."},
-    {"event_id": "E6", "person": "witness_1", "action": "observe_exit",  "time": "2024-01-15T10:02:48", "evidenced_by": ["clip1", "audio5"]}
+    {
+      "event_id": "E1",
+      "person": "suspect_1",
+      "action": "approach_atm",
+      "time": "2024-01-15T10:00:21",
+      "evidenced_by": [
+        "text_O2",
+        "audio1"
+      ]
+    },
+    {
+      "event_id": "E2",
+      "person": "suspect_1",
+      "action": "enter_atm",
+      "time": "2024-01-15T10:00:40",
+      "evidenced_by": [
+        "audio2",
+        "text_O4",
+        "fir"
+      ]
+    },
+    {
+      "event_id": "E3",
+      "person": "suspect_1",
+      "action": "withdraw_cash",
+      "time": "2024-01-15T10:01:27",
+      "evidenced_by": [
+        "text_O6"
+      ]
+    },
+    {
+      "event_id": "E4",
+      "person": "suspect_1",
+      "action": "wait_outside",
+      "time": "2024-01-15T10:02:01",
+      "evidenced_by": [
+        "audio3",
+        "text_O8"
+      ],
+      "note": "Only the narrator's own words; they read as a lookout watching the entrance, which may really be suspect_2's part - the evidence does not say."
+    },
+    {
+      "event_id": "E5",
+      "person": "suspect_1",
+      "action": "exit_atm",
+      "time": "2024-01-15T10:02:19",
+      "evidenced_by": [
+        "text_O10",
+        "audio4",
+        "clip1",
+        "fir"
+      ],
+      "note": "The footage shows two people leaving together (suspect_1 and suspect_2). audio4 is a denial about this departure."
+    },
+    {
+      "event_id": "E6",
+      "person": "witness_1",
+      "action": "observe_exit",
+      "time": "2024-01-15T10:02:48",
+      "evidenced_by": [
+        "clip1",
+        "audio5",
+        "fir"
+      ]
+    },
+    {
+      "event_id": "E7",
+      "person": "victim_1",
+      "action": "be_near_atm",
+      "time": "2024-01-15T10:00:00",
+      "evidenced_by": [
+        "fir"
+      ],
+      "note": "single source: only the FIR (the complainant's account) states this; FIR window 10:00-10:03"
+    },
+    {
+      "event_id": "E8",
+      "person": "suspect_1",
+      "action": "assault",
+      "time": "2024-01-15T10:00:00",
+      "evidenced_by": [
+        "fir"
+      ],
+      "note": "single source: only the FIR (the complainant's account) states this; 'one of them' - which suspect is not stated; time only as the FIR window"
+    },
+    {
+      "event_id": "E9",
+      "person": "victim_1",
+      "action": "report_incident",
+      "time": "2024-01-15T12:05:00",
+      "evidenced_by": [
+        "fir"
+      ],
+      "note": "information received at the police station 12:05; FIR registered 12:30"
+    }
   ],
   "evidence": {
-    "text_O2":  {"modality": "text", "file": "Text/O2.json", "source_doc": "O2", "channel": "email",
-                 "window": ["2024-01-15T10:00:22", "2024-01-15T10:00:22"], "text": "On my way to the spot now.",
-                 "people": [{"person": "suspect_1", "part": "author", "event": "E1", "shows": "on the way to the ATM"}]},
-    "text_O4":  {"modality": "text", "file": "Text/O4.json", "source_doc": "O4", "channel": "incident_report",
-                 "window": ["2024-01-15T10:00:48", "2024-01-15T10:00:48"], "text": "Inside. Booth is empty. (forwarded)",
-                 "people": [{"person": "suspect_1", "part": "author", "event": "E2", "shows": "inside the booth (forwarded message: its timestamp is less reliable)"}]},
-    "text_O6":  {"modality": "text", "file": "Text/O6.json", "source_doc": "O6", "channel": "incident_report",
-                 "window": ["2024-01-15T10:01:29", "2024-01-15T10:01:29"], "text": "Card working. Cash out now.",
-                 "people": [{"person": "suspect_1", "part": "author", "event": "E3", "shows": "withdrawing cash"}]},
-    "text_O8":  {"modality": "text", "file": "Text/O8.json", "source_doc": "O8", "channel": "email",
-                 "window": ["2024-01-15T10:02:02", "2024-01-15T10:02:02"], "text": "Nothing suspicious. Continue.",
-                 "people": [{"person": "suspect_1", "part": "author", "event": "E4", "shows": "keeping watch / giving the all-clear"}]},
-    "text_O10": {"modality": "text", "file": "Text/O10.json", "source_doc": "O10", "channel": "incident_report",
-                 "window": ["2024-01-15T10:02:20", "2024-01-15T10:02:20"], "text": "Done here. Moving.",
-                 "people": [{"person": "suspect_1", "part": "author", "event": "E5", "shows": "leaving"}]},
-    "audio1": {"modality": "audio", "file": "Audio/Case009_Audio_Clip1/Case009_Audio_Clip1.wav", "audio_file": "Case009_Audio_Clip1.wav",
-               "source": "phone_record", "window": ["2024-01-15T10:00:34", "2024-01-15T10:00:36"],
-               "transcript": "I can see the ATM now.",
-               "people": [{"person": "suspect_1", "part": "speaker", "event": "E1", "shows": "approaching, ATM in sight"}]},
-    "audio2": {"modality": "audio", "file": "Audio/Case009_Audio_Clip2/Case009_Audio_Clip2.wav", "audio_file": "Case009_Audio_Clip2.wav",
-               "source": "intercepted_call", "window": ["2024-01-15T10:00:44", "2024-01-15T10:00:46"],
-               "transcript": "In the enclosure now, all good.",
-               "people": [{"person": "suspect_1", "part": "speaker", "event": "E2", "shows": "inside the booth"}]},
-    "audio3": {"modality": "audio", "file": "Audio/Case009_Audio_Clip3/Case009_Audio_Clip3.wav", "audio_file": "Case009_Audio_Clip3.wav",
-               "source": "mic_booth", "window": ["2024-01-15T10:01:52", "2024-01-15T10:01:55"],
-               "transcript": "I've got eyes on the ATM entrance.",
-               "people": [{"person": "suspect_1", "part": "speaker", "event": "E4", "shows": "watching the entrance (recorded by the booth-interior mic)"}]},
-    "audio4": {"modality": "audio", "file": "Audio/Case009_Audio_Clip4/Case009_Audio_Clip4.wav", "audio_file": "Case009_Audio_Clip4.wav",
-               "source": "phone_record", "window": ["2024-01-15T10:02:25", "2024-01-15T10:02:29"],
-               "transcript": "I departed that location long before the time mentioned.",
-               "people": [{"person": "suspect_1", "part": "speaker", "event": "E5", "shows": "a denial: claims to have left long before"}]},
-    "audio5": {"modality": "audio", "file": "Audio/Case009_Audio_Clip5/Case009_Audio_Clip5.wav", "audio_file": "Case009_Audio_Clip5.wav",
-               "source": "phone_record", "window": ["2024-01-15T10:02:49", "2024-01-15T10:02:53"],
-               "transcript": "I noticed them leave the ATM in a hurry.",
-               "people": [{"person": "witness_1", "part": "speaker", "event": "E6", "shows": "a witness describing the two leaving"}]},
-    "clip1": {"modality": "video", "file": "Video/Case009_Clip1.mp4", "camera": "CAM 01",
-              "window": ["2024-01-15T10:02:41", "2024-01-15T10:02:50"], "quality": 0.43,
-              "people": [{"person": "suspect_1", "part": "actor", "event": "E5", "shows": "black cap and hoodie: leaves the ATM area (video agent: flee_scene, Person_76)"},
-                         {"person": "suspect_2", "part": "actor", "event": "E5", "shows": "grey shirt, backpack: leaves together with him (video agent: Person_42, no observation of its own)"},
-                         {"person": "witness_1", "part": "actor", "event": "E6", "shows": "light blue shirt: stays on the pavement watching them go (video agent: observe_exit, Person_30)"}]}
+    "text_O2": {
+      "modality": "text",
+      "file": "Text/O2.json",
+      "source_doc": "O2",
+      "channel": "email",
+      "window": [
+        "2024-01-15T10:00:22",
+        "2024-01-15T10:00:22"
+      ],
+      "text": "On my way to the spot now.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "author",
+          "event": "E1",
+          "shows": "on the way to the ATM"
+        }
+      ]
+    },
+    "text_O4": {
+      "modality": "text",
+      "file": "Text/O4.json",
+      "source_doc": "O4",
+      "channel": "incident_report",
+      "window": [
+        "2024-01-15T10:00:48",
+        "2024-01-15T10:00:48"
+      ],
+      "text": "Inside. Booth is empty. (forwarded)",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "author",
+          "event": "E2",
+          "shows": "inside the booth (forwarded message: its timestamp is less reliable)"
+        }
+      ]
+    },
+    "text_O6": {
+      "modality": "text",
+      "file": "Text/O6.json",
+      "source_doc": "O6",
+      "channel": "incident_report",
+      "window": [
+        "2024-01-15T10:01:29",
+        "2024-01-15T10:01:29"
+      ],
+      "text": "Card working. Cash out now.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "author",
+          "event": "E3",
+          "shows": "withdrawing cash"
+        }
+      ]
+    },
+    "text_O8": {
+      "modality": "text",
+      "file": "Text/O8.json",
+      "source_doc": "O8",
+      "channel": "email",
+      "window": [
+        "2024-01-15T10:02:02",
+        "2024-01-15T10:02:02"
+      ],
+      "text": "Nothing suspicious. Continue.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "author",
+          "event": "E4",
+          "shows": "keeping watch / giving the all-clear"
+        }
+      ]
+    },
+    "text_O10": {
+      "modality": "text",
+      "file": "Text/O10.json",
+      "source_doc": "O10",
+      "channel": "incident_report",
+      "window": [
+        "2024-01-15T10:02:20",
+        "2024-01-15T10:02:20"
+      ],
+      "text": "Done here. Moving.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "author",
+          "event": "E5",
+          "shows": "leaving"
+        }
+      ]
+    },
+    "audio1": {
+      "modality": "audio",
+      "file": "Audio/Case009_Audio_Clip1/Case009_Audio_Clip1.wav",
+      "audio_file": "Case009_Audio_Clip1.wav",
+      "source": "phone_record",
+      "window": [
+        "2024-01-15T10:00:34",
+        "2024-01-15T10:00:36"
+      ],
+      "transcript": "I can see the ATM now.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "speaker",
+          "event": "E1",
+          "shows": "approaching, ATM in sight"
+        }
+      ]
+    },
+    "audio2": {
+      "modality": "audio",
+      "file": "Audio/Case009_Audio_Clip2/Case009_Audio_Clip2.wav",
+      "audio_file": "Case009_Audio_Clip2.wav",
+      "source": "intercepted_call",
+      "window": [
+        "2024-01-15T10:00:44",
+        "2024-01-15T10:00:46"
+      ],
+      "transcript": "In the enclosure now, all good.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "speaker",
+          "event": "E2",
+          "shows": "inside the booth"
+        }
+      ]
+    },
+    "audio3": {
+      "modality": "audio",
+      "file": "Audio/Case009_Audio_Clip3/Case009_Audio_Clip3.wav",
+      "audio_file": "Case009_Audio_Clip3.wav",
+      "source": "mic_booth",
+      "window": [
+        "2024-01-15T10:01:52",
+        "2024-01-15T10:01:55"
+      ],
+      "transcript": "I've got eyes on the ATM entrance.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "speaker",
+          "event": "E4",
+          "shows": "watching the entrance (recorded by the booth-interior mic)"
+        }
+      ]
+    },
+    "audio4": {
+      "modality": "audio",
+      "file": "Audio/Case009_Audio_Clip4/Case009_Audio_Clip4.wav",
+      "audio_file": "Case009_Audio_Clip4.wav",
+      "source": "phone_record",
+      "window": [
+        "2024-01-15T10:02:25",
+        "2024-01-15T10:02:29"
+      ],
+      "transcript": "I departed that location long before the time mentioned.",
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "speaker",
+          "event": "E5",
+          "shows": "a denial: claims to have left long before"
+        }
+      ]
+    },
+    "audio5": {
+      "modality": "audio",
+      "file": "Audio/Case009_Audio_Clip5/Case009_Audio_Clip5.wav",
+      "audio_file": "Case009_Audio_Clip5.wav",
+      "source": "phone_record",
+      "window": [
+        "2024-01-15T10:02:49",
+        "2024-01-15T10:02:53"
+      ],
+      "transcript": "I noticed them leave the ATM in a hurry.",
+      "people": [
+        {
+          "person": "witness_1",
+          "part": "speaker",
+          "event": "E6",
+          "shows": "a witness describing the two leaving"
+        }
+      ]
+    },
+    "clip1": {
+      "modality": "video",
+      "file": "Video/Case009_Clip1.mp4",
+      "camera": "CAM 01",
+      "window": [
+        "2024-01-15T10:02:41",
+        "2024-01-15T10:02:50"
+      ],
+      "quality": 0.43,
+      "people": [
+        {
+          "person": "suspect_1",
+          "part": "actor",
+          "event": "E5",
+          "shows": "black cap and hoodie: leaves the ATM area (video agent: flee_scene, Person_76)"
+        },
+        {
+          "person": "suspect_2",
+          "part": "actor",
+          "event": "E5",
+          "shows": "grey shirt, backpack: leaves together with him (video agent: Person_42, no observation of its own)"
+        },
+        {
+          "person": "witness_1",
+          "part": "actor",
+          "event": "E6",
+          "shows": "light blue shirt: stays on the pavement watching them go (video agent: observe_exit, Person_30)"
+        }
+      ]
+    },
+    "fir": {
+      "modality": "text",
+      "file": "Text/FIR_CASE_ATM_009.txt",
+      "source_doc": "REAL_CASE_009_FIR",
+      "window": null,
+      "claims": [
+        {
+          "sentences": [
+            "I was near the Indiranagar HDFC ATM"
+          ],
+          "says": "anitha was near the atm observed",
+          "person": "victim_1",
+          "event": "E7"
+        },
+        {
+          "sentences": [
+            "Two persons went into the ATM booth together and stayed there for some time"
+          ],
+          "says": "two persons entered the atm booth together",
+          "persons": [
+            "suspect_1",
+            "suspect_2"
+          ],
+          "event": "E2"
+        },
+        {
+          "sentences": [
+            "One of them attacked me when I came near the booth"
+          ],
+          "says": "one of them attacked the complainant",
+          "person": "suspect_1",
+          "event": "E8"
+        },
+        {
+          "sentences": [
+            "Both of them left before the security guard arrived at the place"
+          ],
+          "says": "both left before the security guard arrived",
+          "persons": [
+            "suspect_1",
+            "suspect_2"
+          ],
+          "event": "E5"
+        },
+        {
+          "sentences": [
+            "Two other persons who were present near the booth saw what happened and have given their statements about the order of events"
+          ],
+          "says": "two other persons observed the incident gave statements",
+          "persons": [
+            "witness_1",
+            "witness_2"
+          ],
+          "event": "E6"
+        },
+        {
+          "sentences": [
+            "The bank has told me that my card details were copied at this ATM and cash was taken out of my account"
+          ],
+          "says": "bank told card details copied cash taken",
+          "category": "context"
+        },
+        {
+          "sentences": [
+            "I request you to take action against the two unknown persons and recover my money"
+          ],
+          "says": "request action recover money filed",
+          "category": "procedural"
+        },
+        {
+          "sentences": [
+            "Information received at P.S.: Date 15/01/2024, Time 12:05 hrs",
+            "Date and Time of FIR: 15/01/2024 12:30"
+          ],
+          "says": "reported the incident to the police filed the fir",
+          "person": "victim_1",
+          "event": "E9"
+        },
+        {
+          "sentences": [
+            "registered the case and took up the investigation"
+          ],
+          "says": "officer registered the case investigation",
+          "category": "procedural"
+        }
+      ],
+      "author": "victim_1"
+    }
   },
   "findings_an_investigator_should_get": [
-    {"id": "departure_denial_contradicted", "kind": "statement vs evidence",
-     "detail": "audio4 (10:02:25) says they left 'long before the time mentioned', in the same voice as clips 1-3, while that narrator's own messages put them at the ATM until 10:02:20 ('Done here. Moving.') and the footage shows two people leaving at 10:02:41."},
-    {"id": "second_person", "kind": "gap",
-     "detail": "The footage shows two people leaving together; all the narration comes from one person. The second person (grey shirt, backpack) appears only on camera - consistent with the FIR's two suspects, but nothing says who they are or what they did."},
-    {"id": "lookout_ambiguity", "kind": "ambiguity",
-     "detail": "'Card working. Cash out now.' (10:01:29) and then 'I've got eyes on the ATM entrance' (10:01:52) and 'Nothing suspicious. Continue.' (10:02:02) read as a lookout's words; whether the narrator or the second person kept watch is not established."},
-    {"id": "witness_corroborates", "kind": "corroboration",
-     "detail": "A different voice (audio5, 10:02:49) describes them leaving in a hurry, matching the bystander filmed watching at 10:02:41-50."},
-    {"id": "low_quality_footage", "kind": "evidence quality",
-     "detail": "The only clip has a low quality score (0.43); appearance details from it are less reliable."}
+    {
+      "id": "departure_denial_contradicted",
+      "kind": "statement vs evidence",
+      "detail": "audio4 (10:02:25) says they left 'long before the time mentioned', in the same voice as clips 1-3, while that narrator's own messages put them at the ATM until 10:02:20 ('Done here. Moving.') and the footage shows two people leaving at 10:02:41."
+    },
+    {
+      "id": "second_person",
+      "kind": "gap",
+      "detail": "The footage shows two people leaving together; all the narration comes from one person. The second person (grey shirt, backpack) appears only on camera - consistent with the FIR's two suspects, but nothing says who they are or what they did."
+    },
+    {
+      "id": "lookout_ambiguity",
+      "kind": "ambiguity",
+      "detail": "'Card working. Cash out now.' (10:01:29) and then 'I've got eyes on the ATM entrance' (10:01:52) and 'Nothing suspicious. Continue.' (10:02:02) read as a lookout's words; whether the narrator or the second person kept watch is not established."
+    },
+    {
+      "id": "witness_corroborates",
+      "kind": "corroboration",
+      "detail": "A different voice (audio5, 10:02:49) describes them leaving in a hurry, matching the bystander filmed watching at 10:02:41-50."
+    },
+    {
+      "id": "low_quality_footage",
+      "kind": "evidence quality",
+      "detail": "The only clip has a low quality score (0.43); appearance details from it are less reliable."
+    },
+    {
+      "id": "fir_two_entered_vs_evidence",
+      "kind": "FIR vs evidence",
+      "detail": "The FIR says two persons went into the booth together; the narrator's own messages from inside say 'Booth is empty' and only one voice narrates - the two are seen together only when leaving (10:02:41)."
+    },
+    {
+      "id": "fir_two_witnesses",
+      "kind": "FIR vs evidence",
+      "detail": "The FIR names two other onlookers; the evidence shows one bystander on camera and one caller (who may be the same person)."
+    },
+    {
+      "id": "fir_assault_single_source",
+      "kind": "FIR vs evidence",
+      "detail": "The FIR says one of the two attacked the complainant (Anitha Rao); only the FIR states it."
+    }
   ]
 }

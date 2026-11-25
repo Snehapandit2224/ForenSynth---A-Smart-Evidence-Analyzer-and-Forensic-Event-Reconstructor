@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -101,14 +102,81 @@ def find_person(obs: Dict[str, Any], item: Dict[str, Any], people: Dict[str, Any
     return entries[0]["person"], entries[0]["event"]
 
 
-def build_ground_truth(key: Dict[str, Any], observations: List[Dict[str, Any]]) -> Tuple[Dict, List[str]]:
-    obs_out, obs_entity, unplaced = [], {}, []
+_WORD = re.compile(r"[a-z0-9]+")
+
+
+_STOP = {"the", "and", "was", "were", "with", "that", "this", "for", "from", "them", "they", "his", "her",
+         "him", "she", "when", "then", "after", "about", "has", "have", "had", "been", "who", "which", "there"}
+
+
+def _words(text: str) -> set:
+    return {w for w in _WORD.findall((text or "").lower()) if len(w) > 2 and w not in _STOP}
+
+
+def _covered(part: str, whole: str) -> float:
+    """Share of `part`'s words that appear in `whole`."""
+    pw = _words(part)
+    return len(pw & _words(whole)) / len(pw) if pw else 0.0
+
+
+UNSCORED = "unscored"
+
+
+def find_claim(obs: Dict[str, Any], item: Dict[str, Any], seen: Dict[int, List[str]]):
+    """A narrative item (an FIR) lists its statements as CLAIMS, each with
+    the FIR sentence(s) it comes from and what it says. An observation is
+    matched by its verbatim quote (evidence) against the sentences - never by
+    the agent's action label; when one quote holds several statements, by
+    how well its content matches what each says. A claim of several people
+    of one kind ("two persons went in") lists them in "persons", assigned to
+    the agent's labels in order of first appearance.
+    Returns (person, event), UNSCORED (context / procedure), or None."""
+    quote = obs.get("evidence") or obs.get("content") or ""
+    scored = []
+    for i, claim in enumerate(item["claims"]):
+        hit = max(_covered(s, quote) for s in claim["sentences"])
+        if hit >= 0.6:
+            scored.append((_covered(claim["says"], obs.get("content") or ""), hit, i, claim))
+    if not scored:
+        return None
+    # An observation can fold several statements of one quote together
+    # ("entered the booth and attacked the complainant"): of those its content
+    # clearly mentions, the first in the document; else the best match.
+    mentioned = [t for t in scored if t[0] >= 1 / 3]
+    _, _, i, claim = min(mentioned, key=lambda t: t[2]) if mentioned else max(scored, key=lambda t: (t[0], t[1], -t[2]))
+    if claim.get("category") in ("context", "procedural"):
+        return UNSCORED
+    # the author telling what they saw ("Mohan observed a man ...") is the
+    # author's observation of that event, not the man's own record
+    if item.get("author") and obs.get("reported_by") and obs.get("reported_by") == obs.get("entity"):
+        return item["author"], claim["event"]
+    persons = claim.get("persons") or [claim["person"]]
+    labels = seen.setdefault(i, [])
+    if obs.get("entity") not in labels:
+        labels.append(obs.get("entity"))
+    return persons[min(labels.index(obs.get("entity")), len(persons) - 1)], claim["event"]
+
+
+def build_ground_truth(key: Dict[str, Any], observations: List[Dict[str, Any]]) -> Tuple[Dict, List[str], List[str]]:
+    obs_out, obs_entity, unplaced, unscored = [], {}, [], []
+    claim_labels: Dict[str, Dict[int, List[str]]] = {}
     for o in observations:
         item_id = find_item(o, key["evidence"])
         if item_id is None:
             unplaced.append(o["obs_id"])
             continue
-        person, event = find_person(o, key["evidence"][item_id], key["people"])
+        item = key["evidence"][item_id]
+        if item.get("claims"):
+            placed = find_claim(o, item, claim_labels.setdefault(item_id, {}))
+            if placed == UNSCORED:
+                unscored.append(o["obs_id"])
+                continue
+            if placed is None:
+                unplaced.append(o["obs_id"])
+                continue
+            person, event = placed
+        else:
+            person, event = find_person(o, item, key["people"])
         obs_out.append({**o, "event_ref": event, "evidence_item": item_id})
         obs_entity[o["obs_id"]] = person
     events = [{"event_id": e["event_id"], "entity_id": e["person"], "role": key["people"][e["person"]]["role"],
@@ -116,7 +184,7 @@ def build_ground_truth(key: Dict[str, Any], observations: List[Dict[str, Any]]) 
     gt = {"case_id": key["case_id"], "observations": obs_out,
           "ground_truth": {"events": events, "entity_mapping": {}, "obs_entity": obs_entity,
                            "entities": [{"entity_id": p, "role": v["role"]} for p, v in key["people"].items()]}}
-    return gt, unplaced
+    return gt, unplaced, unscored
 
 
 def main() -> None:
@@ -134,7 +202,7 @@ def main() -> None:
 
     key = json.loads(Path(args.key).read_text(encoding="utf-8"))
     obs = json.loads(Path(args.observations).read_text(encoding="utf-8"))["observations"]
-    gt, unplaced = build_ground_truth(key, obs)
+    gt, unplaced, unscored = build_ground_truth(key, obs)
     out = Path(args.output)
     out.mkdir(parents=True, exist_ok=True)
     gt_path = out / f"{key['case_id']}_answer_key_groundtruth.json"
@@ -145,13 +213,36 @@ def main() -> None:
         print(f"  {o['obs_id']:<4} {o['modality']:<5} {o['entity'][:28]:<28} -> {o['evidence_item']:<9} "
               f"-> {gt['ground_truth']['obs_entity'][o['obs_id']]} / {o['event_ref']}")
     if unplaced:
-        print(f"  NOT PLACED (no matching evidence item): {unplaced}")
+        print(f"  NOT PLACED (no matching evidence item, or a claim no other evidence shows): {unplaced}")
 
+    # Context / procedure (the officer registering the case, "I request
+    # action", the bank's later notice) is neither a true event nor an error:
+    # events and moments made only of it are taken out before scoring.
+    tl = json.loads(Path(args.timeline).read_text(encoding="utf-8"))
+    only = lambda x: x.get("obs_ids") and all(o in unscored for o in x["obs_ids"])
+    n_unscored = sum(1 for e in tl.get("events", []) if only(e))
+    tl["events"] = [e for e in tl.get("events", []) if not only(e)]
+    tl["moments"] = [m for m in tl.get("moments", []) if not only(m)]
+    scored_tl = out / f"{key['case_id']}_timeline_scored.json"
+    scored_tl.write_text(json.dumps(tl, indent=2), encoding="utf-8")
+    if unscored:
+        print(f"  NOT SCORED (context / procedure): {unscored} -> {n_unscored} event(s) left out")
+    args.timeline = str(scored_tl)
     ev = evaluate_case(key["case_id"], str(gt_path), args.timeline, str(out))
+    # Events built only from claims no other evidence shows (an FIR's assault,
+    # the complainant's own errands) have no true event to match: they count
+    # against plain precision; shown here how much.
+    tl = json.loads(Path(args.timeline).read_text(encoding="utf-8"))
+    claim_only = [e for e in tl.get("events", []) if e.get("obs_ids") and all(o in unplaced for o in e["obs_ids"])]
+    if claim_only and ev.get("n_pipeline_events"):
+        n = ev["n_pipeline_events"] - len(claim_only)
+        ev["events_from_unplaced_claims"] = len(claim_only)
+        ev["precision_without_claim_only_events"] = round(ev["n_matched"] / n, 4) if n else None
     er = evaluate_er_file(args.er, str(gt_path)) or {}
     print("\nscores against the answer key")
     for k in ("event_recall", "event_recall_observable", "precision", "precision_linked", "f1_score", "f1_pure", "event_purity", "n_conflated", "moment_precision", "moment_recall", "moment_f1", "moment_time_err_sec",
-              "entity_accuracy", "action_tag_accuracy", "temporal_accuracy_sec"):
+              "entity_accuracy", "action_tag_accuracy", "temporal_accuracy_sec",
+              "events_from_unplaced_claims", "precision_without_claim_only_events"):
         print(f"  {k:<26} {ev.get(k)}")
     for k in ("er_precision", "er_recall", "er_recall_supported", "wrong_merges"):
         print(f"  {k:<26} {er.get(k)}")

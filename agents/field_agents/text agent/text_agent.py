@@ -75,13 +75,16 @@ _DENIAL_OR_ALIBI = re.compile(
     r"|\b(?:left|departed|gone|went home)\b[^.?!]{0,30}?\blong before\b"
     r"|\b(?:I|we) (?:was|were) (?:at home|elsewhere|not there|somewhere else)\b", re.I)
 
-ACTIONS = ("APPROACH", "ENTER", "WITHDRAW", "TAMPER", "LOITER", "EXIT", "FLEE", "STEAL", "NAVIGATE",
+# "No one saw" / "nobody was around": a claim that there were no witnesses.
+_NO_WITNESS = re.compile(r"\b(?:no one|nobody|no-one)\b", re.I)
+
+ACTIONS = ("APPROACH", "ENTER", "WITHDRAW", "TAMPER", "LOITER", "EXIT", "FLEE", "STEAL", "ASSAULT", "NAVIGATE",
            "WORK", "COMMUNICATE", "CONFIRM", "WATCH", "OBSERVE", "REPORT", "INTERCEPT")
 TIME_BASES = {"explicit", "relative", "document_date", "unknown"}
 EVENT_TAGS = {
     "threat", "admission", "denial", "alibi", "weapon", "money", "injury",
     "property", "movement", "communication", "identification", "planning",
-    "coercion", "contact",
+    "coercion", "contact", "result",
 }
 DOC_TYPES = {
     "email", "chat", "sms", "witness_statement", "fir", "police_note",
@@ -413,7 +416,11 @@ Rules:
 - "tags": any of {sorted(EVENT_TAGS)}.
 - "action": the kind of act, one of {list(ACTIONS)} (WATCH = keeping lookout, LOITER = hanging
   around, OBSERVE = seeing something happen, REPORT = telling police/authorities), or null if
-  none fits. A denial ("I never went inside") gets null, not the act it denies. A message that
+  none fits (ASSAULT = attacking or hitting a person). A denial ("I never went inside") gets null,
+  not the act it denies. ONE observation per act: a sentence with two acts ("they went into the
+  booth and one of them attacked me") gives two observations, each with its own action and its own
+  short evidence quote - never one observation covering both.
+  A statement that the RESULT of an act was found or noticed ("something is attached to the card slot", "cash is missing from the machine", "the lock was broken") is its own observation of that act (TAMPER, STEAL, ...): actor = whoever did it if the text says, else "unknown_person"; time = when it was found or reported; tag it "result". Seeing a place while heading to it ("I can see the ATM now") is APPROACH; keeping an eye out for others ("eyes on the entrance", "nothing suspicious, continue") is WATCH. "No one saw" / "nobody was around" is a claim about witnesses: no action and NOT a denial. In a machine or system log (an ATM terminal journal), each entry describes what happened AT the machine: the actor is "unknown_person" unless a person is named - never the entry's code fields (DEV, SEC, TXN) - and a card-reader fault, a device on the card slot or an opened fascia/door sensor is TAMPER. A message that
   announces or reports an act gets the act it describes, not COMMUNICATE: "Entered." -> ENTER,
   "Cash out now." -> WITHDRAW, "Done here. Moving." -> EXIT, "Still waiting." -> LOITER,
   "Reader fitted." -> TAMPER. COMMUNICATE is only for contact that is itself the point
@@ -521,11 +528,18 @@ def _clean_llm_obs(raw: dict, doc: dict, chunk: str, aliases: dict[str, str],
     if (author and actor != author and _is_short_message(doc.get("text", ""))
             and (actor.lower().startswith("unknown") or actor.lower() not in aliases)):
         actor = author
+    # A machine log's field codes ("DEV", "SEC", "TXN") are not people: its
+    # entries describe what happened at the machine, done by someone the log
+    # doesn't name.
+    if _is_machine_log(doc) and re.fullmatch(r"[A-Z0-9_]{2,5}", actor or ""):
+        actor = "unknown_person"
     role = str(raw.get("role_hint") or "unknown").strip().lower()
     basis = str(raw.get("time_basis") or "unknown").strip().lower()
     tags = {str(t).lower() for t in (raw.get("tags") or [])} & EVENT_TAGS
     if _DENIAL_OR_ALIBI.search(evidence):
         tags.add("denial")
+    elif "denial" in tags and _NO_WITNESS.search(evidence):
+        tags.discard("denial")   # "No one saw." is a claim about witnesses, not a denial of an act
     return {
         "actor": actor,
         "role_hint": role if role in ROLE_HINTS else "unknown",
@@ -727,6 +741,12 @@ def extract_observations(docs: list[dict], llm: GroqJSON | None,
                 "_order": order,
             })
     return observations
+
+
+def _is_machine_log(doc: dict) -> bool:
+    """A terminal / system log (an ATM journal, an access-control log)."""
+    kind = f"{doc.get('doc_type_hint') or ''} {doc.get('source') or ''}".lower()
+    return "log" in kind and "email" not in kind and "chat" not in kind
 
 
 def _is_short_message(text: str) -> bool:

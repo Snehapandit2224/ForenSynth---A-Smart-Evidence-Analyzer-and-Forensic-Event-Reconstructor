@@ -1,0 +1,491 @@
+{
+  "case_id": "CASE_ATM_024",
+  "domain": "ATM_Robbery",
+  "template": "Entry_Action_Exit",
+  "fir": {
+    "crime_type": "ATM skimming with assault",
+    "location": "Whitefield ATM Kiosk",
+    "time_window": [
+      0,
+      575
+    ],
+    "description": "Complainant reports an unauthorised transaction conducted at the ATM by 1 accused person(s) during off-peak hours. 2 bystander(s) have corroborated the account.",
+    "roles": {
+      "suspect": 1,
+      "witness": 1
+    }
+  },
+  "observations": [
+    {
+      "obs_id": "O1",
+      "event_ref": "E1",
+      "entity": "Manoj Sharma",
+      "role": "unknown",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "remote — mobile network SMS",
+      "content": "[DELETED] — Message removed by sender.",
+      "timestamp": "2024-01-15T10:00:29",
+      "time_offset": 29,
+      "confidence": 0.589,
+      "noise_tags": [
+        "contradiction"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.78,
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O2",
+      "event_ref": "E2",
+      "entity": "Sharma",
+      "role": "unknown",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "remote — mobile network SMS",
+      "content": "In. Door shut. No one here.",
+      "timestamp": "2024-01-15T10:00:55",
+      "time_offset": 55,
+      "confidence": 0.658,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.762,
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O8",
+      "event_ref": "E2",
+      "entity": "unknown_man_1@phone_record",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I saw a short man in a blue shirt step into the booth.",
+      "timestamp": "2024-01-15T10:01:15",
+      "time_offset": 75,
+      "confidence": 0.707,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, blue shirt",
+      "reported_by": "phone_record_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.753,
+      "action": "ENTER",
+      "time_basis": "document_date"
+    },
+    {
+      "obs_id": "O9",
+      "event_ref": "E4",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A short man in a blue shirt was standing outside the booth, watching.",
+      "timestamp": "2024-01-15T15:31:58+05:30",
+      "time_offset": 118,
+      "confidence": 0.584,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, blue shirt",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.744,
+      "action": "WATCH",
+      "time_basis": "document_date"
+    },
+    {
+      "obs_id": "O3",
+      "event_ref": "E3",
+      "entity": "Manoj Sharma",
+      "role": "unknown",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "remote — mobile network SMS",
+      "content": "Transaction done. Got it all.",
+      "timestamp": "2024-01-15T10:02:34",
+      "time_offset": 154,
+      "confidence": 0.718,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.932,
+      "action": "WITHDRAW",
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O4",
+      "event_ref": "E4",
+      "entity": "Manoj",
+      "role": "unknown",
+      "modality": "text",
+      "source": "sms_record",
+      "location": "remote — mobile network SMS",
+      "content": "Outside. All clear. Go ahead. (partial extract)",
+      "timestamp": "2024-01-15T10:02:47",
+      "time_offset": 167,
+      "confidence": 0.82,
+      "noise_tags": [
+        "semantic_variation"
+      ],
+      "role_hint": "suspect",
+      "role_hint_confidence": 0.245,
+      "action": "WATCH",
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O6",
+      "event_ref": "E6",
+      "entity": "phone_record_SPEAKER_00",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "phone_record",
+      "location": "near ATM location, mobile network",
+      "content": "I noticed them leave the ATM in a hurry.",
+      "timestamp": "2024-01-15T10:03:35",
+      "time_offset": 215,
+      "confidence": 0.769,
+      "noise_tags": [],
+      "identity_embedding": [
+        0.0149,
+        -0.0373,
+        0.0196,
+        0.1561,
+        -0.0123,
+        -0.1277,
+        -0.0897,
+        -0.0956,
+        -0.0775,
+        0.1963,
+        0.1965,
+        -0.0905,
+        0.0011,
+        0.0756,
+        0.1358,
+        0.0817,
+        0.0783,
+        0.1264,
+        0.1682,
+        -0.0595,
+        -0.0032,
+        0.0456,
+        -0.15,
+        0.1619,
+        -0.0693,
+        -0.3156,
+        0.0916,
+        -0.0356,
+        0.0524,
+        -0.1715,
+        -0.2237,
+        0.0275,
+        0.0153,
+        0.1208,
+        -0.1438,
+        0.281,
+        -0.0361,
+        -0.1119,
+        -0.0714,
+        0.1432,
+        -0.0355,
+        -0.0819,
+        -0.0139,
+        0.0762,
+        0.2107,
+        -0.0447,
+        0.1844,
+        0.0728,
+        -0.2019,
+        -0.1368,
+        -0.0003,
+        0.1094,
+        0.0509,
+        -0.0747,
+        0.0187,
+        -0.0917,
+        0.082,
+        0.0307,
+        0.072,
+        -0.3595,
+        0.0561,
+        0.1338,
+        -0.0966,
+        0.04
+      ],
+      "role_hint": "witness",
+      "role_hint_confidence": 0.83,
+      "action": "OBSERVE",
+      "time_basis": "explicit"
+    },
+    {
+      "obs_id": "O10",
+      "event_ref": "E5",
+      "entity": "unknown_man_1@witness_statement",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "A short man in a blue shirt came out of the booth fast.",
+      "timestamp": "2024-01-15T15:33:41+05:30",
+      "time_offset": 221,
+      "confidence": 0.763,
+      "noise_tags": [
+        "reported_event"
+      ],
+      "appearance": "short, blue shirt",
+      "reported_by": "witness_statement_SPEAKER_00",
+      "role_hint": "victim",
+      "role_hint_confidence": 0.744,
+      "action": "EXIT",
+      "time_basis": "relative"
+    },
+    {
+      "obs_id": "O7",
+      "event_ref": "E7",
+      "entity": "witness_statement_SPEAKER_01",
+      "role": "unknown",
+      "modality": "audio",
+      "source": "witness_statement",
+      "location": "ATM vicinity, bystander position",
+      "content": "I'd like to speak to an officer about what I saw at the kiosk.",
+      "timestamp": "2024-01-15T15:34:24+05:30",
+      "time_offset": 264,
+      "confidence": 0.705,
+      "noise_tags": [
+        "temporal_noise"
+      ],
+      "identity_embedding": [
+        0.0784,
+        -0.1688,
+        0.0972,
+        0.0846,
+        0.0587,
+        -0.2017,
+        -0.0274,
+        -0.0499,
+        -0.0892,
+        0.0339,
+        0.2049,
+        -0.0948,
+        -0.0368,
+        0.0734,
+        0.1174,
+        0.1003,
+        0.0326,
+        0.0758,
+        0.155,
+        -0.185,
+        0.0786,
+        0.0849,
+        -0.1535,
+        0.089,
+        -0.0777,
+        -0.2326,
+        0.163,
+        -0.0214,
+        0.0556,
+        -0.2166,
+        -0.1912,
+        0.1059,
+        0.1188,
+        0.0228,
+        -0.097,
+        0.1265,
+        -0.0455,
+        -0.0022,
+        -0.1101,
+        0.0771,
+        0.1095,
+        0.016,
+        -0.0485,
+        0.0953,
+        0.2772,
+        -0.0913,
+        0.1702,
+        0.0228,
+        -0.2189,
+        -0.196,
+        0.0139,
+        0.17,
+        0.0617,
+        -0.1226,
+        -0.0707,
+        -0.1348,
+        0.1245,
+        -0.0087,
+        0.0257,
+        -0.3361,
+        0.0759,
+        0.1369,
+        -0.0782,
+        0.0053
+      ],
+      "role_hint": "witness",
+      "role_hint_confidence": 0.744,
+      "time_basis": "explicit"
+    }
+  ],
+  "ground_truth": {
+    "entities": [
+      {
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "aliases": {
+          "text": "sms_66"
+        },
+        "all_aliases": [
+          "Manoj",
+          "Manoj Sharma",
+          "Sharma",
+          "unknown_man_1@phone_record",
+          "unknown_man_1@witness_statement"
+        ]
+      },
+      {
+        "entity_id": "witness_1",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_R"
+        },
+        "all_aliases": [
+          "phone_record_SPEAKER_00",
+          "witness_statement_SPEAKER_01"
+        ]
+      },
+      {
+        "entity_id": "witness_2",
+        "role": "witness",
+        "aliases": {
+          "audio": "Speaker_F"
+        },
+        "all_aliases": []
+      }
+    ],
+    "events": [
+      {
+        "event_id": "E1",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "approach_atm",
+        "timestamp": "2024-01-15T10:00:28",
+        "time_offset": 28
+      },
+      {
+        "event_id": "E2",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "enter_atm",
+        "timestamp": "2024-01-15T10:01:00",
+        "time_offset": 60
+      },
+      {
+        "event_id": "E3",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "withdraw_cash",
+        "timestamp": "2024-01-15T10:02:24",
+        "time_offset": 144
+      },
+      {
+        "event_id": "E4",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "wait_outside",
+        "timestamp": "2024-01-15T10:02:46",
+        "time_offset": 166
+      },
+      {
+        "event_id": "E5",
+        "entity_id": "suspect_1",
+        "role": "suspect",
+        "action": "exit_atm",
+        "timestamp": "2024-01-15T10:03:04",
+        "time_offset": 184
+      },
+      {
+        "event_id": "E6",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "observe_exit",
+        "timestamp": "2024-01-15T10:03:33",
+        "time_offset": 213
+      },
+      {
+        "event_id": "E7",
+        "entity_id": "witness_1",
+        "role": "witness",
+        "action": "report_incident",
+        "timestamp": "2024-01-15T10:04:17",
+        "time_offset": 257
+      }
+    ],
+    "entity_mapping": {
+      "Manoj": "suspect_1",
+      "Manoj Sharma": "suspect_1",
+      "Sharma": "suspect_1",
+      "phone_record_SPEAKER_00": "witness_1",
+      "unknown_man_1@phone_record": "suspect_1",
+      "unknown_man_1@witness_statement": "suspect_1",
+      "witness_statement_SPEAKER_01": "witness_1"
+    },
+    "obs_entity": {
+      "O1": "suspect_1",
+      "O2": "suspect_1",
+      "O8": "suspect_1",
+      "O9": "suspect_1",
+      "O3": "suspect_1",
+      "O4": "suspect_1",
+      "O6": "witness_1",
+      "O10": "suspect_1",
+      "O7": "witness_1"
+    },
+    "flags": {
+      "appearance": true,
+      "appearance_noise": 0.2,
+      "alias_variants": true,
+      "voice_prints": true,
+      "hide_roles": true,
+      "per_source_labels": true,
+      "reported_events": true,
+      "reported_event_rate": 0.6,
+      "undiarized_audio": 0.3,
+      "timestamp_gaps": 0.15,
+      "mixed_timezones": true,
+      "fir_errors": true,
+      "action_labels": true,
+      "agent_metadata": true,
+      "scenarios": true,
+      "scenario_rate": 0.5,
+      "difficulty": "medium",
+      "wrong_hint_rate": 0.1,
+      "low_hint_rate": 0.1,
+      "tz_source_rate": 0.5,
+      "fir_error_count": 1,
+      "action_error_rate": 0.1,
+      "action_missing_rate": 0.1
+    },
+    "appearance": {
+      "suspect_1": "short, blue shirt",
+      "witness_1": "stocky, blue sweater, helmet",
+      "witness_2": "thin, brown t-shirt, red cap"
+    },
+    "names": {
+      "suspect_1": "Manoj Sharma",
+      "witness_1": "Kiran Sharma",
+      "witness_2": "Vikram Iyer"
+    },
+    "fir_errors": [
+      {
+        "type": "witness_count",
+        "fir_value": 1,
+        "true_value": 2
+      }
+    ],
+    "expected_findings": []
+  }
+}

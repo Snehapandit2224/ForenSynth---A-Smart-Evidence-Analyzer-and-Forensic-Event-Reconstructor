@@ -99,6 +99,22 @@ def _fir_errors_flagged(gt: Dict[str, Any], er: Dict[str, Any]) -> tuple[int, in
     return len(planted), len(planted & flagged_roles), len(flagged_roles - planted)
 
 
+# The Critique checks the generator's scenarios plant (--scenarios): a fired
+# one that the case's ground truth doesn't expect is a false alarm.
+SCENARIO_CHECKS = {"act_sequence_inconsistent", "headcount_mismatch", "result_before_act", "claim_contradicted"}
+
+
+def _findings_caught(gt: Dict[str, Any], out: Path, case: str) -> tuple[int, int, int]:
+    """(findings the case's ground truth expects, how many the final Critique
+    gave, scenario checks it gave that were not expected)."""
+    expected = [f["check"] for f in gt.get("ground_truth", {}).get("expected_findings", [])]
+    crits = sorted((out / "critiques").glob(f"{case}_critique_C*.json"))
+    if not crits:
+        return len(expected), 0, 0
+    fired = {g["check"] for g in json.loads(crits[-1].read_text(encoding="utf-8")).get("gaps", [])} & SCENARIO_CHECKS
+    return len(expected), sum(1 for c in expected if c in fired), len(fired - set(expected))
+
+
 def run_case(set_name: str, case: str, run_dir: Path, llm: bool) -> Dict[str, Any]:
     """Full pipeline for one case (own DB, so cases can run in parallel)."""
     from evaluate_er import evaluate_er_file
@@ -131,6 +147,8 @@ def run_case(set_name: str, case: str, run_dir: Path, llm: bool) -> Dict[str, An
         gt = json.loads((set_dir / f"{case}.json").read_text(encoding="utf-8"))
         row["fir_planted"], row["fir_flagged"], row["fir_false_alarms"] = _fir_errors_flagged(
             gt, json.loads(er_files[-1].read_text(encoding="utf-8")))
+        row["findings_expected"], row["findings_caught"], row["findings_false_alarms"] = \
+            _findings_caught(gt, out, case)
     row["actions"] = [json.loads(p.read_text(encoding="utf-8"))["action"]
                       for p in sorted((out / "showrunner").glob(f"{case}_showrunner_C*.json"))]
     return row
@@ -168,6 +186,8 @@ def summarise(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
     s["fir_planted"] = sum(r.get("fir_planted", 0) for r in ok)
     s["fir_flagged"] = sum(r.get("fir_flagged", 0) for r in ok)
     s["fir_false_alarms"] = sum(r.get("fir_false_alarms", 0) for r in ok)
+    for k in ("findings_expected", "findings_caught", "findings_false_alarms"):
+        s[k] = sum(r.get(k, 0) for r in ok)
     return s
 
 
@@ -191,6 +211,9 @@ def print_table(summary: Dict[str, Dict[str, Any]], er_only: bool,
     for set_name, s in summary.items():
         extra = (f"  FIR head-count errors flagged: {s['fir_flagged']}/{s['fir_planted']}" if s.get("fir_planted") else "")             + (f"  FIR false alarms: {s['fir_false_alarms']}" if s.get("fir_false_alarms") else "")
         acts = ", ".join(f"{k} {v}" for k, v in sorted(s.get("final_actions", {}).items()))
+        if s.get("findings_expected") or s.get("findings_false_alarms"):
+            extra += (f"  Critique findings caught: {s.get('findings_caught', 0)}/{s.get('findings_expected', 0)}"
+                      f"  finding false alarms: {s.get('findings_false_alarms', 0)}")
         fails = f"  FAILED RUNS: {s['n_failed']}" if s.get("n_failed") else ""
         print(f"{set_name.ljust(width)}{s['n_cases']} cases" + (f"  outcomes: {acts}" if acts else "") + extra + fails)
     print("\nER R(sup) = ER recall over the same-person links the evidence supports; ev R(obs) = event "

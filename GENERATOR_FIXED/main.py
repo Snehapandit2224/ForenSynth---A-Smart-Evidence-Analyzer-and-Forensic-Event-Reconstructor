@@ -145,6 +145,9 @@ def parse_args() -> argparse.Namespace:
     real.add_argument("--agent-metadata", action="store_true",
                       help="Time provenance as the agents report it (video time_source, text/audio "
                            "time_basis) and denial tags.")
+    real.add_argument("--scenarios", action="store_true",
+                      help="Plant situations the Critique should report (double exit, miscounting tip, "
+                           "result reported before the act, 'no one saw'); ground_truth.expected_findings.")
     real.add_argument("--realistic", action="store_true",
                       help="All of the above at standard rates.")
     real.add_argument("--difficulty", choices=["easy", "medium", "hard"], default="medium",
@@ -158,6 +161,7 @@ def realism_config(args: argparse.Namespace) -> RealismConfig | None:
     if args.realistic:
         cfg = RealismConfig.realistic(args.difficulty)
         cfg.appearance_noise = args.appearance_noise
+        cfg.scenarios = args.scenarios
         return cfg
     cfg = RealismConfig(
         appearance=args.appearance, appearance_noise=args.appearance_noise,
@@ -166,7 +170,7 @@ def realism_config(args: argparse.Namespace) -> RealismConfig | None:
         reported_events=args.reported_events, undiarized_audio=args.undiarized_audio,
         timestamp_gaps=args.timestamp_gaps, mixed_timezones=args.mixed_timezones,
         fir_errors=args.fir_errors, action_labels=args.action_labels,
-        agent_metadata=args.agent_metadata, difficulty=args.difficulty,
+        agent_metadata=args.agent_metadata, scenarios=args.scenarios, difficulty=args.difficulty,
     )
     return cfg if cfg.enabled() else None
 
